@@ -10,6 +10,10 @@ const endpoints = {
     create: "/products",
     update: (id) => `/cars/${id}`,
     delete: (id) => `/cars/${id}`,
+    //setting
+    categories: () => `/categories`,
+    color: () => `/color`,
+    branch: () => `/branch`,
   },
   showroom: {
     list: "/showrooms",
