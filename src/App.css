@@ -1,0 +1,13 @@
+.upload-new .ant-upload-list-item-container {
+    width: 300px !important;
+    height: 200px !important
+}
+
+.ant-tree-switcher {
+    padding-top: 5px !important;
+}
+
+.ant-statistic-content {
+    display: flex;
+    align-items: center;
+}
