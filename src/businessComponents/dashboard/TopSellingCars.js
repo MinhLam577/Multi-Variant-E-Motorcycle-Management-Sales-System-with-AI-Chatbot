@@ -12,21 +12,6 @@ const dataDemo = [
     sales: 800,
     logo: "/logo192.png",
   },
-  {
-    name: "Ford",
-    sales: 1200,
-    logo: "/logo192.png",
-  },
-  {
-    name: "Volkswagen",
-    sales: 900,
-    logo: "/logo192.png",
-  },
-  {
-    name: "Tesla",
-    sales: 1500,
-    logo: "/logo192.png",
-  },
 ];
 
 function TopSellingCars() {

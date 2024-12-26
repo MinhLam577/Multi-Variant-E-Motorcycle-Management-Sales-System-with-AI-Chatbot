@@ -10,12 +10,12 @@ const Logo = ({ handleClick, bgColor, collapsed }) => {
       >
         {bgColor === "#FFFFFF" && (
           <div>
-            <img alt="logo" width={120} src="/logo192.png" />
+            <img alt="logo" className="w-30 md:w-120" src="/logo192.png" />
           </div>
         )}
         {collapsed ? (
           <div>
-            <img alt="logo" width={40} src="/logo192.png" />
+            <img alt="logo" className="w-10 md:w-20" src="/logo192.png" />
           </div>
         ) : (
           <div>

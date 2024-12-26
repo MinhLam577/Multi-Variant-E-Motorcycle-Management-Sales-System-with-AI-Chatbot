@@ -1,24 +1,23 @@
 import {
-  UserOutlined,
-  CalendarOutlined,
-  FileDoneOutlined,
-  ShoppingOutlined,
-  OrderedListOutlined,
-  NotificationOutlined,
-  ShopOutlined,
-  GiftOutlined,
-  DashboardOutlined,
   BarChartOutlined,
+  CalendarOutlined,
+  DashboardOutlined,
+  FileDoneOutlined,
+  GiftOutlined,
+  NotificationOutlined,
+  OrderedListOutlined,
+  ShopOutlined,
+  ShoppingOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 import { Breadcrumb, Grid, Layout, Menu, theme } from "antd";
-import { useContext, useState } from "react";
-import HeaderComponent from "./header";
-import { useLocation, useNavigate } from "react-router-dom";
-import { GlobalContext } from "../../contexts/global";
 import PropTypes from "prop-types";
+import { useContext, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import Logo from "../../components/Logo";
 import { UserRoleConstant } from "../../constants";
-import Dashboard from "../../pages/dashboard";
+import { GlobalContext } from "../../contexts/global";
+import HeaderComponent from "./header";
 
 const { Content, Footer, Sider } = Layout;
 const { useBreakpoint } = Grid;
@@ -63,7 +62,7 @@ const AppLayout = (props) => {
   const items =
     UserRoleConstant.ADMIN === UserRoleConstant.ADMIN
       ? [
-          getItem("Trang chính", "0", <Dashboard />, null, () =>
+          getItem("Trang chính", "20", <UserOutlined />, null, () =>
             navigate("/dashboard")
           ),
           getItem("Người dùng", "2", <UserOutlined />, null, () =>
