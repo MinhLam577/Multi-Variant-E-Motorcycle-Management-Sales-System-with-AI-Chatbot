@@ -42,9 +42,9 @@ const ProductsSearch = ({ setFilters }) => {
       labelCol={{ flex: "30%" }}
       labelWrap
       layout="vertical"
-      // className="flex justify-between items-center gap-4"
+      className="flex justify-between items-center gap-4"
     >
-      <div className="grid lg:grid-cols-4 gap-2">
+      <div className="grid lg:grid-cols-5 gap-4 items-end">
         <Form.Item
           label={<div className="font-bold">Tên sản phẩm</div>}
           name="searchText"
@@ -107,7 +107,7 @@ const ProductsSearch = ({ setFilters }) => {
             type="primary"
             danger
             htmlType="reset"
-            className="mt-1 mr-2"
+            className="mr-4"
             onClick={() => setFilters({ searchText: null })}
           >
             Hủy

@@ -5,8 +5,8 @@ const Logo = ({ handleClick, bgColor, collapsed }) => {
     <div className="w-full flex justify-center p-2">
       <button
         onClick={handleClick}
-        className={`w-full border-0 ${collapsed ? "" : "p-4"}`}
-        style={{ backgroundColor: bgColor }}
+        className={`w-full border-0 rounded-2xl ${collapsed ? "" : "p-2"}`}
+        style={{ backgroundColor: "white" }}
       >
         {bgColor === "#FFFFFF" && (
           <div>
@@ -19,9 +19,7 @@ const Logo = ({ handleClick, bgColor, collapsed }) => {
           </div>
         ) : (
           <div>
-            <span className="text-[#006400] font-serif font-bold text-4xl">
-              Ô tô hồng sơn
-            </span>
+          <img alt="logo" className="w-15 md:w-20" src="/logo2048.png" />
           </div>
         )}
       </button>

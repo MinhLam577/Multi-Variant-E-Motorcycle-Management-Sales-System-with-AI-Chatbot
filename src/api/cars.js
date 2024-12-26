@@ -48,3 +48,8 @@ export const fetchBranch = async () => {
   const response = await apiClient.get(endpoints.cars.branch());
   return response?.data?.data;
 };
+
+export const deleteProduct = async (id) => {
+  const response = await apiClient.delete(endpoints.cars.delete(id));
+  return response?.data?.data;
+};

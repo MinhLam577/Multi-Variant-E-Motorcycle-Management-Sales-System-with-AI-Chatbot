@@ -9,10 +9,12 @@ import { useMutation } from "@apollo/client";
 import {
   Button,
   Card,
+  Col,
   Divider,
   Form,
   Input,
   InputNumber,
+  Row,
   Select,
   message,
 } from "antd";
@@ -289,52 +291,55 @@ const ProductsDetail = ({ mode }) => {
             <Input readOnly={isReadOnly()} placeholder="Nhập tên sản phẩm" />
           </Form.Item>
 
-          {/* category  */}
-          <Form.Item
-            label="Danh mục xe"
-            name="name"
-            rules={[{ required: true, message: "Chọn danh mục!" }]}
-          >
-            <Select
-              allowClear
-              showSearch
-              mode="multiple"
-              optionFilterProp="label"
-              options={[
-                { categoryId: "21212", categoryName: "Xe tải" },
-                { categoryId: "21212", categoryName: "Xe Ben" },
-              ]?.map((item) => {
-                return {
-                  value: item?.categoryId,
-                  label: item?.categoryName,
-                };
-              })}
-              placeholder="Chọn danh mục"
-            />
-          </Form.Item>
-
-          {/* brand */}
-          <Form.Item
-            label="Thương hiệu"
-            name="name"
-            rules={[{ required: true, message: "Chọn thương hiệu!" }]}
-          >
-            <Select
-              allowClear
-              showSearch
-              mode="multiple"
-              optionFilterProp="label"
-              options={settingData?.branches?.map((item) => {
-                return {
-                  value: item?.id,
-                  label: item?.name,
-                };
-              })}
-              placeholder="Chọn thương hiệu"
-            />
-          </Form.Item>
-
-          {/* modelYear */}
+          {/* category and brand */}
+          <Row gutter={16}>
+            <Col span={6}>
+              <Form.Item
+                label="Danh mục xe"
+                name="name"
+                rules={[{ required: true, message: "Chọn danh mục!" }]}
+              >
+                <Select
+                  allowClear
+                  showSearch
+                  mode="multiple"
+                  optionFilterProp="label"
+                  options={[
+                    { categoryId: "21212", categoryName: "Xe tải" },
+                    { categoryId: "21212", categoryName: "Xe Ben" },
+                  ]?.map((item) => {
+                    return {
+                      value: item?.categoryId,
+                      label: item?.categoryName,
+                    };
+                  })}
+                  placeholder="Chọn danh mục"
+                />
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item
+                label="Thương hiệu"
+                name="name"
+                rules={[{ required: true, message: "Chọn thương hiệu!" }]}
+              >
+                <Select
+                  allowClear
+                  showSearch
+                  mode="multiple"
+                  optionFilterProp="label"
+                  options={settingData?.branches?.map((item) => {
+                    return {
+                      value: item?.id,
+                      label: item?.name,
+                    };
+                  })}
+                  placeholder="Chọn thương hiệu"
+                />
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+               {/* modelYear */}
           <Form.Item
             label="Model"
             name="name"
@@ -357,6 +362,8 @@ const ProductsDetail = ({ mode }) => {
               placeholder="Chọn model"
             />
           </Form.Item>
+            </Col>
+          </Row>
 
           {/* note */}
           <Form.Item
@@ -374,9 +381,9 @@ const ProductsDetail = ({ mode }) => {
           {/* description  */}
           <Form.Item
             className="custom-antd-richtext-editor mb-20"
-            label="Nội dung"
+            label="Mô tả sản phẩm"
             name="description"
-            rules={[{ required: true, message: "Hãy nhập nội dung sản phẩm!" }]}
+            rules={[{ required: true, message: "Hãy nhập nội dung mô tả sản phẩm!" }]}
           >
             <RichTextEditor
               className="h-[400px] mb-10"

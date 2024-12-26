@@ -3,7 +3,11 @@ export const content = [
   "./src/**/*.{js,jsx,ts,tsx}",
 ];
 export const theme = {
-  extend: {},
+  extend: {
+    colors: {
+      primary: '#006400',
+    },
+  },
 };
 export const plugins = [];
 export const corePlugins = {

@@ -9,6 +9,7 @@ import {
   ShopOutlined,
   ShoppingOutlined,
   UserOutlined,
+  ProductOutlined
 } from "@ant-design/icons";
 import { Breadcrumb, Grid, Layout, Menu, theme } from "antd";
 import PropTypes from "prop-types";
@@ -33,7 +34,7 @@ function getItem(label, key, icon, children, onClick = () => {}) {
 }
 
 const BreadcrumbLabel = {
-  dashboard: "Trang chính",
+  dashboard: "Tổng quan",
   profile: "Thông tin người dùng",
   users: "Quản lý Người dùng",
   products: "Quản lý Sản phẩm",
@@ -62,7 +63,7 @@ const AppLayout = (props) => {
   const items =
     UserRoleConstant.ADMIN === UserRoleConstant.ADMIN
       ? [
-          getItem("Trang chính", "20", <UserOutlined />, null, () =>
+          getItem("Tổng quan", "20", <ProductOutlined />, null, () =>
             navigate("/dashboard")
           ),
           getItem("Người dùng", "2", <UserOutlined />, null, () =>
@@ -71,7 +72,7 @@ const AppLayout = (props) => {
           getItem("Chi nhánh", "3", <ShopOutlined />, null, () =>
             navigate("/stores")
           ),
-          getItem("Xe Ô tô tải", "6", <ShoppingOutlined />, null, () =>
+          getItem("Sản phẩm", "6", <ShoppingOutlined />, null, () =>
             navigate("/products")
           ),
           getItem("Xe máy điện", "7", <ShoppingOutlined />, null, () =>
@@ -179,7 +180,7 @@ const AppLayout = (props) => {
       return ["1"];
     }
     if (path.includes("/dashboard")) {
-      return ["0"];
+      return ["20"];
     } else if (path.includes("/profile")) {
       return ["1"];
     } else if (path.includes("/users")) {
@@ -233,7 +234,7 @@ const AppLayout = (props) => {
         collapsed={screens.md ? collapsed : true}
         onCollapse={(value) => setCollapsed(value)}
       >
-        <div className="demo-logo-vertical my-10">
+        <div className="my-10">
           <div className="w-full flex justify-center flex-col items-center px-2 cursor-pointer">
             <Logo
               handleClick={() => navigate("/")}

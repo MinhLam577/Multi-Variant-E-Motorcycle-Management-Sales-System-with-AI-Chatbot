@@ -9,7 +9,7 @@ const endpoints = {
     details: (id) => `/cars/${id}`,
     create: "/products",
     update: (id) => `/cars/${id}`,
-    delete: (id) => `/cars/${id}`,
+    delete: (id) => `/products/${id}`,
     //setting
     categories: () => `/categories`,
     color: () => `/color`,
