@@ -2,19 +2,26 @@ import { Table } from "antd";
 import { AntdTableLocale, AntdTablePagingLocale } from "../constants";
 import { convertSortFromAntToServer } from "../utils";
 import { useEffect, useState } from "react";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 const pageSizeOptions = [10, 20, 30, 40, 50];
 
-const TableComponent = ({loading, filtersInput, getColumnsConfig, filterValue, data, loadData, ...res}) => {
-
+const TableComponent = ({
+  loading,
+  filtersInput,
+  getColumnsConfig,
+  filterValue,
+  data,
+  loadData,
+  ...res
+}) => {
   const [filters, setFilters] = useState({
     filters: {
       ...filterValue,
     },
     paging: {
       page: 1,
-      pageSize: pageSizeOptions[0]
+      pageSize: pageSizeOptions[0],
     },
     sorters: null,
   });
@@ -24,17 +31,17 @@ const TableComponent = ({loading, filtersInput, getColumnsConfig, filterValue, d
       variables: {
         [filtersInput]: {
           ...filters,
-        }
-      }
+        },
+      },
     });
   }, [filters, loadData]);
 
   useEffect(() => {
-    setFilters(filters => ({
+    setFilters((filters) => ({
       ...filters,
       filters: {
         ...filters.filters,
-        ...filterValue
+        ...filterValue,
       },
     }));
   }, [filterValue]);
@@ -46,7 +53,8 @@ const TableComponent = ({loading, filtersInput, getColumnsConfig, filterValue, d
     let sortValue = {};
     sortValue[sortField] = convertSortFromAntToServer(sortOrder);
     return sortValue;
-  }
+  };
+
   return (
     <Table
       locale={{
@@ -56,7 +64,7 @@ const TableComponent = ({loading, filtersInput, getColumnsConfig, filterValue, d
       columns={getColumnsConfig({
         page: filters?.paging?.page,
         pageSize: filters?.paging?.pageSize,
-        ...res
+        ...res,
       })}
       key={0}
       pagination={{
@@ -66,15 +74,15 @@ const TableComponent = ({loading, filtersInput, getColumnsConfig, filterValue, d
         showSizeChanger: true,
         total: data?.total,
         locale: {
-          ...AntdTablePagingLocale
-        }
+          ...AntdTablePagingLocale,
+        },
       }}
       onChange={(pagination, paramFilters, sorter) => {
-        setFilters(filters => ({
+        setFilters((filters) => ({
           ...filters,
           filters: {
             ...paramFilters,
-            ...filterValue
+            ...filterValue,
           },
           paging: {
             page: pagination.current,
@@ -84,10 +92,10 @@ const TableComponent = ({loading, filtersInput, getColumnsConfig, filterValue, d
         }));
       }}
       dataSource={data?.data || data || []}
-      scroll={{x:400}}
+      scroll={{ x: 400 }}
     />
   );
-}
+};
 
 TableComponent.propTypes = {
   loading: PropTypes.bool,
@@ -95,6 +103,6 @@ TableComponent.propTypes = {
   getColumnsConfig: PropTypes.func,
   filterValue: PropTypes.object,
   data: PropTypes.object,
-  loadData: PropTypes.func
+  loadData: PropTypes.func,
 };
-export default TableComponent
+export default TableComponent;

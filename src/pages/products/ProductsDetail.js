@@ -1,11 +1,9 @@
 import {
   CloseOutlined,
   EditOutlined,
-  MinusCircleOutlined,
   PlusOutlined,
   SaveOutlined,
 } from "@ant-design/icons";
-import { useMutation } from "@apollo/client";
 import {
   Button,
   Card,
@@ -21,7 +19,7 @@ import {
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getAll } from "../../api/cars";
+import { createCar, getAll, updateCar } from "../../api/cars";
 import {
   ProcessModalName,
   processWithModals,
@@ -30,7 +28,6 @@ import RichTextEditor from "../../containers/RichTextEditor";
 import UploadSinglePictureGetUrl, {
   UploadSinglePictureGetUrlRemoteMode,
 } from "../../containers/UploadSinglePictureGetUrl";
-import { CREATE_PRODUCT, UPDATE_PRODUCT } from "../../graphql/products";
 
 export const ProductsDetailMode = {
   View: 1,
@@ -62,6 +59,7 @@ const ProductsDetail = ({ mode }) => {
   console.log("settingData", settingData);
 
   const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -77,24 +75,6 @@ const ProductsDetail = ({ mode }) => {
 
     fetchData();
   }, []);
-
-  const [createProduct, { loading: creating }] = useMutation(CREATE_PRODUCT, {
-    onCompleted: (res) => {
-      if (res?.createProduct?.status) {
-        message.success("Tạo sản phẩm thành công!");
-        navigate(`/products`);
-      }
-    },
-  });
-
-  const [updateProduct, { loading: updating }] = useMutation(UPDATE_PRODUCT, {
-    onCompleted: (res) => {
-      if (res?.updateProduct?.status) {
-        message.success("Cập nhật sản phẩm thành công!");
-        navigate(`/products`);
-      }
-    },
-  });
 
   const getCardTitle = () => {
     if (mode === ProductsDetailMode.View) {
@@ -160,44 +140,12 @@ const ProductsDetail = ({ mode }) => {
     }
   };
 
-  const prepareForm = (loadedData) => {
-    if (mode === ProductsDetailMode.View) {
-      form.setFieldsValue({
-        ...loadedData,
-        categoryIds: loadedData.categories?.map((i) => i?.categoryId),
-        storeIds: loadedData.stores?.map((i) => i?.storeId),
-        productPrices: loadedData.prices?.map((i) => ({
-          name: i.name,
-          price: i.price,
-          oneUnit: i.oneUnit,
-        })),
-        unit: loadedData.unit,
-      });
-    } else if (mode === ProductsDetailMode.Add) {
-      form.resetFields();
-    } else if (mode === ProductsDetailMode.Edit) {
-      form.setFieldsValue({
-        ...loadedData,
-        categoryIds: loadedData.categories?.map((i) => i?.categoryId),
-        storeIds: loadedData.stores?.map((i) => i?.storeId),
-        productPrices: loadedData.prices?.map((i) => ({
-          name: i.name,
-          price: i.price,
-          oneUnit: i.oneUnit,
-        })),
-        unit: loadedData.unit,
-      });
-    }
-  };
-
   const isReadOnly = () => {
     if (mode === ProductsDetailMode.Add) {
       return false;
     } else if (mode === ProductsDetailMode.Edit) {
       return false;
     }
-
-    // mode === ProductsDetailMode.View
     return true;
   };
 
@@ -225,39 +173,55 @@ const ProductsDetail = ({ mode }) => {
     }
   };
 
-  const handleFormFinish = (values) => {
+  const handleFormFinish = async (values) => {
     const dto = {
       ...values,
     };
+
+    const formData = {
+      ...values,
+      category_id: dto?.category_id,
+      brand_id: dto?.brand_id.toString(),
+      stock: parseInt(dto?.stock ?? 0),
+      images: fileList?.map((i) => ({
+        url: i?.url,
+        color: "",
+        count: "",
+      })),
+      modelYear: 0,
+      fuelType: "",
+      transmission: "",
+      videos: [],
+      videosCount: 0,
+      rating: 0,
+      reviewsCount: 0,
+      mileage: 0,
+      totalWindown: 0,
+      totalXilanh: 0,
+      status: true,
+    };
+
     if (mode === ProductsDetailMode.Add) {
-      createProduct({
-        variables: {
-          createProductInput: {
-            ...dto,
-            listImgUrl: fileList?.map((i) => i?.url),
-          },
-        },
-      });
+      delete formData.engineNumber;
+
+      await createCar(formData)
+        .then((res) => {
+          console.log("res", res);
+        })
+        .catch((error) => {
+          console.log("error", error);
+        });
       return;
     }
 
     if (mode === ProductsDetailMode.Edit) {
-      updateProduct({
-        variables: {
-          updateProductInput: {
-            ...dto,
-            listImgUrl: fileList?.map((i) => i?.url),
-            productId: id,
-          },
-        },
-      });
-      return;
+      await updateCar({ ...formData, id });
     }
   };
 
   return (
     <>
-      <Card loading={loading || creating || updating} title={getCardTitle()}>
+      <Card loading={loading} title={getCardTitle()}>
         <Form
           form={form}
           {...formItemLayout}
@@ -271,7 +235,7 @@ const ProductsDetail = ({ mode }) => {
           <Form.Item
             className="flex justify-center"
             name="listImgUrl"
-            // rules={[{ required: true, message: 'Hãy chọn ít nhất 1 ảnh!' }]}
+            // rules={[{ required: true, message: "Hãy chọn ít nhất 1 ảnh!" }]}
           >
             <UploadSinglePictureGetUrl
               remoteMode={UploadSinglePictureGetUrlRemoteMode.Private}
@@ -285,7 +249,7 @@ const ProductsDetail = ({ mode }) => {
           {/* product name */}
           <Form.Item
             label="Tên sản phẩm"
-            name="name"
+            name="title"
             rules={[{ required: true, message: "Hãy nhập tên sản phẩm!" }]}
           >
             <Input readOnly={isReadOnly()} placeholder="Nhập tên sản phẩm" />
@@ -296,21 +260,17 @@ const ProductsDetail = ({ mode }) => {
             <Col span={6}>
               <Form.Item
                 label="Danh mục xe"
-                name="name"
+                name="category_id"
                 rules={[{ required: true, message: "Chọn danh mục!" }]}
               >
                 <Select
                   allowClear
                   showSearch
-                  mode="multiple"
                   optionFilterProp="label"
-                  options={[
-                    { categoryId: "21212", categoryName: "Xe tải" },
-                    { categoryId: "21212", categoryName: "Xe Ben" },
-                  ]?.map((item) => {
+                  options={settingData?.categories?.map((item) => {
                     return {
-                      value: item?.categoryId,
-                      label: item?.categoryName,
+                      value: item?.id,
+                      label: item?.name,
                     };
                   })}
                   placeholder="Chọn danh mục"
@@ -320,13 +280,12 @@ const ProductsDetail = ({ mode }) => {
             <Col span={6}>
               <Form.Item
                 label="Thương hiệu"
-                name="name"
+                name="brand_id"
                 rules={[{ required: true, message: "Chọn thương hiệu!" }]}
               >
                 <Select
                   allowClear
                   showSearch
-                  mode="multiple"
                   optionFilterProp="label"
                   options={settingData?.branches?.map((item) => {
                     return {
@@ -338,115 +297,90 @@ const ProductsDetail = ({ mode }) => {
                 />
               </Form.Item>
             </Col>
+
+            {/* numberVin */}
             <Col span={6}>
-               {/* modelYear */}
-          <Form.Item
-            label="Model"
-            name="name"
-            rules={[{ required: true, message: "Chọn model!" }]}
-          >
-            <Select
-              allowClear
-              showSearch
-              mode="multiple"
-              optionFilterProp="label"
-              options={[
-                { categoryId: "21212", categoryName: "2024" },
-                { categoryId: "21212", categoryName: "2025" },
-              ]?.map((item) => {
-                return {
-                  value: item?.categoryId,
-                  label: item?.categoryName,
-                };
-              })}
-              placeholder="Chọn model"
-            />
-          </Form.Item>
+              <Form.Item
+                label="Số khung"
+                name="numberVin"
+                rules={[{ required: true, message: "Nhập số khung!" }]}
+              >
+                <Input
+                  maxLength={255}
+                  readOnly={isReadOnly()}
+                  placeholder="Nhập số khung"
+                />
+              </Form.Item>
+            </Col>
+            {/* EngineNumber */}
+            <Col span={6}>
+              <Form.Item
+                label="Số máy"
+                name="engineNumber"
+                rules={[{ required: false, message: "Chọn model!" }]}
+              >
+                <Input
+                  maxLength={255}
+                  readOnly={isReadOnly()}
+                  placeholder="Nhập số máy"
+                />
+              </Form.Item>
             </Col>
           </Row>
 
-          {/* note */}
-          <Form.Item
-            label="Mô tả"
-            name="brief"
-            rules={[{ required: true, message: "Hãy nhập mô tả sản phẩm!" }]}
-          >
-            <Input
-              maxLength={255}
-              readOnly={isReadOnly()}
-              placeholder="Nhập mô tả sản phẩm"
-            />
-          </Form.Item>
-
           {/* description  */}
           <Form.Item
-            className="custom-antd-richtext-editor mb-20"
+            className="custom-antd-richtext-editor"
             label="Mô tả sản phẩm"
             name="description"
-            rules={[{ required: true, message: "Hãy nhập nội dung mô tả sản phẩm!" }]}
+            rules={[
+              { required: true, message: "Hãy nhập nội dung mô tả sản phẩm!" },
+            ]}
           >
             <RichTextEditor
               className="h-[400px] mb-10"
               readOnly={isReadOnly()}
             />
           </Form.Item>
-          <div className="mb-2">Giá sản phẩm</div>
-          <Form.List
-            name="productPrices"
-            initialValue={[{ name: "", price: "", oneUnit: "" }]}
-          >
-            {(value, { add, remove }) => (
-              <>
-                <div className="flex flex-wrap gap-4">
-                  <InputNumber
-                    min={0}
-                    placeholder="Giá 1 số lượng sản phẩm"
-                    formatter={(value) =>
-                      `${value} đ`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                    }
-                    className="w-full"
-                  />
-                </div>
-              </>
-            )}
-          </Form.List>
-          <Form.Item label="Danh mục" name="categoryIds">
-            <Select
-              allowClear
-              optionFilterProp="label"
-              mode="multiple"
-              options={[]?.map((i) => ({
-                value: i?.categoryId,
-                label: i?.categoryName,
-              }))}
-              readOnly={isReadOnly()}
-              placeholder="Chọn danh mục"
-            />
-          </Form.Item>
-          <Form.Item label="Cửa hàng" name="storeIds">
-            <Select
-              allowClear
-              options={settingData?.categories?.map((i) => ({
-                value: i?.id,
-                label: i?.name,
-              }))}
-              readOnly={isReadOnly()}
-              placeholder="Chọn cửa hàng"
-            />
-          </Form.Item>
-          <Form.Item label="Chọn màu xe" name="unit">
-            <Select
-              allowClear
-              optionFilterProp="label"
-              options={settingData?.colors?.map((i) => ({
-                value: i?.hex,
-                label: i?.name,
-              }))}
-              readOnly={isReadOnly()}
-              placeholder="Chọn màu xe"
-            />
-          </Form.Item>
 
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                label="Giá nhập"
+                name="price"
+                rules={[
+                  { required: true, message: "Nội dung không được để trống!" },
+                ]}
+              >
+                <InputNumber
+                  min={0}
+                  placeholder="Nhập đơn giá"
+                  formatter={(value) =>
+                    `${value} đ`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                  }
+                  className="w-full"
+                />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                label="Giá thuê pin"
+                name="price"
+                rules={[
+                  { required: false, message: "Nội dung không được để trống!" },
+                ]}
+              >
+                <InputNumber
+                  min={0}
+                  placeholder="Nhập giá thuê"
+                  formatter={(value) =>
+                    `${value} đ`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                  }
+                  className="w-full"
+                />
+              </Form.Item>
+            </Col>
+          </Row>
           <>
             <Button onClick={handleCancel}>{getButtonCancelText()}</Button>
             {isReadOnly() ? (

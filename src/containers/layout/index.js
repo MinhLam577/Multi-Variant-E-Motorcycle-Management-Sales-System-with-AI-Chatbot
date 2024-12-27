@@ -9,7 +9,7 @@ import {
   ShopOutlined,
   ShoppingOutlined,
   UserOutlined,
-  ProductOutlined
+  ProductOutlined,
 } from "@ant-design/icons";
 import { Breadcrumb, Grid, Layout, Menu, theme } from "antd";
 import PropTypes from "prop-types";
@@ -64,7 +64,7 @@ const AppLayout = (props) => {
     UserRoleConstant.ADMIN === UserRoleConstant.ADMIN
       ? [
           getItem("Tổng quan", "20", <ProductOutlined />, null, () =>
-            navigate("/dashboard")
+            navigate("/")
           ),
           getItem("Người dùng", "2", <UserOutlined />, null, () =>
             navigate("/users")
@@ -164,7 +164,7 @@ const AppLayout = (props) => {
         ? [
             {
               key: 1,
-              href: "/dashboard",
+              href: "/",
               title: BreadcrumbLabel["dashboard"],
             },
           ]

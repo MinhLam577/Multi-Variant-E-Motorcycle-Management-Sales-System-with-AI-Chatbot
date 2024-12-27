@@ -3,16 +3,17 @@ import endpoints from "./endpoints";
 
 export const getAll = async () => {
   try {
-    const [categories, colors, branches] = await Promise.all([
+    const [branches, colors, categories] = await Promise.all([
       fetchBranch(),
       fetchCarColor(),
       fetchCategories(),
     ]);
 
+    console.log("categoriescategories", categories);
     return {
-      categories,
-      colors,
       branches,
+      colors,
+      categories,
     };
   } catch (error) {
     return null;
@@ -30,8 +31,30 @@ export const getCarDetails = async (id) => {
 };
 
 export const createCar = async (carData) => {
-  const response = await apiClient.post(endpoints.cars.create, carData);
-  return response.data;
+  try {
+    const response = await apiClient.post(endpoints.cars.create, carData);
+    return response;
+  } catch (error) {
+    if (error.response.status === 400) {
+      return error.message;
+    }
+    return error;
+  }
+};
+
+export const updateCar = async (carData) => {
+  try {
+    console.log("updateCarupdateCarupdateCar", carData);
+    const response = await apiClient.patch(endpoints.cars.update(carData.id), {
+      status: carData.status,
+    });
+    return response;
+  } catch (error) {
+    if (error.response.status === 400) {
+      return error.message;
+    }
+    return error;
+  }
 };
 
 export const fetchCarColor = async () => {
@@ -52,4 +75,25 @@ export const fetchBranch = async () => {
 export const deleteProduct = async (id) => {
   const response = await apiClient.delete(endpoints.cars.delete(id));
   return response?.data?.data;
+};
+
+export const uploadProductImage = async (file) => {
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+    const response = await apiClient.post(
+      endpoints.cars.uploadImage(),
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    return response?.data;
+  } catch (error) {
+    console.error("Error uploading image:", error);
+    throw error;
+  }
 };
