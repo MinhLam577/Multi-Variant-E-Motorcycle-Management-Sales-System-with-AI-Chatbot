@@ -1,44 +1,48 @@
 import { Suspense } from "react";
-import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import "./App.css";
 import ApolloProviderGlobal from "./containers/ApolloProviderGlobal";
-import GlobalProvider from "./contexts/global";
 import Loading from "./containers/Loading";
 import ProtectedRoute from "./containers/ProtectedRoute";
-import Forbidden from "./pages/Forbidden";
+import GlobalProvider from "./contexts/global";
 import Page404 from "./pages/404";
+import Forbidden from "./pages/Forbidden";
 import Login from "./pages/Login";
-import User from "./pages/users";
+import Policy from "./pages/Policy";
 import Profile from "./pages/Profile";
-import News from "./pages/news";
-import NewsDetail, { NewsDetailMode } from "./pages/news/NewsDetail";
 import Categories from "./pages/categories";
-import Products from "./pages/products";
 import CategoriesDetail, {
   CategoriesDetailMode,
 } from "./pages/categories/CategoriesDetail";
-import ProductsDetail, {
-  ProductsDetailMode,
-} from "./pages/products/ProductsDetail";
+import Dashboard from "./pages/dashboard";
+import News from "./pages/news";
+import NewsDetail, { NewsDetailMode } from "./pages/news/NewsDetail";
+import Notification from "./pages/notifications";
 import Orders from "./pages/orders";
 import OrderDetail, { OrderDetailMode } from "./pages/orders/OrderDetail";
-import UserDetail from "./pages/users/UserDetail";
-import Notification from "./pages/notifications";
-import Stores from "./pages/stores";
-import StoresDetail, { StoresDetailMode } from "./pages/stores/StoresDetail";
 import ProductUnits from "./pages/product_units";
 import ProductUnitsDetail, {
   ProductUnitsDetailMode,
 } from "./pages/product_units/ProductUnitsDetail";
+import Products from "./pages/products";
+import EMotorbike from "./pages/products/EMotorbike";
+import EMotorbikeDetail from "./pages/products/EMotorbikeDetail";
+import ProductsDetail, {
+  ProductsDetailMode,
+} from "./pages/products/ProductsDetail";
 import ProductsCombo from "./pages/products_combo";
 import ProductsComboDetail from "./pages/products_combo/ProductsComboDetail";
+import Statistic from "./pages/statistic";
+import Stores from "./pages/stores";
+import StoresDetail, { StoresDetailMode } from "./pages/stores/StoresDetail";
+import User from "./pages/users";
+import DeleteUser from "./pages/users/DeleteUser";
+import UserDetail from "./pages/users/UserDetail";
 import Vouchers from "./pages/vouchers";
 import VoucherDetail from "./pages/vouchers/VoucherDetail";
-import Policy from "./pages/Policy";
-import DeleteUser from "./pages/users/DeleteUser";
-import Material from "./pages/material";
-import Statistic from "./pages/statistic";
-import Dashboard from "./pages/dashboard";
+import WareHouses from "./pages/warehouses";
+import WareHouseDetail from "./pages/warehouses/WareHouseDetail";
+import { WareHouseDetailMode } from "./constants";
 
 function App() {
   return (
@@ -66,16 +70,44 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+
+              <Route path="/warehouse">
+                <Route
+                  index
+                  element={
+                    <ProtectedRoute>
+                      <WareHouses />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="add"
+                  element={
+                    <ProtectedRoute>
+                      <WareHouseDetail mode={WareHouseDetailMode.Add} />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path=":id"
+                  element={
+                    <ProtectedRoute>
+                      <WareHouseDetail mode={WareHouseDetailMode.View} />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path=":id/edit"
+                  element={
+                    <ProtectedRoute>
+                      <WareHouseDetail mode={WareHouseDetailMode.Edit} />
+                    </ProtectedRoute>
+                  }
+                />
+              </Route>
+
               <Route
-                path="/material"
-                element={
-                  <ProtectedRoute>
-                    <Material />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/"
+                path="/user"
                 element={
                   <ProtectedRoute>
                     <User />
@@ -384,6 +416,51 @@ function App() {
                 path="/yeu-cau-xoa-tai-khoan"
                 element={<DeleteUser mode={OrderDetailMode.Edit} />}
               />
+
+              <Route path="/e-motorbike">
+                <Route
+                  index
+                  element={
+                    <ProtectedRoute>
+                      <EMotorbike />
+                    </ProtectedRoute>
+                  }
+                />
+
+                <Route
+                  path="add"
+                  element={
+                    <ProtectedRoute>
+                      <EMotorbikeDetail mode={ProductUnitsDetailMode.Add} />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path=":id/view"
+                  element={
+                    <ProtectedRoute>
+                      <Route
+                        path="/e-motorbike/:id/view"
+                        element={
+                          <ProtectedRoute>
+                            <EMotorbikeDetail
+                              mode={ProductUnitsDetailMode.View}
+                            />
+                          </ProtectedRoute>
+                        }
+                      />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path=":id/edit"
+                  element={
+                    <ProtectedRoute>
+                      <EMotorbikeDetail mode={ProductUnitsDetailMode.Edit} />
+                    </ProtectedRoute>
+                  }
+                />
+              </Route>
               <Route path="/:404" element={<Page404 />} />
             </Routes>
           </Suspense>

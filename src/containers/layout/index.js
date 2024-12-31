@@ -6,10 +6,11 @@ import {
   GiftOutlined,
   NotificationOutlined,
   OrderedListOutlined,
+  ProductOutlined,
   ShopOutlined,
   ShoppingOutlined,
   UserOutlined,
-  ProductOutlined,
+  TruckOutlined,
 } from "@ant-design/icons";
 import { Breadcrumb, Grid, Layout, Menu, theme } from "antd";
 import PropTypes from "prop-types";
@@ -46,6 +47,7 @@ const BreadcrumbLabel = {
   vouchers: "Quản lý vouchers",
   material: "Quản lý kho",
   statistic: "Quản lý thống kê",
+  warehouse: "Kho",
 };
 
 const AppLayout = (props) => {
@@ -63,8 +65,8 @@ const AppLayout = (props) => {
   const items =
     UserRoleConstant.ADMIN === UserRoleConstant.ADMIN
       ? [
-          getItem("Tổng quan", "20", <ProductOutlined />, null, () =>
-            navigate("/")
+          getItem("Tổng quan", "1", <ProductOutlined />, null, () =>
+            navigate("/dashboard")
           ),
           getItem("Người dùng", "2", <UserOutlined />, null, () =>
             navigate("/users")
@@ -72,19 +74,18 @@ const AppLayout = (props) => {
           getItem("Chi nhánh", "3", <ShopOutlined />, null, () =>
             navigate("/stores")
           ),
-          getItem("Sản phẩm", "6", <ShoppingOutlined />, null, () =>
-            navigate("/products")
-          ),
-          getItem("Xe máy điện", "7", <ShoppingOutlined />, null, () =>
-            navigate("/combo_product")
-          ),
-          getItem("Màu sắc", "8", <ShoppingOutlined />, null, () =>
-            navigate("/product_units")
-          ),
-          getItem("Danh mục", "4", <FileDoneOutlined />, null, () =>
+          getItem("Sản phẩm", "4", <ShoppingOutlined />, [
+            getItem("Ô tô tải", "5", <TruckOutlined />, null, () =>
+              navigate("/products")
+            ),
+            getItem("Xe máy điện", "6", <TruckOutlined />, null, () =>
+              navigate("/e-motorbike")
+            ),
+          ]),
+          getItem("Danh mục", "7", <FileDoneOutlined />, null, () =>
             navigate("/categories")
           ),
-          getItem("Tin tức", "5", <CalendarOutlined />, null, () =>
+          getItem("Tin tức", "8", <CalendarOutlined />, null, () =>
             navigate("/news")
           ),
           getItem("Đơn hàng", "9", <OrderedListOutlined />, [
@@ -109,7 +110,7 @@ const AppLayout = (props) => {
             navigate("/vouchers")
           ),
           getItem("Kho", "17", <DashboardOutlined />, null, () =>
-            navigate("/material")
+            navigate("/warehouse")
           ),
           getItem("Thống kê", "18", <BarChartOutlined />, null, () =>
             navigate("/statistic")
@@ -178,20 +179,21 @@ const AppLayout = (props) => {
     const search = location.search;
     if (typeof path !== "string") {
       return ["1"];
-    }
-    if (path.includes("/dashboard")) {
-      return ["20"];
-    } else if (path.includes("/profile")) {
+    } else if (path.includes("/dashboard")) {
       return ["1"];
+    } else if (path.includes("/profile")) {
+      return ["19"];
     } else if (path.includes("/users")) {
       return ["2"];
     } else if (path.includes("/stores")) {
       return ["3"];
     } else if (path.includes("/categories")) {
-      return ["4"];
+      return ["7"];
     } else if (path.includes("/news")) {
-      return ["5"];
+      return ["8"];
     } else if (path.includes("/products")) {
+      return ["5"];
+    } else if (path.includes("/e-motorbike")) {
       return ["6"];
     } else if (path.includes("/combo_product")) {
       return ["7"];
@@ -212,20 +214,21 @@ const AppLayout = (props) => {
       return ["15"];
     } else if (path.includes("/vouchers")) {
       return ["16"];
-    } else if (path.includes("/material")) {
+    } else if (path.includes("/warehouse")) {
       return ["17"];
     } else if (path.includes("/statistic")) {
       return ["18"];
     } else {
-      return ["2"];
+      return ["1"];
     }
   };
 
   return (
     <Layout
-      style={{
-        minHeight: "100vh",
-      }}
+      hasSider
+      // style={{
+      //   minHeight: "100vh",
+      // }}
     >
       <Sider
         xs={2}
@@ -263,7 +266,7 @@ const AppLayout = (props) => {
               margin: "16px 0",
             }}
             items={[...getBreadcrumbItems(location.pathname)]}
-          ></Breadcrumb>
+          />
           <div
             style={{
               padding: 24,
@@ -279,7 +282,7 @@ const AppLayout = (props) => {
             textAlign: "center",
           }}
         >
-          Ô tô hồng sơn Company ©2024 Created by Openserce
+          Ô tô hồng sơn ©2024 Created by Openserce
         </Footer>
       </Layout>
     </Layout>

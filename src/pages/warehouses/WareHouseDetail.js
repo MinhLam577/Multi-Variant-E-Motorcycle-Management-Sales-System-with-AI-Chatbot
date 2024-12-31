@@ -1,0 +1,299 @@
+import {
+  CloseOutlined,
+  EditOutlined,
+  PlusOutlined,
+  SaveOutlined,
+} from "@ant-design/icons";
+import { useLazyQuery, useMutation } from "@apollo/client";
+import {
+  Button,
+  Card,
+  Divider,
+  Form,
+  Input,
+  InputNumber,
+  Select,
+  message,
+} from "antd";
+import PropTypes from "prop-types";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  ProcessModalName,
+  processWithModals,
+} from "../../containers/processWithModals";
+import UploadSinglePictureGetUrl, {
+  UploadSinglePictureGetUrlRemoteMode,
+} from "../../containers/UploadSinglePictureGetUrl";
+import {
+  CREATE_CATEGORY,
+  GET_CATEGORY,
+  UPDATE_CATEGORY,
+} from "../../graphql/categories";
+
+export const CategoriesDetailMode = {
+  View: 1,
+  Add: 2,
+  Edit: 3,
+};
+
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+  },
+};
+
+const WareHouseDetail = ({ mode }) => {
+  const { id } = useParams();
+
+  const navigate = useNavigate();
+  const [fileList, setFileList] = useState([]);
+  const [loadData, { loading }] = useLazyQuery(GET_CATEGORY, {
+    fetchPolicy: "no-cache",
+    onCompleted: (res) => {
+      if (res?.admin_category) {
+        prepareForm(res?.admin_category);
+      }
+      message.success("Tải chi tiết danh mục thành công!");
+    },
+  });
+  const [createCategory, { loading: creating }] = useMutation(CREATE_CATEGORY, {
+    onCompleted: (res) => {
+      if (res?.createCategory?.status) {
+        message.success("Tạo danh mục thành công!");
+        navigate(`/categories`);
+      }
+    },
+  });
+
+  const [updateCategory, { loading: updating }] = useMutation(UPDATE_CATEGORY, {
+    onCompleted: (res) => {
+      if (res?.updateCategory?.status) {
+        message.success("Cập nhật danh mục thành công!");
+        navigate(`/categories`);
+      }
+    },
+  });
+
+  const [form] = Form.useForm();
+
+  const getCardTitle = () => {
+    if (mode === CategoriesDetailMode.View) {
+      return "Chi tiết kho";
+    } else if (mode === CategoriesDetailMode.Add) {
+      return "Tạo kho mới";
+    } else if (mode === CategoriesDetailMode.Edit) {
+      return "Chỉnh sửa kho";
+    }
+  };
+
+  const getButtonOkText = () => {
+    if (mode === CategoriesDetailMode.Add) {
+      return (
+        <>
+          <PlusOutlined />
+          &nbsp;Tạo
+        </>
+      );
+    } else if (mode === CategoriesDetailMode.Edit) {
+      return (
+        <>
+          <SaveOutlined />
+          &nbsp;Lưu
+        </>
+      );
+    }
+  };
+
+  const getButtonCancelText = () => {
+    if (mode === CategoriesDetailMode.Add) {
+      return (
+        <>
+          <CloseOutlined />
+          &nbsp;Hủy
+        </>
+      );
+    } else if (mode === CategoriesDetailMode.Edit) {
+      return (
+        <>
+          <CloseOutlined />
+          &nbsp;Hủy
+        </>
+      );
+    } else if (mode === CategoriesDetailMode.View) {
+      return (
+        <>
+          <CloseOutlined />
+          &nbsp;Đóng
+        </>
+      );
+    }
+  };
+
+  const getButtonEditText = () => {
+    if (mode === CategoriesDetailMode.View) {
+      return (
+        <>
+          <EditOutlined />
+          &nbsp;Sửa
+        </>
+      );
+    }
+  };
+
+  const prepareForm = (loadedData) => {
+    if (mode === CategoriesDetailMode.View) {
+      form.setFieldsValue({
+        ...loadedData,
+      });
+    } else if (mode === CategoriesDetailMode.Add) {
+      form.resetFields();
+    } else if (mode === CategoriesDetailMode.Edit) {
+      form.setFieldsValue({
+        ...loadedData,
+      });
+    }
+  };
+
+  const isReadOnly = () => {
+    if (mode === CategoriesDetailMode.Add) {
+      return false;
+    } else if (mode === CategoriesDetailMode.Edit) {
+      return false;
+    }
+
+    // mode === CategoriesDetailMode.View
+    return true;
+  };
+
+  const handleOk = () => {
+    if (mode === CategoriesDetailMode.Add) {
+      form.submit();
+    } else if (mode === CategoriesDetailMode.Edit) {
+      form.submit();
+    }
+  };
+
+  const handleCancel = () => {
+    if (mode === CategoriesDetailMode.Edit) {
+      processWithModals(ProcessModalName.ConfirmCancelEditing)(() => {
+        navigate(`/categories`);
+      });
+    } else {
+      navigate("/categories");
+    }
+  };
+
+  const handleEdit = () => {
+    if (mode === CategoriesDetailMode.View) {
+      navigate(`/categories/${id}/edit`, { replace: true });
+    }
+  };
+
+  const handleFormFinish = (values) => {
+    const dto = {
+      ...values,
+    };
+
+    if (mode === CategoriesDetailMode.Add) {
+      createCategory({
+        variables: {
+          createCategoryInput: {
+            ...dto,
+          },
+        },
+      });
+    } else if (mode === CategoriesDetailMode.Edit) {
+      updateCategory({
+        variables: {
+          updateCategoryInput: {
+            ...dto,
+            categoryId: id,
+          },
+        },
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (id) {
+      loadData({
+        variables: {
+          id,
+        },
+      });
+    }
+    // eslint-disable-next-line
+  }, [id, mode]);
+
+  return (
+    <>
+      <Card loading={loading || creating || updating} title={getCardTitle()}>
+        <Form
+          form={form}
+          {...formItemLayout}
+          layout={"vertical"}
+          autoComplete="off"
+          onFinish={handleFormFinish}
+        >
+          <Form.Item
+            label="Tên kho"
+            name="wareHouseName"
+            rules={[{ required: true, message: "Hãy nhập tên kho!" }]}
+          >
+            <Input readOnly={isReadOnly()} placeholder="Nhập tên kho" />
+          </Form.Item>
+          <Form.Item
+            label="Địa chỉ"
+            name="wareHouseAddress"
+            rules={[{ required: true, message: "Hãy nhập địa chỉ!" }]}
+          >
+            <Input readOnly={isReadOnly()} placeholder="Nhập địa chỉ" />
+          </Form.Item>
+          <Form.Item label="Trạng thái" name="isActive">
+            <Select
+              allowClear
+              optionFilterProp="label"
+              options={[
+                {
+                  value: true,
+                  label: "Hoạt động",
+                },
+                {
+                  value: false,
+                  label: "Không hoạt động",
+                },
+              ]}
+              readOnly={isReadOnly()}
+              placeholder="Chọn trạng thái"
+            />
+          </Form.Item>
+
+          <>
+            <Button onClick={handleCancel}>{getButtonCancelText()}</Button>
+            {isReadOnly() ? (
+              <>
+                <Divider type="vertical" />
+                <Button onClick={handleEdit}>{getButtonEditText()}</Button>
+              </>
+            ) : (
+              <>
+                <Divider type="vertical" />
+                <Button onClick={handleOk}>{getButtonOkText()}</Button>
+              </>
+            )}
+          </>
+        </Form>
+      </Card>
+    </>
+  );
+};
+
+WareHouseDetail.propTypes = {
+  mode: PropTypes.number,
+};
+
+export default WareHouseDetail;
