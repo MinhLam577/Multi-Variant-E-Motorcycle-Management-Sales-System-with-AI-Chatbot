@@ -66,7 +66,7 @@ const AppLayout = (props) => {
     UserRoleConstant.ADMIN === UserRoleConstant.ADMIN
       ? [
           getItem("Tổng quan", "1", <ProductOutlined />, null, () =>
-            navigate("/dashboard")
+            navigate("/")
           ),
           getItem("Người dùng", "2", <UserOutlined />, null, () =>
             navigate("/users")
@@ -194,6 +194,11 @@ const AppLayout = (props) => {
     } else if (path.includes("/products")) {
       return ["5"];
     } else if (path.includes("/e-motorbike")) {
+      if (search.includes("/add")) {
+        return ["6"];
+      } else if (search.includes("/edit")) {
+        return ["6"];
+      }
       return ["6"];
     } else if (path.includes("/combo_product")) {
       return ["7"];
@@ -223,6 +228,7 @@ const AppLayout = (props) => {
     }
   };
 
+  console.log("locationlocation", items);
   return (
     <Layout
       hasSider

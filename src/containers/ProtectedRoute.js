@@ -16,7 +16,10 @@ const ProtectedRoute = ({ children }) => {
   //   return <Navigate to="/login" replace />;
   // }
 
-  // if (user?.role !== UserRoleConstant.ADMIN && user?.role !== UserRoleConstant.SALES) {
+  // if (
+  //   user?.role !== UserRoleConstant.ADMIN &&
+  //   user?.role !== UserRoleConstant.SALES
+  // ) {
   //   return <Navigate to="/Forbidden" replace />;
   // }
 

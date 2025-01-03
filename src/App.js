@@ -55,7 +55,7 @@ function App() {
               <Route path="/policy" element={<Policy />} />
               <Route path="/Forbidden" element={<Forbidden />} />
               <Route
-                path="/dashboard"
+                path="/"
                 element={
                   <ProtectedRoute>
                     <Dashboard />

@@ -9,7 +9,6 @@ export const getAll = async () => {
       fetchCategories(),
     ]);
 
-    console.log("categoriescategories", categories);
     return {
       branches,
       colors,
@@ -21,8 +20,16 @@ export const getAll = async () => {
 };
 
 export const getCars = async ({ page, size }) => {
-  const response = await apiClient.get(endpoints.cars.list(page, size));
-  return response.data;
+  try {
+    const response = await apiClient.get(endpoints.cars.list(page, size));
+    console.log("getCars-response", response);
+    if (response?.status === 200) {
+      return response.data;
+    }
+  } catch (error) {
+    console.log("getCars-error", error);
+    return error;
+  }
 };
 
 export const getCarDetails = async (id) => {

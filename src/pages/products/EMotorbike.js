@@ -18,10 +18,15 @@ const EMotorbike = () => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
+    console.log("EMotorbike-data", data);
+
     const fetchCars = async () => {
-      const { data } = await getCars({ page: 1, size: 5 });
+      const data = await getCars({ page: 1, size: 5 });
+
+      console.log("data-data", data);
       setData(data);
     };
+
     fetchCars();
   }, []);
 
@@ -67,6 +72,7 @@ const EMotorbike = () => {
       updateCar({ id: item.id, status: statusProduct });
     });
   };
+
   return (
     <>
       <div className="w-full">
@@ -88,7 +94,6 @@ const EMotorbike = () => {
         handleViewProducts={handleViewProducts}
         handleDeleteProducts={handleDeleteProducts}
         handleStatusProducts={handleStatusProducts}
-        handle
       />
     </>
   );
