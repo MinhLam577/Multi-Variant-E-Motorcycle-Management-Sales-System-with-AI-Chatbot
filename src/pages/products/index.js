@@ -20,7 +20,7 @@ const Products = () => {
 
   useEffect(() => {
     const fetchCars = async () => {
-      const { data } = await getCars({ page: 1, size: 5 });
+      const data = await getCars({ page: 1, size: 5 });
       setData(data);
     };
     fetchCars();

@@ -3,14 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@ant-design/charts": "^2.1.2",
+    "@ant-design/charts": "^2.2.6",
     "@ant-design/icons": "^5.2.6",
-    "@ant-design/plots": "^2.2.6",
     "@apollo/client": "^3.8.10",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
-    "antd": "^5.13.3",
+    "antd": "^5.23.0",
     "antd-img-crop": "^4.21.0",
     "apollo-upload-client": "^18.0.1",
     "axios": "^1.7.9",
@@ -33,7 +32,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "GENERATE_SOURCEMAP=false && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

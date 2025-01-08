@@ -1,4 +1,4 @@
-import { Column } from "@ant-design/plots";
+import { Column } from "@ant-design/charts";
 const dataDemo = [
   { name: "Tổng doanh thu", dateStr: "2022-01-01", number: 1000 },
   { name: "Tổng doanh thu", dateStr: "2022-01-02", number: 1200 },

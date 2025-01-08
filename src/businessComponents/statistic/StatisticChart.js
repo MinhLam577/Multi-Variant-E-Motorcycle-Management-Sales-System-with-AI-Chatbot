@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Column } from "@ant-design/plots";
+import { Column } from "@ant-design/charts";
 
 function StatisticChart({ data, name }) {
   const dataNew =

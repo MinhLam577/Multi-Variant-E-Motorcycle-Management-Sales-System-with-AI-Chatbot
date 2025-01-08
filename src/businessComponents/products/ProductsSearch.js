@@ -67,41 +67,7 @@ const ProductsSearch = ({ setFilters }) => {
             placeholder="Chọn trạng thái"
           />
         </Form.Item>
-        <Form.Item
-          label={<div className="font-bold">Danh mục</div>}
-          name="categoryIds"
-        >
-          <Select
-            allowClear
-            showSearch
-            mode="multiple"
-            optionFilterProp="label"
-            options={dataCategories?.admin_categories?.map((item) => {
-              return {
-                value: item?.categoryId,
-                label: item?.categoryName,
-              };
-            })}
-            placeholder="Chọn danh mục"
-          />
-        </Form.Item>
-        <Form.Item
-          label={<div className="font-bold">Cửa hàng</div>}
-          name="storeId"
-        >
-          <Select
-            allowClear
-            showSearch
-            optionFilterProp="label"
-            options={dataStories?.storesList?.data?.map((item) => {
-              return {
-                value: item?.storeId,
-                label: item?.storeName,
-              };
-            })}
-            placeholder="Chọn cửa hàng"
-          />
-        </Form.Item>
+
         <Form.Item>
           <Button
             type="primary"

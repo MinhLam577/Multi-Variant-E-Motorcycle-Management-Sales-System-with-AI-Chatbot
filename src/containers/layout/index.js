@@ -262,26 +262,14 @@ const AppLayout = (props) => {
       </Sider>
       <Layout>
         <HeaderComponent />
-        <Content
-          style={{
-            margin: "0 16px",
-          }}
-        >
+        <Content className="p-4">
           <Breadcrumb
-            style={{
-              margin: "16px 0",
-            }}
+            // style={{
+            //   margin: "16px 0",
+            // }}
             items={[...getBreadcrumbItems(location.pathname)]}
           />
-          <div
-            style={{
-              padding: 24,
-              minHeight: 360,
-              background: colorBgContainer,
-            }}
-          >
-            {children}
-          </div>
+          {children}
         </Content>
         <Footer
           style={{
