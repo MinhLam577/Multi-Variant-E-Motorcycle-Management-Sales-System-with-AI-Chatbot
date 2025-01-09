@@ -48,6 +48,7 @@ const BreadcrumbLabel = {
   material: "Quản lý kho",
   statistic: "Quản lý thống kê",
   warehouse: "Kho",
+  "e-motorbike": "Xe máy điện",
 };
 
 const AppLayout = (props) => {
@@ -61,84 +62,56 @@ const AppLayout = (props) => {
 
   const { name, user } = useContext(GlobalContext);
   const screens = useBreakpoint();
+
   //set user role
-  const items =
-    UserRoleConstant.ADMIN === UserRoleConstant.ADMIN
-      ? [
-          getItem("Tổng quan", "1", <ProductOutlined />, null, () =>
-            navigate("/")
-          ),
-          getItem("Người dùng", "2", <UserOutlined />, null, () =>
-            navigate("/users")
-          ),
-          getItem("Chi nhánh", "3", <ShopOutlined />, null, () =>
-            navigate("/stores")
-          ),
-          getItem("Sản phẩm", "4", <ShoppingOutlined />, [
-            getItem("Ô tô tải", "5", <TruckOutlined />, null, () =>
-              navigate("/products")
-            ),
-            getItem("Xe máy điện", "6", <TruckOutlined />, null, () =>
-              navigate("/e-motorbike")
-            ),
-          ]),
-          getItem("Danh mục", "7", <FileDoneOutlined />, null, () =>
-            navigate("/categories")
-          ),
-          getItem("Tin tức", "8", <CalendarOutlined />, null, () =>
-            navigate("/news")
-          ),
-          getItem("Đơn hàng", "9", <OrderedListOutlined />, [
-            getItem("Tất cả", "10", null, null, () => navigate("/orders")),
-            getItem("Mới", "11", null, null, () =>
-              navigate("/orders?status=new")
-            ),
-            getItem("Đã đóng gói", "12", null, null, () =>
-              navigate("/orders?status=confirmed")
-            ),
-            getItem("Đã giao DVVC", "13", null, null, () =>
-              navigate("/orders?status=delivering")
-            ),
-            getItem("Hoàn thành", "14", null, null, () =>
-              navigate("/orders?status=completed")
-            ),
-          ]),
-          getItem("Thông báo", "15", <NotificationOutlined />, null, () =>
-            navigate("/notifications")
-          ),
-          getItem("Voucher", "16", <GiftOutlined />, null, () =>
-            navigate("/vouchers")
-          ),
-          getItem("Kho", "17", <DashboardOutlined />, null, () =>
-            navigate("/warehouse")
-          ),
-          getItem("Thống kê", "18", <BarChartOutlined />, null, () =>
-            navigate("/statistic")
-          ),
-        ]
-      : [
-          getItem("Người dùng", "2", <UserOutlined />, null, () =>
-            navigate("/users")
-          ),
-          getItem("Đơn hàng", "9", <OrderedListOutlined />, [
-            getItem("Tất cả", "10", null, null, () => navigate("/orders")),
-            getItem("Mới", "11", null, null, () =>
-              navigate("/orders?status=new")
-            ),
-            getItem("Đã đóng gói", "12", null, null, () =>
-              navigate("/orders?status=confirmed")
-            ),
-            getItem("Đã giao DVVC", "13", null, null, () =>
-              navigate("/orders?status=delivering")
-            ),
-            getItem("Hoàn thành", "14", null, null, () =>
-              navigate("/orders?status=completed")
-            ),
-          ]),
-          getItem("Thống kê", "18", <BarChartOutlined />, null, () =>
-            navigate("/statistic")
-          ),
-        ];
+  const items = [
+    getItem("Tổng quan", "1", <ProductOutlined />, null, () => navigate("/")),
+    getItem("Người dùng", "2", <UserOutlined />, null, () =>
+      navigate("/users")
+    ),
+    getItem("Chi nhánh", "3", <ShopOutlined />, null, () =>
+      navigate("/stores")
+    ),
+    getItem("Sản phẩm", "4", <ShoppingOutlined />, [
+      getItem("Ô tô tải", "5", <TruckOutlined />, null, () =>
+        navigate("/products")
+      ),
+      getItem("Xe máy điện", "6", <TruckOutlined />, null, () =>
+        navigate("/e-motorbike")
+      ),
+    ]),
+    getItem("Danh mục", "7", <FileDoneOutlined />, null, () =>
+      navigate("/categories")
+    ),
+    getItem("Tin tức", "8", <CalendarOutlined />, null, () =>
+      navigate("/news")
+    ),
+    getItem("Đơn hàng", "9", <OrderedListOutlined />, [
+      getItem("Tất cả", "10", null, null, () => navigate("/orders")),
+      getItem("Mới", "11", null, null, () => navigate("/orders?status=new")),
+      getItem("Đã đóng gói", "12", null, null, () =>
+        navigate("/orders?status=confirmed")
+      ),
+      getItem("Đã giao DVVC", "13", null, null, () =>
+        navigate("/orders?status=delivering")
+      ),
+      getItem("Hoàn thành", "14", null, null, () =>
+        navigate("/orders?status=completed")
+      ),
+    ]),
+    getItem("Thông báo", "15", <NotificationOutlined />, null, () =>
+      navigate("/notifications")
+    ),
+    getItem("Voucher", "16", <GiftOutlined />, null, () =>
+      navigate("/vouchers")
+    ),
+    getItem("Kho", "17", <DashboardOutlined />, null, () =>
+      navigate("/warehouse")
+    ),
+    getItem("Thống kê", "18", <BarChartOutlined />, null, () =>
+      navigate("/statistic")
+    ),
+  ];
 
   const getBreadcrumbItems = (path) => {
     if (typeof path !== "string") {
@@ -228,13 +201,11 @@ const AppLayout = (props) => {
     }
   };
 
-  console.log("locationlocation", items);
   return (
     <Layout
-      hasSider
-      // style={{
-      //   minHeight: "100vh",
-      // }}
+      style={{
+        minHeight: "100vh",
+      }}
     >
       <Sider
         xs={2}
@@ -262,14 +233,13 @@ const AppLayout = (props) => {
       </Sider>
       <Layout>
         <HeaderComponent />
-        <Content className="p-4">
+        <Content style={{ margin: "0 16px" }}>
           <Breadcrumb
-            // style={{
-            //   margin: "16px 0",
-            // }}
+            style={{ margin: "16px 0" }}
             items={[...getBreadcrumbItems(location.pathname)]}
           />
-          {children}
+
+          <div>{children}</div>
         </Content>
         <Footer
           style={{

@@ -67,16 +67,20 @@ const TableComponent = ({
         ...res,
       })}
       key={0}
-      pagination={{
-        current: filters.paging.page,
-        pageSize: filters.paging.pageSize,
-        pageSizeOptions: pageSizeOptions,
-        showSizeChanger: true,
-        total: data?.total,
-        locale: {
-          ...AntdTablePagingLocale,
-        },
-      }}
+      pagination={
+        typeof res?.pagination === "boolean"
+          ? res?.pagination
+          : {
+              current: filters.paging.page,
+              pageSize: filters.paging.pageSize,
+              pageSizeOptions: pageSizeOptions,
+              showSizeChanger: true,
+              total: data?.total,
+              locale: {
+                ...AntdTablePagingLocale,
+              },
+            }
+      }
       onChange={(pagination, paramFilters, sorter) => {
         setFilters((filters) => ({
           ...filters,

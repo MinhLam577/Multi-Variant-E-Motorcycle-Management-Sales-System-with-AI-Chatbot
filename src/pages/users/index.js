@@ -11,25 +11,23 @@ const User = () => {
 
   const handleEditUser = (usersData) => {
     globalDispatch({
-      type: 'breadcrum',
-      data: usersData.fullname
+      type: "breadcrum",
+      data: usersData.fullname,
     });
     navigate(`/users/${usersData.userId}/edit`, { replace: true });
   };
 
   const handleViewUser = (usersData) => {
     globalDispatch({
-      type: 'breadcrum',
-      data: usersData.fullname
+      type: "breadcrum",
+      data: usersData.fullname,
     });
     navigate(`/users/${usersData.userId}`, { replace: true });
   };
 
   return (
     <>
-      <UserSearch
-        setFilters={setGlobalFilters}
-      />
+      <UserSearch setFilters={setGlobalFilters} />
       <UserTable
         globalFilters={globalFilters}
         handleUpdateUser={handleEditUser}

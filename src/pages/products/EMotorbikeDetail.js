@@ -1,11 +1,10 @@
 import {
   CloseOutlined,
   EditOutlined,
+  InfoCircleOutlined,
+  MinusCircleOutlined,
   PlusOutlined,
   SaveOutlined,
-  MinusCircleOutlined,
-  QuestionCircleFilled,
-  InfoCircleOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
 import {
@@ -16,15 +15,11 @@ import {
   Form,
   Input,
   InputNumber,
+  Radio,
   Row,
   Select,
-  message,
-  Flex,
-  Tag,
-  Tooltip,
   Space,
-  Radio,
-  Table,
+  message,
 } from "antd";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
@@ -38,7 +33,7 @@ import RichTextEditor from "../../containers/RichTextEditor";
 import UploadSinglePictureGetUrl, {
   UploadSinglePictureGetUrlRemoteMode,
 } from "../../containers/UploadSinglePictureGetUrl";
-import TagsGroup from "../../businessComponents/tags/tagsGroup";
+import WarehouseTable from "./components/WarehouseTable";
 
 export const ProductsDetailMode = {
   View: 1,
@@ -235,8 +230,11 @@ const EMotorbikeDetail = ({ mode }) => {
       layout={"vertical"}
       autoComplete="off"
       onFinish={handleFormFinish}
+      initialValues={{
+        properties: [{}],
+      }}
     >
-      <Row gutter={16}>
+      <Row gutter={[16, 16]}>
         <Col span={16}>
           <Row gutter={[16, 16]}>
             <Col span={24}>
@@ -552,7 +550,7 @@ const EMotorbikeDetail = ({ mode }) => {
                         </Button>
                       </Col>
                       <Col span={24}>
-                        <Form.Item name="Tìm kho">
+                        <Form.Item name="Tìm kho" className="m-0">
                           <Input
                             addonBefore={<SearchOutlined />}
                             placeholder="Tìm kho"
@@ -560,23 +558,149 @@ const EMotorbikeDetail = ({ mode }) => {
                         </Form.Item>
                       </Col>
                       <Col span={24}>
-                        <Table
-                          columns={[
-                            {
-                              title: "Kho hàng",
-                              dataIndex: "warehouse",
-                              key: "warehouse",
-                            },
-                            {
-                              title: "Tồn đầu kỳ",
-                              dataIndex: "initialStock",
-                              key: "initialStock",
-                            },
-                          ]}
-                          dataSource={[]}
+                        <WarehouseTable
+                          onChangeInitialStock={(val) => {
+                            console.log("onChangeInitialStock", val);
+                          }}
                         />
                       </Col>
                     </Row>
+                  </Col>
+                </Row>
+              </Card>
+            </Col>
+            {/* Unit */}
+            <Col span={24}>
+              <Card title="Biến thể">
+                <Row gutter={[16, 16]}>
+                  <Col span={24}>
+                    <Radio.Group value={1}>
+                      <Radio value={1}>
+                        Sản phẩm có nhiều biến thể. Ví dụ như khác nhau về kích
+                        thước, màu sắc
+                      </Radio>
+                    </Radio.Group>
+                  </Col>
+                  <Col span={24}>
+                    <Form.List name="properties">
+                      {(fields, { add, remove }) => (
+                        <>
+                          {fields.map(({ key, name, ...restField }) => (
+                            <Row
+                              key={key}
+                              gutter={[16, 16]}
+                              align="middle"
+                              className="items-start pb-4"
+                            >
+                              <Col span={10}>
+                                <Form.Item
+                                  label="Thuộc tính"
+                                  {...restField}
+                                  name={[name, "unit"]}
+                                  rules={[
+                                    {
+                                      required: false,
+                                    },
+                                  ]}
+                                >
+                                  <Select placeholder="Chọn thuộc tính">
+                                    <Select.Option value="kích thước">
+                                      Kích thước
+                                    </Select.Option>
+                                    <Select.Option value="màu sắc">
+                                      Màu sắc
+                                    </Select.Option>
+                                    <Select.Option value="tiêu đề">
+                                      Tiêu đề
+                                    </Select.Option>
+                                    <Select.Option value="vật liệu">
+                                      Vật liệu
+                                    </Select.Option>
+                                    <Select.Option value="kiểu dáng">
+                                      Kiểu dáng
+                                    </Select.Option>
+                                  </Select>
+                                </Form.Item>
+                              </Col>
+
+                              <Col span={10}>
+                                {/* value child list */}
+                                <Form.Item
+                                  label="Giá trị"
+                                  // {...restField}
+                                  // name={[name, "value"]}
+                                >
+                                  <Form.List name={[key, "list"]}>
+                                    {(subFields, subOpt) => (
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          flexDirection: "column",
+                                          rowGap: 16,
+                                        }}
+                                      >
+                                        <Input placeholder="Thêm giá trị mới" />
+
+                                        {subFields.map((subField) => (
+                                          <Space key={subField.key}>
+                                            <Form.Item
+                                              noStyle
+                                              name={[subField.name, "first"]}
+                                            >
+                                              <Input placeholder="Thêm giá trị mới" />
+                                            </Form.Item>
+
+                                            <CloseOutlined
+                                              onClick={() => {
+                                                subOpt.remove(subField.name);
+                                              }}
+                                            />
+                                          </Space>
+                                        ))}
+                                        <Button
+                                          type="dashed"
+                                          onClick={() => subOpt.add()}
+                                          block
+                                        >
+                                          + Thêm giá trị mới
+                                        </Button>
+                                      </div>
+                                    )}
+                                  </Form.List>
+                                </Form.Item>
+                                <Button
+                                  type="primary"
+                                  onClick={() => {
+                                    // console.log("subOpt", subOpt);
+                                  }}
+                                >
+                                  Xong
+                                </Button>
+                              </Col>
+
+                              <Col span={4} className="flex">
+                                <MinusCircleOutlined
+                                  onClick={() => remove(name)}
+                                />
+                              </Col>
+                              {fields.length > 1 && (
+                                <Divider type="horizontal" className="m-0" />
+                              )}
+                            </Row>
+                          ))}
+                          <Form.Item>
+                            <Button
+                              type="dashed"
+                              onClick={() => add()}
+                              block
+                              icon={<PlusOutlined />}
+                            >
+                              Thêm thuộc tính khác
+                            </Button>
+                          </Form.Item>
+                        </>
+                      )}
+                    </Form.List>
                   </Col>
                 </Row>
               </Card>
@@ -637,22 +761,23 @@ const EMotorbikeDetail = ({ mode }) => {
             </Col>
           </Row>
         </Col>
+        <Col span={24}>
+          <Button onClick={handleCancel}>{getButtonCancelText()}</Button>
+          {isReadOnly() ? (
+            <>
+              <Divider type="vertical" />
+              <Button onClick={handleEdit}>{getButtonEditText()}</Button>
+            </>
+          ) : (
+            <>
+              <Divider type="vertical" />
+              <Button type="primary" onClick={handleOk}>
+                {getButtonOkText()}
+              </Button>
+            </>
+          )}
+        </Col>
       </Row>
-
-      <>
-        <Button onClick={handleCancel}>{getButtonCancelText()}</Button>
-        {isReadOnly() ? (
-          <>
-            <Divider type="vertical" />
-            <Button onClick={handleEdit}>{getButtonEditText()}</Button>
-          </>
-        ) : (
-          <>
-            <Divider type="vertical" />
-            <Button onClick={handleOk}>{getButtonOkText()}</Button>
-          </>
-        )}
-      </>
     </Form>
   );
 };

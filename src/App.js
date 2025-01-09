@@ -107,7 +107,7 @@ function App() {
               </Route>
 
               <Route
-                path="/user"
+                path="user"
                 element={
                   <ProtectedRoute>
                     <User />
@@ -417,50 +417,48 @@ function App() {
                 element={<DeleteUser mode={OrderDetailMode.Edit} />}
               />
 
-              <Route path="/e-motorbike">
-                <Route
-                  index
-                  element={
-                    <ProtectedRoute>
-                      <EMotorbike />
-                    </ProtectedRoute>
-                  }
-                />
+              <Route
+                path="/e-motorbike"
+                element={
+                  <ProtectedRoute>
+                    <EMotorbike />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/e-motorbike/add"
+                element={
+                  <ProtectedRoute>
+                    <EMotorbikeDetail mode={ProductUnitsDetailMode.Add} />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/e-motorbike/:id/view"
+                element={
+                  <ProtectedRoute>
+                    <EMotorbikeDetail
+                      path="/e-motorbike/:id/view"
+                      element={
+                        <ProtectedRoute>
+                          <EMotorbikeDetail
+                            mode={ProductUnitsDetailMode.View}
+                          />
+                        </ProtectedRoute>
+                      }
+                    />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/e-motorbike/:id/edit"
+                element={
+                  <ProtectedRoute>
+                    <EMotorbikeDetail mode={ProductUnitsDetailMode.Edit} />
+                  </ProtectedRoute>
+                }
+              />
 
-                <Route
-                  path="add"
-                  element={
-                    <ProtectedRoute>
-                      <EMotorbikeDetail mode={ProductUnitsDetailMode.Add} />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path=":id/view"
-                  element={
-                    <ProtectedRoute>
-                      <Route
-                        path="/e-motorbike/:id/view"
-                        element={
-                          <ProtectedRoute>
-                            <EMotorbikeDetail
-                              mode={ProductUnitsDetailMode.View}
-                            />
-                          </ProtectedRoute>
-                        }
-                      />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path=":id/edit"
-                  element={
-                    <ProtectedRoute>
-                      <EMotorbikeDetail mode={ProductUnitsDetailMode.Edit} />
-                    </ProtectedRoute>
-                  }
-                />
-              </Route>
               <Route path="/:404" element={<Page404 />} />
             </Routes>
           </Suspense>
