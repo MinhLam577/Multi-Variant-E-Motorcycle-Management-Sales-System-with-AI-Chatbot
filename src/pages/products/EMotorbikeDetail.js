@@ -34,6 +34,7 @@ import UploadSinglePictureGetUrl, {
   UploadSinglePictureGetUrlRemoteMode,
 } from "../../containers/UploadSinglePictureGetUrl";
 import WarehouseTable from "./components/WarehouseTable";
+import UnitTable from "./components/UnitTable";
 
 export const ProductsDetailMode = {
   View: 1,
@@ -582,125 +583,7 @@ const EMotorbikeDetail = ({ mode }) => {
                     </Radio.Group>
                   </Col>
                   <Col span={24}>
-                    <Form.List name="properties">
-                      {(fields, { add, remove }) => (
-                        <>
-                          {fields.map(({ key, name, ...restField }) => (
-                            <Row
-                              key={key}
-                              gutter={[16, 16]}
-                              align="middle"
-                              className="items-start pb-4"
-                            >
-                              <Col span={10}>
-                                <Form.Item
-                                  label="Thuộc tính"
-                                  {...restField}
-                                  name={[name, "unit"]}
-                                  rules={[
-                                    {
-                                      required: false,
-                                    },
-                                  ]}
-                                >
-                                  <Select placeholder="Chọn thuộc tính">
-                                    <Select.Option value="kích thước">
-                                      Kích thước
-                                    </Select.Option>
-                                    <Select.Option value="màu sắc">
-                                      Màu sắc
-                                    </Select.Option>
-                                    <Select.Option value="tiêu đề">
-                                      Tiêu đề
-                                    </Select.Option>
-                                    <Select.Option value="vật liệu">
-                                      Vật liệu
-                                    </Select.Option>
-                                    <Select.Option value="kiểu dáng">
-                                      Kiểu dáng
-                                    </Select.Option>
-                                  </Select>
-                                </Form.Item>
-                              </Col>
-
-                              <Col span={10}>
-                                {/* value child list */}
-                                <Form.Item
-                                  label="Giá trị"
-                                  // {...restField}
-                                  // name={[name, "value"]}
-                                >
-                                  <Form.List name={[key, "list"]}>
-                                    {(subFields, subOpt) => (
-                                      <div
-                                        style={{
-                                          display: "flex",
-                                          flexDirection: "column",
-                                          rowGap: 16,
-                                        }}
-                                      >
-                                        <Input placeholder="Thêm giá trị mới" />
-
-                                        {subFields.map((subField) => (
-                                          <Space key={subField.key}>
-                                            <Form.Item
-                                              noStyle
-                                              name={[subField.name, "first"]}
-                                            >
-                                              <Input placeholder="Thêm giá trị mới" />
-                                            </Form.Item>
-
-                                            <CloseOutlined
-                                              onClick={() => {
-                                                subOpt.remove(subField.name);
-                                              }}
-                                            />
-                                          </Space>
-                                        ))}
-                                        <Button
-                                          type="dashed"
-                                          onClick={() => subOpt.add()}
-                                          block
-                                        >
-                                          + Thêm giá trị mới
-                                        </Button>
-                                      </div>
-                                    )}
-                                  </Form.List>
-                                </Form.Item>
-                                <Button
-                                  type="primary"
-                                  onClick={() => {
-                                    // console.log("subOpt", subOpt);
-                                  }}
-                                >
-                                  Xong
-                                </Button>
-                              </Col>
-
-                              <Col span={4} className="flex">
-                                <MinusCircleOutlined
-                                  onClick={() => remove(name)}
-                                />
-                              </Col>
-                              {fields.length > 1 && (
-                                <Divider type="horizontal" className="m-0" />
-                              )}
-                            </Row>
-                          ))}
-                          <Form.Item>
-                            <Button
-                              type="dashed"
-                              onClick={() => add()}
-                              block
-                              icon={<PlusOutlined />}
-                            >
-                              Thêm thuộc tính khác
-                            </Button>
-                          </Form.Item>
-                        </>
-                      )}
-                    </Form.List>
+                    <UnitTable form={form} />
                   </Col>
                 </Row>
               </Card>
