@@ -15,21 +15,24 @@ const GroupActionButton = ({
 }) => {
   console.log("itemitem", item);
   return (
-    <div className="flex gap-x-3 justify-between">
+    <div className="flex gap-x-3 ">
       <Button
         onClick={() => handleEditProducts(item)}
         icon={<EditOutlined title="Chỉnh sửa" />}
+        style={{ minWidth: "30px" }}
       />
 
       <Button
         icon={item.status ? <EyeOutlined /> : <EyeInvisibleOutlined />}
         title={item.status ? "Hiển thị" : "Ẩn"}
         onClick={() => handleStatusProducts(item, !item.status)}
+        style={{ minWidth: "30px" }}
       />
       <Button
         icon={<DeleteOutlined />}
         title="Xóa"
         onClick={() => handleDeleteProducts(item.id)}
+        style={{ minWidth: "30px" }}
       />
     </div>
   );

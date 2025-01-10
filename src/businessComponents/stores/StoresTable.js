@@ -1,4 +1,9 @@
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  EyeInvisibleOutlined,
+  EyeOutlined,
+} from "@ant-design/icons";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { Button, Tag, message } from "antd";
 import * as moment from "moment";
@@ -10,6 +15,7 @@ import {
 } from "../../containers/processWithModals";
 import TableComponent from "../../containers/TableComponent";
 import { GET_STORES_LIST, REMOVE_STORE } from "../../graphql/stores";
+import GroupActionButton from "../../components/GroupActionButton";
 
 const getColumnsConfig = ({
   handleUpdateStores,
@@ -81,20 +87,7 @@ const getColumnsConfig = ({
       dataIndex: "action",
       key: "action",
       render: (_value, item) => {
-        return (
-          <>
-            <EditOutlined
-              className="ml-1"
-              title="Chỉnh sửa"
-              onClick={() => handleUpdateStores(item)}
-            />
-            <DeleteOutlined
-              className="ml-1"
-              title="Xóa"
-              onClick={() => hanleDeleteStore(item.storeId)}
-            />
-          </>
-        );
+        return <GroupActionButton item={item} />;
       },
       width: 100,
     },
@@ -107,13 +100,7 @@ const StoresTable = ({
   handleViewStores,
 }) => {
   const loading = false;
-  const [removeStore] = useMutation(REMOVE_STORE, {
-    // onCompleted: (res) => {
-    //   if (res?.removeStore?.status) {
-    //     message.success("Xóa cửa hàng thành công!");
-    //   }
-    // },
-  });
+  const [removeStore] = useMutation(REMOVE_STORE, {});
 
   const hanleDeleteStore = (id) => {
     processWithModals(ProcessModalName.ConfirmCustomContent)(
@@ -132,22 +119,22 @@ const StoresTable = ({
         loadData={() => {}}
         data={[
           {
-            storeName: "Store 1",
-            address: "123 Main St",
+            storeName: "Cửa hàng 1",
+            address: "123 Phố Chính",
             phone: "123-456-7890",
-            status: "Active",
+            status: "Hoạt động",
           },
           {
-            storeName: "Store 2",
-            address: "456 Elm St",
+            storeName: "Cửa hàng 2",
+            address: "456 Phố Tùng",
             phone: "987-654-3210",
-            status: "Inactive",
+            status: "Không hoạt động",
           },
           {
-            storeName: "Store 3",
-            address: "789 Oak St",
+            storeName: "Cửa hàng 3",
+            address: "789 Phố Sồi",
             phone: "555-123-4567",
-            status: "Active",
+            status: "Hoạt động",
           },
         ]}
         handleUpdateStores={handleUpdateStores}

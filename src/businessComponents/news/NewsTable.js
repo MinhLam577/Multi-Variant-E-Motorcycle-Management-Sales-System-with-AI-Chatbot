@@ -20,6 +20,7 @@ import {
 } from "../../containers/processWithModals";
 import PropTypes from "prop-types";
 import TableComponent from "../../containers/TableComponent";
+import GroupActionButton from "../../components/GroupActionButton";
 
 // Fake newsList data
 const newsList = [
@@ -85,36 +86,9 @@ const getColumnsConfig = ({
       dataIndex: "action",
       key: "action",
       render: (_value, item) => {
-        return (
-          <>
-            <EditOutlined
-              className="ml-1"
-              title="Chỉnh sửa"
-              onClick={() => handleUpdateNews(item)}
-            />
-            {item?.status === Status.InActive && (
-              <EyeOutlined
-                className="ml-1"
-                title="Đăng lên"
-                onClick={() => hanleActivateNews(item.newsId)}
-              />
-            )}
-            {item?.status === Status.Active && (
-              <EyeInvisibleOutlined
-                className="ml-1"
-                title="Gỡ xuống"
-                onClick={() => hanleDeactivateNews(item.newsId)}
-              />
-            )}
-            <DeleteOutlined
-              className="ml-1"
-              title="Xóa"
-              onClick={() => hanleDeleteNews(item.newsId)}
-            />
-          </>
-        );
+        return <GroupActionButton item={item} />;
       },
-      width: 100,
+      width: 140,
     },
   ];
 };

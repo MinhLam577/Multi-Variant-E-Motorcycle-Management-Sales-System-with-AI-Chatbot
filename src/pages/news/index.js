@@ -54,12 +54,6 @@ const News = () => {
           />
         </Col>
       </Row>
-
-      <NewsTable
-        globalFilters={globalFilters}
-        handleUpdateNews={handleEditNews}
-        handleViewNews={handleViewNews}
-      />
     </>
   );
 };

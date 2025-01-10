@@ -21,8 +21,8 @@ const WareHouses = () => {
 
   useEffect(() => {
     const getCategories = async () => {
-      const data = await fetchCategories();
-      setData(data);
+      // const data = await fetchCategories();
+      // setData(data);
     };
     getCategories();
   }, []);

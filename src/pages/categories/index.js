@@ -1,14 +1,14 @@
-import { Button, message, Space } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
+import { Button, message, Space } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { GlobalContext } from "../../contexts/global";
-import CategoriesTable from "../../businessComponents/categories/CategoriesTable";
 import { fetchCategories } from "../../api/cars";
+import CategoriesTable from "../../businessComponents/categories/CategoriesTable";
 import {
   ProcessModalName,
   processWithModals,
 } from "../../containers/processWithModals";
+import { GlobalContext } from "../../contexts/global";
 
 const Categories = () => {
   const navigate = useNavigate();
@@ -55,8 +55,6 @@ const Categories = () => {
   const removeCategory = (id) => {
     message.success("Xóa danh mục thành công!", id);
   };
-
-  console.log("datadatadatadata", data);
 
   return (
     <>
