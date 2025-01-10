@@ -24,7 +24,6 @@ const Stores = () => {
   };
 
   const handleViewStores = (storesData) => {
-    console.log(storesData);
     globalDispatch({
       type: "breadcrum",
       data: storesData.storesName,
@@ -34,11 +33,21 @@ const Stores = () => {
 
   return (
     <>
-      <StoresSearch setFilters={setGlobalFilters} />
-      <Button type="primary" icon={<PlusOutlined />} onClick={handleAddStores}>
-        Tạo mới
-      </Button>
+      <div className="w-full">
+        <StoresSearch setFilters={setGlobalFilters} />
+      </div>
+      <div className="flex justify-end mb-4">
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={handleAddStores}
+        >
+          Tạo mới
+        </Button>
+      </div>
+
       <StoresTable
+        data={[]}
         globalFilters={globalFilters}
         handleUpdateStores={handleEditStores}
         handleViewStores={handleViewStores}

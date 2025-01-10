@@ -56,10 +56,12 @@ const Categories = () => {
     message.success("Xóa danh mục thành công!", id);
   };
 
+  console.log("datadatadatadata", data);
+
   return (
     <>
       <div className="w-full flex justify-between">
-        <Space className="my-4 flex flex-row justify-end">
+        <Space className="mb-4 flex flex-row justify-end">
           <Button
             type="primary"
             icon={<PlusOutlined />}

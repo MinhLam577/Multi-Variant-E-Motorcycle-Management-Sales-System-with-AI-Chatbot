@@ -1,10 +1,10 @@
-import { Button, Space } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import { Button, Col, Row } from "antd";
 import { useContext, useState } from "react";
-import { GlobalContext } from "../../contexts/global";
+import { useNavigate } from "react-router-dom";
 import NewsSearch from "../../businessComponents/news/NewsSearch";
 import NewsTable from "../../businessComponents/news/NewsTable";
+import { GlobalContext } from "../../contexts/global";
 
 const News = () => {
   const navigate = useNavigate();
@@ -12,29 +12,49 @@ const News = () => {
   const { globalDispatch } = useContext(GlobalContext);
 
   const handleAddNews = () => {
-    navigate('/news/add', { replace: true });
+    navigate("/news/add", { replace: true });
   };
 
   const handleEditNews = (newsData) => {
     globalDispatch({
-      type: 'breadcrum',
-      data: newsData.title
+      type: "breadcrum",
+      data: newsData.title,
     });
     navigate(`/news/${newsData.newsId}/edit`, { replace: true });
   };
 
   const handleViewNews = (newsData) => {
     globalDispatch({
-      type: 'breadcrum',
-      data: newsData.title
+      type: "breadcrum",
+      data: newsData.title,
     });
     navigate(`/news/${newsData.newsId}`, { replace: true });
   };
 
   return (
     <>
-      <NewsSearch setFilters={setGlobalFilters}/>
-      <Button type="primary" icon={<PlusOutlined />} onClick={handleAddNews}>Tạo mới</Button>
+      <Row gutter={[16, 0]}>
+        <Col span={24}>
+          <NewsSearch setFilters={setGlobalFilters} />
+        </Col>
+        <Col span={24} className="flex justify-end">
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={handleAddNews}
+          >
+            Tạo mới
+          </Button>
+        </Col>
+        <Col span={24}>
+          <NewsTable
+            globalFilters={globalFilters}
+            handleUpdateNews={handleEditNews}
+            handleViewNews={handleViewNews}
+          />
+        </Col>
+      </Row>
+
       <NewsTable
         globalFilters={globalFilters}
         handleUpdateNews={handleEditNews}

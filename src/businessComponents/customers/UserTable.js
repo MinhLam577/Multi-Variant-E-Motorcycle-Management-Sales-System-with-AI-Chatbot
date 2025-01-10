@@ -21,7 +21,6 @@ import {
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import TableComponent from "../../containers/TableComponent";
-
 const getColumnsConfig = ({
   handleUpdateUser,
   handleViewUser,
@@ -54,18 +53,45 @@ const getColumnsConfig = ({
       width: "140px",
       ellipsis: true,
     },
-
     {
-      title: "Vai trò",
-      dataIndex: "role",
-      key: "role",
+      title: "Địa chỉ nhận hàng",
+      dataIndex: "address",
+      key: "address",
+      width: "140px",
+      ellipsis: true,
+    },
+    {
+      title: "Đơn gần nhất",
+      dataIndex: "lastOrder",
+      key: "lastOrder",
+      width: "80px",
+      ellipsis: true,
+    },
+    {
+      title: "SL Đơn hàng",
+      dataIndex: "quantity",
+      key: "quantity",
+      width: "80px",
+      ellipsis: true,
+    },
+    {
+      title: "Nợ phải thu",
+      dataIndex: "debt",
+      key: "debt",
+      width: "80px",
+      ellipsis: true,
+    },
+    {
+      title: "Tổng chi tiêu",
+      dataIndex: "totalSpent",
+      key: "totalSpent",
       width: "80px",
       ellipsis: true,
     },
   ];
 };
 
-const UserTable = ({ globalFilters, handleUpdateUser, handleViewUser }) => {
+const CustomerTable = ({ globalFilters, handleUpdateUser, handleViewUser }) => {
   const navigate = useNavigate();
 
   const [resetPassword] = useMutation(RESET_PASSWORD, {
@@ -122,19 +148,22 @@ const UserTable = ({ globalFilters, handleUpdateUser, handleViewUser }) => {
         loadData={() => {}}
         data={[
           {
-            customer: "Nguyễn Văn A",
+            customer: "Khách hàng 1",
             phone: "123456789",
-            role: "Quản lý cửa hàng",
+            address: "Địa chỉ 1",
+            lastOrder: "Đơn gần nhất 1",
+            quantity: 10,
+            debt: 1000000,
+            totalSpent: 5000000,
           },
           {
-            customer: "Nguyễn Văn B",
+            customer: "Khách hàng 2",
             phone: "987654321",
-            role: "Nhân viên",
-          },
-          {
-            customer: "Nguyễn Văn B",
-            phone: "987654321",
-            role: "Kế toán",
+            address: "Địa chỉ 2",
+            lastOrder: "Đơn gần nhất 2",
+            quantity: 20,
+            debt: 2000000,
+            totalSpent: 10000000,
           },
         ]}
         handleResetPassword={handleResetPassword}
@@ -147,9 +176,9 @@ const UserTable = ({ globalFilters, handleUpdateUser, handleViewUser }) => {
     </>
   );
 };
-UserTable.propTypes = {
+CustomerTable.propTypes = {
   globalFilters: PropTypes.object,
   handleUpdateUser: PropTypes.func,
   handleViewUser: PropTypes.func,
 };
-export default UserTable;
+export default CustomerTable;

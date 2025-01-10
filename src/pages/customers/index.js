@@ -1,12 +1,12 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import UserTable from "../../businessComponents/users/UserTable";
+import CustomerSearch from "../../businessComponents/customers/CustomerSearch";
+import CustomerTable from "../../businessComponents/customers/UserTable";
 import { GlobalContext } from "../../contexts/global";
-import UserSearch from "../../businessComponents/users/UserSearch";
 import { Button } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 
-const User = () => {
+const Customer = () => {
   const navigate = useNavigate();
   const [globalFilters, setGlobalFilters] = useState({ searchText: null });
   const { globalDispatch } = useContext(GlobalContext);
@@ -29,13 +29,14 @@ const User = () => {
 
   return (
     <>
-      <UserSearch setFilters={setGlobalFilters} />
+      <CustomerSearch setFilters={setGlobalFilters} />
       <div className="flex justify-end mb-4">
         <Button type="primary" icon={<PlusOutlined />} onClick={() => {}}>
           Tạo mới
         </Button>
       </div>
-      <UserTable
+
+      <CustomerTable
         globalFilters={globalFilters}
         handleUpdateUser={handleEditUser}
         handleViewUser={handleViewUser}
@@ -44,4 +45,4 @@ const User = () => {
   );
 };
 
-export default User;
+export default Customer;

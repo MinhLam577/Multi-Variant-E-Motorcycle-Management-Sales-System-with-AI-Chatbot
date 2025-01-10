@@ -43,6 +43,7 @@ import VoucherDetail from "./pages/vouchers/VoucherDetail";
 import WareHouses from "./pages/warehouses";
 import WareHouseDetail from "./pages/warehouses/WareHouseDetail";
 import { WareHouseDetailMode } from "./constants";
+import Customer from "./pages/customers";
 
 function App() {
   return (
@@ -111,6 +112,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <User />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="customer"
+                element={
+                  <ProtectedRoute>
+                    <Customer />
                   </ProtectedRoute>
                 }
               />

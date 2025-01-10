@@ -49,6 +49,7 @@ const BreadcrumbLabel = {
   statistic: "Quản lý thống kê",
   warehouse: "Kho",
   "e-motorbike": "Xe máy điện",
+  customer: "Quản lý khách hàng",
 };
 
 const AppLayout = (props) => {
@@ -66,9 +67,7 @@ const AppLayout = (props) => {
   //set user role
   const items = [
     getItem("Tổng quan", "1", <ProductOutlined />, null, () => navigate("/")),
-    getItem("Người dùng", "2", <UserOutlined />, null, () =>
-      navigate("/users")
-    ),
+    getItem("Nhân viên", "2", <UserOutlined />, null, () => navigate("/users")),
     getItem("Chi nhánh", "3", <ShopOutlined />, null, () =>
       navigate("/stores")
     ),
@@ -110,6 +109,9 @@ const AppLayout = (props) => {
     ),
     getItem("Thống kê", "18", <BarChartOutlined />, null, () =>
       navigate("/statistic")
+    ),
+    getItem("Khách hàng", "19", <UserOutlined />, null, () =>
+      navigate("/customer")
     ),
   ];
 
@@ -196,6 +198,8 @@ const AppLayout = (props) => {
       return ["17"];
     } else if (path.includes("/statistic")) {
       return ["18"];
+    } else if (path.includes("/customer")) {
+      return ["19"];
     } else {
       return ["1"];
     }

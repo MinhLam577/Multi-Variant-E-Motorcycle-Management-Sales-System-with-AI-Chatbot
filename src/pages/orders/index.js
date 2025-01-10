@@ -9,14 +9,15 @@ import OrderDetail from "./OrderDetail";
 import { GET_ORDERS_LIST } from "../../graphql/orders";
 import ExportOrder from "./ExportOrder";
 
-
 const Orders = () => {
   const location = useLocation();
-  
+
   const [globalFilters, setGlobalFilters] = useState({ searchText: null });
   const [openDrawer, setOpenDrawer] = useState(false);
-  const [orderNo, setOrderNo] = useState('');
-  const [loadData, { data, loading, refetch }] = useLazyQuery(GET_ORDERS_LIST, { fetchPolicy: 'no-cache' });
+  const [orderNo, setOrderNo] = useState("");
+  const [loadData, { data, loading, refetch }] = useLazyQuery(GET_ORDERS_LIST, {
+    fetchPolicy: "no-cache",
+  });
 
   const handleViewOrders = (orderData) => {
     setOrderNo(orderData.orderNo);
@@ -29,50 +30,44 @@ const Orders = () => {
 
   useEffect(() => {
     const search = location.search;
-    if (search.includes('?status=new')) {
-      setGlobalFilters({...globalFilters, status: ['NEW']});
-    }
-    else if (search.includes('?status=confirmed')) {
-      setGlobalFilters({...globalFilters, status: ['CONFIRMED']});
-    }
-    else if (search.includes('?status=delivering')) {
-      setGlobalFilters({...globalFilters, status: ['DELIVERING']});
-    }
-    else if (search.includes('?status=completed')) {
-      setGlobalFilters({...globalFilters, status: ['FAILED', 'DELIVERED', 'CANCELED']});
+    if (search.includes("?status=new")) {
+      setGlobalFilters({ ...globalFilters, status: ["NEW"] });
+    } else if (search.includes("?status=confirmed")) {
+      setGlobalFilters({ ...globalFilters, status: ["CONFIRMED"] });
+    } else if (search.includes("?status=delivering")) {
+      setGlobalFilters({ ...globalFilters, status: ["DELIVERING"] });
+    } else if (search.includes("?status=completed")) {
+      setGlobalFilters({
+        ...globalFilters,
+        status: ["FAILED", "DELIVERED", "CANCELED"],
+      });
     } else {
-      setGlobalFilters({...globalFilters, status: null});
+      setGlobalFilters({ ...globalFilters, status: null });
     }
-  }, [location])
-
+  }, [location]);
 
   return (
     <>
-      <OrderSearch 
+      <OrderSearch
         showStatus={location.search ? false : true}
         setFilters={setGlobalFilters}
       />
-      <ExportOrder 
-        globalFilters={globalFilters}
-      />
+      <ExportOrder globalFilters={globalFilters} />
       <Drawer
         title="Chi tiết đơn hàng"
-        placement={'right'}
+        placement={"right"}
         closable={false}
         onClose={onCloseDrawer}
         open={openDrawer}
-        key={'right'}
-        size={'large'}
+        key={"right"}
+        size={"large"}
       >
-        <OrderDetail 
-          refreshOrders={refetch}
-          orderNo={orderNo}
-        />
+        <OrderDetail refreshOrders={refetch} orderNo={orderNo} />
       </Drawer>
       <OrdersTable
         globalFilters={globalFilters}
         handleViewOrders={handleViewOrders}
-        loadData={loadData}
+        loadData={() => {}}
         data={data}
         loading={loading}
       />
