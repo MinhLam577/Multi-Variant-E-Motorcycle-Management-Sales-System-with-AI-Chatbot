@@ -243,7 +243,7 @@ const AppLayout = (props) => {
             items={[...getBreadcrumbItems(location.pathname)]}
           />
 
-          <div>{children}</div>
+          <div style={{ paddingRight: "16px" }}>{children}</div>
         </Content>
         <Footer
           style={{
