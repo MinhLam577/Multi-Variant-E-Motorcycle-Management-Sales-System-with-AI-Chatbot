@@ -12,6 +12,7 @@ const initValue = {
 export const GlobalContext = createContext(initValue);
 
 const GlobalReducer = (state, { type, data }) => {
+  console.log("GlobalReducer", state);
   switch (type) {
     case "login": {
       if (state && !state.user.userId) {

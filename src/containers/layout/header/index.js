@@ -1,9 +1,13 @@
-import { Avatar, Col, Layout, Menu, Popover, Row, Space, theme } from 'antd';
-import { LogoutOutlined, ProfileOutlined, UserOutlined } from '@ant-design/icons';
-import { useContext, useState } from 'react';
-import { GlobalContext } from '../../../contexts/global';
-import { useNavigate } from 'react-router-dom';
-import { processWithModals, ProcessModalName } from '../../processWithModals';
+import { Avatar, Col, Layout, Menu, Popover, Row, Space, theme } from "antd";
+import {
+  LogoutOutlined,
+  ProfileOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import { useContext, useState } from "react";
+import { GlobalContext } from "../../../contexts/global";
+import { useNavigate } from "react-router-dom";
+import { processWithModals, ProcessModalName } from "../../processWithModals";
 const { Header } = Layout;
 
 const HeaderComponent = () => {
@@ -16,9 +20,9 @@ const HeaderComponent = () => {
 
   const handleLogout = () => {
     globalDispatch({
-      type: 'logout',
+      type: "logout",
     });
-    navigate('/login');
+    navigate("/login");
   };
 
   const getMenuPopupTitle = () => {
@@ -26,27 +30,42 @@ const HeaderComponent = () => {
   };
 
   const getMenuPopupContent = () => {
-    return <Menu
-      selectedKeys={null}
-      items={[{
-        key: 0,
-        label: <Space><ProfileOutlined />&nbsp;Thông tin tài khoản</Space>,
-        title: 'Thông tin tài khoản',
-        onClick: () => {
-          navigate('/profile');
-        }
-      }, {
-        key: 1,
-        label: <Space><LogoutOutlined />&nbsp;Đăng xuất</Space>,
-        title: 'Đăng xuất',
-        onClick: () => {
-          processWithModals(ProcessModalName.ConfirmLogout)(handleLogout);
-        }
-      }]}
-      onClick={() => {
-        setOpenMenuPopup(false);
-      }}
-    />;
+    return (
+      <Menu
+        selectedKeys={null}
+        items={[
+          {
+            key: 0,
+            label: (
+              <Space>
+                <ProfileOutlined />
+                &nbsp;Thông tin tài khoản
+              </Space>
+            ),
+            title: "Thông tin tài khoản",
+            onClick: () => {
+              navigate("/profile");
+            },
+          },
+          {
+            key: 1,
+            label: (
+              <Space>
+                <LogoutOutlined />
+                &nbsp;Đăng xuất
+              </Space>
+            ),
+            title: "Đăng xuất",
+            onClick: () => {
+              processWithModals(ProcessModalName.ConfirmLogout)(handleLogout);
+            },
+          },
+        ]}
+        onClick={() => {
+          setOpenMenuPopup(false);
+        }}
+      />
+    );
   };
 
   return (
@@ -54,18 +73,26 @@ const HeaderComponent = () => {
       style={{
         background: colorBgContainer,
       }}
-      className='px-2'
+      className="px-2 pr-8"
     >
       <Row justify="end">
         <Col>
-          <Popover placement="bottomLeft"
+          <Popover
+            placement="bottomLeft"
             open={openMenuPopup}
-            onOpenChange={open => setOpenMenuPopup(open)}
+            onOpenChange={(open) => setOpenMenuPopup(open)}
             title={getMenuPopupTitle()}
-            content={getMenuPopupContent()} trigger="click">
-            <Space direction="horizontal" align='start' size={16}>
+            content={getMenuPopupContent()}
+            trigger="click"
+          >
+            <Space direction="horizontal" align="start" size={16}>
               <Space wrap size={16}>
-                <Avatar className="border border-gray-300 cursor-pointer" size={42} src={user?.avatar} icon={<UserOutlined />} />
+                <Avatar
+                  className="border border-gray-300 cursor-pointer"
+                  size={42}
+                  src={user?.avatar}
+                  icon={<UserOutlined />}
+                />
               </Space>
             </Space>
           </Popover>

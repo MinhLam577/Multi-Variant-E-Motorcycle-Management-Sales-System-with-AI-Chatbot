@@ -1,55 +1,14 @@
+import { Button, Form, Image, Input, message, Modal, Typography } from "antd";
 import { memo, useEffect, useState } from "react";
-import { Button, Form, Input, Typography, message, Modal } from "antd";
 import { useNavigate } from "react-router-dom";
 // import logo from '../images/logo.png';
 import queryString from "query-string";
-import { UserRoleConstant } from "../constants";
-import { useMutation } from "@apollo/client";
-import { FORGOT_PASSWORD, LOGIN } from "../graphql/users";
-import Logo from "../components/Logo";
+import { loginRequest } from "../api/auth";
+import { regexEmail } from "../utils/regex";
 
 const Login = memo(() => {
-  const [login] = useMutation(LOGIN, {
-    onCompleted: (res) => {
-      if (res && res.authenticate?.data?.accessToken) {
-        const redirect = queryString.parse(window.location.search, {
-          ignoreQueryPrefix: true,
-        }).redirect;
+  const [isLoading, setIsLoading] = useState(false);
 
-        window.location.href = redirect || window.location.origin;
-
-        return;
-        // if (
-        //   res.authenticate.data.role === UserRoleConstant.ADMIN ||
-        //   res.authenticate.data.role === UserRoleConstant.SALES
-        // ) {
-        //   localStorage.setItem("token", res.authenticate.data?.accessToken);
-        //   localStorage.setItem(
-        //     "user",
-        //     JSON.stringify({
-        //       email: res.authenticate.data?.email,
-        //       fullname: res.authenticate.data?.fullname,
-        //       userId: res.authenticate.data?.userId,
-        //       role: res.authenticate.data?.role,
-        //       avatar: res.authenticate.data?.avatar,
-        //       userCode: res.authenticate.data?.userCode,
-        //     })
-        //   );
-        //   message.success("Đăng nhập thành công!");
-        //   window.location.href = redirect || window.location.origin;
-        // }
-      }
-    },
-  });
-  const [forgotPassword] = useMutation(FORGOT_PASSWORD, {
-    onCompleted: (response) => {
-      if (response) {
-        Modal.success({
-          title: "Một email đã được gửi tới, hãy kiểm tra hòm thư của bạn! ",
-        });
-      }
-    },
-  });
   const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
   const navigate = useNavigate();
   const [form] = Form.useForm();
@@ -61,36 +20,38 @@ const Login = memo(() => {
     }
   }, []);
 
-  const formSubmit = (values) => {
-    localStorage.setItem(
-      "token",
-      Math.random().toString(36).substring(2, 15) +
-        Math.random().toString(36).substring(2, 15)
-    );
-    localStorage.setItem(
-      "user",
-      JSON.stringify({
-        email: "example@example.com",
-        fullname: "John Doe",
-        userId: "12345",
-        role: "guest",
-        avatar: "",
-        userCode: "default",
-      })
-    );
+  const formSubmit = async (values) => {
+    if (!regexEmail.test(values.email)) {
+      message.error("Email không hợp lệ!");
+      return;
+    }
+    setIsLoading(true);
+    try {
+      const resLogin = await loginRequest({
+        email: values?.email,
+        password: values?.password,
+      });
+      if (resLogin && resLogin?.access_token) {
+        localStorage.setItem("token", resLogin.access_token);
+        localStorage.setItem("user", JSON.stringify(resLogin));
 
-    // // navigate("/");
-    // const redirect = queryString.parse(window.location.search, {
-    //   ignoreQueryPrefix: true,
-    // }).redirect;
-    // window.location.href = redirect || window.location.origin;
-
-    navigate("/");
+        const redirect = queryString.parse(window.location.search, {
+          ignoreQueryPrefix: true,
+        }).redirect;
+        window.location.href = redirect || window.location.origin;
+        navigate("/");
+      }
+      setIsLoading(false);
+    } catch (error) {
+      console.log("error", error);
+      message.error("Đăng nhập thất bại!", error);
+      setIsLoading(false);
+    }
   };
 
   const onFinishForgotPassword = (values) => {
     if (values?.email) {
-      forgotPassword({ variables: { email: values.email } });
+      // forgotPassword({ variables: { email: values.email } });
       return;
     }
     message.error("Nhập thiếu thông tin!");
@@ -108,11 +69,11 @@ const Login = memo(() => {
   };
 
   return (
-    <div className="w-full flex justify-center items-center mt-40">
+    <div className="w-full flex justify-center items-center ">
       <div className="header"></div>
       <div className="w-1/2 md:w-4/12 flex justify-center flex-col">
         <div className="w-full flex justify-center flex-col items-center">
-          <Logo handleClick={() => {}} bgColor="#FFFFFF" />
+          <Image src="/logo192.png" alt="logo" width={200} height={200} />
           <h4 className="font-bold text-lg">Đăng nhập vào tài khoản của bạn</h4>
         </div>
         <div className="content">
@@ -123,8 +84,8 @@ const Login = memo(() => {
             layout={"vertical"}
             initialValues={{
               remember: true,
-              email: "adminotohongson",
-              password: "hognson2024",
+              email: "tuananhnguyen.se@gmail.com",
+              password: ".Hongs2on@2025",
             }}
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}
@@ -146,7 +107,10 @@ const Login = memo(() => {
               <Input.Password placeholder="Nhập mật khẩu" />
             </Form.Item>
 
-            <Form.Item name="sfsdfsd" wrapperCol={{ offset: 0, span: 16 }}>
+            <Form.Item
+              name="forgotPassword"
+              wrapperCol={{ offset: 0, span: 16 }}
+            >
               <Typography.Paragraph
                 style={{ color: "blue", cursor: "pointer" }}
                 onClick={() => {
@@ -158,7 +122,7 @@ const Login = memo(() => {
             </Form.Item>
 
             <Form.Item wrapperCol={{ offset: 10, span: 16 }}>
-              <Button type="primary" htmlType="submit">
+              <Button type="primary" htmlType="submit" loading={isLoading}>
                 Đăng Nhập
               </Button>
             </Form.Item>
@@ -166,7 +130,7 @@ const Login = memo(() => {
         </div>
       </div>
       <Modal
-        title="Forgot password?"
+        title="Quên mật khẩu?"
         open={showForgotPasswordModal}
         onOk={() => {
           form.submit();

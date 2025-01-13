@@ -8,20 +8,21 @@ import PropTypes from "prop-types";
 const ProtectedRoute = ({ children }) => {
   const auth = useContext(GlobalContext);
 
-  // const { token, user } = auth;
-  // if (!token) {
-  //   return <Navigate to="/login" replace />;
-  // }
-  // if (!user) {
-  //   return <Navigate to="/login" replace />;
-  // }
+  const { token, user } = auth;
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
 
-  // if (
-  //   user?.role !== UserRoleConstant.ADMIN &&
-  //   user?.role !== UserRoleConstant.SALES
-  // ) {
-  //   return <Navigate to="/Forbidden" replace />;
-  // }
+  if (
+    user?.role !== UserRoleConstant.ADMIN &&
+    user?.role !== UserRoleConstant.SALES &&
+    user?.role !== UserRoleConstant.USER
+  ) {
+    return <Navigate to="/Forbidden" replace />;
+  }
 
   return <AppLayout>{children}</AppLayout>;
 };

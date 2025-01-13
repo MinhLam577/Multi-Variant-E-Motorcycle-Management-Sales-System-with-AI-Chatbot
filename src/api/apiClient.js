@@ -1,12 +1,13 @@
 import axios from "axios";
 import { transform } from "lodash";
 import { Router } from "react-router-dom";
+import Account from "../stores/account";
 
 let isRefreshToken = false;
 let pendingRequests = [];
 
 const apiClient = axios.create({
-  baseURL: "https://hs.api.openverse.tech/api/v1",
+  baseURL: process.env.REACT_APP_API_BASE_URL,
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
@@ -14,7 +15,9 @@ const apiClient = axios.create({
 });
 apiClient.interceptors.request.use(
   async (config) => {
-    // let account = await new accountStore().getAccount();
+    let account = await new Account().getAccount();
+
+    console.log("accountaccountaccount", account);
     const headers = config.headers || {};
     // let authorization = headers.Authorization;
     // if (_.isEmpty(authorization)) {
@@ -51,7 +54,6 @@ const handleError = async (error) => {
     return handleRefresh401(respData);
   }
 
-  console.log("respStatusrespStatus", error?.response?.data);
   switch (respStatus) {
     case 301:
       console.log("Request Moved Permanently");

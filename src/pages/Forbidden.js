@@ -9,16 +9,17 @@ const Forbidden = () => {
 
   const handleLogout = () => {
     globalDispatch({
-      type: 'logout',
+      type: "logout",
     });
-    navigate('/login');
+    navigate("/login");
   };
 
-
-  return <div>
-    Forbidden
-    <Button onClick={()=>handleLogout()}>Logout</Button>
-  </div>;
+  return (
+    <div>
+      Forbidden
+      <Button onClick={() => handleLogout()}>Logout</Button>
+    </div>
+  );
 };
 
 Forbidden.propTypes = {};
