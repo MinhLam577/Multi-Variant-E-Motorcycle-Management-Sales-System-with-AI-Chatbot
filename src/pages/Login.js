@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import queryString from "query-string";
 import { loginRequest } from "../api/auth";
 import { regexEmail } from "../utils/regex";
+import BaseAPI from "../api/baseAPI";
 
 const Login = memo(() => {
   const [isLoading, setIsLoading] = useState(false);
@@ -27,7 +28,7 @@ const Login = memo(() => {
     }
     setIsLoading(true);
     try {
-      const resLogin = await loginRequest({
+      const resLogin = await BaseAPI.login({
         email: values?.email,
         password: values?.password,
       });
