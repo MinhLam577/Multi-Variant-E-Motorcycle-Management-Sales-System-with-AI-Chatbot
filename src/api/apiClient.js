@@ -6,7 +6,7 @@ let isRefreshToken = false;
 let pendingRequests = [];
 
 const apiClient = axios.create({
-  baseURL: "http://13.212.181.1:8080/api/v1",
+  baseURL: "https://hs.api.openverse.tech/api/v1",
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
