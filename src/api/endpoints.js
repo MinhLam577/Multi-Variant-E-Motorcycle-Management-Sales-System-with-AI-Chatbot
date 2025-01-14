@@ -3,6 +3,7 @@ const endpoints = {
     login: "/auth/login",
     logout: "/auth/logout",
     refreshToken: "/auth/refresh-token",
+    forgotPassword: "/auth/forgot-password",
   },
   cars: {
     list: (page, size) => `/products?current=${page}&pageSize=${size}`,

@@ -8,7 +8,6 @@ import ProtectedRoute from "./containers/ProtectedRoute";
 import GlobalProvider from "./contexts/global";
 import Page404 from "./pages/404";
 import Forbidden from "./pages/Forbidden";
-import Login from "./pages/Login";
 import Policy from "./pages/Policy";
 import Profile from "./pages/Profile";
 import Categories from "./pages/categories";
@@ -45,6 +44,7 @@ import VoucherDetail from "./pages/vouchers/VoucherDetail";
 import WareHouses from "./pages/warehouses";
 import WareHouseDetail from "./pages/warehouses/WareHouseDetail";
 import { StoreProvider } from "./stores";
+import Login from "./pages/login";
 
 function App() {
   return (

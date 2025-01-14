@@ -1,74 +1,14 @@
-import { Button, Form, Image, Input, message, Modal, Typography } from "antd";
-import { memo, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-// import logo from '../images/logo.png';
-import queryString from "query-string";
-import { loginRequest } from "../api/auth";
-import { regexEmail } from "../utils/regex";
-import BaseAPI from "../api/baseAPI";
-
-const Login = memo(() => {
-  const [isLoading, setIsLoading] = useState(false);
-
-  const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
-  const navigate = useNavigate();
-  const [form] = Form.useForm();
-
-  useEffect(() => {
-    if (localStorage.getItem("token")) {
-      navigate("/statistic");
-      return;
-    }
-  }, []);
-
-  const formSubmit = async (values) => {
-    if (!regexEmail.test(values.email)) {
-      message.error("Email không hợp lệ!");
-      return;
-    }
-    setIsLoading(true);
-    try {
-      const resLogin = await BaseAPI.login({
-        email: values?.email,
-        password: values?.password,
-      });
-      if (resLogin && resLogin?.access_token) {
-        localStorage.setItem("token", resLogin.access_token);
-        localStorage.setItem("user", JSON.stringify(resLogin));
-
-        const redirect = queryString.parse(window.location.search, {
-          ignoreQueryPrefix: true,
-        }).redirect;
-        window.location.href = redirect || window.location.origin;
-        navigate("/");
-      }
-      setIsLoading(false);
-    } catch (error) {
-      console.log("error", error);
-      message.error("Đăng nhập thất bại!", error);
-      setIsLoading(false);
-    }
-  };
-
-  const onFinishForgotPassword = (values) => {
-    if (values?.email) {
-      // forgotPassword({ variables: { email: values.email } });
-      return;
-    }
-    message.error("Nhập thiếu thông tin!");
-  };
-
-  const onFinish = (values) => {
-    formSubmit({
-      ...values,
-      email: values?.email.trim(),
-    });
-  };
-
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
-  };
-
+import { Button, Form, Image, Input, Modal, Typography } from "antd";
+import PropTypes from "prop-types";
+const LoginScreen = ({
+  onFinish,
+  onFinishFailed,
+  isLoading,
+  showForgotPasswordModal,
+  setShowForgotPasswordModal,
+  onFinishForgotPassword,
+  form,
+}) => {
   return (
     <div className="w-full flex justify-center items-center ">
       <div className="header"></div>
@@ -86,7 +26,7 @@ const Login = memo(() => {
             initialValues={{
               remember: true,
               email: "tuananhnguyen.se@gmail.com",
-              password: ".Hongs2on@2025",
+              password: ".Hongson@2025",
             }}
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}
@@ -163,7 +103,15 @@ const Login = memo(() => {
       </Modal>
     </div>
   );
-});
+};
 
-Login.displayName = "Login";
-export default Login;
+LoginScreen.propTypes = {
+  onFinish: PropTypes.func,
+  onFinishFailed: PropTypes.func,
+  isLoading: PropTypes.bool,
+  showForgotPasswordModal: PropTypes.bool,
+  setShowForgotPasswordModal: PropTypes.func,
+  onFinishForgotPassword: PropTypes.func,
+  form: PropTypes.object,
+};
+export default LoginScreen;

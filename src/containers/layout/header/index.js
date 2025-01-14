@@ -8,10 +8,12 @@ import { useContext, useState } from "react";
 import { GlobalContext } from "../../../contexts/global";
 import { useNavigate } from "react-router-dom";
 import { processWithModals, ProcessModalName } from "../../processWithModals";
+import { useStore } from "../../../stores";
 const { Header } = Layout;
 
 const HeaderComponent = () => {
   const navigate = useNavigate();
+  const { accountObservable } = useStore();
   const { user, globalDispatch } = useContext(GlobalContext);
   const {
     token: { colorBgContainer },
@@ -19,10 +21,11 @@ const HeaderComponent = () => {
   const [openMenuPopup, setOpenMenuPopup] = useState(false);
 
   const handleLogout = () => {
-    globalDispatch({
-      type: "logout",
-    });
-    navigate("/login");
+    accountObservable.clearAccount();
+    // globalDispatch({
+    //   type: "logout",
+    // });
+    // navigate("/login");
   };
 
   const getMenuPopupTitle = () => {

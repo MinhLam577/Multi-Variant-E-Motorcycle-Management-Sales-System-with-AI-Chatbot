@@ -1,0 +1,96 @@
+import { Form, message } from "antd";
+import { reaction } from "mobx";
+import { observer } from "mobx-react-lite";
+import queryString from "query-string";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useStore } from "../../stores";
+import { regexEmail } from "../../utils/regex";
+import LoginScreen from "./LoginScreen";
+
+const Login = () => {
+  const { loginObservable } = useStore();
+  const [isLoading, setIsLoading] = useState(false);
+  const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
+  const navigate = useNavigate();
+  const [form] = Form.useForm();
+
+  useEffect(() => {
+    return reaction(
+      () => loginObservable.status,
+      (status, prevStatus) => {
+        handleLoginEvents(prevStatus, status);
+      }
+    );
+  }, []);
+
+  const handleLoginEvents = (prevStatus, status) => {
+    if (prevStatus === "submitting") {
+      setIsLoading(false);
+    }
+    switch (status) {
+      case "submitting": {
+        setIsLoading(true);
+        break;
+      }
+
+      case "loginSuccess": {
+        // const redirect = queryString.parse(window.location.search, {
+        //   ignoreQueryPrefix: true,
+        // }).redirect;
+        // window.location.href = redirect || window.location.origin;
+        navigate("/");
+        break;
+      }
+      case "loginFailed": {
+        message.error(loginObservable.errorMsg);
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+  };
+
+  const formSubmit = (values) => {
+    if (!regexEmail.test(values.email)) {
+      message.error("Email không hợp lệ!");
+      return;
+    }
+
+    loginObservable.login(values?.email, values?.password);
+  };
+
+  const onFinishForgotPassword = (values) => {
+    if (values?.email) {
+      // forgotPassword({ variables: { email: values.email } });
+      return;
+    }
+    message.error("Nhập thiếu thông tin!");
+  };
+
+  const onFinish = (values) => {
+    formSubmit({
+      ...values,
+      email: values?.email.trim(),
+    });
+  };
+
+  const onFinishFailed = (errorInfo) => {
+    console.log("Failed:", errorInfo);
+  };
+
+  return (
+    <LoginScreen
+      onFinish={onFinish}
+      onFinishFailed={onFinishFailed}
+      isLoading={isLoading}
+      onFinishForgotPassword={onFinishForgotPassword}
+      showForgotPasswordModal={showForgotPasswordModal}
+      setShowForgotPasswordModal={() => setShowForgotPasswordModal(true)}
+      form={form}
+    />
+  );
+};
+
+export default observer(Login);

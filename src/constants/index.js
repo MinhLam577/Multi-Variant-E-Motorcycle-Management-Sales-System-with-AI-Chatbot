@@ -4,6 +4,7 @@ export const Language = {
   english: "en",
   vietnamese: "vi",
 };
+export const keyStorageAccount = "account";
 export const ColorList = ["#f56a00", "#7265e6", "#ffbf00", "#00a2ae"];
 export const UserRoleConstant = {
   ADMIN: "admin",

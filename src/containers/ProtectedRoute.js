@@ -1,15 +1,21 @@
-import AppLayout from "./layout";
+import PropTypes from "prop-types";
 import { useContext } from "react";
 import { Navigate } from "react-router-dom";
-import { GlobalContext } from "../contexts/global";
 import { UserRoleConstant } from "../constants";
-import PropTypes from "prop-types";
+import { GlobalContext } from "../contexts/global";
+import AppLayout from "./layout";
+import Loading from "./Loading";
 
 const ProtectedRoute = ({ children }) => {
   const auth = useContext(GlobalContext);
+  const { isAuthenticated, user, isInitialized } = auth;
 
-  const { token, user } = auth;
-  if (!token) {
+  console.log("ProtectedRoute-auth", auth);
+
+  if (isInitialized) {
+    return <Loading />;
+  }
+  if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
   if (!user) {

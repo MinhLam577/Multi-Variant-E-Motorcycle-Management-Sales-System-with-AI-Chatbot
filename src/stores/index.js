@@ -1,12 +1,12 @@
 import { useLocalObservable } from "mobx-react-lite";
 import PropTypes from "prop-types";
 import { createContext, useContext } from "react";
-import RootStore from "./base";
+import { RootStore } from "./base";
 
 const StoreContext = createContext(null);
 
 export const StoreProvider = ({ children }) => {
-  const store = useLocalObservable(() => RootStore);
+  const store = useLocalObservable(() => new RootStore());
   return (
     <StoreContext.Provider value={store}>{children}</StoreContext.Provider>
   );

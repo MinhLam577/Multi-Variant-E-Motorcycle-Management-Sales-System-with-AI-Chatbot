@@ -1,7 +1,7 @@
 import axios from "axios";
-import { transform } from "lodash";
 import { Router } from "react-router-dom";
 import Account from "../stores/account";
+import _ from "lodash";
 
 let isRefreshToken = false;
 let pendingRequests = [];
@@ -16,18 +16,7 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(
   async (config) => {
     let account = await new Account().getAccount();
-
-    console.log("accountaccountaccount", account);
-    const headers = config.headers || {};
-    // let authorization = headers.Authorization;
-    // if (_.isEmpty(authorization)) {
-    //   config.headers.Authorization = `Basic ${Base64.encode(BASIC_AUTH)}`;
-    //   if (account?.accessToken != null) {
-
-    //     config.headers.Authorization = 'Bearer ' + account?.accessToken;
-    //   }
-    //   // has login
-    // }
+    config.headers.Authorization = "Bearer " + account?.access_token;
     return { ...config };
   },
   (err) => {
@@ -46,7 +35,7 @@ const handleRefresh401 = async (data) => {
 };
 
 const handleError = async (error) => {
-  const respData = transform(error?.response.data ?? {});
+  const respData = error?.response?.data;
   const respStatus = error?.response ? error?.response.status : -1;
   const originalRequest = error?.config;
 
@@ -62,7 +51,7 @@ const handleError = async (error) => {
       console.log("Bad Request");
       return respStatus;
     case 401:
-      return handleError401(originalRequest);
+      return handleError401(originalRequest, respData);
     case 403:
       return respStatus;
     case 404:
@@ -75,20 +64,15 @@ const handleError = async (error) => {
     default:
       break;
   }
-  return Promise.reject(error?.response?.data);
+  return Promise.reject(respData);
 };
 
-const handleError401 = (originalRequest) => {
-  subscribeTokenRefresh((token) => {
-    originalRequest.header.Authorization = `Bearer ${token}`;
-  });
-  refreshToken(originalRequest);
-  return new Promise((resolve, reject) => {
-    subscribeTokenRefresh((token) => {
-      originalRequest.header.Authorization = `Bearer ${token}`;
-      resolve(apiClient.request(originalRequest));
-    });
-  });
+const handleError401 = (originalRequest, respData) => {
+  // Trường hợp login failed
+  if (originalRequest?.url.endsWith("auth/login")) {
+    return Promise.reject(respData);
+  }
+  // Xử lý refresh token
 };
 
 const subscribeTokenRefresh = (cb) => {
@@ -100,20 +84,20 @@ const onTokenRefreshed = (token) => {
 };
 
 const refreshToken = async (originalRequest) => {
-  isRefreshToken = true;
-  try {
-    // let account = await new accountStore().getAccount();
-    // const { data } = await AuthService.refreshToken({
-    //   token: account?.accessToken || '',
-    // });
-    // if (data?.accessToken && data?.refreshToken) {
-    //   onTokenRefreshed(data.accessToken);
-    // } else {
-    //   // checkLogout();
-    // }
-  } catch (e) {
-    // checkLogout();
-  }
+  // isRefreshToken = true;
+  // try {
+  //   let account = await new accountStore().getAccount();
+  //   const { data } = await AuthService.refreshToken({
+  //     token: account?.accessToken || '',
+  //   });
+  //   if (data?.accessToken && data?.refreshToken) {
+  //     onTokenRefreshed(data.accessToken);
+  //   } else {
+  //     // checkLogout();
+  //   }
+  // } catch (e) {
+  //   // checkLogout();
+  // }
   isRefreshToken = false;
 };
 

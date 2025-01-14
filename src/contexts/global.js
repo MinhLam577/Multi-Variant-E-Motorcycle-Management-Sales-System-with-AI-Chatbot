@@ -1,24 +1,26 @@
-import { createContext, useMemo, useReducer } from "react";
 import { node } from "prop-types";
+import { createContext, useEffect, useReducer } from "react";
+import { useStore } from "../stores";
 
 const initValue = {
-  user: JSON.parse(localStorage.getItem("user")),
-  isLogin: false,
-  isLoading: true,
-  token: localStorage.getItem("token"),
-  success: {},
-  name: "",
+  isInitialized: true,
+  isAuthenticated: false,
+  user: null,
 };
-export const GlobalContext = createContext(initValue);
+export const GlobalContext = createContext();
 
 const GlobalReducer = (state, { type, data }) => {
-  console.log("GlobalReducer", state);
   switch (type) {
     case "login": {
-      if (state && !state.user.userId) {
-        return { ...state, user: data };
+      if (state && data) {
+        return {
+          ...state,
+          user: data,
+          isAuthenticated: true,
+          isInitialized: false,
+        };
       }
-      return state;
+      return { ...state, isAuthenticated: false, isInitialized: false };
     }
     case "update": {
       if (state && state.user.userId) {
@@ -27,9 +29,14 @@ const GlobalReducer = (state, { type, data }) => {
       return state;
     }
     case "logout": {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      return { ...state, user: data };
+      //  localStorage.removeItem("token");
+      // localStorage.removeItem("user");
+      return {
+        ...state,
+        user: null,
+        isAuthenticated: false,
+        isInitialized: false,
+      };
     }
     case "breadcrum": {
       return { ...state, name: data };
@@ -40,25 +47,28 @@ const GlobalReducer = (state, { type, data }) => {
   }
 };
 const GlobalProvider = ({ children }) => {
+  const { accountObservable } = useStore();
   const [state, dispatch] = useReducer(GlobalReducer, initValue);
-  const providerValue = useMemo(
-    () => ({ ...state, globalDispatch: dispatch }),
-    [state, dispatch]
-  );
+
+  useEffect(() => {
+    const init = async () => {
+      const account = await accountObservable.getAccount();
+      if (account?.access_token) {
+        dispatch({ type: "login", data: account });
+      } else {
+        dispatch({ type: "logout", data: null });
+      }
+    };
+    init();
+  }, []);
 
   return (
-    <GlobalContext.Provider value={providerValue}>
-      {children}
-    </GlobalContext.Provider>
+    <GlobalContext.Provider value={state}>{children}</GlobalContext.Provider>
   );
 };
 
 GlobalProvider.propTypes = {
   children: node,
-};
-
-GlobalProvider.defaultProps = {
-  children: null,
 };
 
 export default GlobalProvider;

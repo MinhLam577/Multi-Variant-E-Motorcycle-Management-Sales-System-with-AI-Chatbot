@@ -1,9 +1,9 @@
 import AccountStore from "./account";
+import LoginObservable from "./login";
 
-class RootStore {
+export class RootStore {
   constructor() {
-    this.account = new AccountStore();
+    this.accountObservable = new AccountStore(this);
+    this.loginObservable = new LoginObservable(this);
   }
 }
-
-export default new RootStore();
