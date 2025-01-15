@@ -46,6 +46,15 @@ const Login = () => {
         message.error(loginObservable.errorMsg);
         break;
       }
+
+      case "forgotPasswordSuccess": {
+        message.success("Email đã được gửi đi!");
+        break;
+      }
+      case "forgotPasswordFailed": {
+        message.error(loginObservable.errorMsg);
+        break;
+      }
       default: {
         break;
       }
@@ -62,11 +71,11 @@ const Login = () => {
   };
 
   const onFinishForgotPassword = (values) => {
-    if (values?.email) {
-      // forgotPassword({ variables: { email: values.email } });
+    if (!regexEmail.test(values?.email)) {
+      message.error("Email không hợp lệ!");
       return;
     }
-    message.error("Nhập thiếu thông tin!");
+    loginObservable.forgotPassword(values?.email);
   };
 
   const onFinish = (values) => {

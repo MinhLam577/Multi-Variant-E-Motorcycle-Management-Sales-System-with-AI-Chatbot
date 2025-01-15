@@ -14,7 +14,7 @@ const regexNationalID = "([\\d]{9}|[\\d]{12}|([a-zA-Z]{2,6}\\d{2,6}))";
 const regexUnsignedInteger = /^\+?(0|[1-9]\d*)$/;
 const regexEmail =
   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
+const regexUsername = /^.{3,30}$/; // 3-30 ký tự
 export {
   regexUnsignedInteger,
   regexNationalID,
@@ -29,4 +29,5 @@ export {
   regexSubjectMaxLength,
   regexEmpty,
   regexEmail,
+  regexUsername,
 };

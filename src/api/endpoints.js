@@ -4,6 +4,14 @@ const endpoints = {
     logout: "/auth/logout",
     refreshToken: "/auth/refresh-token",
     forgotPassword: "/auth/forgot-password",
+    changePassword: "/auth/change-password",
+  },
+  user: {
+    me: (id) => `/users/${id}`,
+    update: (id) => `/users/${id}`,
+    setRole: (id) => `/users/${id}`,
+    changePassword: (id) => `/users/${id}`,
+    uploadAvatar: () => `/users/upload`,
   },
   cars: {
     list: (page, size) => `/products?current=${page}&pageSize=${size}`,

@@ -2,6 +2,7 @@ import { makeAutoObservable } from "mobx";
 import apiClient from "../api/apiClient";
 import endpoints from "../api/endpoints";
 import { RootStore } from "./base";
+import { handleErrorMessage } from "../api/handleErrorMessage";
 
 export class LoginObservable {
   errorMsg = "";
@@ -14,10 +15,8 @@ export class LoginObservable {
 
   // call api login
   *login(email, password) {
-    this.email = email;
     this.status = "submitting";
     try {
-      // Call oauth/login
       const { data, status } = yield apiClient.post(endpoints.auth.login, {
         email,
         password,
@@ -28,7 +27,11 @@ export class LoginObservable {
         this.errorMsg = "Email hoặc mật khẩu không đúng!";
         return;
       }
-      this.rootStore.accountObservable.setAccount(data);
+
+      console.log("rootStorerootStore", this.rootStore);
+
+      yield this.rootStore.accountObservable.setAccount(data);
+      yield this.rootStore.userObservable.getMe(data?.id);
       this.status = "loginSuccess";
     } catch (error) {
       this.status = "loginFailed";
@@ -44,9 +47,16 @@ export class LoginObservable {
           email,
         }
       );
+      console.log("data", data);
+      if (status !== 200) {
+        this.status = "forgotPasswordFailed";
+        this.errorMsg = "Email không tồn tại!";
+        return;
+      }
+      this.status = "forgotPasswordSuccess";
     } catch (error) {
       this.status = "forgotPasswordFailed";
-      this.errorMsg = error?.message;
+      this.errorMsg = handleErrorMessage(error);
     }
   }
 }

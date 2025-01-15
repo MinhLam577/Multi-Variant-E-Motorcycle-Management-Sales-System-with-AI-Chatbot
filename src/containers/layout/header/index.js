@@ -1,20 +1,19 @@
-import { Avatar, Col, Layout, Menu, Popover, Row, Space, theme } from "antd";
 import {
   LogoutOutlined,
   ProfileOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { useContext, useState } from "react";
-import { GlobalContext } from "../../../contexts/global";
+import { Avatar, Col, Layout, Menu, Popover, Row, Space, theme } from "antd";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { processWithModals, ProcessModalName } from "../../processWithModals";
 import { useStore } from "../../../stores";
+import { ProcessModalName, processWithModals } from "../../processWithModals";
 const { Header } = Layout;
 
 const HeaderComponent = () => {
   const navigate = useNavigate();
   const { accountObservable } = useStore();
-  const { user, globalDispatch } = useContext(GlobalContext);
+  const account = accountObservable?.account;
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -22,14 +21,11 @@ const HeaderComponent = () => {
 
   const handleLogout = () => {
     accountObservable.clearAccount();
-    // globalDispatch({
-    //   type: "logout",
-    // });
-    // navigate("/login");
+    navigate("/login");
   };
 
   const getMenuPopupTitle = () => {
-    return `Xin chào, ${user?.fullname}`;
+    return `Xin chào, ${account?.username}`;
   };
 
   const getMenuPopupContent = () => {
@@ -93,7 +89,7 @@ const HeaderComponent = () => {
                 <Avatar
                   className="border border-gray-300 cursor-pointer"
                   size={42}
-                  src={user?.avatar}
+                  src={account?.avatarUrl}
                   icon={<UserOutlined />}
                 />
               </Space>

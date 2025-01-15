@@ -8,6 +8,7 @@ const initValue = {
   user: null,
 };
 export const GlobalContext = createContext();
+export const NavigateContext = createContext();
 
 const GlobalReducer = (state, { type, data }) => {
   switch (type) {
@@ -29,8 +30,6 @@ const GlobalReducer = (state, { type, data }) => {
       return state;
     }
     case "logout": {
-      //  localStorage.removeItem("token");
-      // localStorage.removeItem("user");
       return {
         ...state,
         user: null,
@@ -53,6 +52,7 @@ const GlobalProvider = ({ children }) => {
   useEffect(() => {
     const init = async () => {
       const account = await accountObservable.getAccount();
+      console.log("accountaccount", account);
       if (account?.access_token) {
         dispatch({ type: "login", data: account });
       } else {
@@ -63,7 +63,9 @@ const GlobalProvider = ({ children }) => {
   }, []);
 
   return (
-    <GlobalContext.Provider value={state}>{children}</GlobalContext.Provider>
+    <GlobalContext.Provider value={{ ...state, dispatch }}>
+      {children}
+    </GlobalContext.Provider>
   );
 };
 

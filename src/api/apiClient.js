@@ -1,7 +1,7 @@
 import axios from "axios";
-import { Router } from "react-router-dom";
-import Account from "../stores/account";
-import _ from "lodash";
+import { default as Account, default as AccountStore } from "../stores/account";
+import AuthService from "./authService";
+import endpoints from "./endpoints";
 
 let isRefreshToken = false;
 let pendingRequests = [];
@@ -39,28 +39,27 @@ const handleError = async (error) => {
   const respStatus = error?.response ? error?.response.status : -1;
   const originalRequest = error?.config;
 
-  if (originalRequest?.url.endsWith("oauth/refresh-token")) {
+  if (originalRequest?.url.endsWith(endpoints.auth.refreshToken)) {
     return handleRefresh401(respData);
   }
-
   switch (respStatus) {
-    case 301:
-      console.log("Request Moved Permanently");
-      break;
+    // case 301:
+    //   console.log("Request Moved Permanently");
+    //   break;
     case 400:
       console.log("Bad Request");
       return respStatus;
     case 401:
       return handleError401(originalRequest, respData);
-    case 403:
+    // case 403:
+    //   return respStatus;
+    case 404: {
       return respStatus;
-    case 404:
-      console.log("Not Found");
-      return Router.push("/404");
-    case 409:
-      return respStatus;
-    case 500:
-      return respStatus;
+    }
+    // case 409:
+    //   return respStatus;
+    // case 500:
+    //   return respStatus;
     default:
       break;
   }
@@ -84,20 +83,20 @@ const onTokenRefreshed = (token) => {
 };
 
 const refreshToken = async (originalRequest) => {
-  // isRefreshToken = true;
-  // try {
-  //   let account = await new accountStore().getAccount();
-  //   const { data } = await AuthService.refreshToken({
-  //     token: account?.accessToken || '',
-  //   });
-  //   if (data?.accessToken && data?.refreshToken) {
-  //     onTokenRefreshed(data.accessToken);
-  //   } else {
-  //     // checkLogout();
-  //   }
-  // } catch (e) {
-  //   // checkLogout();
-  // }
+  isRefreshToken = true;
+  try {
+    let account = await new AccountStore().getAccount();
+    const { data } = await AuthService.refreshToken({
+      token: account?.accessToken || "",
+    });
+    if (data?.accessToken && data?.refreshToken) {
+      onTokenRefreshed(data.accessToken);
+    } else {
+      // checkLogout();
+    }
+  } catch (e) {
+    // checkLogout();
+  }
   isRefreshToken = false;
 };
 

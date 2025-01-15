@@ -10,8 +10,6 @@ const ProtectedRoute = ({ children }) => {
   const auth = useContext(GlobalContext);
   const { isAuthenticated, user, isInitialized } = auth;
 
-  console.log("ProtectedRoute-auth", auth);
-
   if (isInitialized) {
     return <Loading />;
   }
