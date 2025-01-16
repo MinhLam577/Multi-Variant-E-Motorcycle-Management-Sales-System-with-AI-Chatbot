@@ -2,6 +2,7 @@ import { action, makeObservable, observable } from "mobx";
 import secureLocalStorage from "react-secure-storage";
 import apiClient from "../api/apiClient";
 import { keyStorageAccount } from "../constants";
+import endpoints from "../api/endpoints";
 
 class UploadImageObservable {
   roles = null;
@@ -25,45 +26,18 @@ class UploadImageObservable {
         },
       });
 
-      console.log("updateImageGetUrl", data);
-
-      if (status !== 200) {
+      console.log("dataupload", data, status);
+      if (data) {
         this.status = "fetchFailed";
         this.errorMsg = "Failed to upload image";
         return;
       }
-
-      this.status = "fetchSuccess";
+      this.status = "uploadSuccess";
+      return data;
     } catch (error) {
-      this.status = "fetchFailed";
+      this.status = "uploadFailed";
       this.errorMsg = error?.message;
     }
-
-    // return new Promise((resolve, reject) => {
-    //   apiClient
-    //     .post(uploadUrl, formData)
-    //     .then(({ data, status }) => {
-    //       //   if (status !== 200) {
-    //       //     this.status = "loginFailed";
-    //       //     this.errorMsg = "Email hoặc mật khẩu không đúng!";
-    //       //     reject(
-    //       //       new Error(
-    //       //         "Failed to upload image: Email hoặc mật khẩu không đúng!"
-    //       //       )
-    //       //     );
-    //       //     return;
-    //       //   }
-
-    //       this.status = "loginSuccess";
-    //       //   resolve(data);
-    //     })
-    //     .catch((error) => {
-    //       console.log("errorerror", error);
-    //       //   this.status = "loginFailed";
-    //       //   this.errorMsg = error?.message;
-    //       //   reject(new Error(`Failed to upload image: ${error?.message}`));
-    //     });
-    // });
   }
 
   clearAccount() {

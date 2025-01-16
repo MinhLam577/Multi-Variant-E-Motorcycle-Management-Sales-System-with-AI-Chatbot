@@ -49,8 +49,7 @@ const UploadAvatarGetUrlWithImgCrop = ({
       file,
       uploadUrl
     );
-
-    console.log("resultresultresult", result);
+    console.log("resultresult", result);
 
     // if (remoteMode === UploadAvatarGetUrlWithImgCropRemoteMode.Private) {
     //   // createResourceDt = await createResource({

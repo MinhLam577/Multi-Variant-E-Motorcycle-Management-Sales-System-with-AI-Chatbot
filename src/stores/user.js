@@ -18,9 +18,7 @@ class UserObservable {
   async getMe(userId) {
     this.status = "submitting";
     try {
-      const { data, status } = await apiClient.get(endpoints.user.me, {
-        id: userId,
-      });
+      const { data, status } = await apiClient.get(endpoints.user.me(userId));
 
       if (status !== 200) {
         this.status = "fetchFailed";

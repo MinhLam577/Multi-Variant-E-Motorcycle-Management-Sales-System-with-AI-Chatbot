@@ -1,7 +1,7 @@
 // NavigateContext.js
-import React, { createContext, useContext } from "react";
-import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
+import { createContext, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 
 // Tạo Context
 const NavigateContext = createContext(null);
@@ -13,14 +13,8 @@ export const useNavigateContext = () => useContext(NavigateContext);
 export const NavigateProvider = ({ children }) => {
   const navigate = useNavigate();
 
-  const handleError404 = (originalRequest, respData) => {
-    console.log("originalRequest", originalRequest);
-    navigate("/404");
-    return;
-  };
-
   return (
-    <NavigateContext.Provider value={{ navigate, handleError404 }}>
+    <NavigateContext.Provider value={{ navigate }}>
       {children}
     </NavigateContext.Provider>
   );

@@ -1,5 +1,5 @@
-import { Suspense } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Suspense, useEffect } from "react";
+import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
 import "./App.css";
 import { WareHouseDetailMode } from "./constants";
 import ApolloProviderGlobal from "./containers/ApolloProviderGlobal";
@@ -46,6 +46,7 @@ import WareHouses from "./pages/warehouses";
 import WareHouseDetail from "./pages/warehouses/WareHouseDetail";
 import { StoreProvider } from "./stores";
 import { NavigateProvider } from "./contexts/navigate";
+import { setNavigateFunction } from "./api/navigationService";
 
 function App() {
   return (

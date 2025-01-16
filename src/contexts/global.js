@@ -52,7 +52,6 @@ const GlobalProvider = ({ children }) => {
   useEffect(() => {
     const init = async () => {
       const account = await accountObservable.getAccount();
-      console.log("accountaccount", account);
       if (account?.access_token) {
         dispatch({ type: "login", data: account });
       } else {

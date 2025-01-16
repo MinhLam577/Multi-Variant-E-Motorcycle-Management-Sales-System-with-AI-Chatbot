@@ -1,8 +1,10 @@
 import apiClient from "./apiClient";
 import endpoints from "./endpoints";
 
-const refreshToken = (token) => {
-  return apiClient.post(endpoints.auth.refreshToken, token);
+const refreshToken = (refreshToken) => {
+  console.log("refreshTokenrefreshToken", refreshToken);
+
+  return apiClient.get(endpoints.auth.refreshToken);
 };
 
 const AuthService = {

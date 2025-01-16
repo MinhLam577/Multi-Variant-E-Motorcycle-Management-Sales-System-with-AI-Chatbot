@@ -22,16 +22,16 @@ export class LoginObservable {
         password,
       });
 
-      if (status !== 200) {
+      console.log("status", status !== 200 && !data?.userId);
+
+      if (status !== 200 && !data?.userId) {
         this.status = "loginFailed";
         this.errorMsg = "Email hoặc mật khẩu không đúng!";
         return;
       }
 
-      console.log("rootStorerootStore", this.rootStore);
-
       yield this.rootStore.accountObservable.setAccount(data);
-      yield this.rootStore.userObservable.getMe(data?.id);
+      yield this.rootStore.userObservable.getMe(data.userId);
       this.status = "loginSuccess";
     } catch (error) {
       this.status = "loginFailed";
@@ -58,6 +58,10 @@ export class LoginObservable {
       this.status = "forgotPasswordFailed";
       this.errorMsg = handleErrorMessage(error);
     }
+  }
+
+  *logout() {
+    yield this.rootStore.accountObservable.clearAccount();
   }
 }
 

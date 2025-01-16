@@ -1,17 +1,20 @@
 import { Base64 } from "js-base64";
-import { action, makeObservable, observable } from "mobx";
+import { makeAutoObservable, makeObservable, action, observable } from "mobx";
 import secureLocalStorage from "react-secure-storage";
 import { keyStorageAccount } from "../constants";
 
-class AccountStore {
+export class AccountObservable {
   loadingAccount = true;
   account = null;
   roles = null;
   me = null;
+
+  // constructor() {
+  //   makeAutoObservable(this);
+  // }
   constructor() {
     makeObservable(this, {
       setAccount: action.bound,
-      getAccount: action.bound,
       account: observable,
     });
   }
@@ -43,10 +46,11 @@ class AccountStore {
       return null;
     }
   }
-  clearAccount() {
+
+  async clearAccount() {
     secureLocalStorage.removeItem(keyStorageAccount);
     this.account = null;
   }
 }
 
-export default AccountStore;
+export default new AccountObservable();

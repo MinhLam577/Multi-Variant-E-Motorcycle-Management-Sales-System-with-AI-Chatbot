@@ -2,7 +2,7 @@ const endpoints = {
   auth: {
     login: "/auth/login",
     logout: "/auth/logout",
-    refreshToken: "/auth/refresh-token",
+    refreshToken: "/auth/refresh",
     forgotPassword: "/auth/forgot-password",
     changePassword: "/auth/change-password",
   },
@@ -11,7 +11,7 @@ const endpoints = {
     update: (id) => `/users/${id}`,
     setRole: (id) => `/users/${id}`,
     changePassword: (id) => `/users/${id}`,
-    uploadAvatar: () => `/users/upload`,
+    uploadAvatar: "/users/upload",
   },
   cars: {
     list: (page, size) => `/products?current=${page}&pageSize=${size}`,

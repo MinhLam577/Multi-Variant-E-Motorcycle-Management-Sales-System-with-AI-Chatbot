@@ -35,10 +35,6 @@ const Login = () => {
       }
 
       case "loginSuccess": {
-        // const redirect = queryString.parse(window.location.search, {
-        //   ignoreQueryPrefix: true,
-        // }).redirect;
-        // window.location.href = redirect || window.location.origin;
         navigate("/");
         break;
       }

@@ -1,7 +1,13 @@
 import axios from "axios";
-import { default as Account, default as AccountStore } from "../stores/account";
 import AuthService from "./authService";
 import endpoints from "./endpoints";
+import { useContext } from "react";
+import { NavigateContext } from "../contexts/global";
+import { useStore } from "../stores";
+import LoginObservable from "../stores/login";
+import { AccountObservable } from "../stores/account";
+import secureLocalStorage from "react-secure-storage";
+import { keyStorageAccount } from "../constants";
 
 let isRefreshToken = false;
 let pendingRequests = [];
@@ -13,10 +19,14 @@ const apiClient = axios.create({
     "Content-Type": "application/json",
   },
 });
+
 apiClient.interceptors.request.use(
   async (config) => {
-    let account = await new Account().getAccount();
-    config.headers.Authorization = "Bearer " + account?.access_token;
+    let account = await new AccountObservable().getAccount();
+    if (!config?.url.endsWith(endpoints.auth.refreshToken)) {
+      config.headers.Authorization = "Bearer " + account?.access_token;
+    }
+
     return { ...config };
   },
   (err) => {
@@ -28,50 +38,45 @@ const handleSuccess = async (response) => {
   return response;
 };
 
-const handleRefresh401 = async (data) => {
-  pendingRequests = [];
-
-  return null;
-};
-
 const handleError = async (error) => {
   const respData = error?.response?.data;
   const respStatus = error?.response ? error?.response.status : -1;
   const originalRequest = error?.config;
 
-  if (originalRequest?.url.endsWith(endpoints.auth.refreshToken)) {
-    return handleRefresh401(respData);
-  }
   switch (respStatus) {
-    // case 301:
-    //   console.log("Request Moved Permanently");
-    //   break;
     case 400:
       console.log("Bad Request");
       return respStatus;
+    // handle authentication
+    case 403:
     case 401:
-      return handleError401(originalRequest, respData);
-    // case 403:
-    //   return respStatus;
+      return handleError401(originalRequest);
+
     case 404: {
       return respStatus;
     }
-    // case 409:
-    //   return respStatus;
-    // case 500:
-    //   return respStatus;
+
     default:
       break;
   }
   return Promise.reject(respData);
 };
 
-const handleError401 = (originalRequest, respData) => {
-  // Trường hợp login failed
-  if (originalRequest?.url.endsWith("auth/login")) {
-    return Promise.reject(respData);
-  }
-  // Xử lý refresh token
+const handleError401 = (originalRequest) => {
+  subscribeTokenRefresh((token) => {
+    originalRequest.headers.Authorization = `Bearer ${token}`;
+  });
+
+  refreshToken(originalRequest);
+
+  return new Promise((resolve) => {
+    subscribeTokenRefresh((token) => {
+      if (token) {
+        originalRequest.headers.Authorization = `Bearer ${token}`;
+        resolve(apiClient.request(originalRequest));
+      }
+    });
+  });
 };
 
 const subscribeTokenRefresh = (cb) => {
@@ -79,25 +84,37 @@ const subscribeTokenRefresh = (cb) => {
 };
 
 const onTokenRefreshed = (token) => {
+  console.log("onTokenRefreshed", token);
   pendingRequests.forEach((cb) => cb(token));
 };
 
-const refreshToken = async (originalRequest) => {
-  isRefreshToken = true;
-  try {
-    let account = await new AccountStore().getAccount();
-    const { data } = await AuthService.refreshToken({
-      token: account?.accessToken || "",
-    });
-    if (data?.accessToken && data?.refreshToken) {
-      onTokenRefreshed(data.accessToken);
-    } else {
-      // checkLogout();
+const refreshToken = async () => {
+  if (!isRefreshToken) {
+    isRefreshToken = true;
+    try {
+      let account = await new AccountObservable().getAccount();
+
+      const { data } = await apiClient.get(endpoints.auth.refreshToken, {
+        headers: {
+          Authorization: `Bearer ${account?.refresh_token}`,
+        },
+      });
+
+      if (data?.access_token) {
+        onTokenRefreshed(data?.access_token);
+      } else {
+        checkLogout();
+      }
+    } catch (e) {
+      checkLogout();
     }
-  } catch (e) {
-    // checkLogout();
   }
-  isRefreshToken = false;
+};
+
+const checkLogout = async () => {
+  console.log("logout");
+  // await secureLocalStorage.removeItem(keyStorageAccount);
+  //  window.location.href = "/login";
 };
 
 apiClient.interceptors.response.use(handleSuccess, handleError);
