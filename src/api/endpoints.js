@@ -13,6 +13,10 @@ const endpoints = {
     changePassword: (id) => `/users/${id}`,
     uploadAvatar: "/users/upload",
   },
+  motorbike: {
+    list: (page, size) => `/products?current=${page}&pageSize=${size}`,
+    details: (id) => `/cars/${id}`,
+  },
   cars: {
     list: (page, size) => `/products?current=${page}&pageSize=${size}`,
     details: (id) => `/cars/${id}`,
@@ -20,9 +24,9 @@ const endpoints = {
     update: (id) => `/products/${id}`,
     delete: (id) => `/products/${id}`,
     //setting
-    categories: () => `/categories`,
+    categories: () => `/category-brand`,
     color: () => `/color`,
-    branch: () => `/branch`,
+    brand: () => `/brand`,
 
     //upload image
     uploadImage: () => "/products/upload",
@@ -48,6 +52,15 @@ const endpoints = {
     create: "/products",
     update: (id) => `/cars/${id}`,
     delete: (id) => `/products/${id}`,
+  },
+
+  //brand
+  brand: {
+    list: (page, size) => `/brand?current=${page}&pageSize=${size}`,
+    details: (id) => `/brand/${id}`,
+    update: (id) => `/brand/${id}`,
+    delete: (id) => `/brand/${id}`,
+    upload: "/upload",
   },
 };
 

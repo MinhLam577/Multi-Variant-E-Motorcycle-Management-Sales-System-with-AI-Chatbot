@@ -46,21 +46,22 @@ const UploadSinglePictureGetUrl = ({
 
     await sleepFuntions(2000);
     setUploading(false);
-    setFileList([
-      {
-        uid: createResourceDt?.data?.createResource?.url,
-        name: createResourceDt?.data?.createResource?.fileName,
-        status: "done",
-        url: createResourceDt?.data?.createResource?.url,
-      },
-    ]);
 
-    if (createResourceDt?.data?.createResource?.url) {
-      typeof onChange === "function" &&
-        onChange(createResourceDt?.data?.createResource?.url);
-    } else {
-      typeof onChange === "function" && onChange(null);
-    }
+    // setFileList([
+    //   {
+    //     uid: createResourceDt?.data?.createResource?.url,
+    //     name: createResourceDt?.data?.createResource?.fileName,
+    //     status: "done",
+    //     url: createResourceDt?.data?.createResource?.url,
+    //   },
+    // ]);
+
+    // if (createResourceDt?.data?.createResource?.url) {
+    //   typeof onChange === "function" &&
+    //     onChange(createResourceDt?.data?.createResource?.url);
+    // } else {
+    //   typeof onChange === "function" && onChange(null);
+    // }
   };
 
   const handleBeforeUpload = async (file, FileList) => {
@@ -70,7 +71,6 @@ const UploadSinglePictureGetUrl = ({
       const createResourceDtArray = await Promise.all(
         FileList?.map(async (file) => {
           const createResourceDt = await uploadProductImage(file);
-
           return createResourceDt;
         })
       );

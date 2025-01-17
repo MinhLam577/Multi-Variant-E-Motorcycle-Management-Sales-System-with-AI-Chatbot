@@ -27,8 +27,6 @@ import ProductUnitsDetail, {
   ProductUnitsDetailMode,
 } from "./pages/product_units/ProductUnitsDetail";
 import Products from "./pages/products";
-import EMotorbike from "./pages/products/EMotorbike";
-import EMotorbikeDetail from "./pages/products/EMotorbikeDetail";
 import ProductsDetail, {
   ProductsDetailMode,
 } from "./pages/products/ProductsDetail";
@@ -46,7 +44,8 @@ import WareHouses from "./pages/warehouses";
 import WareHouseDetail from "./pages/warehouses/WareHouseDetail";
 import { StoreProvider } from "./stores";
 import { NavigateProvider } from "./contexts/navigate";
-import { setNavigateFunction } from "./api/navigationService";
+import EMotorbikeDetail from "./pages/products/emotorbike/detail";
+import EMotorbike from "./pages/products/emotorbike";
 
 function App() {
   return (

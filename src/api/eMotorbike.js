@@ -3,14 +3,14 @@ import endpoints from "./endpoints";
 
 export const getAll = async () => {
   try {
-    const [brands, colors, categories] = await Promise.all([
+    const [branches, colors, categories] = await Promise.all([
+      fetchBranch(),
       fetchCarColor(),
       fetchCategories(),
-      fetchBrand(),
     ]);
 
     return {
-      brands,
+      branches,
       colors,
       categories,
     };
@@ -19,7 +19,7 @@ export const getAll = async () => {
   }
 };
 
-export const getCars = async ({ page, size }) => {
+export const getMotorBike = async ({ page, size }) => {
   try {
     const response = await apiClient.get(endpoints.cars.list(page, size));
     console.log("getCars-response", response);
@@ -32,7 +32,7 @@ export const getCars = async ({ page, size }) => {
   }
 };
 
-export const getCarDetails = async (id) => {
+export const getMotorDetails = async (id) => {
   const response = await apiClient.get(endpoints.cars.details(id));
   return response.data;
 };
@@ -70,15 +70,11 @@ export const fetchCarColor = async () => {
 
 export const fetchCategories = async () => {
   const response = await apiClient.get(endpoints.cars.categories());
-  console.log("fetchCategories", response?.data?.data);
-
   return response?.data?.data;
 };
 
-export const fetchBrand = async () => {
-  const response = await apiClient.get(endpoints.cars.brand());
-
-  console.log("fetchBrand", response?.data?.data);
+export const fetchBranch = async () => {
+  const response = await apiClient.get(endpoints.cars.branch());
   return response?.data?.data;
 };
 

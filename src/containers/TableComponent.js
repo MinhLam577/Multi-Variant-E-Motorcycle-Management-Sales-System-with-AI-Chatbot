@@ -4,7 +4,7 @@ import { convertSortFromAntToServer } from "../utils";
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
-const pageSizeOptions = [10, 20, 30, 40, 50];
+const pageSizeOptions = [5, 10, 20, 30, 40, 50];
 
 const TableComponent = ({
   loading,
@@ -55,6 +55,7 @@ const TableComponent = ({
     return sortValue;
   };
 
+  console.log("res?.pagination", res?.pagination);
   return (
     <Table
       locale={{
@@ -69,7 +70,16 @@ const TableComponent = ({
       key={0}
       pagination={
         typeof res?.pagination === "boolean"
-          ? res?.pagination
+          ? {
+              current: res?.pagination.currentPage,
+              pageSize: res?.pagination.pageSize,
+              pageSizeOptions: pageSizeOptions,
+              showSizeChanger: true,
+              total: res?.pagination.totalProducts,
+              locale: {
+                ...AntdTablePagingLocale,
+              },
+            }
           : {
               current: filters.paging.page,
               pageSize: filters.paging.pageSize,

@@ -24,18 +24,18 @@ import {
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { createCar, getAll, updateCar } from "../../api/cars";
+import { createCar, getAll, updateCar } from "../../../../api/cars";
 import {
   ProcessModalName,
   processWithModals,
-} from "../../containers/processWithModals";
-import RichTextEditor from "../../containers/RichTextEditor";
+} from "../../../../containers/processWithModals";
+import RichTextEditor from "../../../../containers/RichTextEditor";
 import UploadSinglePictureGetUrl, {
   UploadSinglePictureGetUrlRemoteMode,
-} from "../../containers/UploadSinglePictureGetUrl";
-import WarehouseTable from "./components/WarehouseTable";
-import UnitTable from "./components/UnitTable";
-import { WarehousePopup } from "./components/WarehousePopup";
+} from "../../../../containers/UploadSinglePictureGetUrl";
+import WarehouseTable from "../../components/WarehouseTable";
+import UnitTable from "../../components/UnitTable";
+import { WarehousePopup } from "../../components/WarehousePopup";
 
 export const ProductsDetailMode = {
   View: 1,
@@ -189,7 +189,7 @@ const EMotorbikeDetail = ({ mode }) => {
       ...values,
       category_id: dto?.category_id,
       brand_id: dto?.brand_id.toString(),
-      stock: parseInt(dto?.stock ?? 0),
+      //   stock: parseInt(dto?.stock ?? 0),
       images: fileList?.map((i) => ({
         url: i?.url,
         color: "",
@@ -199,7 +199,6 @@ const EMotorbikeDetail = ({ mode }) => {
       fuelType: "",
       transmission: "",
       videos: [],
-
       videosCount: 0,
       rating: 0,
       reviewsCount: 0,
@@ -208,6 +207,15 @@ const EMotorbikeDetail = ({ mode }) => {
       totalXilanh: 0,
       status: true,
     };
+    delete formData.modelYear;
+    delete formData.fuelType;
+    delete formData.properties;
+    delete formData.transmission;
+    delete formData.videos;
+    delete formData.mileage;
+    delete formData.totalWindown;
+    delete formData.totalXilanh;
+    delete formData.promo_id;
 
     if (mode === ProductsDetailMode.Add) {
       delete formData.engineNumber;
@@ -248,7 +256,7 @@ const EMotorbikeDetail = ({ mode }) => {
                   </Form.Item>
                   <Form.Item
                     label="Hình ảnh sản phẩm"
-                    name="listImgUrl"
+                    name="images"
                     rules={[
                       { required: true, message: "Hãy chọn ít nhất 1 ảnh!" },
                     ]}
@@ -398,7 +406,7 @@ const EMotorbikeDetail = ({ mode }) => {
                     <Col span={12}>
                       <Form.Item
                         label="Giá so sánh"
-                        name="price"
+                        name="depositPrice"
                         tooltip={{
                           title:
                             "Số tiền chưa giảm giá, thể hiện giá trị giảm giá, ưu đãi cho khách hàng",

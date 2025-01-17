@@ -15,11 +15,14 @@ export class AccountObservable {
   constructor() {
     makeObservable(this, {
       setAccount: action.bound,
+      getAccount: action.bound,
       account: observable,
     });
   }
 
   async setAccount(data) {
+    console.log("updateNewToken-setAccount", data);
+
     try {
       const jsonValue = JSON.stringify(data);
       const dataEndcode = Base64.encode(jsonValue);

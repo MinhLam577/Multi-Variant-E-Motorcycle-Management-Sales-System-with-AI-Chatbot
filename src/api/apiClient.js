@@ -1,16 +1,10 @@
 import axios from "axios";
-import AuthService from "./authService";
-import endpoints from "./endpoints";
-import { useContext } from "react";
-import { NavigateContext } from "../contexts/global";
-import { useStore } from "../stores";
-import LoginObservable from "../stores/login";
 import { AccountObservable } from "../stores/account";
-import secureLocalStorage from "react-secure-storage";
-import { keyStorageAccount } from "../constants";
+import endpoints from "./endpoints";
 
-let isRefreshToken = false;
-let pendingRequests = [];
+// Flag để tránh nhiều request refresh cùng lúc
+let isRefreshing = false;
+let refreshSubscribers = [];
 
 const apiClient = axios.create({
   baseURL: process.env.REACT_APP_API_BASE_URL,
@@ -39,6 +33,7 @@ const handleSuccess = async (response) => {
 };
 
 const handleError = async (error) => {
+  console.log("------Error-----", error);
   const respData = error?.response?.data;
   const respStatus = error?.response ? error?.response.status : -1;
   const originalRequest = error?.config;
@@ -50,7 +45,7 @@ const handleError = async (error) => {
     // handle authentication
     case 403:
     case 401:
-      return handleError401(originalRequest);
+      return handleError401(originalRequest, error);
 
     case 404: {
       return respStatus;
@@ -62,52 +57,65 @@ const handleError = async (error) => {
   return Promise.reject(respData);
 };
 
-const handleError401 = (originalRequest) => {
-  subscribeTokenRefresh((token) => {
-    originalRequest.headers.Authorization = `Bearer ${token}`;
-  });
-
-  refreshToken(originalRequest);
-
-  return new Promise((resolve) => {
-    subscribeTokenRefresh((token) => {
-      if (token) {
+const handleError401 = async (originalRequest, error) => {
+  if (originalRequest._retry) {
+    return;
+  }
+  if (isRefreshing) {
+    return new Promise((resolve) => {
+      refreshSubscribers.push((token) => {
         originalRequest.headers.Authorization = `Bearer ${token}`;
-        resolve(apiClient.request(originalRequest));
-      }
+        resolve(apiClient(originalRequest));
+      });
     });
-  });
-};
+  }
 
-const subscribeTokenRefresh = (cb) => {
-  pendingRequests.push(cb);
-};
+  originalRequest._retry = true;
+  isRefreshing = true;
 
-const onTokenRefreshed = (token) => {
-  console.log("onTokenRefreshed", token);
-  pendingRequests.forEach((cb) => cb(token));
+  try {
+    const newAccessToken = await refreshToken();
+
+    if (!newAccessToken) return Promise.reject(error);
+
+    apiClient.defaults.headers.Authorization = `Bearer ${newAccessToken}`;
+    originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+
+    refreshSubscribers.forEach((callback) => callback(newAccessToken));
+    refreshSubscribers = [];
+    isRefreshing = false;
+
+    return apiClient(originalRequest);
+  } catch (err) {
+    return Promise.reject(err);
+  }
 };
 
 const refreshToken = async () => {
-  if (!isRefreshToken) {
-    isRefreshToken = true;
-    try {
-      let account = await new AccountObservable().getAccount();
+  try {
+    let { setAccount, getAccount } = new AccountObservable();
+    const account = await getAccount();
 
-      const { data } = await apiClient.get(endpoints.auth.refreshToken, {
-        headers: {
-          Authorization: `Bearer ${account?.refresh_token}`,
-        },
-      });
+    // get api
+    const { data } = await apiClient.get(endpoints.auth.refreshToken, {
+      headers: {
+        Authorization: `Bearer ${account?.refresh_token}`,
+      },
+    });
 
-      if (data?.access_token) {
-        onTokenRefreshed(data?.access_token);
-      } else {
-        checkLogout();
-      }
-    } catch (e) {
+    const newAccessToken = data?.access_token;
+    // Kiểm tra nếu token không tồn tại thì sẽ chuyển về màn hình login
+    if (!newAccessToken) {
       checkLogout();
+      return;
     }
+    // lưu access token mới vào local storage
+    const updateNewToken = { ...account, access_token: newAccessToken };
+
+    await setAccount(updateNewToken);
+    return newAccessToken;
+  } catch (e) {
+    checkLogout();
   }
 };
 

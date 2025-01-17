@@ -3,21 +3,21 @@ import PropTypes from "prop-types";
 import { createContext, useContext } from "react";
 import { RootStore } from "./base";
 
-const StoreContext = createContext(null);
+const storeContext = createContext(null);
 
 export const StoreProvider = ({ children }) => {
   const store = useLocalObservable(() => new RootStore());
   return (
-    <StoreContext.Provider value={store}>{children}</StoreContext.Provider>
+    <storeContext.Provider value={store}>{children}</storeContext.Provider>
   );
 };
 
 StoreProvider.propTypes = {
-  children: PropTypes.node.isRequired,
+  children: PropTypes.any,
 };
 
 export const useStore = () => {
-  const store = useContext(StoreContext);
+  const store = useContext(storeContext);
 
   if (!store) {
     throw new Error("useStore must be used within a StoreProvider.");
