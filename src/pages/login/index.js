@@ -35,6 +35,7 @@ const Login = () => {
       }
 
       case "loginSuccess": {
+        console.log("loginSuccess");
         navigate("/");
         break;
       }

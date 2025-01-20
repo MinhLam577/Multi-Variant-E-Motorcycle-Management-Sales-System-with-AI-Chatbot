@@ -4,34 +4,14 @@ import {
   PlusOutlined,
   SaveOutlined,
 } from "@ant-design/icons";
-import { useLazyQuery, useMutation } from "@apollo/client";
-import {
-  Button,
-  Card,
-  Col,
-  Divider,
-  Form,
-  Input,
-  InputNumber,
-  Row,
-  Select,
-  message,
-} from "antd";
+import { Button, Card, Col, Divider, Form, Input, Row, Select } from "antd";
 import PropTypes from "prop-types";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   ProcessModalName,
   processWithModals,
 } from "../../containers/processWithModals";
-import UploadSinglePictureGetUrl, {
-  UploadSinglePictureGetUrlRemoteMode,
-} from "../../containers/UploadSinglePictureGetUrl";
-import {
-  CREATE_CATEGORY,
-  GET_CATEGORY,
-  UPDATE_CATEGORY,
-} from "../../graphql/categories";
 
 export const CategoriesDetailMode = {
   View: 1,
@@ -52,33 +32,7 @@ const WareHouseDetail = ({ mode }) => {
   const { id } = useParams();
 
   const navigate = useNavigate();
-  const [fileList, setFileList] = useState([]);
-  const [loadData, { loading }] = useLazyQuery(GET_CATEGORY, {
-    fetchPolicy: "no-cache",
-    onCompleted: (res) => {
-      if (res?.admin_category) {
-        prepareForm(res?.admin_category);
-      }
-      message.success("Tải chi tiết danh mục thành công!");
-    },
-  });
-  const [createCategory, { loading: creating }] = useMutation(CREATE_CATEGORY, {
-    onCompleted: (res) => {
-      if (res?.createCategory?.status) {
-        message.success("Tạo danh mục thành công!");
-        navigate(`/categories`);
-      }
-    },
-  });
-
-  const [updateCategory, { loading: updating }] = useMutation(UPDATE_CATEGORY, {
-    onCompleted: (res) => {
-      if (res?.updateCategory?.status) {
-        message.success("Cập nhật danh mục thành công!");
-        navigate(`/categories`);
-      }
-    },
-  });
+  const [loading] = useState(false);
 
   const [form] = Form.useForm();
 
@@ -195,45 +149,11 @@ const WareHouseDetail = ({ mode }) => {
     }
   };
 
-  const handleFormFinish = (values) => {
-    const dto = {
-      ...values,
-    };
-
-    if (mode === CategoriesDetailMode.Add) {
-      createCategory({
-        variables: {
-          createCategoryInput: {
-            ...dto,
-          },
-        },
-      });
-    } else if (mode === CategoriesDetailMode.Edit) {
-      updateCategory({
-        variables: {
-          updateCategoryInput: {
-            ...dto,
-            categoryId: id,
-          },
-        },
-      });
-    }
-  };
-
-  useEffect(() => {
-    if (id) {
-      loadData({
-        variables: {
-          id,
-        },
-      });
-    }
-    // eslint-disable-next-line
-  }, [id, mode]);
+  const handleFormFinish = (values) => {};
 
   return (
     <>
-      <Card loading={loading || creating || updating} title={getCardTitle()}>
+      <Card loading={loading} title={getCardTitle()}>
         <Form
           form={form}
           {...formItemLayout}

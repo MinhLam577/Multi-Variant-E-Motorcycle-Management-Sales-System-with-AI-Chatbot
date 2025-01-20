@@ -1,6 +1,7 @@
 import AccountObservable from "./account";
 import BrandObservable from "./brand";
 import LoginObservable from "./login";
+import EMotorbikeObservable from "./motorbike";
 import ProductObservable from "./product";
 import UploadImageObservable from "./uploadImage";
 import UserObservable from "./user";
@@ -13,5 +14,6 @@ export class RootStore {
     this.uploadImageObservable = new UploadImageObservable(this);
     this.brandObservable = new BrandObservable(this);
     this.productObservable = new ProductObservable(this);
+    this.motorbikeObservable = new EMotorbikeObservable(this);
   }
 }

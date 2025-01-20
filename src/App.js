@@ -44,9 +44,8 @@ import WareHouses from "./pages/warehouses";
 import WareHouseDetail from "./pages/warehouses/WareHouseDetail";
 import { StoreProvider } from "./stores";
 import { NavigateProvider } from "./contexts/navigate";
-import EMotorbikeDetail from "./pages/products/emotorbike/detail";
-import EMotorbike from "./pages/products/emotorbike";
-
+import EMotorbike from "./pages/e_motorbike";
+import EMotorbikeDetail from "./pages/e_motorbike/detail";
 function App() {
   return (
     <StoreProvider>

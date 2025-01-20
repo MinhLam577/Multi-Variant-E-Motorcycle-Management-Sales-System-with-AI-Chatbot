@@ -1,12 +1,4 @@
-import {
-  CloseOutlined,
-  EditOutlined,
-  InfoCircleOutlined,
-  MinusCircleOutlined,
-  PlusOutlined,
-  SaveOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
+import { InfoCircleOutlined, SearchOutlined } from "@ant-design/icons";
 import {
   Button,
   Card,
@@ -19,23 +11,17 @@ import {
   Row,
   Select,
   Space,
-  message,
+  Table,
 } from "antd";
 import PropTypes from "prop-types";
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { createCar, getAll, updateCar } from "../../../../api/cars";
-import {
-  ProcessModalName,
-  processWithModals,
-} from "../../../../containers/processWithModals";
-import RichTextEditor from "../../../../containers/RichTextEditor";
+import RichTextEditor from "../../../containers/RichTextEditor";
 import UploadSinglePictureGetUrl, {
   UploadSinglePictureGetUrlRemoteMode,
-} from "../../../../containers/UploadSinglePictureGetUrl";
-import WarehouseTable from "../../components/WarehouseTable";
-import UnitTable from "../../components/UnitTable";
-import { WarehousePopup } from "../../components/WarehousePopup";
+} from "../../../containers/UploadSinglePictureGetUrl";
+import UnitTable from "../components/UnitTable";
+import { WarehousePopup } from "../components/WarehousePopup";
+import WarehouseTable from "../components/WarehouseTable";
+import { useStore } from "../../../stores";
 
 export const ProductsDetailMode = {
   View: 1,
@@ -52,188 +38,27 @@ const formItemLayout = {
   },
 };
 
-const EMotorbikeDetail = ({ mode }) => {
-  const { id } = useParams();
-  const [form] = Form.useForm();
-
-  const navigate = useNavigate();
-  const [isOpenWarehousePopup, setIsOpenWarehousePopup] = useState(false);
-  const [fileList, setFileList] = useState([]);
-  const [settingData, setData] = useState({
-    categories: [],
-    colors: [],
-    branches: [],
-  });
-
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const result = await getAll();
-        setData(result);
-      } catch (err) {
-        message.error("Đã có lỗi xảy ra, vui lòng thử lại!", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const getCardTitle = () => {
-    if (mode === ProductsDetailMode.View) {
-      return "Chi tiết sản phẩm";
-    } else if (mode === ProductsDetailMode.Add) {
-      return "Tạo sản phẩm - Xe máy điện";
-    } else if (mode === ProductsDetailMode.Edit) {
-      return "Chỉnh sửa sản phẩm";
-    }
-  };
-
-  const getButtonOkText = () => {
-    if (mode === ProductsDetailMode.Add) {
-      return (
-        <>
-          <PlusOutlined />
-          &nbsp;Tạo
-        </>
-      );
-    } else if (mode === ProductsDetailMode.Edit) {
-      return (
-        <>
-          <SaveOutlined />
-          &nbsp;Lưu
-        </>
-      );
-    }
-  };
-
-  const getButtonCancelText = () => {
-    if (mode === ProductsDetailMode.Add) {
-      return (
-        <>
-          <CloseOutlined />
-          &nbsp;Hủy
-        </>
-      );
-    } else if (mode === ProductsDetailMode.Edit) {
-      return (
-        <>
-          <CloseOutlined />
-          &nbsp;Hủy
-        </>
-      );
-    } else if (mode === ProductsDetailMode.View) {
-      return (
-        <>
-          <CloseOutlined />
-          &nbsp;Đóng
-        </>
-      );
-    }
-  };
-
-  const getButtonEditText = () => {
-    if (mode === ProductsDetailMode.View) {
-      return (
-        <>
-          <EditOutlined />
-          &nbsp;Sửa
-        </>
-      );
-    }
-  };
-
-  const isReadOnly = () => {
-    if (mode === ProductsDetailMode.Add) {
-      return false;
-    } else if (mode === ProductsDetailMode.Edit) {
-      return false;
-    }
-    return true;
-  };
-
-  const handleOk = () => {
-    if (mode === ProductsDetailMode.Add) {
-      form.submit();
-    } else if (mode === ProductsDetailMode.Edit) {
-      form.submit();
-    }
-  };
-
-  const handleCancel = () => {
-    if (mode === ProductsDetailMode.Edit) {
-      processWithModals(ProcessModalName.ConfirmCancelEditing)(() => {
-        navigate(`/e-motorbike`);
-      });
-    } else {
-      navigate("/e-motorbike");
-    }
-  };
-
-  const handleEdit = () => {
-    if (mode === ProductsDetailMode.View) {
-      navigate(`/e-motorbike/${id}/edit`, { replace: true });
-    }
-  };
-
-  const handleFormFinish = async (values) => {
-    const dto = {
-      ...values,
-    };
-
-    const formData = {
-      ...values,
-      category_id: dto?.category_id,
-      brand_id: dto?.brand_id.toString(),
-      //   stock: parseInt(dto?.stock ?? 0),
-      images: fileList?.map((i) => ({
-        url: i?.url,
-        color: "",
-        count: "",
-      })),
-      modelYear: 0,
-      fuelType: "",
-      transmission: "",
-      videos: [],
-      videosCount: 0,
-      rating: 0,
-      reviewsCount: 0,
-      mileage: 0,
-      totalWindown: 0,
-      totalXilanh: 0,
-      status: true,
-    };
-    delete formData.modelYear;
-    delete formData.fuelType;
-    delete formData.properties;
-    delete formData.transmission;
-    delete formData.videos;
-    delete formData.mileage;
-    delete formData.totalWindown;
-    delete formData.totalXilanh;
-    delete formData.promo_id;
-
-    if (mode === ProductsDetailMode.Add) {
-      delete formData.engineNumber;
-      await createCar(formData)
-        .then((res) => {
-          console.log("res", res);
-        })
-        .catch((error) => {
-          console.log("error", error);
-        });
-      return;
-    }
-
-    if (mode === ProductsDetailMode.Edit) {
-      await updateCar({ ...formData, id });
-    }
-  };
-
+const EMotorbikeDetailScreen = ({
+  mode,
+  form,
+  handleFormFinish,
+  handleCancel,
+  handleEdit,
+  settingData,
+  isReadOnly,
+  fileList,
+  setFileList,
+  setIsOpenWarehousePopup,
+  getButtonCancelText,
+  getButtonEditText,
+  getButtonOkText,
+  isOpenWarehousePopup,
+  handleOk,
+  listBrand,
+  listCategory,
+  listColor,
+}) => {
+  console.log("listBrand", listBrand);
   return (
     <>
       <Form
@@ -243,7 +68,7 @@ const EMotorbikeDetail = ({ mode }) => {
         autoComplete="off"
         onFinish={handleFormFinish}
         initialValues={{
-          properties: [{}],
+          borderless: "-",
         }}
       >
         <Row gutter={[16, 16]}>
@@ -256,7 +81,7 @@ const EMotorbikeDetail = ({ mode }) => {
                   </Form.Item>
                   <Form.Item
                     label="Hình ảnh sản phẩm"
-                    name="images"
+                    name="listImgUrl"
                     rules={[
                       { required: true, message: "Hãy chọn ít nhất 1 ảnh!" },
                     ]}
@@ -300,13 +125,13 @@ const EMotorbikeDetail = ({ mode }) => {
                           allowClear
                           showSearch
                           optionFilterProp="label"
-                          options={settingData?.branches?.map((item) => {
+                          options={listBrand?.map((item) => {
                             return {
                               value: item?.id,
                               label: item?.name,
                             };
                           })}
-                          placeholder="Chọn thương hiệu"
+                          placeholder="Chọn nhà cung cấp"
                         />
                       </Form.Item>
                     </Col>
@@ -320,7 +145,7 @@ const EMotorbikeDetail = ({ mode }) => {
                           allowClear
                           showSearch
                           optionFilterProp="label"
-                          options={settingData?.categories?.map((item) => {
+                          options={listCategory?.map((item) => {
                             return {
                               value: item?.id,
                               label: item?.name,
@@ -470,7 +295,6 @@ const EMotorbikeDetail = ({ mode }) => {
                               <InputNumber
                                 variant="borderless"
                                 min={0}
-                                defaultValue={"-"}
                                 readOnly={true}
                                 placeholder="Nhập biên lợi nhuận"
                                 formatter={(value) =>
@@ -490,7 +314,6 @@ const EMotorbikeDetail = ({ mode }) => {
                                 variant="borderless"
                                 min={0}
                                 readOnly={true}
-                                defaultValue={"-"}
                                 placeholder="Nhập biên lợi nhuận"
                                 formatter={(value) =>
                                   `${value}%`.replace(
@@ -624,10 +447,7 @@ const EMotorbikeDetail = ({ mode }) => {
 
               <Col span={24}>
                 <Card title="Khuyến mãi">
-                  <Form.Item
-                    name="promo_id"
-                    rules={[{ required: true, message: "Chọn khuyến mãi!" }]}
-                  >
+                  <Form.Item name="promo_id">
                     <Space direction="vertical" size={16} className="w-full">
                       <Radio.Group>
                         <Radio value={1}>Không áp dụng khuyến mãi</Radio>
@@ -678,8 +498,25 @@ const EMotorbikeDetail = ({ mode }) => {
   );
 };
 
-EMotorbikeDetail.propTypes = {
+EMotorbikeDetailScreen.propTypes = {
   mode: PropTypes.number,
+  form: PropTypes.object,
+  handleFormFinish: PropTypes.func,
+  handleCancel: PropTypes.func,
+  handleEdit: PropTypes.func,
+  settingData: PropTypes.object,
+  isReadOnly: PropTypes.func,
+  fileList: PropTypes.array,
+  setFileList: PropTypes.func,
+  setIsOpenWarehousePopup: PropTypes.func,
+  getButtonCancelText: PropTypes.func,
+  getButtonEditText: PropTypes.func,
+  getButtonOkText: PropTypes.func,
+  isOpenWarehousePopup: PropTypes.bool,
+  handleOk: PropTypes.func,
+  listColor: PropTypes.array,
+  listCategory: PropTypes.array,
+  listBrand: PropTypes.array,
 };
 
-export default EMotorbikeDetail;
+export default EMotorbikeDetailScreen;

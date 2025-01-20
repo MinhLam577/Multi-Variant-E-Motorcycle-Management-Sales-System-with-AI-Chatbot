@@ -1,10 +1,10 @@
-import { Button } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import { Button } from "antd";
 import { useContext, useState } from "react";
-import { GlobalContext } from "../../contexts/global";
+import { useNavigate } from "react-router-dom";
 import StoresSearch from "../../businessComponents/stores/StoresSearch";
 import StoresTable from "../../businessComponents/stores/StoresTable";
+import { GlobalContext } from "../../contexts/global";
 
 const Stores = () => {
   const navigate = useNavigate();

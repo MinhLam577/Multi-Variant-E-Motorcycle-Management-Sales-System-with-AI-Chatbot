@@ -2,16 +2,16 @@ import { reaction } from "mobx";
 import { observer } from "mobx-react-lite";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { deleteProduct, updateCar } from "../../../api/cars";
-import { RequestStatus } from "../../../constants";
-import Loading from "../../../containers/Loading";
+import { deleteProduct, updateCar } from "../../api/cars";
+import { RequestStatus } from "../../constants";
+import Loading from "../../containers/Loading";
 import {
   ProcessModalName,
   processWithModals,
-} from "../../../containers/processWithModals";
-import { GlobalContext } from "../../../contexts/global";
-import { useStore } from "../../../stores";
-import EMotorbikeScreen from "./EMotorbikeScreen";
+} from "../../containers/processWithModals";
+import { GlobalContext } from "../../contexts/global";
+import { useStore } from "../../stores";
+import EMotorbikeScreen from "./screen";
 
 const EMotorbike = observer(() => {
   const navigate = useNavigate();

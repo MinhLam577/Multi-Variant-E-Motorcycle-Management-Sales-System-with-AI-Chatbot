@@ -1,6 +1,8 @@
 import axios from "axios";
 import { AccountObservable } from "../stores/account";
 import endpoints from "./endpoints";
+import { keyStorageAccount } from "../constants";
+import secureLocalStorage from "react-secure-storage";
 
 // Flag để tránh nhiều request refresh cùng lúc
 let isRefreshing = false;
@@ -17,9 +19,8 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(
   async (config) => {
     let account = await new AccountObservable().getAccount();
-    if (!config?.url.endsWith(endpoints.auth.refreshToken)) {
-      config.headers.Authorization = "Bearer " + account?.access_token;
-    }
+
+    config.headers.Authorization = "Bearer " + account?.access_token;
 
     return { ...config };
   },
@@ -61,6 +62,12 @@ const handleError401 = async (originalRequest, error) => {
   if (originalRequest._retry) {
     return;
   }
+
+  if (originalRequest.url.includes(endpoints.auth.refreshToken)) {
+    checkLogout();
+    return;
+  }
+
   if (isRefreshing) {
     return new Promise((resolve) => {
       refreshSubscribers.push((token) => {
@@ -75,7 +82,6 @@ const handleError401 = async (originalRequest, error) => {
 
   try {
     const newAccessToken = await refreshToken();
-
     if (!newAccessToken) return Promise.reject(error);
 
     apiClient.defaults.headers.Authorization = `Bearer ${newAccessToken}`;
@@ -102,6 +108,7 @@ const refreshToken = async () => {
         Authorization: `Bearer ${account?.refresh_token}`,
       },
     });
+    console.log("refreshToken", data);
 
     const newAccessToken = data?.access_token;
     // Kiểm tra nếu token không tồn tại thì sẽ chuyển về màn hình login
@@ -115,14 +122,15 @@ const refreshToken = async () => {
     await setAccount(updateNewToken);
     return newAccessToken;
   } catch (e) {
+    console.log("refreshToken error", e);
+
     checkLogout();
   }
 };
 
 const checkLogout = async () => {
-  console.log("logout");
-  // await secureLocalStorage.removeItem(keyStorageAccount);
-  //  window.location.href = "/login";
+  await secureLocalStorage.removeItem(keyStorageAccount);
+  window.location.href = "/login";
 };
 
 apiClient.interceptors.response.use(handleSuccess, handleError);

@@ -1,5 +1,5 @@
 import { Base64 } from "js-base64";
-import { makeAutoObservable, makeObservable, action, observable } from "mobx";
+import { action, makeObservable, observable } from "mobx";
 import secureLocalStorage from "react-secure-storage";
 import { keyStorageAccount } from "../constants";
 
@@ -9,9 +9,6 @@ export class AccountObservable {
   roles = null;
   me = null;
 
-  // constructor() {
-  //   makeAutoObservable(this);
-  // }
   constructor() {
     makeObservable(this, {
       setAccount: action.bound,

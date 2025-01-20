@@ -13,22 +13,14 @@ import {
   Input,
   InputNumber,
   Select,
-  message,
 } from "antd";
+import PropTypes from "prop-types";
+import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   ProcessModalName,
   processWithModals,
 } from "../../containers/processWithModals";
-import { useNavigate, useParams } from "react-router-dom";
-import { useLazyQuery, useMutation } from "@apollo/client";
-import { useEffect } from "react";
-import PropTypes from "prop-types";
-import {
-  CREATE_VOUCHER,
-  GET_VOUCHER,
-  UPDATE_VOUCHER,
-} from "../../graphql/vouchers";
-import dayjs from "dayjs";
 
 export const VoucherDetailMode = {
   View: 1,
@@ -48,33 +40,7 @@ const formItemLayout = {
 const VoucherDetail = ({ mode }) => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [loadData, { loading }] = useLazyQuery(GET_VOUCHER, {
-    fetchPolicy: "no-cache",
-    onCompleted: (res) => {
-      if (res?.admin_discount) {
-        prepareForm(res?.admin_discount);
-      }
-      message.success("Tải chi tiết voucher thành công!");
-    },
-  });
-
-  const [createDiscount, { loading: creating }] = useMutation(CREATE_VOUCHER, {
-    onCompleted: (res) => {
-      if (res?.createDiscount?.status) {
-        message.success("Tạo voucher thành công!");
-        navigate(`/vouchers`);
-      }
-    },
-  });
-
-  const [updateDiscount, { loading: updating }] = useMutation(UPDATE_VOUCHER, {
-    onCompleted: (res) => {
-      if (res?.updateDiscount?.status) {
-        message.success("Cập nhật voucher thành công!");
-        navigate(`/vouchers`);
-      }
-    },
-  });
+  const [loading, setLoading] = useState(false);
 
   const [form] = Form.useForm();
 
@@ -142,32 +108,12 @@ const VoucherDetail = ({ mode }) => {
     }
   };
 
-  const prepareForm = (loadedData) => {
-    if (mode === VoucherDetailMode.View) {
-      form.setFieldsValue({
-        ...loadedData,
-        fromDate: dayjs(loadedData.fromDate),
-        toDate: dayjs(loadedData.toDate)
-      });
-    } else if (mode === VoucherDetailMode.Add) {
-      form.resetFields();
-    } else if (mode === VoucherDetailMode.Edit) {
-      form.setFieldsValue({
-        ...loadedData,
-        fromDate: dayjs(loadedData.fromDate),
-        toDate: dayjs(loadedData.toDate)
-      });
-    }
-  };
-
   const isReadOnly = () => {
     if (mode === VoucherDetailMode.Add) {
       return false;
     } else if (mode === VoucherDetailMode.Edit) {
       return false;
     }
-
-    // mode === VoucherDetailMode.View
     return true;
   };
 
@@ -195,46 +141,11 @@ const VoucherDetail = ({ mode }) => {
     }
   };
 
-  const handleFormFinish = (values) => {
-    const dto = {
-      ...values,
-    };
-    if (mode === VoucherDetailMode.Add) {
-      createDiscount({
-        variables: {
-          createDiscountInput: {
-            ...dto,
-          },
-        },
-      });
-    } else if (mode === VoucherDetailMode.Edit) {
-      updateDiscount({
-        variables: {
-          updateDiscountInput: {
-            ...dto,
-          },
-        },
-      });
-    }
-  };
-
-  useEffect(() => {
-    if (id) {
-      loadData({
-        variables: {
-          id,
-        },
-      });
-    }
-    // eslint-disable-next-line
-  }, [id, mode]);
+  const handleFormFinish = (values) => {};
 
   return (
     <>
-      <Card
-        loading={loading || creating || updating}
-        title={getCardTitle()}
-      >
+      <Card loading={loading} title={getCardTitle()}>
         <Form
           form={form}
           {...formItemLayout}
@@ -270,12 +181,12 @@ const VoucherDetail = ({ mode }) => {
               disabled={isReadOnly()}
               options={[
                 {
-                  value: 'ORDER',
-                  label: 'ORDER',
+                  value: "ORDER",
+                  label: "ORDER",
                 },
                 {
-                  value: 'SHIPPING',
-                  label: 'SHIPPING',
+                  value: "SHIPPING",
+                  label: "SHIPPING",
                 },
               ]}
               placeholder="Chọn loại giảm giá"
@@ -363,8 +274,8 @@ const VoucherDetail = ({ mode }) => {
             <Select
               disabled={isReadOnly()}
               options={[
-                {value: 'ACTIVE', label: 'Hoạt động'},
-                {value: 'INACTIVE', label: 'Ngưng hoạt động'}
+                { value: "ACTIVE", label: "Hoạt động" },
+                { value: "INACTIVE", label: "Ngưng hoạt động" },
               ]}
               placeholder="Chọn trạng thái"
               optionFilterProp="label"

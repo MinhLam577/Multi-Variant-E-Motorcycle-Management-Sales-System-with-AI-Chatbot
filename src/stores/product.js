@@ -14,6 +14,21 @@ class ProductObservable {
       getListMotorBike: flow,
     });
   }
+  // get e-motor color
+  // get e-motor category
+  // get e-motor brand
+  *getEMotorColor() {
+    this.status = RequestStatus.SUBMITTING;
+    try {
+      const { data, status } = yield apiClient.get(endpoints.motorbike.color);
+      if (status !== 200) {
+        this.status = RequestStatus.FETCH_FAILED;
+        return;
+      }
+    } catch (error) {
+      this.status = RequestStatus.FETCH_FAILED;
+    }
+  }
 
   *getListMotorBike({ page, size }) {
     this.status = RequestStatus.SUBMITTING;

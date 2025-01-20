@@ -2,7 +2,6 @@ import { action, makeObservable, observable } from "mobx";
 import secureLocalStorage from "react-secure-storage";
 import apiClient from "../api/apiClient";
 import { keyStorageAccount } from "../constants";
-import endpoints from "../api/endpoints";
 
 class UploadImageObservable {
   roles = null;

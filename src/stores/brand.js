@@ -12,12 +12,6 @@ class BrandObservable {
     makeAutoObservable(this);
     this.rootStore = rootStore;
   }
-  // constructor() {
-  //   makeObservable(this, {
-  //     listBrand: observable,
-  //     getListBrand: action.bound,
-  //   });
-  // }
 
   *getListBrand({ page, size }) {
     this.status = "submitting";

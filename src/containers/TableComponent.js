@@ -55,9 +55,9 @@ const TableComponent = ({
     return sortValue;
   };
 
-  console.log("res?.pagination", res?.pagination);
   return (
     <Table
+      {...res}
       locale={{
         ...AntdTableLocale,
       }}

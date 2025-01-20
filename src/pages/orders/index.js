@@ -1,13 +1,11 @@
+import { Drawer } from "antd";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { Drawer } from "antd";
-import { useLazyQuery } from "@apollo/client";
 
-import OrdersTable from "../../businessComponents/orders/OrdersTable";
 import OrderSearch from "../../businessComponents/orders/OrderSearch";
-import OrderDetail from "./OrderDetail";
-import { GET_ORDERS_LIST } from "../../graphql/orders";
+import OrdersTable from "../../businessComponents/orders/OrdersTable";
 import ExportOrder from "./ExportOrder";
+import OrderDetail from "./OrderDetail";
 
 const Orders = () => {
   const location = useLocation();
@@ -15,9 +13,6 @@ const Orders = () => {
   const [globalFilters, setGlobalFilters] = useState({ searchText: null });
   const [openDrawer, setOpenDrawer] = useState(false);
   const [orderNo, setOrderNo] = useState("");
-  const [loadData, { data, loading, refetch }] = useLazyQuery(GET_ORDERS_LIST, {
-    fetchPolicy: "no-cache",
-  });
 
   const handleViewOrders = (orderData) => {
     setOrderNo(orderData.orderNo);
@@ -62,14 +57,14 @@ const Orders = () => {
         key={"right"}
         size={"large"}
       >
-        <OrderDetail refreshOrders={refetch} orderNo={orderNo} />
+        <OrderDetail refreshOrders={() => {}} orderNo={orderNo} />
       </Drawer>
       <OrdersTable
         globalFilters={globalFilters}
         handleViewOrders={handleViewOrders}
         loadData={() => {}}
-        data={data}
-        loading={loading}
+        data={[]}
+        loading={false}
       />
     </>
   );

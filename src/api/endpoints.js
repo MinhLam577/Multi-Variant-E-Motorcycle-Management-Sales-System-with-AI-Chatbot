@@ -16,6 +16,10 @@ const endpoints = {
   motorbike: {
     list: (page, size) => `/products?current=${page}&pageSize=${size}`,
     details: (id) => `/cars/${id}`,
+    //setting
+    categories: "/categories",
+    color: "/color",
+    brand: "/brand",
   },
   cars: {
     list: (page, size) => `/products?current=${page}&pageSize=${size}`,

@@ -4,7 +4,6 @@ import {
   PlusOutlined,
   SaveOutlined,
 } from "@ant-design/icons";
-import { useMutation } from "@apollo/client";
 import { Button, Card, Divider, Form, Input, Select } from "antd";
 import PropTypes from "prop-types";
 import { useNavigate, useParams } from "react-router-dom";
@@ -13,7 +12,6 @@ import {
   ProcessModalName,
   processWithModals,
 } from "../../containers/processWithModals";
-import { CREATE_STORE, UPDATE_STORE } from "../../graphql/stores";
 
 export const StoresDetailMode = {
   View: 1,
@@ -33,26 +31,6 @@ const formItemLayout = {
 const StoresDetail = ({ mode }) => {
   const { id } = useParams();
   const navigate = useNavigate();
-
-  const loading = false;
-
-  const [createStores, { loading: creating }] = useMutation(CREATE_STORE, {
-    // onCompleted: (res) => {
-    //   if (res?.createStore?.status) {
-    //     message.success("Tạo cửa hàng thành công!");
-    //     navigate(`/stores`);
-    //   }
-    // },
-  });
-
-  const [updateStores, { loading: updating }] = useMutation(UPDATE_STORE, {
-    // onCompleted: (res) => {
-    //   if (res?.updateStore?.status) {
-    //     message.success("Cập nhật cửa hàng thành công!");
-    //     navigate(`/stores`);
-    //   }
-    // },
-  });
 
   const [form] = Form.useForm();
 
@@ -120,20 +98,6 @@ const StoresDetail = ({ mode }) => {
     }
   };
 
-  const prepareForm = (loadedData) => {
-    if (mode === StoresDetailMode.View) {
-      form.setFieldsValue({
-        ...loadedData,
-      });
-    } else if (mode === StoresDetailMode.Add) {
-      form.resetFields();
-    } else if (mode === StoresDetailMode.Edit) {
-      form.setFieldsValue({
-        ...loadedData,
-      });
-    }
-  };
-
   const isReadOnly = () => {
     if (mode === StoresDetailMode.Add) {
       return false;
@@ -173,30 +137,11 @@ const StoresDetail = ({ mode }) => {
     const dto = {
       ...values,
     };
-    if (mode === StoresDetailMode.Add) {
-      createStores({
-        variables: {
-          createStoreInput: {
-            ...dto,
-            timeToDeliveryAfterHours: parseInt(dto.timeToDeliveryAfterHours),
-          },
-        },
-      });
-    } else if (mode === StoresDetailMode.Edit) {
-      updateStores({
-        variables: {
-          updateStoreInput: {
-            ...dto,
-            timeToDeliveryAfterHours: parseInt(dto.timeToDeliveryAfterHours),
-          },
-        },
-      });
-    }
   };
 
   return (
     <>
-      <Card loading={loading || creating || updating} title={getCardTitle()}>
+      <Card loading={false} title={getCardTitle()}>
         <Form
           form={form}
           {...formItemLayout}

@@ -35,7 +35,7 @@ const Profile = () => {
   const user = accountObservable?.account;
   const [isEditing, setIsEditing] = useState(false);
   const [openChangePasswordModal, setOpenChangePasswordModal] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     return reaction(
       () => userObservable.status,
@@ -47,17 +47,16 @@ const Profile = () => {
 
   const handleLoginEvents = (prevStatus, status) => {
     if (prevStatus === "submitting") {
-      // setIsLoading(false);
+      setLoading(false);
     }
     switch (status) {
       case "submitting": {
-        // setIsLoading(true);
+        setLoading(true);
         break;
       }
 
       case "loginSuccess": {
         message.success("Thay đổi thông tin người dùng thành công!");
-
         break;
       }
 

@@ -22,8 +22,6 @@ export class LoginObservable {
         password,
       });
 
-      console.log("status", status !== 200 && !data?.userId);
-
       if (status !== 200 && !data?.userId) {
         this.status = "loginFailed";
         this.errorMsg = "Email hoặc mật khẩu không đúng!";
