@@ -7,7 +7,7 @@ import {
 import { Button, Card, Divider, Form, Input } from "antd";
 import PropTypes from "prop-types";
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 import {
   ProcessModalName,
   processWithModals,

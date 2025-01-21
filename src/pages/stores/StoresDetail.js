@@ -6,7 +6,7 @@ import {
 } from "@ant-design/icons";
 import { Button, Card, Divider, Form, Input, Select } from "antd";
 import PropTypes from "prop-types";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 import { NewsStatusLabel } from "../../constants";
 import {
   ProcessModalName,

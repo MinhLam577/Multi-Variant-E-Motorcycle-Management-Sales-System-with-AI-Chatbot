@@ -1,7 +1,7 @@
 import { reaction } from "mobx";
 import { observer } from "mobx-react-lite";
 import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { deleteProduct, updateCar } from "../../api/cars";
 import { RequestStatus } from "../../constants";
 import Loading from "../../containers/Loading";

@@ -18,7 +18,7 @@ import {
 } from "antd";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 import { createCar, getAll, updateCar } from "../../api/cars";
 import {
   ProcessModalName,

@@ -33,8 +33,4 @@ Logo.propTypes = {
   collapsed: PropTypes.bool,
 };
 
-Logo.defaultProps = {
-  bgColor: "#111111",
-};
-
 export default Logo;

@@ -1,7 +1,5 @@
-import { useQuery } from "@apollo/client";
-import { Tabs, Spin } from "antd";
-import { GET_USER } from "../../graphql/users";
-import { useParams } from "react-router-dom";
+import { Spin, Tabs } from "antd";
+import { useParams } from "react-router";
 import AddressUserTable from "../../businessComponents/users/detail/AddressUserTable";
 import UserForm from "../../businessComponents/users/detail/UserForm";
 

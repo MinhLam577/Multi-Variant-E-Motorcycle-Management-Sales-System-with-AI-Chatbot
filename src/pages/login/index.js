@@ -3,10 +3,11 @@ import { reaction } from "mobx";
 import { observer } from "mobx-react-lite";
 import queryString from "query-string";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useStore } from "../../stores";
 import { regexEmail } from "../../utils/regex";
 import LoginScreen from "./LoginScreen";
+import { useAuth } from "../../contexts/AuthProvider";
 
 const Login = () => {
   const { loginObservable } = useStore();
@@ -14,6 +15,7 @@ const Login = () => {
   const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
   const navigate = useNavigate();
   const [form] = Form.useForm();
+  const auth = useAuth();
 
   useEffect(() => {
     return reaction(
@@ -35,8 +37,7 @@ const Login = () => {
       }
 
       case "loginSuccess": {
-        console.log("loginSuccess");
-        navigate("/");
+        auth.loginAction();
         break;
       }
       case "loginFailed": {

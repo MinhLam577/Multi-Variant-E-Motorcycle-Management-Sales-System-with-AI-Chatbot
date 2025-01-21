@@ -1,6 +1,5 @@
 import { CopyTwoTone } from "@ant-design/icons";
-import { useMutation } from "@apollo/client";
-import { Button, Slider, Switch, Tag, message } from "antd";
+import { Button, Slider, Switch, Tag } from "antd";
 import moment from "moment";
 import PropTypes from "prop-types";
 import { DateTimeFormat } from "../../constants";
@@ -9,7 +8,6 @@ import {
   processWithModals,
 } from "../../containers/processWithModals";
 import TableComponent from "../../containers/TableComponent";
-import { REMOVE_VOUCHER } from "../../graphql/vouchers";
 
 const getColumnsConfig = ({ handleViewVouchers }) => {
   return [
@@ -156,19 +154,11 @@ const getColumnsConfig = ({ handleViewVouchers }) => {
 };
 
 const VouchersTable = ({ handleEditVouchers, handleViewVouchers }) => {
-  const [removeDiscount] = useMutation(REMOVE_VOUCHER, {
-    onCompleted: (res) => {
-      if (res?.removeDiscount?.status) {
-        message.success("Xóa voucher thành công!");
-      }
-    },
-  });
-
   const hanleDeleteVouchers = (id) => {
     processWithModals(ProcessModalName.ConfirmCustomContent)(
       "Xác nhận",
       "Bạn chắc chắn muốn xóa voucher này?"
-    )(() => removeDiscount({ variables: { id } }));
+    )(() => {});
   };
 
   return (

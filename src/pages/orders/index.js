@@ -1,6 +1,6 @@
 import { Drawer } from "antd";
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router";
 
 import OrderSearch from "../../businessComponents/orders/OrderSearch";
 import OrdersTable from "../../businessComponents/orders/OrdersTable";

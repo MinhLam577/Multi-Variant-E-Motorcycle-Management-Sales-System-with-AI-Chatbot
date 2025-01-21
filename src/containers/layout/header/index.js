@@ -5,23 +5,24 @@ import {
 } from "@ant-design/icons";
 import { Avatar, Col, Layout, Menu, Popover, Row, Space, theme } from "antd";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useStore } from "../../../stores";
 import { ProcessModalName, processWithModals } from "../../processWithModals";
+import { useAuth } from "../../../contexts/AuthProvider";
 const { Header } = Layout;
 
 const HeaderComponent = () => {
   const navigate = useNavigate();
   const { accountObservable } = useStore();
   const account = accountObservable?.account;
+  const auth = useAuth();
   const {
     token: { colorBgContainer },
   } = theme.useToken();
   const [openMenuPopup, setOpenMenuPopup] = useState(false);
 
   const handleLogout = () => {
-    accountObservable.clearAccount();
-    navigate("/login");
+    auth.logOut();
   };
 
   const getMenuPopupTitle = () => {

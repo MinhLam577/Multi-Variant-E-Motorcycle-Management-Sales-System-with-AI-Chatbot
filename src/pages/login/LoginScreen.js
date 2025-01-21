@@ -34,9 +34,9 @@ const LoginScreen = ({
               height: "100vh",
             }}
           >
-            <Image src="/logo2048.png" alt="logo" width={180} height={80} />
+            {/* <Image src="/logo2048.png" alt="logo" width={180} height={80} />
             <span className="font-bold text-2xl text-white">Welcome to</span>
-            <span className="font-bold text-4xl text-white">Hồng Sơn Auto</span>
+            <span className="font-bold text-4xl text-white">Hồng Sơn Auto</span> */}
           </div>
         </Col>
         <Col span={12} align="center">

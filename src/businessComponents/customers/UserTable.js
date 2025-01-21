@@ -1,25 +1,10 @@
-import { useLazyQuery, useMutation } from "@apollo/client";
-import { Button, Tag, message } from "antd";
-import {
-  KeyOutlined,
-  EditOutlined,
-  DeleteOutlined,
-  EyeInvisibleOutlined,
-} from "@ant-design/icons";
-import {
-  ACTIVATE_USER,
-  GET_USERS,
-  REMOVE_USER,
-  RESET_PASSWORD,
-} from "../../graphql/users";
-import * as moment from "moment";
-import { DateTimeFormat, UserRoleConstant, UserType } from "../../constants";
+import { Button } from "antd";
+import PropTypes from "prop-types";
+import { useNavigate } from "react-router";
 import {
   ProcessModalName,
   processWithModals,
 } from "../../containers/processWithModals";
-import { useNavigate } from "react-router-dom";
-import PropTypes from "prop-types";
 import TableComponent from "../../containers/TableComponent";
 const getColumnsConfig = ({
   handleUpdateUser,
@@ -94,38 +79,18 @@ const getColumnsConfig = ({
 const CustomerTable = ({ globalFilters, handleUpdateUser, handleViewUser }) => {
   const navigate = useNavigate();
 
-  const [resetPassword] = useMutation(RESET_PASSWORD, {
-    // onCompleted: () => {
-    //   message.success('Cài lại mật khẩu về mặc định thành công!');
-    // },
-  });
-  const [removeUser] = useMutation(REMOVE_USER, {
-    // onCompleted: () => {
-    //   refetch();
-    //   message.success('Ngưng hoạt động của người dùng thành công!');
-    // },
-  });
-  const [activateUser] = useMutation(ACTIVATE_USER, {
-    // onCompleted: (res) => {
-    //   if (res?.activateUser) {
-    //     refetch();
-    //     message.success('Active người dùng thành công!');
-    //   }
-    // },
-  });
-
   const handleResetPassword = (id) => {
     processWithModals(ProcessModalName.ConfirmCustomContent)(
       "Xác nhận",
       "Bạn chắc chắn muốn cài lại mật khẩu của người dùng này về mặc định là ngày sinh (Ví dụ: ngày sinh 15/09/1990 thì mật khẩu là 15091990)?"
-    )(() => resetPassword({ variables: { id } }));
+    )(() => {});
   };
 
   const handleDeleteUser = (id) => {
     processWithModals(ProcessModalName.ConfirmCustomContent)(
       "Xác nhận",
       "Bạn có chắc chắn ngưng hoạt động của người dùng này?"
-    )(() => removeUser({ variables: { id } }));
+    )(() => {});
   };
   const hanleAddressUser = (item) => {
     navigate(`/users/${item}/address`, { replace: true });
@@ -135,7 +100,7 @@ const CustomerTable = ({ globalFilters, handleUpdateUser, handleViewUser }) => {
     processWithModals(ProcessModalName.ConfirmCustomContent)(
       "Xác nhận",
       "Bạn chắc chắn muốn active lại người dùng này ?"
-    )(() => activateUser({ variables: { id } }));
+    )(() => {});
   };
 
   return (

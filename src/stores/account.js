@@ -1,55 +1,67 @@
 import { Base64 } from "js-base64";
-import { action, makeObservable, observable } from "mobx";
+import { action, makeObservable, observable, runInAction } from "mobx";
 import secureLocalStorage from "react-secure-storage";
 import { keyStorageAccount } from "../constants";
 
 export class AccountObservable {
   loadingAccount = true;
   account = null;
-  roles = null;
-  me = null;
 
   constructor() {
     makeObservable(this, {
+      account: observable,
+      loadingAccount: observable,
       setAccount: action.bound,
       getAccount: action.bound,
-      account: observable,
+      clearAccount: action.bound,
+      init: action.bound,
     });
   }
 
-  async setAccount(data) {
-    console.log("updateNewToken-setAccount", data);
+  async init() {
+    await this.getAccount();
+  }
 
+  async setAccount(data) {
     try {
       const jsonValue = JSON.stringify(data);
-      const dataEndcode = Base64.encode(jsonValue);
-      secureLocalStorage.setItem(keyStorageAccount, dataEndcode);
-      this.account = data;
+      const dataEncoded = Base64.encode(jsonValue);
+      secureLocalStorage.setItem(keyStorageAccount, dataEncoded);
+
+      runInAction(() => {
+        this.account = data;
+      });
+
       return data;
     } catch (e) {
+      console.error("Error setting account:", e);
       return null;
     }
   }
 
   async getAccount() {
     try {
-      const dataEndcode = await secureLocalStorage.getItem(keyStorageAccount);
-      const value = Base64.decode(dataEndcode.toString());
-      if (value !== null) {
-        const jsonValue = JSON.parse(value);
-        this.account = jsonValue;
-        return jsonValue;
-      } else {
-        return null;
-      }
+      const dataEncoded = secureLocalStorage.getItem(keyStorageAccount);
+      if (!dataEncoded) return null;
+
+      const value = Base64.decode(dataEncoded);
+      const jsonValue = JSON.parse(value);
+
+      this.account = jsonValue;
+
+      return jsonValue;
     } catch (e) {
+      console.error("Error getting account:", e);
       return null;
     }
   }
 
   async clearAccount() {
     secureLocalStorage.removeItem(keyStorageAccount);
-    this.account = null;
+
+    runInAction(() => {
+      this.account = null;
+    });
   }
 }
 

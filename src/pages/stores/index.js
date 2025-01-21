@@ -1,7 +1,7 @@
 import { PlusOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import StoresSearch from "../../businessComponents/stores/StoresSearch";
 import StoresTable from "../../businessComponents/stores/StoresTable";
 import { GlobalContext } from "../../contexts/global";

@@ -425,8 +425,8 @@ const EMotorbikeDetailScreen = ({
               <Col span={24}>
                 <Card title="Nhóm sản phẩm">
                   <Form.Item
-                    name="brand_id"
-                    rules={[{ required: true, message: "Chọn nhóm!" }]}
+                    name="product_combo"
+                    rules={[{ required: false, message: "Chọn nhóm!" }]}
                   >
                     <Select
                       mode="multiple"

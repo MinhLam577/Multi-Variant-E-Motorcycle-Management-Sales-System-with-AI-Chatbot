@@ -1,10 +1,8 @@
 import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
-import { useMutation } from "@apollo/client";
 import { Modal, Spin, Upload, message } from "antd";
 import ImgCrop from "antd-img-crop";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import { CREATE_RESOURCE, CREATE_RESOURCE_PUBLIC } from "../graphql/resources";
 import { useStore } from "../stores";
 import { sleepFuntions } from "../utils";
 

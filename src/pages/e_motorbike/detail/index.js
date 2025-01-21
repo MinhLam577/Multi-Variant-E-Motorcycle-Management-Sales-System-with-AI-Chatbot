@@ -7,7 +7,7 @@ import {
 import { Form } from "antd";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 import { createCar, updateCar } from "../../../api/cars";
 import {
   ProcessModalName,
@@ -170,8 +170,6 @@ const EMotorbikeDetail = observer(({ mode }) => {
     };
     delete formData.listImgUrl;
     delete formData.stock;
-
-    console.log("handleFormFinish", formData);
 
     if (mode === ProductsDetailMode.Add) {
       delete formData.engineNumber;

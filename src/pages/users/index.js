@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import UserTable from "../../businessComponents/users/UserTable";
 import { GlobalContext } from "../../contexts/global";
 import UserSearch from "../../businessComponents/users/UserSearch";

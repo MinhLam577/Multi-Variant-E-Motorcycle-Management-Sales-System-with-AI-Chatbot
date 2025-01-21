@@ -15,7 +15,7 @@ import {
 import { Breadcrumb, Grid, Layout, Menu, theme } from "antd";
 import PropTypes from "prop-types";
 import { useContext, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router";
 import Logo from "../../components/Logo";
 import { UserRoleConstant } from "../../constants";
 import { GlobalContext } from "../../contexts/global";

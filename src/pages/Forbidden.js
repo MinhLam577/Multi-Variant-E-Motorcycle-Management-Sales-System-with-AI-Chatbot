@@ -1,17 +1,15 @@
 import { useContext } from "react";
 import { GlobalContext } from "../contexts/global";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { Button } from "antd";
+import { useAuth } from "../contexts/AuthProvider";
 
 const Forbidden = () => {
   const { globalDispatch } = useContext(GlobalContext);
   const navigate = useNavigate();
-
+  const auth = useAuth();
   const handleLogout = () => {
-    globalDispatch({
-      type: "logout",
-    });
-    navigate("/login");
+    auth.logOut();
   };
 
   return (
