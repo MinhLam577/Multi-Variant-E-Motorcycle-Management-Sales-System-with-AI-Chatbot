@@ -1,7 +1,7 @@
 import { Spin, Tabs } from "antd";
 import { useParams } from "react-router";
-import AddressUserTable from "../../businessComponents/users/detail/AddressUserTable";
-import UserForm from "../../businessComponents/users/detail/UserForm";
+import AddressUserTable from "../../components/users/detail/AddressUserTable";
+import UserForm from "../../components/users/detail/UserForm";
 
 const UserDetail = () => {
   const { id } = useParams();

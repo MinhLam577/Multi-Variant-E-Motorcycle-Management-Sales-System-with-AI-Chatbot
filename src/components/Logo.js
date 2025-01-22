@@ -15,11 +15,11 @@ const Logo = ({ handleClick, bgColor, collapsed }) => {
         )}
         {collapsed ? (
           <div>
-            <img alt="logo" className="w-30 md:w-20" src="/logo192.png" />
+            <img alt="logo" className="w-10 md:w-10" src="/logo192.png" />
           </div>
         ) : (
           <div>
-            <img alt="logo" className="w-15 md:w-20" src="/logo2048.png" />
+            <img alt="logo" className="w-10 md:w-20" src="/logo2048.png" />
           </div>
         )}
       </button>

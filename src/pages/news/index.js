@@ -2,8 +2,8 @@ import { PlusOutlined } from "@ant-design/icons";
 import { Button, Col, Row } from "antd";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router";
-import NewsSearch from "../../businessComponents/news/NewsSearch";
-import NewsTable from "../../businessComponents/news/NewsTable";
+import NewsSearch from "../../components/news/NewsSearch";
+import NewsTable from "../../components/news/NewsTable";
 import { GlobalContext } from "../../contexts/global";
 
 const News = () => {

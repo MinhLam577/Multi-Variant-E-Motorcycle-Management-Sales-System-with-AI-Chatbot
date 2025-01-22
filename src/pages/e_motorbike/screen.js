@@ -2,8 +2,8 @@ import { PlusOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import { toJS } from "mobx";
 import PropTypes from "prop-types";
-import ProductsSearch from "../../businessComponents/products/ProductsSearch";
-import ProductsTable from "../../businessComponents/products/ProductsTable";
+import ProductsSearch from "../../components/products/ProductsSearch";
+import ProductsTable from "../../components/products/ProductsTable";
 
 const EMotorbikeScreen = ({
   handleEditProducts,

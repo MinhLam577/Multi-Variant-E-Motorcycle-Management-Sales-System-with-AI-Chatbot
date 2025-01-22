@@ -1,10 +1,9 @@
 import axios from "axios";
+import secureLocalStorage from "react-secure-storage";
+import { keyStorageAccount } from "../constants";
 import { AccountObservable } from "../stores/account";
 import endpoints from "./endpoints";
-import { keyStorageAccount } from "../constants";
-import secureLocalStorage from "react-secure-storage";
 
-// Flag để tránh nhiều request refresh cùng lúc
 let isRefreshing = false;
 let refreshSubscribers = [];
 
@@ -43,11 +42,9 @@ const handleError = async (error) => {
     case 400:
       console.log("Bad Request");
       return respStatus;
-    // handle authentication
     case 403:
     case 401:
       return handleError401(originalRequest, error);
-
     case 404: {
       return respStatus;
     }
@@ -108,7 +105,6 @@ const refreshToken = async () => {
         Authorization: `Bearer ${account?.refresh_token}`,
       },
     });
-    console.log("refreshToken", data);
 
     const newAccessToken = data?.access_token;
     // Kiểm tra nếu token không tồn tại thì sẽ chuyển về màn hình login
@@ -122,17 +118,13 @@ const refreshToken = async () => {
     await setAccount(updateNewToken);
     return newAccessToken;
   } catch (e) {
-    console.log("refreshToken error", e);
-
     checkLogout();
   }
 };
 
 const checkLogout = async () => {
-  console.log("logout user");
-
-  // await secureLocalStorage.removeItem(keyStorageAccount);
-  // window.location.href = "/login";
+  await secureLocalStorage.removeItem(keyStorageAccount);
+  window.location.href = "/login";
 };
 
 apiClient.interceptors.response.use(handleSuccess, handleError);

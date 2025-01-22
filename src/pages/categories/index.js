@@ -2,7 +2,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { Button, message, Space } from "antd";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router";
-import CategoriesTable from "../../businessComponents/categories/CategoriesTable";
+import CategoriesTable from "../../components/categories/CategoriesTable";
 import {
   ProcessModalName,
   processWithModals,

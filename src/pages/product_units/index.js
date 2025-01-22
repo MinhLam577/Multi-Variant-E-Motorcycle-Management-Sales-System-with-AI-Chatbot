@@ -3,7 +3,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router";
 import { useContext } from "react";
 import { GlobalContext } from "../../contexts/global";
-import ProductUnitsTable from "../../businessComponents/product_units/ProductUnitsTable";
+import ProductUnitsTable from "../../components/product_units/ProductUnitsTable";
 
 const ProductUnits = () => {
   const navigate = useNavigate();

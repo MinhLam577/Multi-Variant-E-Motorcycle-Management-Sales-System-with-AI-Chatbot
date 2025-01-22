@@ -3,8 +3,8 @@ import { Button } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { deleteProduct, getCars, updateCar } from "../../api/cars";
-import ProductsSearch from "../../businessComponents/products/ProductsSearch";
-import ProductsTable from "../../businessComponents/products/ProductsTable";
+import ProductsSearch from "../../components/products/ProductsSearch";
+import ProductsTable from "../../components/products/ProductsTable";
 import {
   ProcessModalName,
   processWithModals,

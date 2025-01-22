@@ -1,6 +1,4 @@
 export const handleErrorMessage = (error) => {
-  console.log("handleErrorMessage", error);
-
   switch (error?.statusCode) {
     case 503: {
       return "Kết nối bị gián đoạn, vui lòng thử lại sau!";

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import StatisticCard from "../../businessComponents/statistic/StatisticCard";
-import StatisticChart from "../../businessComponents/statistic/StatisticChart";
-import StatisticSearch from "../../businessComponents/statistic/StatisticSearch";
+import StatisticCard from "../../components/statistic/StatisticCard";
+import StatisticChart from "../../components/statistic/StatisticChart";
+import StatisticSearch from "../../components/statistic/StatisticSearch";
 
 function Statistic() {
   const [globalFilters, setGlobalFilters] = useState({ searchText: null });

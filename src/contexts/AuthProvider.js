@@ -27,7 +27,6 @@ const AuthProvider = observer(({ children }) => {
     if (!dataEncoded) return null;
     const value = Base64.decode(dataEncoded);
     const jsonValue = JSON.parse(value);
-    console.log("jsonValue", jsonValue);
     return jsonValue;
   };
 

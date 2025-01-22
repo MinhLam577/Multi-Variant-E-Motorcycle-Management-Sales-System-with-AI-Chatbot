@@ -1,4 +1,4 @@
-import SalesChart from "../../businessComponents/dashboard/SalesChart";
+import SalesChart from "../../components/dashboard/SalesChart";
 
 const Dashboard = () => {
   return (

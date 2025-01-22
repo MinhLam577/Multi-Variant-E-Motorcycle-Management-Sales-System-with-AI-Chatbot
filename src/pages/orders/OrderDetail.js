@@ -3,9 +3,9 @@ import moment from "moment";
 import PropTypes from "prop-types";
 import { useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
-import OrderPrint from "../../businessComponents/orders/detail/OrderPrint";
-import OrderProductsComboTable from "../../businessComponents/orders/detail/OrderProductsComboTable";
-import OrderProductsTable from "../../businessComponents/orders/detail/OrderProductsTable";
+import OrderPrint from "../../components/orders/detail/OrderPrint";
+import OrderProductsComboTable from "../../components/orders/detail/OrderProductsComboTable";
+import OrderProductsTable from "../../components/orders/detail/OrderProductsTable";
 import {
   DateTimeFormat,
   EnumOrderColorStatuses,

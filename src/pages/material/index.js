@@ -1,6 +1,6 @@
 import { Button, Form, Select } from "antd";
 import { useState } from "react";
-import MaterialTable from "../../businessComponents/material/MaterialTable";
+import MaterialTable from "../../components/material/MaterialTable";
 
 export default function Material() {
   const [loading, setLoading] = useState(false);

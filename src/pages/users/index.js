@@ -1,8 +1,8 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router";
-import UserTable from "../../businessComponents/users/UserTable";
+import UserTable from "../../components/users/UserTable";
 import { GlobalContext } from "../../contexts/global";
-import UserSearch from "../../businessComponents/users/UserSearch";
+import UserSearch from "../../components/users/UserSearch";
 import { Button } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 

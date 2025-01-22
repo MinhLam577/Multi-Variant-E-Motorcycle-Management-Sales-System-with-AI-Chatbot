@@ -3,7 +3,7 @@ import { Button, Space } from "antd";
 import { useContext } from "react";
 import { useNavigate } from "react-router";
 import { GlobalContext } from "../../contexts/global";
-import VouchersTable from "../../businessComponents/vouchers/VouchersTable";
+import VouchersTable from "../../components/vouchers/VouchersTable";
 
 export default function Vouchers() {
   const navigate = useNavigate();

@@ -22,12 +22,10 @@ export const getAll = async () => {
 export const getMotorBike = async ({ page, size }) => {
   try {
     const response = await apiClient.get(endpoints.cars.list(page, size));
-    console.log("getCars-response", response);
     if (response?.status === 200) {
       return response.data;
     }
   } catch (error) {
-    console.log("getCars-error", error);
     return error;
   }
 };
