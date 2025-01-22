@@ -1,13 +1,20 @@
-import { CloseOutlined, EditOutlined, PlusOutlined, SaveOutlined } from "@ant-design/icons";
-import { Button, Card, Divider, Form, Input, InputNumber, Select, message } from "antd";
-import { ProcessModalName, processWithModals } from "../../containers/processWithModals";
-import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { CREATE_CATEGORY, GET_CATEGORY, UPDATE_CATEGORY } from "../../graphql/categories";
-import { useLazyQuery, useMutation } from "@apollo/client";
-import UploadSinglePictureGetUrl, { UploadSinglePictureGetUrlRemoteMode } from "../../containers/UploadSinglePictureGetUrl";
-import PropTypes from 'prop-types';
-import ProductsTable from "../../businessComponents/categories/detail/ProductsTable";
+import {
+  CloseOutlined,
+  EditOutlined,
+  PlusOutlined,
+  SaveOutlined,
+} from "@ant-design/icons";
+import { Button, Card, Divider, Form, Input, InputNumber, Select } from "antd";
+import PropTypes from "prop-types";
+import { useState } from "react";
+import { useNavigate, useParams } from "react-router";
+import {
+  ProcessModalName,
+  processWithModals,
+} from "../../containers/processWithModals";
+import UploadSinglePictureGetUrl, {
+  UploadSinglePictureGetUrlRemoteMode,
+} from "../../containers/UploadSinglePictureGetUrl";
 
 export const CategoriesDetailMode = {
   View: 1,
@@ -29,98 +36,85 @@ const CategoriesDetail = ({ mode }) => {
 
   const navigate = useNavigate();
   const [fileList, setFileList] = useState([]);
-  const [loadData, { loading }] = useLazyQuery(GET_CATEGORY, {
-    fetchPolicy: 'no-cache',
-    onCompleted: res => {
-      if (res?.admin_category) {
-        prepareForm(res?.admin_category);
-      }
-      message.success('Tải chi tiết danh mục thành công!');
-    },
-  });
-  const [createCategory, { loading: creating }] = useMutation(CREATE_CATEGORY, {
-    onCompleted: res => {
-      if (res?.createCategory?.status) {
-        message.success('Tạo danh mục thành công!');
-        navigate(`/categories`);
-      }
-    },
-  });
 
-  const [updateCategory, { loading: updating }] = useMutation(UPDATE_CATEGORY, {
-    onCompleted: res => {
-      if (res?.updateCategory?.status) {
-        message.success('Cập nhật danh mục thành công!');
-        navigate(`/categories`);
-      }
-    },
-  });
+  const [loading] = useState(false);
 
   const [form] = Form.useForm();
 
   const getCardTitle = () => {
     if (mode === CategoriesDetailMode.View) {
-      return 'Chi tiết danh mục';
-    }
-    else if (mode === CategoriesDetailMode.Add) {
-      return 'Tạo danh mục';
-    }
-    else if (mode === CategoriesDetailMode.Edit) {
-      return 'Chỉnh sửa danh mục';
+      return "Chi tiết danh mục";
+    } else if (mode === CategoriesDetailMode.Add) {
+      return "Tạo danh mục";
+    } else if (mode === CategoriesDetailMode.Edit) {
+      return "Chỉnh sửa danh mục";
     }
   };
 
   const getButtonOkText = () => {
     if (mode === CategoriesDetailMode.Add) {
-      return <>
-        <PlusOutlined />&nbsp;Tạo
-      </>;
-    }
-    else if (mode === CategoriesDetailMode.Edit) {
-      return <>
-        <SaveOutlined />&nbsp;Lưu
-      </>;
+      return (
+        <>
+          <PlusOutlined />
+          &nbsp;Tạo
+        </>
+      );
+    } else if (mode === CategoriesDetailMode.Edit) {
+      return (
+        <>
+          <SaveOutlined />
+          &nbsp;Lưu
+        </>
+      );
     }
   };
 
   const getButtonCancelText = () => {
     if (mode === CategoriesDetailMode.Add) {
-      return <>
-        <CloseOutlined />&nbsp;Hủy
-      </>;
-    }
-    else if (mode === CategoriesDetailMode.Edit) {
-      return <>
-        <CloseOutlined />&nbsp;Hủy
-      </>;
-    }
-    else if (mode === CategoriesDetailMode.View) {
-      return <>
-        <CloseOutlined />&nbsp;Đóng
-      </>;
+      return (
+        <>
+          <CloseOutlined />
+          &nbsp;Hủy
+        </>
+      );
+    } else if (mode === CategoriesDetailMode.Edit) {
+      return (
+        <>
+          <CloseOutlined />
+          &nbsp;Hủy
+        </>
+      );
+    } else if (mode === CategoriesDetailMode.View) {
+      return (
+        <>
+          <CloseOutlined />
+          &nbsp;Đóng
+        </>
+      );
     }
   };
 
   const getButtonEditText = () => {
     if (mode === CategoriesDetailMode.View) {
-      return <>
-        <EditOutlined />&nbsp;Sửa
-      </>;
+      return (
+        <>
+          <EditOutlined />
+          &nbsp;Sửa
+        </>
+      );
     }
   };
 
   const prepareForm = (loadedData) => {
     if (mode === CategoriesDetailMode.View) {
       form.setFieldsValue({
-        ...loadedData
+        ...loadedData,
       });
-    }
-    else if (mode === CategoriesDetailMode.Add) {
+    } else if (mode === CategoriesDetailMode.Add) {
       form.resetFields();
-    }
-    else if (mode === CategoriesDetailMode.Edit) {
+    } else if (mode === CategoriesDetailMode.Edit) {
       form.setFieldsValue({
-        ...loadedData
+        ...loadedData,
       });
     }
   };
@@ -128,8 +122,7 @@ const CategoriesDetail = ({ mode }) => {
   const isReadOnly = () => {
     if (mode === CategoriesDetailMode.Add) {
       return false;
-    }
-    else if (mode === CategoriesDetailMode.Edit) {
+    } else if (mode === CategoriesDetailMode.Edit) {
       return false;
     }
 
@@ -140,8 +133,7 @@ const CategoriesDetail = ({ mode }) => {
   const handleOk = () => {
     if (mode === CategoriesDetailMode.Add) {
       form.submit();
-    }
-    else if (mode === CategoriesDetailMode.Edit) {
+    } else if (mode === CategoriesDetailMode.Edit) {
       form.submit();
     }
   };
@@ -151,9 +143,8 @@ const CategoriesDetail = ({ mode }) => {
       processWithModals(ProcessModalName.ConfirmCancelEditing)(() => {
         navigate(`/categories`);
       });
-    }
-    else {
-      navigate('/categories');
+    } else {
+      navigate("/categories");
     }
   };
 
@@ -165,59 +156,24 @@ const CategoriesDetail = ({ mode }) => {
 
   const handleFormFinish = (values) => {
     const dto = {
-      ...values
+      ...values,
     };
-
-    if (mode === CategoriesDetailMode.Add) {
-      createCategory({
-        variables: {
-          createCategoryInput: {
-            ...dto
-          }
-        }
-      });
-    }
-    else if (mode === CategoriesDetailMode.Edit) {
-      updateCategory({
-        variables: {
-          updateCategoryInput: {
-            ...dto,
-            categoryId: id
-          }
-        }
-      });
-    }
   };
-
-  useEffect(() => {
-    if (id) {
-      loadData({
-        variables: {
-          id
-        }
-      });
-    }
-    // eslint-disable-next-line
-  }, [id, mode]);
-
 
   return (
     <>
-      <Card
-        loading={loading || creating || updating}
-        title={getCardTitle()}
-      >
+      <Card loading={loading} title={getCardTitle()}>
         <Form
           form={form}
           {...formItemLayout}
-          layout={'vertical'}
+          layout={"vertical"}
           autoComplete="off"
           onFinish={handleFormFinish}
         >
           <Form.Item
             className="flex justify-center"
             name="image"
-            rules={[{ required: true, message: 'Hãy chọn ảnh bìa!' }]}
+            rules={[{ required: true, message: "Hãy chọn ảnh bìa!" }]}
           >
             <UploadSinglePictureGetUrl
               remoteMode={UploadSinglePictureGetUrlRemoteMode.Private}
@@ -230,69 +186,60 @@ const CategoriesDetail = ({ mode }) => {
           <Form.Item
             label="Tên danh mục"
             name="categoryName"
-            rules={[{ required: true, message: 'Hãy nhập tên danh mục!' }]}
+            rules={[{ required: true, message: "Hãy nhập tên danh mục!" }]}
           >
             <Input readOnly={isReadOnly()} placeholder="Nhập tên danh mục" />
           </Form.Item>
-          <Form.Item
-            label="Trạng thái"
-            name="isActive"
-          >
+          <Form.Item label="Trạng thái" name="isActive">
             <Select
               allowClear
               optionFilterProp="label"
               options={[
                 {
                   value: true,
-                  label: 'Hiển thị'
+                  label: "Hiển thị",
                 },
                 {
                   value: false,
-                  label: 'Không hiển thị'
-                }
+                  label: "Không hiển thị",
+                },
               ]}
               readOnly={isReadOnly()}
-              placeholder="Chọn trạng thái" />
+              placeholder="Chọn trạng thái"
+            />
           </Form.Item>
-          <Form.Item
-            label="Màn hình"
-            name="screen"
-          >
+          <Form.Item label="Màn hình" name="screen">
             <Select
               allowClear
               optionFilterProp="label"
               options={[
                 {
-                  value: 'HOME',
-                  label: 'Trang chủ'
+                  value: "HOME",
+                  label: "Trang chủ",
                 },
                 {
-                  value: 'PRODUCT',
-                  label: 'Sản phẩm'
-                },
-                {
-                  value: 'PRODUCT_COMBO',
-                  label: 'Món ăn'
-                },
-                {
-                  value: 'SPICE',
-                  label: 'Gia vị'
+                  value: "PRODUCT",
+                  label: "Sản phẩm",
                 },
               ]}
               readOnly={isReadOnly()}
-              placeholder="Chọn màn hình hiển thị" />
+              placeholder="Chọn màn hình hiển thị"
+            />
           </Form.Item>
           <Form.Item
             label="Số thứ tự"
             name="sequenceNo"
-            rules={[{ required: true, message: 'Hãy nhập số thứ tự!' }]}
+            rules={[{ required: true, message: "Hãy nhập số thứ tự!" }]}
           >
             <InputNumber
-              style={{ width: '100%' }}
-              formatter={value =>
-                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+              style={{ width: "100%" }}
+              formatter={(value) =>
+                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
               }
-              min={0} readOnly={isReadOnly()} placeholder="Nhập số thứ tự" />
+              min={0}
+              readOnly={isReadOnly()}
+              placeholder="Nhập số thứ tự"
+            />
           </Form.Item>
           <>
             <Button onClick={handleCancel}>{getButtonCancelText()}</Button>
@@ -309,13 +256,13 @@ const CategoriesDetail = ({ mode }) => {
             )}
           </>
         </Form>
-      </Card >
+      </Card>
     </>
   );
 };
 
 CategoriesDetail.propTypes = {
-  mode: PropTypes.number
+  mode: PropTypes.number,
 };
 
 export default CategoriesDetail;

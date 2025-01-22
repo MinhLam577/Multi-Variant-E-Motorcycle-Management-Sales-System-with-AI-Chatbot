@@ -137,6 +137,7 @@ const ProductsTable = ({
   handleDeleteProducts,
   handleStatusProducts,
   data,
+  pagination,
 }) => {
   return (
     <TableComponent
@@ -149,6 +150,7 @@ const ProductsTable = ({
       handleEditProducts={handleEditProducts}
       handleViewProducts={handleViewProducts}
       handleDeleteProducts={handleDeleteProducts}
+      pagination={pagination}
     />
   );
 };
@@ -160,5 +162,6 @@ ProductsTable.propTypes = {
   handleDeleteProducts: PropTypes.func,
   handleStatusProducts: PropTypes.func,
   data: [],
+  pagination: PropTypes.object,
 };
 export default ProductsTable;

@@ -1,26 +1,24 @@
-import { useContext } from "react";
-import { GlobalContext } from "../contexts/global";
-import { useNavigate } from "react-router-dom";
-import { Button } from "antd";
+import { Button, Result } from "antd";
+import { useAuth } from "../contexts/AuthProvider";
 
 const Forbidden = () => {
-  const { globalDispatch } = useContext(GlobalContext);
-  const navigate = useNavigate();
-
+  const auth = useAuth();
   const handleLogout = () => {
-    globalDispatch({
-      type: 'logout',
-    });
-    navigate('/login');
+    auth.logOut();
   };
 
-
-  return <div>
-    Forbidden
-    <Button onClick={()=>handleLogout()}>Logout</Button>
-  </div>;
+  return (
+    <Result
+      status="403"
+      title="403"
+      subTitle="Xin lỗi, bạn không được phép truy cập trang này."
+      extra={
+        <Button type="primary" onClick={() => handleLogout()}>
+          Về trang chủ
+        </Button>
+      }
+    />
+  );
 };
-
-Forbidden.propTypes = {};
 
 export default Forbidden;

@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 
 const Logo = ({ handleClick, bgColor, collapsed }) => {
   return (
-    <div className="w-full flex justify-center p-2">
+    <div className="w-full flex justify-center">
       <button
         onClick={handleClick}
         className={`w-full border-0 rounded-2xl ${collapsed ? "" : "p-2"}`}
@@ -10,16 +10,16 @@ const Logo = ({ handleClick, bgColor, collapsed }) => {
       >
         {bgColor === "#FFFFFF" && (
           <div>
-            <img alt="logo" className="w-30 md:w-120" src="/logo192.png" />
+            <img alt="logo" className="w-2/3 md:w-120" src="/logo192.png" />
           </div>
         )}
         {collapsed ? (
           <div>
-            <img alt="logo" className="w-10 md:w-20" src="/logo192.png" />
+            <img alt="logo" className="w-30 md:w-20" src="/logo192.png" />
           </div>
         ) : (
           <div>
-          <img alt="logo" className="w-15 md:w-20" src="/logo2048.png" />
+            <img alt="logo" className="w-15 md:w-20" src="/logo2048.png" />
           </div>
         )}
       </button>
@@ -31,10 +31,6 @@ Logo.propTypes = {
   handleClick: PropTypes.func,
   bgColor: PropTypes.string,
   collapsed: PropTypes.bool,
-};
-
-Logo.defaultProps = {
-  bgColor: "#111111",
 };
 
 export default Logo;

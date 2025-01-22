@@ -1,33 +1,70 @@
-import { useContext, useState } from 'react';
-import { GlobalContext } from '../contexts/global';
-import { Button, Card, Divider, Form, Input, message } from 'antd';
-import { CloseOutlined, EditOutlined, SaveOutlined, KeyOutlined } from '@ant-design/icons';
-import { ProcessModalName, processWithModals } from '../containers/processWithModals';
-import ChangePasswordModal from '../containers/ChangePasswordModal';
-import { useMutation } from '@apollo/client';
-import { UPDATE_USER_PROFILE } from '../graphql/users';
-import UploadAvatarGetUrlWithImgCrop, { UploadAvatarGetUrlWithImgCropRemoteMode } from '../containers/UploadAvatarGetUrlWithImgCrop';
-
-// eslint-disable-next-line
-const clearProperties = ({ obj, ignoreProperties }) => {
-  if (typeof obj === 'object' && Array.isArray(ignoreProperties)) {
-    Object.keys(obj).forEach((key) => {
-      if (ignoreProperties.includes(key)) {
-        obj[key] = undefined;
-      }
-      else if (typeof obj[key] === 'object') {
-        clearProperties({ obj: obj[key], ignoreProperties });
-      }
-    })
-  }
-};
+import {
+  CloseOutlined,
+  EditOutlined,
+  KeyOutlined,
+  SaveOutlined,
+} from "@ant-design/icons";
+import {
+  Button,
+  Card,
+  Col,
+  Divider,
+  Form,
+  Input,
+  message,
+  Row,
+  Select,
+} from "antd";
+import { reaction } from "mobx";
+import { useEffect, useState } from "react";
+import endpoints from "../api/endpoints";
+import ChangePasswordModal from "../containers/ChangePasswordModal";
+import {
+  ProcessModalName,
+  processWithModals,
+} from "../containers/processWithModals";
+import UploadAvatarGetUrlWithImgCrop, {
+  UploadAvatarGetUrlWithImgCropRemoteMode,
+} from "../containers/UploadAvatarGetUrlWithImgCrop";
+import { useStore } from "../stores";
+import { regexPhone, regexUsername } from "../utils/regex";
 
 const Profile = () => {
   const [form] = Form.useForm();
-  const { user, globalDispatch } = useContext(GlobalContext);
-  const [updateUserProfile] = useMutation(UPDATE_USER_PROFILE);
+  const { accountObservable, userObservable } = useStore();
+  const user = accountObservable?.account;
   const [isEditing, setIsEditing] = useState(false);
   const [openChangePasswordModal, setOpenChangePasswordModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    return reaction(
+      () => userObservable.status,
+      (status, prevStatus) => {
+        handleLoginEvents(prevStatus, status);
+      }
+    );
+  }, []);
+
+  const handleLoginEvents = (prevStatus, status) => {
+    if (prevStatus === "submitting") {
+      setLoading(false);
+    }
+    switch (status) {
+      case "submitting": {
+        setLoading(true);
+        break;
+      }
+
+      case "loginSuccess": {
+        message.success("Thay đổi thông tin người dùng thành công!");
+        break;
+      }
+
+      default: {
+        break;
+      }
+    }
+  };
 
   const switchMode = (enableEditing, values) => {
     if (!enableEditing) {
@@ -36,86 +73,141 @@ const Profile = () => {
     setIsEditing(enableEditing);
   };
 
-  const handleUpdateUserProfile = (values) => {
+  const handleUpdateUserProfile = async (values) => {
     const dto = {
       ...values,
-      email: undefined
     };
-
-    updateUserProfile({
-      variables: {
-        updateUserProfileInput: {
-          ...dto
-        }
-      },
-      onCompleted: (res) => {
-        if (res?.updateUserProfile?.status) {
-          let data = {
-            ...user,
-            ...res?.updateUserProfile,
-            status: undefined
-          };
-          localStorage.setItem('user', JSON.stringify(data));
-          globalDispatch({
-            type: 'update',
-            data: data
-          });
-          switchMode(false, data);
-          message.success('Thay đổi thông tin người dùng thành công!');
-        }
-      },
-    })
+    await userObservable.updateUserProfile(dto, user?.id);
   };
 
   return (
     <>
-      <Card title='Thông tin cơ bản'
-        extra={isEditing ?
-          <>
-            <Button title='Hủy' onClick={() => processWithModals(ProcessModalName.ConfirmCancelEditing)(() => switchMode(false))}><CloseOutlined /></Button>
-            <Divider type='vertical' />
-            <Button title='Lưu' onClick={() => form.submit()}><SaveOutlined /></Button>
-          </>
-          :
-          <>
-            <Button title='Chỉnh sửa' onClick={() => switchMode(true)}><EditOutlined /></Button>
-          </>
+      <Card
+        title="Thông tin cơ bản"
+        extra={
+          isEditing ? (
+            <>
+              <Button
+                title="Hủy"
+                onClick={() =>
+                  processWithModals(ProcessModalName.ConfirmCancelEditing)(() =>
+                    switchMode(false)
+                  )
+                }
+              >
+                <CloseOutlined />
+              </Button>
+              <Divider type="vertical" />
+              <Button title="Lưu" onClick={() => form.submit()}>
+                <SaveOutlined />
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button title="Chỉnh sửa" onClick={() => switchMode(true)}>
+                <EditOutlined />
+              </Button>
+            </>
+          )
         }
         actions={[
-          <Button key={1} title='Thay đổi mật khẩu' onClick={() => setOpenChangePasswordModal(true)}><KeyOutlined />&nbsp;Thay đổi mật khẩu</Button>
+          <Button
+            key={1}
+            title="Thay đổi mật khẩu"
+            onClick={() => setOpenChangePasswordModal(true)}
+          >
+            <KeyOutlined />
+            &nbsp;Thay đổi mật khẩu
+          </Button>,
         ]}
       >
         <Form
           form={form}
-          layout='vertical'
+          layout="vertical"
           disabled={!isEditing}
           initialValues={user}
-          onFinish={(values) => processWithModals(ProcessModalName.ConfirmSaveEditing)(() => handleUpdateUserProfile(values))}
+          onFinish={(values) =>
+            processWithModals(ProcessModalName.ConfirmSaveEditing)(() =>
+              handleUpdateUserProfile(values)
+            )
+          }
         >
           <Form.Item
-            name='avatar'
-            label='Hình đại diện'
+            name="avatarUrl"
+            label="Hình đại diện"
             tooltip={`Hình đại diện`}
           >
-            <UploadAvatarGetUrlWithImgCrop remoteMode={UploadAvatarGetUrlWithImgCropRemoteMode.Private} />
+            <UploadAvatarGetUrlWithImgCrop
+              remoteMode={UploadAvatarGetUrlWithImgCropRemoteMode.Private}
+              uploadUrl={endpoints.user.uploadAvatar}
+            />
           </Form.Item>
-          <Form.Item
-            name={'fullname'}
-            label={'Họ và tên'}
-          >
-            <Input placeholder="Nhập Họ và tên" />
-          </Form.Item>
-          <Form.Item
-            name={'email'}
-            label={'Email'}
-          >
-            <Input disabled placeholder="Nhập Email" />
-          </Form.Item>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                rules={[
+                  {
+                    required: true,
+                    message: "Họ tên không được để trống",
+                  },
+                  {
+                    pattern: regexUsername,
+                    message: "Họ tên không hợp lệ",
+                  },
+                ]}
+                name={"username"}
+                label={"Họ và tên"}
+              >
+                <Input placeholder="Nhập Họ và tên" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name={"email"} label={"Email"}>
+                <Input disabled placeholder="Nhập Email" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                rules={[
+                  {
+                    required: true,
+                    message: "Số điện thoại không được để trống",
+                  },
+                  {
+                    pattern: regexPhone,
+                    message: "Số điện thoại không hợp lệ",
+                  },
+                ]}
+                name={"phoneNumber"}
+                label={"Số điện thoại"}
+              >
+                <Input placeholder="Nhập số điện thoại" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name={"role"} label={"Role"}>
+                <Select
+                  options={[
+                    { value: "admin", label: "Admin" },
+                    { value: "user", label: "User" },
+                  ]}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={24}>
+              <Form.Item name={"address"} label={"Địa chỉ"}>
+                <Input placeholder="Nhập Địa chỉ" />
+              </Form.Item>
+            </Col>
+          </Row>
         </Form>
       </Card>
-      <ChangePasswordModal open={openChangePasswordModal} cancelCallback={() => setOpenChangePasswordModal(false)} />
+      <ChangePasswordModal
+        open={openChangePasswordModal}
+        cancelCallback={() => setOpenChangePasswordModal(false)}
+      />
     </>
   );
-}
+};
 
 export default Profile;

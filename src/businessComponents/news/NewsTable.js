@@ -1,26 +1,13 @@
-import { useLazyQuery, useMutation } from "@apollo/client";
-import { Button, message } from "antd";
-import {
-  DeleteOutlined,
-  EditOutlined,
-  EyeInvisibleOutlined,
-  EyeOutlined,
-} from "@ant-design/icons";
-import { DateTimeFormat, Status } from "../../constants";
-import {
-  ACTIVATE_NEWS,
-  DEACTIVATE_NEWS,
-  GET_NEWS_LIST,
-  REMOVE_NEWS,
-} from "../../graphql/news";
+import { Button } from "antd";
 import * as moment from "moment";
+import PropTypes from "prop-types";
+import GroupActionButton from "../../components/GroupActionButton";
+import { DateTimeFormat, Status } from "../../constants";
 import {
   ProcessModalName,
   processWithModals,
 } from "../../containers/processWithModals";
-import PropTypes from "prop-types";
 import TableComponent from "../../containers/TableComponent";
-import GroupActionButton from "../../components/GroupActionButton";
 
 // Fake newsList data
 const newsList = [
@@ -98,47 +85,25 @@ const NewsTable = ({ globalFilters, handleUpdateNews, handleViewNews }) => {
   const data = { newsList };
   const loading = false;
 
-  const [removeNews] = useMutation(REMOVE_NEWS, {
-    onCompleted: (res) => {
-      if (res?.removeNews?.status) {
-        message.success("Xóa tin tức thành công!");
-      }
-    },
-  });
-  const [activateNews] = useMutation(ACTIVATE_NEWS, {
-    onCompleted: (res) => {
-      if (res?.activateNews?.status) {
-        message.success("Đăng tải tin tức thành công!");
-      }
-    },
-  });
-  const [deactivateNews] = useMutation(DEACTIVATE_NEWS, {
-    onCompleted: (res) => {
-      if (res?.deactivateNews?.status) {
-        message.success("Gỡ bỏ tin tức thành công!");
-      }
-    },
-  });
-
   const hanleDeleteNews = (id) => {
     processWithModals(ProcessModalName.ConfirmCustomContent)(
       "Xác nhận",
       "Bạn chắc chắn muốn xóa tin tức này?"
-    )(() => removeNews({ variables: { id } }));
+    )(() => {});
   };
 
   const hanleActivateNews = (id) => {
     processWithModals(ProcessModalName.ConfirmCustomContent)(
       "Xác nhận",
       "Bạn chắc chắn muốn đăng tải tin tức này lên?"
-    )(() => activateNews({ variables: { id } }));
+    )(() => {});
   };
 
   const hanleDeactivateNews = (id) => {
     processWithModals(ProcessModalName.ConfirmCustomContent)(
       "Xác nhận",
       "Bạn chắc chắn muốn gỡ bỏ tin tức này xuống?"
-    )(() => deactivateNews({ variables: { id } }));
+    )(() => {});
   };
 
   return (

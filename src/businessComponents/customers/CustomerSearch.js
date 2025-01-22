@@ -1,31 +1,13 @@
-import { Button, Form, Input, Select } from "antd";
-import { UserRoleConstant } from "../../constants";
 import { SearchOutlined } from "@ant-design/icons";
+import { Button, Form, Input, Select } from "antd";
 import PropTypes from "prop-types";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
+import { UserRoleConstant } from "../../constants";
 import { GlobalContext } from "../../contexts/global";
-import { useLazyQuery } from "@apollo/client";
-import { GET_USERS } from "../../graphql/users";
 
 const CustomerSearch = ({ setFilters }) => {
   const { user } = useContext(GlobalContext);
-  const [sales, setSales] = useState([]);
-  const [loadData, { data }] = useLazyQuery(GET_USERS, {
-    fetchPolicy: "no-cache",
-  });
-
-  useEffect(() => {
-    if (user?.role == UserRoleConstant.ADMIN) {
-      loadData({
-        variables: { filters: { filters: { role: UserRoleConstant.SALES } } },
-      });
-    }
-  }, []);
-  useEffect(() => {
-    if (data?.users?.data) {
-      setSales(data?.users?.data);
-    }
-  }, [data]);
+  const [sales] = useState([]);
 
   const onFinish = (values) => {
     var obj = {};

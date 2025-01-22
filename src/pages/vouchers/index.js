@@ -1,7 +1,7 @@
 import { PlusOutlined } from "@ant-design/icons";
 import { Button, Space } from "antd";
 import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { GlobalContext } from "../../contexts/global";
 import VouchersTable from "../../businessComponents/vouchers/VouchersTable";
 

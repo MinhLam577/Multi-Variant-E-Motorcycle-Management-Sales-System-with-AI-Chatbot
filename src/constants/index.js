@@ -4,6 +4,17 @@ export const Language = {
   english: "en",
   vietnamese: "vi",
 };
+
+export const RequestStatus = {
+  INITIAL: "initial",
+  SUBMITTING: "submitting",
+  FETCH_SUCCESS: "fetchSuccess",
+  FETCH_FAILED: "fetchFailed",
+  FETCH_DETAIL_SUCCESS: "fetchDetailSuccess",
+  FETCH_DETAIL_FAILED: "fetchDetailFailed",
+};
+
+export const keyStorageAccount = "account";
 export const ColorList = ["#f56a00", "#7265e6", "#ffbf00", "#00a2ae"];
 export const UserRoleConstant = {
   ADMIN: "admin",

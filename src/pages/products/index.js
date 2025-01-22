@@ -1,7 +1,7 @@
 import { PlusOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { deleteProduct, getCars, updateCar } from "../../api/cars";
 import ProductsSearch from "../../businessComponents/products/ProductsSearch";
 import ProductsTable from "../../businessComponents/products/ProductsTable";

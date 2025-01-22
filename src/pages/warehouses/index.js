@@ -4,9 +4,8 @@ import {
   PushpinOutlined,
 } from "@ant-design/icons";
 import { Button, message, Space, Tag, Tooltip } from "antd";
-import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { fetchCategories } from "../../api/cars";
+import { useContext, useState } from "react";
+import { useNavigate } from "react-router";
 import {
   ProcessModalName,
   processWithModals,
@@ -18,14 +17,6 @@ const WareHouses = () => {
   const navigate = useNavigate();
   const { globalDispatch } = useContext(GlobalContext);
   const [data, setData] = useState([]);
-
-  useEffect(() => {
-    const getCategories = async () => {
-      // const data = await fetchCategories();
-      // setData(data);
-    };
-    getCategories();
-  }, []);
 
   const handleAddCategories = () => {
     navigate("/warehouse/add", { replace: true });

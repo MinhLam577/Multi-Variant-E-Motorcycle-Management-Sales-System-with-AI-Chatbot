@@ -1,21 +1,12 @@
-import { useMutation } from "@apollo/client";
 import { Button, Checkbox, Form, Input, message, Spin } from "antd";
 import Logo from "../../components/Logo";
-import { REMOVE_USER } from "../../graphql/users";
 
 const DeleteUser = () => {
-  const [removeUser] = useMutation(REMOVE_USER, {
-    onCompleted: () => {
-      message.success("Yêu cầu xoá tài khoản thành công!");
-    },
-  });
-
   const [form] = Form.useForm();
 
   const onFinish = (val) => {
     message.success("Yêu cầu xoá tài khoản thành công!");
     form.resetFields();
-    // removeUser(val.phoneNumber);
   };
 
   return (

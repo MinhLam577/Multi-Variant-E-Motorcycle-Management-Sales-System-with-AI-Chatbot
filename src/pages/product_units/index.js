@@ -1,6 +1,6 @@
 import { Button, Space } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useContext } from "react";
 import { GlobalContext } from "../../contexts/global";
 import ProductUnitsTable from "../../businessComponents/product_units/ProductUnitsTable";
@@ -10,22 +10,24 @@ const ProductUnits = () => {
   const { globalDispatch } = useContext(GlobalContext);
 
   const handleAddProducts = () => {
-    navigate('/product_units/add', { replace: true });
+    navigate("/product_units/add", { replace: true });
   };
 
   const handleEditProducts = (productsData) => {
     globalDispatch({
-      type: 'breadcrum',
-      data: productsData.name
+      type: "breadcrum",
+      data: productsData.name,
     });
-    navigate(`/product_units/${productsData.productUnitId}/edit`, { replace: true });
+    navigate(`/product_units/${productsData.productUnitId}/edit`, {
+      replace: true,
+    });
   };
 
   const handleViewProducts = (productsData) => {
-    console.log(productsData)
+    console.log(productsData);
     globalDispatch({
-      type: 'breadcrum',
-      data: productsData.name
+      type: "breadcrum",
+      data: productsData.name,
     });
     navigate(`/product_units/${productsData.productUnitId}`, { replace: true });
   };
@@ -34,7 +36,13 @@ const ProductUnits = () => {
     <>
       <div className="w-full flex justify-between">
         <Space className="my-4 flex flex-row justify-end">
-          <Button type="primary" icon={<PlusOutlined />} onClick={handleAddProducts}>Tạo mới</Button>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={handleAddProducts}
+          >
+            Tạo mới
+          </Button>
         </Space>
       </div>
       <ProductUnitsTable

@@ -1,31 +1,27 @@
-import AppLayout from "./layout";
-import { useContext } from "react";
-import { Navigate } from "react-router-dom";
-import { GlobalContext } from "../contexts/global";
-import { UserRoleConstant } from "../constants";
 import PropTypes from "prop-types";
+import { Navigate } from "react-router";
+import { UserRoleConstant } from "../constants";
+import { useAuth } from "../contexts/AuthProvider";
+import AppLayout from "./layout";
 
 const ProtectedRoute = ({ children }) => {
-  const auth = useContext(GlobalContext);
+  const { user } = useAuth();
+  if (!user?.access_token) return <Navigate to="/login" replace />;
 
-  // const { token, user } = auth;
-  // if (!token) {
-  //   return <Navigate to="/login" replace />;
-  // }
-  // if (!user) {
-  //   return <Navigate to="/login" replace />;
-  // }
+  const allowedRoles = [
+    UserRoleConstant.ADMIN,
+    UserRoleConstant.SALES,
+    UserRoleConstant.USER,
+  ];
 
-  // if (
-  //   user?.role !== UserRoleConstant.ADMIN &&
-  //   user?.role !== UserRoleConstant.SALES
-  // ) {
-  //   return <Navigate to="/Forbidden" replace />;
-  // }
+  if (!allowedRoles.includes(user?.role))
+    return <Navigate to="/Forbidden" replace />;
 
   return <AppLayout>{children}</AppLayout>;
 };
+
 ProtectedRoute.propTypes = {
-  children: PropTypes.node,
+  children: PropTypes.node.isRequired,
 };
+
 export default ProtectedRoute;

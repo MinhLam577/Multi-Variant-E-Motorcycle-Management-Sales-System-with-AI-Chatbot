@@ -1,18 +1,17 @@
-import numbro from 'numbro';
+import numbro from "numbro";
 
 export const generateFileName = (fileName) => {
-  const fileExtensions = fileName.split('.');
-  const fileType = '.' + fileExtensions[fileExtensions.length - 1];
+  const fileExtensions = fileName.split(".");
+  const fileType = "." + fileExtensions[fileExtensions.length - 1];
   const _fileName = fileName.split(fileType)[0];
-  return _fileName.replace(/[^a-zA-Z0-9]/g, '_') + fileType;
+  return _fileName.replace(/[^a-zA-Z0-9]/g, "_") + fileType;
 };
 
 export const sleepFuntions = async (time) => {
   return new Promise((resolve) =>
-    setTimeout(
-      () => { resolve('result') },
-      time
-    )
+    setTimeout(() => {
+      resolve("result");
+    }, time)
   );
 };
 
@@ -34,13 +33,12 @@ export const formatVNDMoney = (value, option = {}) => {
     average: false,
     ...option,
   });
-}
+};
 
 export const convertSortFromAntToServer = (value) => {
-  if (value === 'ascend') {
-    return 'asc';
+  if (value === "ascend") {
+    return "asc";
   }
 
-  return 'desc';
-}
-
+  return "desc";
+};

@@ -3,14 +3,14 @@ import endpoints from "./endpoints";
 
 export const getAll = async () => {
   try {
-    const [branches, colors, categories] = await Promise.all([
-      fetchBranch(),
+    const [brands, colors, categories] = await Promise.all([
       fetchCarColor(),
       fetchCategories(),
+      fetchBrand(),
     ]);
 
     return {
-      branches,
+      brands,
       colors,
       categories,
     };
@@ -51,7 +51,6 @@ export const createCar = async (carData) => {
 
 export const updateCar = async (carData) => {
   try {
-    console.log("updateCarupdateCarupdateCar", carData);
     const response = await apiClient.patch(endpoints.cars.update(carData.id), {
       status: carData.status,
     });
@@ -71,11 +70,15 @@ export const fetchCarColor = async () => {
 
 export const fetchCategories = async () => {
   const response = await apiClient.get(endpoints.cars.categories());
+  console.log("fetchCategories", response?.data?.data);
+
   return response?.data?.data;
 };
 
-export const fetchBranch = async () => {
-  const response = await apiClient.get(endpoints.cars.branch());
+export const fetchBrand = async () => {
+  const response = await apiClient.get(endpoints.cars.brand());
+
+  console.log("fetchBrand", response?.data?.data);
   return response?.data?.data;
 };
 

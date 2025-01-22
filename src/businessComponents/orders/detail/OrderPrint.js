@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { formatVNDMoney } from "../../../utils";
 import dayjs from "dayjs";
 
-const OrderPrint = (props, ref) => {
+const OrderPrint = forwardRef((props, ref) => {
   const { data } = props;
   const dataArray = Array.isArray(data?.orderProducts)
     ? data.orderProducts
@@ -143,10 +143,11 @@ const OrderPrint = (props, ref) => {
       </div>
     </div>
   );
-};
+});
 
+OrderPrint.displayName = "OrderPrint";
 OrderPrint.propTypes = {
   data: PropTypes.object,
 };
 
-export default forwardRef(OrderPrint);
+export default OrderPrint;

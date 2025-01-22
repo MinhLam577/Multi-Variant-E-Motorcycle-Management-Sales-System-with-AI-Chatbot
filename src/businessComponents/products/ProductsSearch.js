@@ -1,23 +1,11 @@
-import { Button, Form, Input, Select } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
+import { Button, Form, Input, Select } from "antd";
 import PropTypes from "prop-types";
 import { NewsStatusLabel } from "../../constants";
-import { GET_CATEGORIES_LIST } from "../../graphql/categories";
-import { GET_STORES_LIST } from "../../graphql/stores";
-import { useQuery } from "@apollo/client";
 
 const ProductsSearch = ({ setFilters }) => {
   const [form] = Form.useForm();
-  const { data: dataCategories } = useQuery(GET_CATEGORIES_LIST);
-  const { data: dataStories } = useQuery(GET_STORES_LIST, {
-    variables: {
-      filters: {
-        filters: {
-          searchText: null,
-        },
-      },
-    },
-  });
+
   const onFinish = (values) => {
     let obj = {};
     obj["searchText"] = values?.searchText;

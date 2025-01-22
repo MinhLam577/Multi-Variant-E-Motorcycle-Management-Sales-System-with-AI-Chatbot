@@ -1,21 +1,13 @@
-import {
-  DeleteOutlined,
-  EditOutlined,
-  EyeInvisibleOutlined,
-  EyeOutlined,
-} from "@ant-design/icons";
-import { useLazyQuery, useMutation } from "@apollo/client";
-import { Button, Tag, message } from "antd";
+import { Button, Tag } from "antd";
 import * as moment from "moment";
 import PropTypes from "prop-types";
+import GroupActionButton from "../../components/GroupActionButton";
 import { DateTimeFormat } from "../../constants";
 import {
   ProcessModalName,
   processWithModals,
 } from "../../containers/processWithModals";
 import TableComponent from "../../containers/TableComponent";
-import { GET_STORES_LIST, REMOVE_STORE } from "../../graphql/stores";
-import GroupActionButton from "../../components/GroupActionButton";
 
 const getColumnsConfig = ({
   handleUpdateStores,
@@ -100,13 +92,12 @@ const StoresTable = ({
   handleViewStores,
 }) => {
   const loading = false;
-  const [removeStore] = useMutation(REMOVE_STORE, {});
 
   const hanleDeleteStore = (id) => {
     processWithModals(ProcessModalName.ConfirmCustomContent)(
       "Xác nhận",
       "Bạn chắc chắn muốn xóa cửa hàng này?"
-    )(() => removeStore({ variables: { id } }));
+    )(() => {});
   };
 
   return (
