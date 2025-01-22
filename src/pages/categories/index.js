@@ -1,8 +1,7 @@
 import { PlusOutlined } from "@ant-design/icons";
 import { Button, message, Space } from "antd";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router";
-import { fetchCategories } from "../../api/cars";
 import CategoriesTable from "../../businessComponents/categories/CategoriesTable";
 import {
   ProcessModalName,
@@ -14,14 +13,6 @@ const Categories = () => {
   const navigate = useNavigate();
   const { globalDispatch } = useContext(GlobalContext);
   const [data, setData] = useState([]);
-
-  useEffect(() => {
-    const getCategories = async () => {
-      const data = await fetchCategories();
-      setData(data);
-    };
-    getCategories();
-  }, []);
 
   const handleAddCategories = () => {
     navigate("/categories/add", { replace: true });

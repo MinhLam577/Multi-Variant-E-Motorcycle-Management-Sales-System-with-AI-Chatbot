@@ -5,18 +5,19 @@ import {
   SaveOutlined,
 } from "@ant-design/icons";
 import { Form } from "antd";
+import { reaction, toJS } from "mobx";
+import { observer } from "mobx-react-lite";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { createCar, updateCar } from "../../../api/cars";
+import { RequestStatus } from "../../../constants";
 import {
   ProcessModalName,
   processWithModals,
 } from "../../../containers/processWithModals";
 import { useStore } from "../../../stores";
 import EMotorbikeDetailScreen from "./screen";
-import { observer } from "mobx-react-lite";
-import { toJS } from "mobx";
 
 export const ProductsDetailMode = {
   View: 1,
@@ -27,11 +28,9 @@ export const ProductsDetailMode = {
 const EMotorbikeDetail = observer(({ mode }) => {
   const { id } = useParams();
   const [form] = Form.useForm();
-
   const navigate = useNavigate();
   const { motorbikeObservable } = useStore();
   const { listBrand, listCategory, listColor } = motorbikeObservable;
-
   const [isOpenWarehousePopup, setIsOpenWarehousePopup] = useState(false);
   const [fileList, setFileList] = useState([]);
   const [settingData, setData] = useState({
@@ -40,23 +39,57 @@ const EMotorbikeDetail = observer(({ mode }) => {
     brands: [],
   });
 
-  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    return reaction(
+      () => motorbikeObservable.status,
+      (status, prevStatus) => {
+        handleLoginEvents(prevStatus, status);
+      }
+    );
+  }, []);
+
+  const handleLoginEvents = (prevStatus, status) => {
+    console.log("handleLoginEvents", status);
+    if (prevStatus === RequestStatus.SUBMITTING) {
+      // setIsLoading(false);
+    }
+    switch (status) {
+      case RequestStatus.SUBMITTING: {
+        // setIsLoading(true);
+        break;
+      }
+
+      case RequestStatus.FETCH_DETAIL_SUCCESS: {
+        const data = toJS(motorbikeObservable?.detail);
+        form.setFieldsValue({
+          ...data,
+          category_id: data?.category?.id,
+          brand_id: data?.brand?.id,
+        });
+
+        break;
+      }
+
+      default: {
+        break;
+      }
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       await motorbikeObservable.getAllConfig();
     };
-    fetchData();
-  }, []);
 
-  const getCardTitle = () => {
-    if (mode === ProductsDetailMode.View) {
-      return "Chi tiết sản phẩm";
-    } else if (mode === ProductsDetailMode.Add) {
-      return "Tạo sản phẩm - Xe máy điện";
-    } else if (mode === ProductsDetailMode.Edit) {
-      return "Chỉnh sửa sản phẩm";
+    if (id) {
+      fetchDetail();
     }
+
+    fetchData();
+  }, [id]);
+
+  const fetchDetail = async () => {
+    await motorbikeObservable.getDetail(id);
   };
 
   const getButtonOkText = () => {
@@ -147,15 +180,10 @@ const EMotorbikeDetail = observer(({ mode }) => {
   };
 
   const handleFormFinish = async (values) => {
-    const dto = {
-      ...values,
-    };
-
     const formData = {
       ...values,
-      category_id: dto?.category_id,
-      brand_id: dto?.brand_id.toString(),
-      //   stock: parseInt(dto?.stock ?? 0),
+      category_id: values?.category_id,
+      brand_id: values?.brand_id.toString(),
       images: fileList?.map((i) => ({
         url: i?.url,
         color: "",
@@ -167,24 +195,21 @@ const EMotorbikeDetail = observer(({ mode }) => {
       status: true,
       specifications: [],
       subscriptionPlans: [],
+      depositPrice: parseFloat(values?.depositPrice),
     };
     delete formData.listImgUrl;
     delete formData.stock;
+    delete formData.id;
 
     if (mode === ProductsDetailMode.Add) {
-      delete formData.engineNumber;
-      await createCar(formData)
-        .then((res) => {
-          console.log("res", res);
-        })
-        .catch((error) => {
-          console.log("error", error);
-        });
-      return;
+      await motorbikeObservable.updateCar({ form: formData, id: values.id });
     }
 
     if (mode === ProductsDetailMode.Edit) {
-      await updateCar({ ...formData, id });
+      await motorbikeObservable.updateMotorbike({
+        form: formData,
+        id: values.id,
+      });
     }
   };
 

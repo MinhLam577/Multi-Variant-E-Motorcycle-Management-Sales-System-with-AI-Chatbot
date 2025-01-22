@@ -58,7 +58,6 @@ const EMotorbikeDetailScreen = ({
   listCategory,
   listColor,
 }) => {
-  console.log("listBrand", listBrand);
   return (
     <>
       <Form
@@ -67,18 +66,19 @@ const EMotorbikeDetailScreen = ({
         layout={"vertical"}
         autoComplete="off"
         onFinish={handleFormFinish}
-        initialValues={{
-          borderless: "-",
-        }}
       >
         <Row gutter={[16, 16]}>
           <Col span={16}>
             <Row gutter={[16, 16]}>
               <Col span={24}>
                 <Card title="Thông tin sản phẩm">
-                  <Form.Item name="productId" hidden>
+                  <Form.Item name="id" hidden>
                     <Input />
                   </Form.Item>
+                  <Form.Item name="property" hidden>
+                    <Input />
+                  </Form.Item>
+
                   <Form.Item
                     label="Hình ảnh sản phẩm"
                     name="listImgUrl"
@@ -381,7 +381,7 @@ const EMotorbikeDetailScreen = ({
                           </Button>
                         </Col>
                         <Col span={24}>
-                          <Form.Item name="Tìm kho" className="m-0">
+                          <Form.Item className="m-0">
                             <Input
                               addonBefore={<SearchOutlined />}
                               placeholder="Tìm kho"

@@ -19,6 +19,7 @@ const EMotorbike = observer(() => {
   const { globalDispatch } = useContext(GlobalContext);
   const [isLoading, setIsLoading] = useState(false);
   const { productObservable } = useStore();
+
   useEffect(() => {
     return reaction(
       () => productObservable.status,
@@ -28,9 +29,11 @@ const EMotorbike = observer(() => {
     );
   }, []);
 
-  console.log("productObservable", productObservable.listEMotorbike);
   useEffect(() => {
-    productObservable.getListMotorBike({ page: 1, size: 5 });
+    const fetchData = async () => {
+      await productObservable.getListMotorBike({ page: 1, size: 5 });
+    };
+    fetchData();
   }, []);
 
   const handleLoginEvents = (prevStatus, status) => {
@@ -58,7 +61,7 @@ const EMotorbike = observer(() => {
       type: "breadcrum",
       data: productsData.name,
     });
-    navigate(`/products/${productsData.id}/edit`, { replace: true });
+    navigate(`/e-motorbike/${productsData.id}/edit`, { replace: true });
   };
 
   const handleViewProducts = (productsData) => {
@@ -91,8 +94,6 @@ const EMotorbike = observer(() => {
       updateCar({ id: item.id, status: statusProduct });
     });
   };
-
-  console.log("aaaa", productObservable.listEMotorbike);
 
   if (isLoading) {
     return <Loading />;

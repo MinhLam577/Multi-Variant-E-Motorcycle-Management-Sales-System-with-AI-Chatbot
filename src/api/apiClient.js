@@ -129,8 +129,10 @@ const refreshToken = async () => {
 };
 
 const checkLogout = async () => {
-  await secureLocalStorage.removeItem(keyStorageAccount);
-  window.location.href = "/login";
+  console.log("logout user");
+
+  // await secureLocalStorage.removeItem(keyStorageAccount);
+  // window.location.href = "/login";
 };
 
 apiClient.interceptors.response.use(handleSuccess, handleError);

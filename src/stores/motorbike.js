@@ -1,4 +1,4 @@
-import { action, flow, makeObservable, observable } from "mobx";
+import { flow, makeObservable, observable } from "mobx";
 import apiClient from "../api/apiClient";
 import endpoints from "../api/endpoints";
 import { RequestStatus } from "../constants";
@@ -9,6 +9,7 @@ class EMotorbikeObservable {
   listColor = [];
   listCategory = [];
   listBrand = [];
+  detail = null;
   constructor() {
     makeObservable(this, {
       listEMotorbike: observable,
@@ -19,17 +20,60 @@ class EMotorbikeObservable {
       listCategory: observable,
       listBrand: observable,
       getAllConfig: flow,
+      detail: observable,
+      getDetail: flow,
+      status: observable,
+      updateMotorbike: flow,
     });
   }
   //get all config
   *getAllConfig() {
-    this.status = RequestStatus.SUBMITTING;
     try {
       yield Promise.all([this.getColor(), this.getCategory(), this.getBrand()]);
-      this.status = RequestStatus.FETCH_SUCCESS;
+    } catch (error) {
+      return;
+    }
+  }
+  //get detail
+  *getDetail(id) {
+    this.status = RequestStatus.SUBMITTING;
+    try {
+      const { data, status } = yield apiClient.get(
+        endpoints.motorbike.details(id)
+      );
+
+      if (status !== 200) {
+        this.status = RequestStatus.FETCH_DETAIL_FAILED;
+        return;
+      }
+
+      this.detail = data?.product;
+      this.status = RequestStatus.FETCH_DETAIL_SUCCESS;
     } catch (error) {
       console.log("errorerror", error);
-      this.status = RequestStatus.FETCH_FAILED;
+      this.status = RequestStatus.FETCH_DETAIL_FAILED;
+    }
+  }
+  //get detail
+  *updateMotorbike({ form, id }) {
+    this.status = RequestStatus.SUBMITTING;
+    try {
+      console.log("updateMotorbike", form);
+      const { data, status } = yield apiClient.patch(
+        endpoints.motorbike.details(id),
+        form
+      );
+
+      if (status !== 200) {
+        this.status = RequestStatus.FETCH_DETAIL_FAILED;
+        return;
+      }
+
+      // this.detail = data?.product;
+      this.status = RequestStatus.FETCH_DETAIL_SUCCESS;
+    } catch (error) {
+      console.log("errorerror", error);
+      this.status = RequestStatus.FETCH_DETAIL_FAILED;
     }
   }
 

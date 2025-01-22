@@ -23,10 +23,7 @@ import NewsDetail, { NewsDetailMode } from "./pages/news/NewsDetail";
 import Notification from "./pages/notifications";
 import Orders from "./pages/orders";
 import OrderDetail, { OrderDetailMode } from "./pages/orders/OrderDetail";
-import ProductUnits from "./pages/product_units";
-import ProductUnitsDetail, {
-  ProductUnitsDetailMode,
-} from "./pages/product_units/ProductUnitsDetail";
+import { ProductUnitsDetailMode } from "./pages/product_units/ProductUnitsDetail";
 import Products from "./pages/products";
 import ProductsDetail, {
   ProductsDetailMode,
@@ -163,38 +160,6 @@ function App() {
                   }
                 />
 
-                <Route
-                  path="/product_units"
-                  element={
-                    <ProtectedRoute>
-                      <ProductUnits />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/product_units/add"
-                  element={
-                    <ProtectedRoute>
-                      <ProductUnitsDetail mode={ProductUnitsDetailMode.Add} />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/product_units/:id"
-                  element={
-                    <ProtectedRoute>
-                      <ProductUnitsDetail mode={ProductUnitsDetailMode.View} />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/product_units/:id/edit"
-                  element={
-                    <ProtectedRoute>
-                      <ProductUnitsDetail mode={ProductUnitsDetailMode.Edit} />
-                    </ProtectedRoute>
-                  }
-                />
                 <Route
                   path="/stores"
                   element={
@@ -411,19 +376,10 @@ function App() {
                   }
                 />
                 <Route
-                  path="/e-motorbike/:id/view"
+                  path="/e-motorbike/:id"
                   element={
                     <ProtectedRoute>
-                      <EMotorbikeDetail
-                        path="/e-motorbike/:id/view"
-                        element={
-                          <ProtectedRoute>
-                            <EMotorbikeDetail
-                              mode={ProductUnitsDetailMode.View}
-                            />
-                          </ProtectedRoute>
-                        }
-                      />
+                      <EMotorbikeDetail mode={ProductUnitsDetailMode.View} />
                     </ProtectedRoute>
                   }
                 />

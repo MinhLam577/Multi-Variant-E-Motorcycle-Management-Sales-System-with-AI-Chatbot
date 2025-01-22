@@ -62,7 +62,7 @@ const GlobalProvider = ({ children }) => {
   }, []);
 
   return (
-    <GlobalContext.Provider value={{ ...state, dispatch }}>
+    <GlobalContext.Provider value={{ ...state, globalDispatch: dispatch }}>
       {children}
     </GlobalContext.Provider>
   );

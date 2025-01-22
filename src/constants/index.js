@@ -10,6 +10,8 @@ export const RequestStatus = {
   SUBMITTING: "submitting",
   FETCH_SUCCESS: "fetchSuccess",
   FETCH_FAILED: "fetchFailed",
+  FETCH_DETAIL_SUCCESS: "fetchDetailSuccess",
+  FETCH_DETAIL_FAILED: "fetchDetailFailed",
 };
 
 export const keyStorageAccount = "account";

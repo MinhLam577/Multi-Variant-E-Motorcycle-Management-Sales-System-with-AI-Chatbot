@@ -34,14 +34,14 @@ const LoginScreen = ({
               height: "100vh",
             }}
           >
-            {/* <Image src="/logo2048.png" alt="logo" width={180} height={80} />
+            <Image src="/logo2048.png" alt="logo" width={180} height={80} />
             <span className="font-bold text-2xl text-white">Welcome to</span>
-            <span className="font-bold text-4xl text-white">Hồng Sơn Auto</span> */}
+            <span className="font-bold text-4xl text-white">Hồng Sơn Auto</span>
           </div>
         </Col>
-        <Col span={12} align="center">
+        <Col span={12} className="flex items-center justify-center">
           <Card
-            className="max-w-md shadow"
+            className="w-96 shadow"
             title="Vui lòng nhập thông tin đăng nhập"
           >
             <div className="content">

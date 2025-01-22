@@ -15,7 +15,7 @@ const endpoints = {
   },
   motorbike: {
     list: (page, size) => `/products?current=${page}&pageSize=${size}`,
-    details: (id) => `/cars/${id}`,
+    details: (id) => `/products/${id}`,
     //setting
     categories: "/categories",
     color: "/color",
@@ -28,7 +28,7 @@ const endpoints = {
     update: (id) => `/products/${id}`,
     delete: (id) => `/products/${id}`,
     //setting
-    categories: () => `/category-brand`,
+    categories: () => `/category`,
     color: () => `/color`,
     brand: () => `/brand`,
 

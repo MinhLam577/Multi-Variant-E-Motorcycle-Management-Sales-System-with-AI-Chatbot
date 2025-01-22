@@ -9,15 +9,14 @@ import {
   ProductOutlined,
   ShopOutlined,
   ShoppingOutlined,
-  UserOutlined,
   TruckOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
-import { Breadcrumb, Grid, Layout, Menu, theme } from "antd";
+import { Breadcrumb, Grid, Layout, Menu } from "antd";
 import PropTypes from "prop-types";
 import { useContext, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import Logo from "../../components/Logo";
-import { UserRoleConstant } from "../../constants";
 import { GlobalContext } from "../../contexts/global";
 import HeaderComponent from "./header";
 
@@ -57,11 +56,8 @@ const AppLayout = (props) => {
   const navigate = useNavigate();
   const { children } = props;
   const [collapsed, setCollapsed] = useState(false);
-  const {
-    token: { colorBgContainer },
-  } = theme.useToken();
 
-  const { name, user } = useContext(GlobalContext);
+  const { name } = useContext(GlobalContext);
   const screens = useBreakpoint();
 
   //set user role
@@ -153,54 +149,44 @@ const AppLayout = (props) => {
     const path = location.pathname;
     const search = location.search;
     if (typeof path !== "string") {
-      return ["1"];
-    } else if (path.includes("/dashboard")) {
-      return ["1"];
-    } else if (path.includes("/profile")) {
-      return ["19"];
-    } else if (path.includes("/users")) {
-      return ["2"];
-    } else if (path.includes("/stores")) {
-      return ["3"];
-    } else if (path.includes("/categories")) {
-      return ["7"];
-    } else if (path.includes("/news")) {
-      return ["8"];
-    } else if (path.includes("/products")) {
-      return ["5"];
-    } else if (path.includes("/e-motorbike")) {
-      if (search.includes("/add")) {
-        return ["6"];
-      } else if (search.includes("/edit")) {
-        return ["6"];
-      }
-      return ["6"];
-    } else if (path.includes("/combo_product")) {
-      return ["7"];
-    } else if (path.includes("/product_units")) {
-      return ["8"];
-    } else if (path.includes("/orders")) {
-      if (search.includes("?status=new")) {
-        return ["9", "11"];
-      } else if (search.includes("?status=confirmed")) {
-        return ["9", "12"];
-      } else if (search.includes("?status=delivering")) {
-        return ["13"];
-      } else if (search.includes("?status=completed")) {
-        return ["14"];
-      }
-      return ["9", "10"];
-    } else if (path.includes("/notifications")) {
-      return ["15"];
-    } else if (path.includes("/vouchers")) {
-      return ["16"];
-    } else if (path.includes("/warehouse")) {
-      return ["17"];
-    } else if (path.includes("/statistic")) {
-      return ["18"];
-    } else if (path.includes("/customer")) {
-      return ["19"];
+      return ["100"];
     } else {
+      const menuKeys = {
+        "/dashboard": "1",
+        "/profile": "19",
+        "/users": "2",
+        "/stores": "3",
+        "/categories": "7",
+        "/news": "8",
+        "/products": "5",
+        "/e-motorbike": "6",
+        "/combo_product": "7",
+        "/orders": {
+          "?status=new": ["9", "11"],
+          "?status=confirmed": ["9", "12"],
+          "?status=delivering": ["13"],
+          "?status=completed": ["14"],
+        },
+        "/notifications": "15",
+        "/vouchers": "16",
+        "/warehouse": "17",
+        "/statistic": "18",
+        "/customer": "19",
+      };
+      for (let key in menuKeys) {
+        if (path.includes(key)) {
+          if (Array.isArray(menuKeys[key])) {
+            if (
+              search.includes(menuKeys[key][0]) ||
+              search.includes(menuKeys[key][1])
+            ) {
+              return menuKeys[key];
+            }
+          } else {
+            return [menuKeys[key]];
+          }
+        }
+      }
       return ["1"];
     }
   };
@@ -214,8 +200,8 @@ const AppLayout = (props) => {
       <Sider
         xs={2}
         md={6}
-        collapsible={screens.md}
-        collapsed={screens.md ? collapsed : true}
+        collapsible
+        collapsed={collapsed}
         onCollapse={(value) => setCollapsed(value)}
       >
         <div className="my-10">
