@@ -1,13 +1,12 @@
 import { Form, message } from "antd";
 import { reaction } from "mobx";
 import { observer } from "mobx-react-lite";
-import queryString from "query-string";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import { useAuth } from "../../contexts/AuthProvider";
 import { useStore } from "../../stores";
 import { regexEmail } from "../../utils/regex";
 import LoginScreen from "./LoginScreen";
-import { useAuth } from "../../contexts/AuthProvider";
 
 const Login = () => {
   const { loginObservable } = useStore();

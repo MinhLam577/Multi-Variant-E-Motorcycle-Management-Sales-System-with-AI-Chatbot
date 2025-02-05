@@ -10,7 +10,6 @@ import { observer } from "mobx-react-lite";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { createCar, updateCar } from "../../../api/cars";
 import { RequestStatus } from "../../../constants";
 import {
   ProcessModalName,
@@ -33,7 +32,7 @@ const EMotorbikeDetail = observer(({ mode }) => {
   const { listBrand, listCategory, listColor } = motorbikeObservable;
   const [isOpenWarehousePopup, setIsOpenWarehousePopup] = useState(false);
   const [fileList, setFileList] = useState([]);
-  const [settingData, setData] = useState({
+  const [settingData] = useState({
     categories: [],
     colors: [],
     brands: [],

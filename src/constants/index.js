@@ -76,7 +76,6 @@ export const DateTimeFormat = {
 export const RegExps = {
   ImageType: /^image\//,
   IdentityNo: /^([0-9]{9}|[0-9]{12})$/,
-  // PhoneNumber: /^[0-9]{10,11}$/,
   PhoneNumber:
     /^(0|84)((3[2-9])|(5[2689])|(7[06789])|(8[12345689])|(9[012346789]))\d{7}$/,
   Email:

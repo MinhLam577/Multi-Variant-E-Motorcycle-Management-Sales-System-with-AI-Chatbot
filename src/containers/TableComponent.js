@@ -70,16 +70,7 @@ const TableComponent = ({
       key={0}
       pagination={
         typeof res?.pagination === "boolean"
-          ? {
-              current: res?.pagination.currentPage,
-              pageSize: res?.pagination.pageSize,
-              pageSizeOptions: pageSizeOptions,
-              showSizeChanger: true,
-              total: res?.pagination.totalProducts,
-              locale: {
-                ...AntdTablePagingLocale,
-              },
-            }
+          ? res?.pagination
           : {
               current: filters.paging.page,
               pageSize: filters.paging.pageSize,

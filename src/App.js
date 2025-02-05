@@ -40,6 +40,7 @@ import WareHouses from "./pages/warehouses";
 import WareHouseDetail from "./pages/warehouses/WareHouseDetail";
 import { StoreProvider } from "./stores";
 import GlobalProvider from "./contexts/global";
+
 function App() {
   return (
     <StoreProvider>
