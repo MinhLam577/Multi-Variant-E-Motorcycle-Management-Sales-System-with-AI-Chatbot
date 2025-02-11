@@ -1,0 +1,16 @@
+/** @type {import('tailwindcss').Config} */
+export const content = [
+  "./src/**/*.{js,jsx,ts,tsx}",
+];
+export const theme = {
+  extend: {
+    colors: {
+      primary: '#006400',
+    },
+  },
+};
+export const plugins = [];
+export const corePlugins = {
+  preflight: false // <== disable this!
+};
+
