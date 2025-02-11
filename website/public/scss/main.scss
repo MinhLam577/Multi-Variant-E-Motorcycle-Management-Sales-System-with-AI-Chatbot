@@ -1,0 +1,14 @@
+:root {
+  --primary-color: #f5c34b;
+  --primary-car: #006400;
+  --primary-bike: #00008b;
+  --primary-default: #313131;
+}
+@import "~bootstrap/scss/bootstrap";
+@import "./custom";
+@import "./swiper_custom";
+@import "./file_uploader";
+@import "./style";
+@import "./responsive.scss";
+@import "./_header_action.scss";
+@import "./listing_single.scss";
