@@ -170,8 +170,8 @@ const VouchersTable = ({ handleEditVouchers, handleViewVouchers }) => {
         loadData={() => {}}
         data={[
           {
-            discountId: "1",
-            discountCode: "MAJSJS",
+            discount: "1",
+            discountCode: "MAJSJk",
             description: "Mã giảm giá cho khách hàng mới",
             discountName: "CTKM",
             discountType: "Giảm giá",

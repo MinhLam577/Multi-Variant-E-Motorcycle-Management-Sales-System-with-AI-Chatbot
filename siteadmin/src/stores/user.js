@@ -7,11 +7,13 @@ import { keyStorageAccount } from "../constants";
 class UserObservable {
   roles = null;
   me = null;
+  status = null; // Thêm dòng này để trạng thái có thể theo dõ
   constructor() {
     makeObservable(this, {
-      getMe: action.bound,
-      me: observable,
-      updateUserProfile: action.bound,
+      getMe: action.bound, //marks a method as an action that will modify the state. Giữ ngữ cảnh của this:
+      me: observable, // lưu trữ state, theo dõi sự thay đổi ,me thay đổi, component sẽ tự động render lại!
+      status: observable, // Cần khai báo trạng thái là observable
+      updateUserProfile: action.bound, //// được bind với instance
     });
   }
 

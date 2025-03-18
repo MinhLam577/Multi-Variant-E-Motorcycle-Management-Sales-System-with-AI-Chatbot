@@ -76,34 +76,33 @@ const getColumnsConfig = ({
     // Price
     {
       title: "Giá bán",
-      dataIndex: "price",
-      key: "price",
+      dataIndex: "pricesold",
+      key: "pricesold",
       render: (value) => {
         return <span>{formatVNDMoney(value)} đ</span>;
       },
       ellipsis: true,
       width: "140px",
     },
-
     // Status
     {
       title: "Trạng thái",
       dataIndex: "status",
       key: "status",
       render: (status) => {
-        if (!status) return "-";
+        if (!status) return "l";
         return (
           <Tag
             className="uppercase"
             color={
-              status === "active"
+              status == true
                 ? "#87d068"
-                : status === "inactive"
+                : status === false
                 ? "#ff4d4f"
                 : "#108ee9"
             }
           >
-            {status}
+            {+status}
           </Tag>
         );
       },

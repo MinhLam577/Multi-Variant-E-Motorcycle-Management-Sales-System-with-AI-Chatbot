@@ -14,7 +14,7 @@ const ProtectedRoute = ({ children }) => {
     UserRoleConstant.USER,
   ];
 
-  if (!allowedRoles.includes(user?.role))
+  if (!allowedRoles.includes(user?.Roles))
     return <Navigate to="/Forbidden" replace />;
 
   return <AppLayout>{children}</AppLayout>;

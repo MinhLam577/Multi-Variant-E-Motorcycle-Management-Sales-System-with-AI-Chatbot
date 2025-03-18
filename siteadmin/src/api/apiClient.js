@@ -29,7 +29,7 @@ apiClient.interceptors.request.use(
 );
 
 const handleSuccess = async (response) => {
-  return response;
+  return response.data;
 };
 
 const handleError = async (error) => {

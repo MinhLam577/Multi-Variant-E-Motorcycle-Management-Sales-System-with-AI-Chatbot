@@ -28,6 +28,7 @@ const UserForm = ({ userBasicInfo, refetch }) => {
     delete updateInfo.parent;
     delete updateInfo.created_at;
     delete updateInfo.userCode;
+    console.log(values);
   };
 
   useEffect(() => {
@@ -44,7 +45,7 @@ const UserForm = ({ userBasicInfo, refetch }) => {
       autoComplete="off"
       onFinish={handleFormFinish}
     >
-      <Form.Item name="userId" hidden>
+      <Form.Item name="id" hidden>
         <Input />
       </Form.Item>
       <Form.Item className="flex justify-center" name="avatar">
@@ -55,14 +56,14 @@ const UserForm = ({ userBasicInfo, refetch }) => {
       </Form.Item>
       <Form.Item
         label="Họ và tên"
-        name="fullname"
+        name="username"
         rules={[{ required: true, message: "Hãy nhập họ và tên!" }]}
       >
         <Input placeholder="Nhập Họ và tên" />
       </Form.Item>
       <Form.Item
         label="Số điện thoại"
-        name="phone"
+        name="phoneNumber"
         rules={[
           { required: true, message: "Hãy nhập số điện thoại!" },
           () => ({
@@ -86,10 +87,12 @@ const UserForm = ({ userBasicInfo, refetch }) => {
       <Form.Item label="Email" name="email">
         <Input placeholder="Email" />
       </Form.Item>
+
       <Form.Item label="Số điện thoại người giới thiệu" name="refPhone">
         <Input placeholder="refPhone" />
       </Form.Item>
-      <Form.Item label="Loại người dùng" name="role">
+
+      <Form.Item label="Loại người dùng" name="roles">
         <Select
           allowClear
           optionFilterProp="label"

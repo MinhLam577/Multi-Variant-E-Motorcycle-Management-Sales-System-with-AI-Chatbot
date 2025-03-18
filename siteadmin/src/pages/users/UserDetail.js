@@ -2,10 +2,25 @@ import { Spin, Tabs } from "antd";
 import { useParams } from "react-router";
 import AddressUserTable from "../../components/users/detail/AddressUserTable";
 import UserForm from "../../components/users/detail/UserForm";
-
+import { useEffect, useState } from "react";
+import { getUserDetails } from "../../api/user";
 const UserDetail = () => {
+  const [userInfo, setUserInfo] = useState(null);
   const { id } = useParams();
-  const userInfo = null;
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const data = await getUserDetails(id);
+        setUserInfo(data);
+      } catch (error) {
+        console.error("Lỗi khi lấy thông tin user:", error);
+      }
+    };
+
+    if (id) {
+      fetchUser();
+    }
+  }, [id]);
 
   const items = [
     {
@@ -13,7 +28,7 @@ const UserDetail = () => {
       label: "Thông tin người dùng",
       children: (
         <div>
-          <UserForm userBasicInfo={userInfo?.user} />
+          <UserForm userBasicInfo={userInfo} />
         </div>
       ),
     },

@@ -140,6 +140,7 @@ export const UserType = {
   user: "Khách hàng",
   hr: "Tuyển dụng",
   sales: "Sales",
+  admin: "admin",
 };
 export const WareHouseDetailMode = {
   View: 1,
