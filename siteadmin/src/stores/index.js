@@ -6,6 +6,7 @@ import { RootStore } from "./base";
 const storeContext = createContext(null);
 
 export const StoreProvider = ({ children }) => {
+  //một observable object.
   const store = useLocalObservable(() => new RootStore());
   return (
     <storeContext.Provider value={store}>{children}</storeContext.Provider>

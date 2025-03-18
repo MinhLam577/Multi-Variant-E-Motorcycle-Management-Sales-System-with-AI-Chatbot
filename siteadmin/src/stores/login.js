@@ -12,7 +12,6 @@ export class LoginObservable {
     makeAutoObservable(this);
     this.rootStore = rootStore;
   }
-
   // call api login
   *login(email, password) {
     this.status = "submitting";
@@ -27,7 +26,7 @@ export class LoginObservable {
         this.errorMsg = "Email hoặc mật khẩu không đúng!";
         return;
       }
-
+      console.log(data.userId)
       yield this.rootStore.accountObservable.setAccount(data);
       yield this.rootStore.userObservable.getMe(data.userId);
       this.status = "loginSuccess";

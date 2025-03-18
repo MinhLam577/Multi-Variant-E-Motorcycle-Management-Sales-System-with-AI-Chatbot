@@ -1,7 +1,7 @@
 import { SearchOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Select } from "antd";
 import PropTypes from "prop-types";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UserRoleConstant } from "../../constants";
 import { GlobalContext } from "../../contexts/global";
 
@@ -11,7 +11,7 @@ const UserSearch = ({ setFilters }) => {
 
   const onFinish = (values) => {
     var obj = {};
-    obj["searchText"] = values?.searchText;
+    obj["username"] = values?.searchText;
 
     if (values?.role) {
       obj["role"] = [values.role];
@@ -20,7 +20,9 @@ const UserSearch = ({ setFilters }) => {
       obj["saleId"] = values?.saleId;
     }
     setFilters(obj);
+    console.log(obj);
   };
+
 
   return (
     <>

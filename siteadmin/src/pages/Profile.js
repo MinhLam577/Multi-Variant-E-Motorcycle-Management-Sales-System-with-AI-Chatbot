@@ -46,6 +46,8 @@ const Profile = () => {
   }, []);
 
   const handleLoginEvents = (prevStatus, status) => {
+    console.log("Previous Statusdsvsdrvrs", prevStatus);
+    console.log("Current Status:", status);
     if (prevStatus === "submitting") {
       setLoading(false);
     }
@@ -55,8 +57,12 @@ const Profile = () => {
         break;
       }
 
-      case "loginSuccess": {
+      case "updateSuccess": {
         message.success("Thay đổi thông tin người dùng thành công!");
+        break;
+      }
+      case "updateFailed": {
+        message.error("Cập nhật thông tin thất bại!");
         break;
       }
 
@@ -77,7 +83,7 @@ const Profile = () => {
     const dto = {
       ...values,
     };
-    await userObservable.updateUserProfile(dto, user?.id);
+    await userObservable.updateUserProfile(dto, user?.userId);
   };
 
   return (
@@ -185,7 +191,7 @@ const Profile = () => {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name={"role"} label={"Role"}>
+              <Form.Item name={"Roles"} label={"Role"}>
                 <Select
                   options={[
                     { value: "admin", label: "Admin" },

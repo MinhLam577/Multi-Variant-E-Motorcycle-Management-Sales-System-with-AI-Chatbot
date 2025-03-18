@@ -1,17 +1,26 @@
 const endpoints = {
   auth: {
-    login: "/auth/login",
-    logout: "/auth/logout",
-    refreshToken: "/auth/refresh",
-    forgotPassword: "/auth/forgot-password",
-    changePassword: "/auth/change-password",
+    login: "/auth/admin/login",
+    logout: "/auth/admin/logout",
+    refreshToken: "/auth/admin/refresh",
+    forgotPassword: "/auth/admin/forgot-password",
+    changePassword: "/auth/admin/change-password",
   },
   user: {
-    me: (id) => `/users/${id}`,
+    details: (id) => `/users/${id}`,
     update: (id) => `/users/${id}`,
     setRole: (id) => `/users/${id}`,
     changePassword: (id) => `/users/${id}`,
     uploadAvatar: "/users/upload",
+    list: (page, limit) => `/users?current=${page}&pageSize=${limit}`,
+  },
+  customers: {
+    details: (id) => `/customers/${id}`,
+    update: (id) => `/customers/${id}`,
+    setRole: (id) => `/customers/${id}`,
+    changePassword: (id) => `/customers/${id}`,
+    uploadAvatar: "/customers/upload",
+    list: (page, limit) => `customers/?current=${page}&pageSize=${limit}`,
   },
   motorbike: {
     list: (page, size) => `/products?current=${page}&pageSize=${size}`,
@@ -27,6 +36,7 @@ const endpoints = {
     create: "/products",
     update: (id) => `/products/${id}`,
     delete: (id) => `/products/${id}`,
+
     //setting
     categories: () => `/category`,
     color: () => `/color`,
@@ -51,11 +61,11 @@ const endpoints = {
 
   //category
   category: {
-    list: (page, size) => `/products?current=${page}&pageSize=${size}`,
-    details: (id) => `/cars/${id}`,
-    create: "/products",
-    update: (id) => `/cars/${id}`,
-    delete: (id) => `/products/${id}`,
+    list: (page, size) => `/categories?current=${page}&pageSize=${size}`,
+    details: (id) => `/categories/${id}`,
+    create: "/categories",
+    update: (id) => `/categories/${id}`,
+    delete: (id) => `/categories/${id}`,
   },
 
   //brand
@@ -65,6 +75,53 @@ const endpoints = {
     update: (id) => `/brand/${id}`,
     delete: (id) => `/brand/${id}`,
     upload: "/upload",
+  },
+
+  // branch
+  branch: {
+    list: (page, size) => `/branch?current=${page}&pageSize=${size}`,
+    details: (id) => `/branch/${id}`,
+    update: (id) => `/branch/${id}`,
+    delete: (id) => `/branch/${id}`,
+    upload: "/upload",
+  },
+
+  // voucher
+  vouchers: {
+    list: (page, size) => `/vouchers?current=${page}&pageSize=${size}`,
+    details: (id) => `/vouchers/${id}`,
+    update: (id) => `/vouchers/${id}`,
+    delete: (id) => `/vouchers/${id}`,
+    create: () => `/vouchers`,
+    upload: "/upload",
+  },
+  // role
+  role: {
+    list: (page, size) => `/vouchers?current=${page}&pageSize=${size}`,
+    details: (id) => `/vouchers/${id}`,
+    update: (id) => `/vouchers/${id}`,
+    delete: (id) => `/vouchers/${id}`,
+    create: () => `/vouchers`,
+    upload: "/upload",
+  },
+
+  //permission
+  permission: {
+    list: (page, size) => `/permission?current=${page}&pageSize=${size}`,
+    details: (id) => `/permission/${id}`,
+    update: (id) => `/permission/${id}`,
+    delete: (id) => `/permission/${id}`,
+    create: () => `/permission`,
+    upload: "/upload",
+  },
+  // review
+  review: {
+    list: (page, size) => `/review?current=${page}&pageSize=${size}`,
+    details: (id) => `/review/${id}`,
+    update: (id) => `/review/${id}`,
+    delete: (id) => `/review/hard-delete/${id}`,
+    create: () => `/review`,
+    upload: "/review/upload-images",
   },
 };
 

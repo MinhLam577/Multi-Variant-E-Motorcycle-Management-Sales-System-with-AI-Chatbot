@@ -11,8 +11,8 @@ const getColumnsConfig = ({ handleViewUser }) => {
   return [
     {
       title: "Họ tên",
-      dataIndex: "customer",
-      key: "customer",
+      dataIndex: "username",
+      key: "username",
       render: (value, item) => {
         return (
           <Button
@@ -28,8 +28,8 @@ const getColumnsConfig = ({ handleViewUser }) => {
     },
     {
       title: "Số điện thoại",
-      dataIndex: "phone",
-      key: "phone",
+      dataIndex: "phoneNumber",
+      key: "phoneNumber",
       width: "140px",
       ellipsis: true,
     },
@@ -44,7 +44,12 @@ const getColumnsConfig = ({ handleViewUser }) => {
   ];
 };
 
-const UserTable = ({ globalFilters, handleUpdateUser, handleViewUser }) => {
+const UserTable = ({
+  data,
+  globalFilters,
+  handleUpdateUser,
+  handleViewUser,
+}) => {
   const navigate = useNavigate();
 
   const handleResetPassword = (id) => {
@@ -79,23 +84,7 @@ const UserTable = ({ globalFilters, handleUpdateUser, handleViewUser }) => {
         getColumnsConfig={getColumnsConfig}
         filterValue={globalFilters}
         loadData={() => {}}
-        data={[
-          {
-            customer: "Nguyễn Văn A",
-            phone: "123456789",
-            role: "Quản lý cửa hàng",
-          },
-          {
-            customer: "Nguyễn Văn B",
-            phone: "987654321",
-            role: "Nhân viên",
-          },
-          {
-            customer: "Nguyễn Văn B",
-            phone: "987654321",
-            role: "Kế toán",
-          },
-        ]}
+        data={data}
         handleResetPassword={handleResetPassword}
         handleDeleteUser={handleDeleteUser}
         handleUpdateUser={handleUpdateUser}
@@ -110,5 +99,6 @@ UserTable.propTypes = {
   globalFilters: PropTypes.object,
   handleUpdateUser: PropTypes.func,
   handleViewUser: PropTypes.func,
+  data: PropTypes.array.isRequired,
 };
 export default UserTable;
