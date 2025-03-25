@@ -5,15 +5,16 @@ import EMotorbikeObservable from "./motorbike";
 import ProductObservable from "./product";
 import UploadImageObservable from "./uploadImage";
 import UserObservable from "./user";
-
+import TestObservable from "./test";
 export class RootStore {
-  constructor() {
-    this.accountObservable = AccountObservable;
-    this.loginObservable = new LoginObservable(this);
-    this.userObservable = new UserObservable(this);
-    this.uploadImageObservable = new UploadImageObservable(this);
-    this.brandObservable = new BrandObservable(this);
-    this.productObservable = new ProductObservable(this);
-    this.motorbikeObservable = new EMotorbikeObservable(this);
-  }
+    constructor() {
+        this.TestObservable = new TestObservable(this);
+        this.accountObservable = AccountObservable;
+        this.loginObservable = new LoginObservable(this);
+        this.userObservable = new UserObservable(this);
+        this.uploadImageObservable = new UploadImageObservable(this);
+        this.brandObservable = new BrandObservable(this);
+        this.productObservable = new ProductObservable(this);
+        this.motorbikeObservable = new EMotorbikeObservable(this);
+    }
 }

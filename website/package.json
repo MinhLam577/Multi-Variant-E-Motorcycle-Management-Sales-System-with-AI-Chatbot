@@ -12,6 +12,7 @@
     "@faker-js/faker": "^8.0.2",
     "@popperjs/core": "^2.11.7",
     "aos": "^2.3.4",
+    "autohongson": "file:",
     "bootstrap": "^5.2.3",
     "chart.js": "^4.3.0",
     "eslint": "8.41.0",

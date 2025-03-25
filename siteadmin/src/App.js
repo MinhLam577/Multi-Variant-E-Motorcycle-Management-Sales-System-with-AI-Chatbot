@@ -40,6 +40,7 @@ import WareHouses from "./pages/warehouses";
 import WareHouseDetail from "./pages/warehouses/WareHouseDetail";
 import { StoreProvider } from "./stores";
 import GlobalProvider from "./contexts/global";
+import { TestComponent } from "./pages/test";
 
 function App() {
   return (
@@ -392,6 +393,7 @@ function App() {
                     </ProtectedRoute>
                   }
                 />
+                <Route path="/test" element = {<TestComponent/>} />
 
                 <Route path="/:404" element={<Page404 />} />
               </Routes>
