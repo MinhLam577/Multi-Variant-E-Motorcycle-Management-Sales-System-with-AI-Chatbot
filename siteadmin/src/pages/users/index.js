@@ -59,7 +59,9 @@ const User = () => {
 
       if (globalFilters.role?.length > 0) {
         data = data.filter((user) =>
-          globalFilters.role.some((role) => user.role.includes(role))
+          user.Roles?.some((userRole) =>
+            globalFilters.role.some((role) => userRole.name.includes(role))
+          )
         );
       }
 

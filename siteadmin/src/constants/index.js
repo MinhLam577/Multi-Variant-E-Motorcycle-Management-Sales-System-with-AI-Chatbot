@@ -139,8 +139,14 @@ export const NewsStatusLabel = {
 export const UserType = {
   user: "Khách hàng",
   hr: "Tuyển dụng",
+  staff: "Nhân viên",
   sales: "Sales",
   admin: "admin",
+};
+export const GenderType = {
+  male: "name",
+  female: "female",
+  other: "khác",
 };
 export const WareHouseDetailMode = {
   View: 1,
@@ -148,8 +154,7 @@ export const WareHouseDetailMode = {
   Edit: 3,
 };
 
-
 export const AUTH_STORAGE_KEYS = {
-  ACCESS_TOKEN: 'hs_client_access_token',
-  REFRESH_TOKEN: 'hs_client_refresh_token',
-} as const;
+  ACCESS_TOKEN: "hs_client_access_token",
+  REFRESH_TOKEN: "hs_client_refresh_token",
+};

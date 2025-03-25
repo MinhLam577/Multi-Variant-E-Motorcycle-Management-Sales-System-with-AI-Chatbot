@@ -16,8 +16,8 @@ const getColumnsConfig = ({
   return [
     {
       title: "Họ tên",
-      dataIndex: "customer",
-      key: "customer",
+      dataIndex: "username",
+      key: "username",
       render: (value, item) => {
         return (
           <Button
@@ -33,22 +33,44 @@ const getColumnsConfig = ({
     },
     {
       title: "Số điện thoại",
-      dataIndex: "phone",
-      key: "phone",
+      dataIndex: "phoneNumber",
+      key: "phoneNumber",
       width: "140px",
       ellipsis: true,
     },
     {
       title: "Địa chỉ nhận hàng",
-      dataIndex: "address",
-      key: "address",
+      dataIndex: "receive_address",
+      key: "receive_address",
       width: "140px",
       ellipsis: true,
+      render: (address) => {
+        if (!Array.isArray(address) || address.length === 0) {
+          return "Chưa có địa chỉ nhận hàng";
+        }
+
+        const findAddress =
+          address.find((addr) => addr.is_default) || address[0];
+
+        if (!findAddress) return "Chưa có địa chỉ nhận hàng";
+
+        return (
+          [
+            findAddress?.street,
+            findAddress?.ward,
+            findAddress?.district,
+            findAddress?.province,
+          ]
+            .filter(Boolean) // Loại bỏ các giá trị `undefined` hoặc `null`
+            .join(" ") || "Chưa có địa chỉ nhận hàng"
+        );
+      },
     },
+
     {
-      title: "Đơn gần nhất",
-      dataIndex: "lastOrder",
-      key: "lastOrder",
+      title: "Tuổi",
+      dataIndex: "age",
+      key: "age",
       width: "80px",
       ellipsis: true,
     },
@@ -76,7 +98,13 @@ const getColumnsConfig = ({
   ];
 };
 
-const CustomerTable = ({ globalFilters, handleUpdateUser, handleViewUser }) => {
+const CustomerTable = ({
+  globalFilters,
+  handleUpdateUser,
+  handleViewUser,
+  data,
+  loading,
+}) => {
   const navigate = useNavigate();
 
   const handleResetPassword = (id) => {
@@ -106,31 +134,12 @@ const CustomerTable = ({ globalFilters, handleUpdateUser, handleViewUser }) => {
   return (
     <>
       <TableComponent
-        loading={false}
+        loading={loading}
         filtersInput="filters"
         getColumnsConfig={getColumnsConfig}
         filterValue={globalFilters}
         loadData={() => {}}
-        data={[
-          {
-            customer: "Khách hàng 1",
-            phone: "123456789",
-            address: "Địa chỉ 1",
-            lastOrder: "Đơn gần nhất 1",
-            quantity: 10,
-            debt: 1000000,
-            totalSpent: 5000000,
-          },
-          {
-            customer: "Khách hàng 2",
-            phone: "987654321",
-            address: "Địa chỉ 2",
-            lastOrder: "Đơn gần nhất 2",
-            quantity: 20,
-            debt: 2000000,
-            totalSpent: 10000000,
-          },
-        ]}
+        data={data}
         handleResetPassword={handleResetPassword}
         handleDeleteUser={handleDeleteUser}
         handleUpdateUser={handleUpdateUser}
@@ -145,5 +154,7 @@ CustomerTable.propTypes = {
   globalFilters: PropTypes.object,
   handleUpdateUser: PropTypes.func,
   handleViewUser: PropTypes.func,
+  data: PropTypes.array.isRequired,
+  loading: PropTypes.bool,
 };
 export default CustomerTable;
