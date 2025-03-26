@@ -48,8 +48,8 @@ const getColumnsConfig = ({
       render: (_value, item) => {
         return (
           <GroupActionButton
-            hanleDeleteNews={handleDeleteCategories}
-            handleUpdateNews={handleEditCategories}
+            hanleDelete={handleDeleteCategories}
+            handleUpdate={handleEditCategories}
             item={item}
           />
         );

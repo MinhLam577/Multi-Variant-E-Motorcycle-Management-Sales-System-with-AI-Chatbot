@@ -4,14 +4,26 @@ import {
   PlusOutlined,
   SaveOutlined,
 } from "@ant-design/icons";
-import { Button, Card, Col, Divider, Form, Input, Row, Select } from "antd";
+import {
+  Button,
+  Card,
+  Col,
+  Divider,
+  Form,
+  Input,
+  message,
+  Row,
+  Select,
+} from "antd";
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import {
   ProcessModalName,
   processWithModals,
 } from "../../containers/processWithModals";
+import apiClient from "../../api/apiClient";
+import endpoints from "../../api/endpoints";
 
 export const CategoriesDetailMode = {
   View: 1,
@@ -30,6 +42,16 @@ const formItemLayout = {
 
 const WareHouseDetail = ({ mode }) => {
   const { id } = useParams();
+  console.log(mode);
+  useEffect(() => {
+    if (id) {
+      const getWarehouseByid = async (id) => {
+        const data = await apiClient.get(endpoints.warehouse.details(id));
+        form.setFieldsValue(data.data);
+      };
+      getWarehouseByid(id);
+    }
+  }, [id]);
 
   const navigate = useNavigate();
   const [loading] = useState(false);
@@ -121,7 +143,9 @@ const WareHouseDetail = ({ mode }) => {
       return false;
     }
 
-    // mode === CategoriesDetailMode.View
+    // if (mode === CategoriesDetailMode.View) {
+    //   return false;
+    // }
     return true;
   };
 
@@ -136,20 +160,40 @@ const WareHouseDetail = ({ mode }) => {
   const handleCancel = () => {
     if (mode === CategoriesDetailMode.Edit) {
       processWithModals(ProcessModalName.ConfirmCancelEditing)(() => {
-        navigate(`/categories`);
+        navigate(`/warehouse`);
       });
     } else {
-      navigate("/categories");
+      navigate("/warehouse");
     }
   };
 
   const handleEdit = () => {
     if (mode === CategoriesDetailMode.View) {
-      navigate(`/categories/${id}/edit`, { replace: true });
+      navigate(`/warehouse/${id}/edit`, { replace: true });
     }
   };
 
-  const handleFormFinish = (values) => {};
+  const handleFormFinish = async (values) => {
+    // gọi api chỉnh sửa
+    if (mode == 3) {
+      console.log(values);
+      const data = await apiClient.patch(
+        endpoints.warehouse.update(id),
+        values
+      );
+      if (data) {
+        message.success("Cập nhật thành công");
+      }
+      navigate(`/warehouse`, { replace: true });
+    } else {
+      const data = await apiClient.post(endpoints.warehouse.create(), values);
+      console.log(data);
+      if (data) {
+        message.success("Tạo thành công");
+        navigate(`/warehouse`, { replace: true });
+      }
+    }
+  };
 
   return (
     <>
@@ -162,30 +206,19 @@ const WareHouseDetail = ({ mode }) => {
           onFinish={handleFormFinish}
         >
           <Row gutter={[16, 16]}>
-            <Col span={12}>
+            <Col span={24}>
               <Form.Item
                 label="Tên kho"
-                name="wareHouseName"
+                name="name"
                 rules={[{ required: true, message: "Hãy nhập tên kho!" }]}
               >
                 <Input readOnly={isReadOnly()} placeholder="Nhập tên kho" />
               </Form.Item>
             </Col>
-
-            <Col span={6}>
+            <Col span={24}>
               <Form.Item
-                label="Email"
-                name="email"
-                rules={[{ required: true, message: "Hãy nhập tên kho!" }]}
-              >
-                <Input readOnly={isReadOnly()} placeholder="Nhập tên kho" />
-              </Form.Item>
-            </Col>
-
-            <Col span={6}>
-              <Form.Item
-                label="Số điện thoại"
-                name="phone"
+                label="Description"
+                name="description"
                 rules={[{ required: true, message: "Hãy nhập tên kho!" }]}
               >
                 <Input readOnly={isReadOnly()} placeholder="Nhập tên kho" />
@@ -194,71 +227,10 @@ const WareHouseDetail = ({ mode }) => {
             <Col span={24}>
               <Form.Item
                 label="Địa chỉ"
-                name="wareHouseAddress"
+                name="address"
                 rules={[{ required: true, message: "Hãy nhập địa chỉ!" }]}
               >
                 <Input readOnly={isReadOnly()} placeholder="Nhập địa chỉ" />
-              </Form.Item>
-            </Col>
-
-            <Col span={12}>
-              <Form.Item
-                label="Quốc gia"
-                name="wareHouseCountry"
-                rules={[{ required: true, message: "Hãy chọn quốc gia!" }]}
-              >
-                <Select placeholder="Chọn quốc gia" disabled={isReadOnly()}>
-                  <Select.Option value="Vietnam">Việt Nam</Select.Option>
-                  <Select.Option value="USA">Mỹ</Select.Option>
-                  <Select.Option value="Japan">Nhật Bản</Select.Option>
-                </Select>
-              </Form.Item>
-            </Col>
-
-            <Col span={12}>
-              <Form.Item
-                label="Tỉnh/Thành Phố"
-                name="wareHouseProvince"
-                rules={[
-                  { required: true, message: "Hãy chọn tỉnh/thành phố!" },
-                ]}
-              >
-                <Select
-                  placeholder="Chọn tỉnh/thành phố"
-                  disabled={isReadOnly()}
-                >
-                  <Select.Option value="Hanoi">Hà Nội</Select.Option>
-                  <Select.Option value="HoChiMinh">Hồ Chí Minh</Select.Option>
-                  <Select.Option value="DaNang">Đà Nẵng</Select.Option>
-                </Select>
-              </Form.Item>
-            </Col>
-
-            <Col span={12}>
-              <Form.Item
-                label="Quận/Huyện"
-                name="wareHouseDistrict"
-                rules={[{ required: true, message: "Hãy chọn quận/huyện!" }]}
-              >
-                <Select placeholder="Chọn quận/huyện" disabled={isReadOnly()}>
-                  <Select.Option value="District1">Quận 1</Select.Option>
-                  <Select.Option value="District2">Quận 2</Select.Option>
-                  <Select.Option value="District3">Quận 3</Select.Option>
-                </Select>
-              </Form.Item>
-            </Col>
-
-            <Col span={12}>
-              <Form.Item
-                label="Phường/Xã"
-                name="wareHouseAddress"
-                rules={[{ required: true, message: "Hãy nhập địa chỉ!" }]}
-              >
-                <Select placeholder="Chọn phường/xã" disabled={isReadOnly()}>
-                  <Select.Option value="Ward1">Phường 1</Select.Option>
-                  <Select.Option value="Ward2">Phường 2</Select.Option>
-                  <Select.Option value="Ward3">Phường 3</Select.Option>
-                </Select>
               </Form.Item>
             </Col>
           </Row>
@@ -288,3 +260,72 @@ WareHouseDetail.propTypes = {
 };
 
 export default WareHouseDetail;
+
+// <Col span={24}>
+//               <Form.Item
+//                 label="Email"
+//                 name="email"
+//                 rules={[{ required: true, message: "Hãy nhập tên kho!" }]}
+//               >
+//                 <Input readOnly={isReadOnly()} placeholder="Nhập tên kho" />
+//               </Form.Item>
+//             </Col>
+
+// <Col span={12}>
+//   <Form.Item
+//     label="Phường/Xã"
+//     name="wareHouseAddress"
+//     rules={[{ required: true, message: "Hãy nhập địa chỉ!" }]}
+//   >
+//     <Select placeholder="Chọn phường/xã" disabled={isReadOnly()}>
+//       <Select.Option value="Ward1">Phường 1</Select.Option>
+//       <Select.Option value="Ward2">Phường 2</Select.Option>
+//       <Select.Option value="Ward3">Phường 3</Select.Option>
+//     </Select>
+//   </Form.Item>
+// </Col>
+// <Col span={24}>
+//               <Form.Item
+//                 label="Quốc gia"
+//                 name="wareHouseCountry"
+//                 rules={[{ required: true, message: "Hãy chọn quốc gia!" }]}
+//               >
+//                 <Select placeholder="Chọn quốc gia" disabled={isReadOnly()}>
+//                   <Select.Option value="Vietnam">Việt Nam</Select.Option>
+//                   <Select.Option value="USA">Mỹ</Select.Option>
+//                   <Select.Option value="Japan">Nhật Bản</Select.Option>
+//                 </Select>
+//               </Form.Item>
+//             </Col>
+// <Col span={12}>
+//             //   <Form.Item
+//             //     label="Tỉnh/Thành Phố"
+//             //     name="wareHouseProvince"
+//             //     rules={[
+//             //       { required: true, message: "Hãy chọn tỉnh/thành phố!" },
+//             //     ]}
+//             //   >
+//             //     <Select
+//             //       placeholder="Chọn tỉnh/thành phố"
+//             //       disabled={isReadOnly()}
+//             //     >
+//             //       <Select.Option value="Hanoi">Hà Nội</Select.Option>
+//             //       <Select.Option value="HoChiMinh">Hồ Chí Minh</Select.Option>
+//             //       <Select.Option value="DaNang">Đà Nẵng</Select.Option>
+//             //     </Select>
+//             //   </Form.Item>
+//             // </Col>
+
+// <Col span={12}>
+//   <Form.Item
+//     label="Quận/Huyện"
+//     name="wareHouseDistrict"
+//     rules={[{ required: true, message: "Hãy chọn quận/huyện!" }]}
+//   >
+//     <Select placeholder="Chọn quận/huyện" disabled={isReadOnly()}>
+//       <Select.Option value="District1">Quận 1</Select.Option>
+//       <Select.Option value="District2">Quận 2</Select.Option>
+//       <Select.Option value="District3">Quận 3</Select.Option>
+//     </Select>
+//   </Form.Item>
+// </Col>;

@@ -69,8 +69,8 @@ const getColumnsConfig = ({ handleDeleteAddress, handleEditAddress }) => {
       render: (_value, item) => {
         return (
           <GroupActionButton
-            handleDeleteNews={handleDeleteAddress}
-            handleEditNews={handleEditAddress}
+            hanleDelete={handleDeleteAddress}
+            handleUpdate={handleEditAddress}
             item={item}
           />
         );
@@ -120,6 +120,7 @@ const AddressUserTable = () => {
           handleEditAddress,
           handleDeleteAddress,
         })}
+        handleEditAddress={handleEditAddress}
         loading={loading}
         key={0}
         dataSource={[]}

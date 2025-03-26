@@ -87,6 +87,7 @@ const endpoints = {
     update: (id) => `/branch/${id}`,
     delete: (id) => `/branch/${id}`,
     upload: "/upload",
+    create: "/branch",
   },
 
   // voucher

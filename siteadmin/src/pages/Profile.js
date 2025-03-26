@@ -28,7 +28,7 @@ import UploadAvatarGetUrlWithImgCrop, {
 } from "../containers/UploadAvatarGetUrlWithImgCrop";
 import { useStore } from "../stores";
 import { regexPhone, regexUsername } from "../utils/regex";
-
+import { runInAction } from "mobx";
 const Profile = () => {
   const [form] = Form.useForm();
   const { accountObservable, userObservable } = useStore();
@@ -64,7 +64,10 @@ const Profile = () => {
       case "updateSuccess": {
         message.success("Thay đổi thông tin người dùng thành công!");
         const updatedData = toJS(userObservable.me); // Lấy dữ liệu mới nhất
-        form.setFieldsValue(updatedData); // In dữ liệu ra để kiểm tra
+        console.log(updatedData);
+        runInAction(() => {
+          form.setFieldsValue(updatedData);
+        });
         switchMode(false); // Đóng chế độ chỉnh sửa
         break;
       }

@@ -1,4 +1,4 @@
-import { Button, Tag } from "antd";
+import { Button, message, Tag } from "antd";
 import * as moment from "moment";
 import PropTypes from "prop-types";
 import GroupActionButton from "../../components/GroupActionButton";
@@ -8,17 +8,20 @@ import {
   processWithModals,
 } from "../../containers/processWithModals";
 import TableComponent from "../../containers/TableComponent";
+import apiClient from "../../api/apiClient";
+import endpoints from "../../api/endpoints";
 
 const getColumnsConfig = ({
   handleUpdateStores,
   handleViewStores,
   hanleDeleteStore,
+  handleEditStores,
 }) => {
   return [
     {
       title: "Tên cửa hàng",
-      dataIndex: "storeName",
-      key: "storeName",
+      dataIndex: "name",
+      key: "name",
       render: (value, item) => {
         return (
           <Button
@@ -45,20 +48,20 @@ const getColumnsConfig = ({
 
     {
       title: "Trạng thái",
-      dataIndex: "status",
-      key: "status",
-      render: (status) => (
+      dataIndex: "active",
+      key: "active",
+      render: (active) => (
         <Tag
           className="uppercase"
           color={
-            status === "active"
+            active === true
               ? "#87d068"
-              : status === "inactive"
+              : active === false
               ? "#ff4d4f"
               : "#108ee9"
           }
         >
-          {status}
+          {active === true ? "Hiển thị" : "Không Hiển thị"}
         </Tag>
       ),
       ellipsis: true,
@@ -66,10 +69,9 @@ const getColumnsConfig = ({
     },
     {
       title: "Thời gian tạo",
-      dataIndex: "created_at",
-      key: "created_at",
-      render: (created_at) =>
-        moment(created_at).format(DateTimeFormat.TimeStamp),
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (createdAt) => moment(createdAt).format(DateTimeFormat.TimeStamp),
       sorter: true,
       ellipsis: true,
       width: "140px",
@@ -79,7 +81,13 @@ const getColumnsConfig = ({
       dataIndex: "action",
       key: "action",
       render: (_value, item) => {
-        return <GroupActionButton item={item} />;
+        return (
+          <GroupActionButton
+            item={item}
+            handleUpdate={handleEditStores}
+            hanleDelete={hanleDeleteStore}
+          />
+        );
       },
       width: 100,
     },
@@ -87,17 +95,27 @@ const getColumnsConfig = ({
 };
 
 const StoresTable = ({
+  data,
+  loading,
   globalFilters,
   handleUpdateStores,
   handleViewStores,
+  handleEditStores,
 }) => {
-  const loading = false;
-
   const hanleDeleteStore = (id) => {
     processWithModals(ProcessModalName.ConfirmCustomContent)(
       "Xác nhận",
       "Bạn chắc chắn muốn xóa cửa hàng này?"
-    )(() => {});
+    )(async () => {
+      try {
+        await apiClient.delete(endpoints.branch.delete(id));
+        message.success("Xóa cửa hàng thành công!");
+        // Thêm logic cập nhật danh sách nếu cần
+      } catch (error) {
+        console.error("Lỗi khi xóa cửa hàng:", error);
+        message.error("Có lỗi xảy ra, vui lòng thử lại!");
+      }
+    });
   };
 
   return (
@@ -105,41 +123,30 @@ const StoresTable = ({
       <TableComponent
         loading={loading}
         filtersInput="filters"
-        getColumnsConfig={getColumnsConfig}
+        getColumnsConfig={() =>
+          getColumnsConfig({
+            handleEditStores,
+            handleViewStores,
+            hanleDeleteStore,
+          })
+        }
         filterValue={globalFilters}
         loadData={() => {}}
-        data={[
-          {
-            storeName: "Cửa hàng 1",
-            address: "123 Phố Chính",
-            phone: "123-456-7890",
-            status: "Hoạt động",
-          },
-          {
-            storeName: "Cửa hàng 2",
-            address: "456 Phố Tùng",
-            phone: "987-654-3210",
-            status: "Không hoạt động",
-          },
-          {
-            storeName: "Cửa hàng 3",
-            address: "789 Phố Sồi",
-            phone: "555-123-4567",
-            status: "Hoạt động",
-          },
-        ]}
+        data={data}
         handleUpdateStores={handleUpdateStores}
-        handleViewStores={handleViewStores}
-        hanleDeleteStore={hanleDeleteStore}
       />
     </>
   );
 };
 
 StoresTable.propTypes = {
+  data: PropTypes.array.isRequired,
+  loading: PropTypes.bool,
   globalFilters: PropTypes.object,
   handleUpdateStores: PropTypes.func,
   handleViewStores: PropTypes.func,
+
+  handleEditStores: PropTypes.func,
 };
 
 export default StoresTable;

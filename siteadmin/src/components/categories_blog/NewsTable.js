@@ -58,8 +58,8 @@ const getColumnsConfig = ({
         return (
           <GroupActionButton
             item={item}
-            hanleDeleteNews={hanleDeleteNews}
-            handleUpdateNews={handleUpdateNews}
+            hanleDelete={hanleDeleteNews}
+            handleUpdate={handleUpdateNews}
           />
         );
       },
@@ -89,7 +89,9 @@ const NewsTable = ({
     processWithModals(ProcessModalName.ConfirmCustomContent)(
       "Xác nhận",
       "Bạn chắc chắn muốn gỡ bỏ tin tức này xuống?"
-    )(() => {});
+    )(() => {
+      
+    });
   };
 
   const hanleDeleteNews = async (id) => {

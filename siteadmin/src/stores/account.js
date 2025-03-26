@@ -32,6 +32,7 @@ export class AccountObservable {
         this.account = data;
       });
 
+      // xí về check
       return data;
     } catch (e) {
       console.error("Error setting account:", e);

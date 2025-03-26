@@ -4,7 +4,7 @@ import {
   PlusOutlined,
   SaveOutlined,
 } from "@ant-design/icons";
-import { Button, Card, Divider, Form, Input, Select } from "antd";
+import { Button, Card, Divider, Form, Input, message, Select } from "antd";
 import PropTypes from "prop-types";
 import { useNavigate, useParams } from "react-router";
 import { NewsStatusLabel } from "../../constants";
@@ -12,6 +12,13 @@ import {
   ProcessModalName,
   processWithModals,
 } from "../../containers/processWithModals";
+import UploadAvatarGetUrlWithImgCrop, {
+  UploadAvatarGetUrlWithImgCropRemoteMode,
+} from "../../containers/UploadAvatarGetUrlWithImgCrop";
+import endpoints from "../../api/endpoints";
+import WarehouseSelect from "../../containers/WarehouseSelect";
+import { useEffect, useState } from "react";
+import apiClient from "../../api/apiClient";
 
 export const StoresDetailMode = {
   View: 1,
@@ -132,12 +139,57 @@ const StoresDetail = ({ mode }) => {
       navigate(`/stores/${id}/edit`, { replace: true });
     }
   };
+  const handleFormFinish = async (values) => {
+    try {
+      const dto = { ...values };
 
-  const handleFormFinish = (values) => {
-    const dto = {
-      ...values,
-    };
+      if (mode === StoresDetailMode.Add) {
+        console.log("Thêm mới:", dto);
+        await apiClient.post(endpoints.branch.create(), dto);
+      } else if (mode === StoresDetailMode.Edit) {
+        console.log("Chỉnh sửa:", dto);
+        await apiClient.patch(endpoints.branch.update(id), dto);
+      }
+      message.success("Lưu dữ liệu thành công!"); // Thông báo thành công
+    } catch (error) {
+      console.error("Lỗi khi lưu dữ liệu:", error);
+      message.error("Có lỗi xảy ra, vui lòng thử lại!"); // Hiển thị thông báo lỗi
+    }
   };
+
+  const [wareHouses, setWarehose] = useState([]);
+  useEffect(() => {
+    const GetStoreById = async () => {
+      try {
+        const { data } = await apiClient.get(endpoints.branch.details(id));
+        console.log(data);
+        form.setFieldsValue({
+          ...data,
+          wareHouses: data.wareHouses?.map((wh) => wh.id) || [], // Đặt danh sách kho theo ID
+        });
+      } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu danh mục blog:", error);
+      }
+    };
+
+    if (id) {
+      GetStoreById();
+    }
+  }, [id, form]);
+
+  useEffect(() => {
+    const GetWareHouse = async () => {
+      try {
+        const { data } = await apiClient.get(endpoints.warehouse.list());
+        console.log(data);
+        setWarehose(data);
+      } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu danh mục blog:", error);
+      }
+    };
+
+    GetWareHouse();
+  }, [form]);
 
   return (
     <>
@@ -149,22 +201,21 @@ const StoresDetail = ({ mode }) => {
           autoComplete="off"
           onFinish={handleFormFinish}
         >
-          <Form.Item name="storeId" hidden>
+          <Form.Item name="logo" label="Hình đại diện" tooltip="Hình đại diện">
+            <UploadAvatarGetUrlWithImgCrop
+              remoteMode={UploadAvatarGetUrlWithImgCropRemoteMode.Private}
+              uploadUrl={endpoints.user.uploadAvatar()}
+            />
+          </Form.Item>
+          <Form.Item name="id" hidden>
             <Input />
           </Form.Item>
           <Form.Item
             label="Tên cửa hàng"
-            name="storeName"
+            name="name"
             rules={[{ required: true, message: "Hãy nhập tên cửa hàng!" }]}
           >
             <Input readOnly={isReadOnly()} placeholder="Nhập Tên cửa hàng" />
-          </Form.Item>
-          <Form.Item
-            label="Mã cửa hàng"
-            name="storeCode"
-            rules={[{ required: true, message: "Hãy nhập mã cửa hàng!" }]}
-          >
-            <Input readOnly={isReadOnly()} placeholder="Nhập Mã cửa hàng" />
           </Form.Item>
           <Form.Item
             label="Địa chỉ cửa hàng"
@@ -176,40 +227,19 @@ const StoresDetail = ({ mode }) => {
               placeholder="Nhập địa chỉ cửa hàng"
             />
           </Form.Item>
-
           <Form.Item
-            label="Thời gian giao hàng (kể từ lúc đặt - tính theo giờ)"
-            name="timeToDeliveryAfterHours"
-            rules={[{ required: true, message: "Hãy nhập thời gian!" }]}
+            readOnly={isReadOnly()}
+            label="Chọn kho"
+            name="wareHouses" // Tên field trong form
+            rules={[
+              {
+                required: true,
+                message: "Vui lòng chọn ít nhất một kho!",
+              },
+            ]}
           >
-            <Input
-              type="number"
-              readOnly={isReadOnly()}
-              placeholder="Nhập thời gian"
-            />
+            <WarehouseSelect wareHouses={wareHouses} disabled={isReadOnly()} />
           </Form.Item>
-
-          {mode !== StoresDetailMode.Add ? (
-            <Form.Item
-              label="Trạng thái"
-              name="status"
-              rules={[{ required: true, message: "Hãy chọn trạng thái!" }]}
-            >
-              <Select
-                disabled={isReadOnly()}
-                options={Object.keys(NewsStatusLabel).map((item) => {
-                  return {
-                    value: item,
-                    label: NewsStatusLabel[item],
-                  };
-                })}
-                placeholder="Nhập địa chỉ cửa hàng"
-                optionFilterProp="label"
-              />
-            </Form.Item>
-          ) : (
-            <></>
-          )}
           <>
             <Button onClick={handleCancel}>{getButtonCancelText()}</Button>
             {isReadOnly() ? (
@@ -235,3 +265,29 @@ StoresDetail.propTypes = {
 };
 
 export default StoresDetail;
+// <Form.Item
+//               label="Kho hàng"
+//               name="status"
+//               rules={[{ required: true, message: "Hãy chọn kho hàng!" }]}
+//             >
+//               <Select
+//                 disabled={isReadOnly()}
+//                 options={Object.keys(NewsStatusLabel).map((item) => {
+//                   return {
+//                     value: item,
+//                     label: NewsStatusLabel[item],
+//                   };
+//                 })}
+//                 placeholder="Nhập kho hàng "
+//                 optionFilterProp="label"
+//               />
+//             </Form.Item>
+
+// <Form.Item name="logo" label="Hình đại diện" tooltip="Hình đại diện">
+//             <UploadAvatarGetUrlWithImgCrop
+//               remoteMode={UploadAvatarGetUrlWithImgCropRemoteMode.Private}
+//               uploadUrl={endpoints.user.uploadAvatar()}
+//             />
+//           </Form.Item>
+
+// {mode !== StoresDetailMode.Add ? (

@@ -25,3 +25,23 @@ export const updateImage = async (id) => {
   const response = await apiClient.post(endpoints.user.delete(id));
   return response?.data?.data;
 };
+export const uploadUserImage = async (file) => {
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+    const response = await apiClient.post(
+      endpoints.user.uploadAvatar(),
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    return response?.data;
+  } catch (error) {
+    console.error("Error uploading image:", error);
+    throw error;
+  }
+};
