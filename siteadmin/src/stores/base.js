@@ -5,10 +5,10 @@ import EMotorbikeObservable from "./motorbike";
 import ProductObservable from "./product";
 import UploadImageObservable from "./uploadImage";
 import UserObservable from "./user";
-import TestObservable from "./test";
+import OrderObservable from "./order";
 export class RootStore {
     constructor() {
-        this.TestObservable = new TestObservable(this);
+        this.orderObservable = new OrderObservable(this);
         this.accountObservable = AccountObservable;
         this.loginObservable = new LoginObservable(this);
         this.userObservable = new UserObservable(this);

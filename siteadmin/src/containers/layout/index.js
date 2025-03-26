@@ -49,7 +49,6 @@ const BreadcrumbLabel = {
     warehouse: "Kho",
     "e-motorbike": "Xe máy điện",
     customer: "Quản lý khách hàng",
-    test: "TestComponent",
 };
 
 const AppLayout = (props) => {
@@ -115,9 +114,6 @@ const AppLayout = (props) => {
         ),
         getItem("Khách hàng", "19", <UserOutlined />, null, () =>
             navigate("/customer")
-        ),
-        getItem("TestComponent", "20", <UserOutlined />, null, () =>
-            navigate("/test")
         ),
     ];
 
