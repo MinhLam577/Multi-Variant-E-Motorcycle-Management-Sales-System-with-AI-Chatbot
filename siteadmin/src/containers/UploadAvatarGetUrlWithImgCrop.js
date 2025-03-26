@@ -36,51 +36,90 @@ const UploadAvatarGetUrlWithImgCrop = ({
     typeof onChange === "function" && onChange(null);
   };
 
+  // const uploadAvatarUrl = async ({ file }) => {
+  //   if (!validateImage(file, true)) {
+  //     return;
+  //   }
+  //   setUploading(true);
+  //   let createResourceDt;
+
+  //   const result = await uploadImageObservable.updateImageGetUrl(
+  //     file,
+  //     uploadUrl
+  //   );
+  //   console.log("resultresult", result);
+
+  //   // if (remoteMode === UploadAvatarGetUrlWithImgCropRemoteMode.Private) {
+  //   //   // createResourceDt = await createResource({
+  //   //   //   variables: {
+  //   //   //     file: file,
+  //   //   //     category: ResourceCategory.avatar,
+  //   //   //   },
+  //   //   // });
+  //   // } else {
+  //   //   // createResourceDt = await createResourcePublic({
+  //   //   //   variables: {
+  //   //   //     file: file,
+  //   //   //   },
+  //   //   // });
+  //   // }
+
+  //   await sleepFuntions(2000);
+  //   setUploading(false);
+  //   setFileList([
+  //     {
+  //       uid: createResourceDt?.data?.createResource?.url,
+  //       name: createResourceDt?.data?.createResource?.fileName,
+  //       status: "done",
+  //       url: createResourceDt?.data?.createResource?.url,
+  //     },
+  //   ]);
+
+  //   if (createResourceDt?.data?.createResource?.url) {
+  //     typeof onChange === "function" &&
+  //       onChange(createResourceDt?.data?.createResource?.url);
+  //   } else {
+  //     typeof onChange === "function" && onChange(null);
+  //   }
+  // };
+
   const uploadAvatarUrl = async ({ file }) => {
     if (!validateImage(file, true)) {
       return;
     }
     setUploading(true);
-    let createResourceDt;
 
-    const result = await uploadImageObservable.updateImageGetUrl(
-      file,
-      uploadUrl
-    );
-    console.log("resultresult", result);
+    try {
+      const result = await uploadImageObservable.updateImageGetUrl(
+        file,
+        uploadUrl
+      );
+      console.log("resultresult", result);
 
-    // if (remoteMode === UploadAvatarGetUrlWithImgCropRemoteMode.Private) {
-    //   // createResourceDt = await createResource({
-    //   //   variables: {
-    //   //     file: file,
-    //   //     category: ResourceCategory.avatar,
-    //   //   },
-    //   // });
-    // } else {
-    //   // createResourceDt = await createResourcePublic({
-    //   //   variables: {
-    //   //     file: file,
-    //   //   },
-    //   // });
-    // }
+      // Kiểm tra xem API có trả về URL không
+      if (result?.url) {
+        setFileList([
+          {
+            uid: result.url,
+            name: file.name,
+            status: "done",
+            url: result.url, // Gán URL ảnh trả về từ API
+          },
+        ]);
 
-    await sleepFuntions(2000);
-    setUploading(false);
-    setFileList([
-      {
-        uid: createResourceDt?.data?.createResource?.url,
-        name: createResourceDt?.data?.createResource?.fileName,
-        status: "done",
-        url: createResourceDt?.data?.createResource?.url,
-      },
-    ]);
-
-    if (createResourceDt?.data?.createResource?.url) {
-      typeof onChange === "function" &&
-        onChange(createResourceDt?.data?.createResource?.url);
-    } else {
-      typeof onChange === "function" && onChange(null);
+        // Gửi URL ảnh lên component cha nếu có `onChange`
+        if (typeof onChange === "function") {
+          onChange(result.url);
+        }
+      } else {
+        message.error("Không thể tải lên ảnh, vui lòng thử lại!");
+      }
+    } catch (error) {
+      console.error("Lỗi upload ảnh:", error);
+      message.error("Đã xảy ra lỗi khi tải ảnh lên!");
     }
+
+    setUploading(false);
   };
 
   const validateImage = async (file, isCheckSize = false) => {

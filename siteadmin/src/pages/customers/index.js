@@ -52,17 +52,17 @@ const Customer = () => {
   const handleEditUser = (usersData) => {
     globalDispatch({
       type: "breadcrum",
-      data: usersData.fullname,
+      data: usersData.username,
     });
-    navigate(`/users/${usersData.userId}/edit`, { replace: true });
+    navigate(`/customer/${usersData.id}/edit`, { replace: true });
   };
 
   const handleViewUser = (usersData) => {
     globalDispatch({
       type: "breadcrum",
-      data: usersData.fullname,
+      data: usersData.username,
     });
-    navigate(`/users/${usersData.userId}`, { replace: true });
+    navigate(`/customer/${usersData.id}`, { replace: true });
   };
 
   return (

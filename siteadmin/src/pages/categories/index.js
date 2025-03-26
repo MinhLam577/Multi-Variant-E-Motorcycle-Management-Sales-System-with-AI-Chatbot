@@ -1,6 +1,6 @@
 import { PlusOutlined } from "@ant-design/icons";
 import { Button, message, Space } from "antd";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import CategoriesTable from "../../components/categories/CategoriesTable";
 import {
@@ -8,12 +8,25 @@ import {
   processWithModals,
 } from "../../containers/processWithModals";
 import { GlobalContext } from "../../contexts/global";
+import apiClient from "../../api/apiClient";
+import endpoints from "../../api/endpoints";
 
 const Categories = () => {
   const navigate = useNavigate();
   const { globalDispatch } = useContext(GlobalContext);
   const [data, setData] = useState([]);
 
+  const fetchCategories = async () => {
+    try {
+      const { data } = await apiClient.get(endpoints.category.list);
+      setData(data);
+    } catch (error) {
+      console.error("Lỗi khi lấy danh mục:", error);
+    }
+  };
+  useEffect(() => {
+    fetchCategories();
+  }, []); // Thêm [] để chỉ gọi 1 lần khi component mount
   const handleAddCategories = () => {
     navigate("/categories/add", { replace: true });
   };
@@ -23,7 +36,7 @@ const Categories = () => {
       type: "breadcrum",
       data: categoriesData.categoryName,
     });
-    navigate(`/categories/${categoriesData.categoryId}/edit`, {
+    navigate(`/categories/${categoriesData.id}/edit`, {
       replace: true,
     });
   };
@@ -31,9 +44,9 @@ const Categories = () => {
   const handleViewCategories = (categoriesData) => {
     globalDispatch({
       type: "breadcrum",
-      data: categoriesData.categoryName,
+      data: categoriesData.name,
     });
-    navigate(`/categories/${categoriesData.categoryId}`, { replace: true });
+    navigate(`/categories/${categoriesData.id}`, { replace: true });
   };
 
   const handleDeleteCategories = (id) => {
@@ -43,8 +56,19 @@ const Categories = () => {
     )(() => removeCategory(id));
   };
 
-  const removeCategory = (id) => {
-    message.success("Xóa danh mục thành công!", id);
+  const removeCategory = async (id) => {
+    try {
+      console.log("Xóa danh mục với ID:", id);
+
+      const response = await apiClient.delete(endpoints.category.delete(id));
+
+      message.success(response.data.message || "Xóa danh mục thành công!");
+
+      fetchCategories(); // Cập nhật lại danh sách danh mục sau khi xóa
+    } catch (error) {
+      console.error("Lỗi khi xóa danh mục:", error);
+      message.error("Không thể xóa danh mục. Vui lòng thử lại!");
+    }
   };
 
   return (

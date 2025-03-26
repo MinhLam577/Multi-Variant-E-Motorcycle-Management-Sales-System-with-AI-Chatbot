@@ -1,13 +1,16 @@
 import { Table } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { AntdTableLocale } from "../../../constants";
 import {
   ProcessModalName,
   processWithModals,
 } from "../../../containers/processWithModals";
+import apiClient from "../../../api/apiClient";
+import endpoints from "../../../api/endpoints";
+import GroupActionButton from "../../GroupActionButton";
 
-const getColumnsConfig = () => {
+const getColumnsConfig = ({ hanleDeleteAddress }) => {
   return [
     {
       title: "No",
@@ -57,17 +60,46 @@ const getColumnsConfig = () => {
       ellipsis: true,
       width: 140,
     },
+    {
+      title: "Thao tác",
+      dataIndex: "action",
+      key: "action",
+      render: (_value, item) => {
+        return (
+          <GroupActionButton hanleDeleteNews={hanleDeleteAddress} item={item} />
+        );
+      },
+      width: 140,
+    },
   ];
 };
 
 const AddressUserTable = () => {
   const { id } = useParams();
+  const [userInfo, setUserInfo] = useState([]);
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const data = await apiClient.get(endpoints.customers.details(id));
+        console.log(data.data);
+        setUserInfo(data.data.receive_address);
+      } catch (error) {
+        console.error("Lỗi khi lấy thông tin user:", error);
+      }
+    };
+
+    if (id) {
+      fetchUser();
+    }
+  }, [id]);
   const [loading] = useState(false);
-  const hanleDeleteAddress = (id) => {
+  const hanleDeleteAddress = async(id) => {
     processWithModals(ProcessModalName.ConfirmCustomContent)(
       "Xác nhận",
       "Bạn chắc chắn muốn xóa địa chỉ này?"
-    )(() => {});
+    )(() => {
+    
+    });
   };
 
   return (
@@ -82,7 +114,7 @@ const AddressUserTable = () => {
         })}
         loading={loading}
         key={0}
-        dataSource={[]}
+        dataSource={userInfo}
         rowKey={"categoryId"}
         scroll={{ x: 400 }}
       />

@@ -112,6 +112,7 @@ UserTable.propTypes = {
   globalFilters: PropTypes.object,
   handleUpdateUser: PropTypes.func,
   handleViewUser: PropTypes.func,
+  
   data: PropTypes.array.isRequired,
 };
 export default UserTable;

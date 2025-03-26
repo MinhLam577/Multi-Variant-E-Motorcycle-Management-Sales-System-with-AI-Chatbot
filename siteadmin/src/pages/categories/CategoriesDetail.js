@@ -4,9 +4,18 @@ import {
   PlusOutlined,
   SaveOutlined,
 } from "@ant-design/icons";
-import { Button, Card, Divider, Form, Input, InputNumber, Select } from "antd";
+import {
+  Button,
+  Card,
+  Divider,
+  Form,
+  Input,
+  InputNumber,
+  message,
+  Select,
+} from "antd";
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import {
   ProcessModalName,
@@ -15,6 +24,8 @@ import {
 import UploadSinglePictureGetUrl, {
   UploadSinglePictureGetUrlRemoteMode,
 } from "../../containers/UploadSinglePictureGetUrl";
+import apiClient from "../../api/apiClient";
+import endpoints from "../../api/endpoints";
 
 export const CategoriesDetailMode = {
   View: 1,
@@ -32,7 +43,22 @@ const formItemLayout = {
 };
 
 const CategoriesDetail = ({ mode }) => {
+  const [categories, setData] = useState([]);
   const { id } = useParams();
+  useEffect(() => {
+    const fetchCategory = async () => {
+      try {
+        const response = await apiClient.get(endpoints.category.details(id));
+        form.setFieldsValue(response.data);
+      } catch (error) {
+        console.error("Lỗi khi lấy danh mục:", error);
+      }
+    };
+
+    if (id) {
+      fetchCategory();
+    }
+  }, [id]);
 
   const navigate = useNavigate();
   const [fileList, setFileList] = useState([]);
@@ -125,7 +151,6 @@ const CategoriesDetail = ({ mode }) => {
     } else if (mode === CategoriesDetailMode.Edit) {
       return false;
     }
-
     // mode === CategoriesDetailMode.View
     return true;
   };
@@ -158,7 +183,58 @@ const CategoriesDetail = ({ mode }) => {
     const dto = {
       ...values,
     };
+
+    //
+    if (mode === CategoriesDetailMode.Add) {
+      console.log(mode + "" + CategoriesDetailMode);
+      processWithModals(ProcessModalName.ConfirmCreateNews)(async () => {
+        try {
+          const response = await apiClient.post(endpoints.category.create, dto);
+          console.log(response);
+          if (response?.data) {
+            message.success(response.message);
+            navigate("/categories");
+          } else {
+            message.error("Không nhận được dữ liệu phản hồi từ server.");
+          }
+        } catch (error) {
+          console.error("Lỗi khi tạo danh mục sản phẩm:", error);
+          message.error(
+            error?.response?.data?.message || "Có lỗi xảy ra khi gọi API."
+          );
+        }
+      });
+    } else if (mode === CategoriesDetailMode.Edit) {
+      // mình đang chạy vào onCallback Oki
+      processWithModals(ProcessModalName.ConfirmUpdateNews)(async () => {
+        try {
+          const data = await apiClient.put(endpoints.category.update(id), dto);
+          if (data) {
+            message.success(data.message);
+            navigate("/categorynews");
+          } else {
+            message.error(data.error);
+          }
+        } catch (error) {
+          message.error(
+            "Lỗi khi tạo danh mục: " +
+              (error.response?.data?.message || "Không xác định")
+          );
+        }
+      });
+    }
   };
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const { data } = await apiClient.get(endpoints.category.list);
+        setData(data);
+      } catch (error) {
+        console.error("Lỗi khi lấy danh mục:", error);
+      }
+    };
+    fetchCategories();
+  }, []); // Thêm [] để chỉ gọi 1 lần khi component mount
 
   return (
     <>
@@ -171,76 +247,37 @@ const CategoriesDetail = ({ mode }) => {
           onFinish={handleFormFinish}
         >
           <Form.Item
-            className="flex justify-center"
-            name="image"
-            rules={[{ required: true, message: "Hãy chọn ảnh bìa!" }]}
-          >
-            <UploadSinglePictureGetUrl
-              remoteMode={UploadSinglePictureGetUrlRemoteMode.Private}
-              disabled={isReadOnly()}
-              maxCount={1}
-              fileList={fileList}
-              setFileList={setFileList}
-            />
-          </Form.Item>
-          <Form.Item
             label="Tên danh mục"
-            name="categoryName"
+            name="name"
             rules={[{ required: true, message: "Hãy nhập tên danh mục!" }]}
           >
             <Input readOnly={isReadOnly()} placeholder="Nhập tên danh mục" />
           </Form.Item>
-          <Form.Item label="Trạng thái" name="isActive">
-            <Select
-              allowClear
-              optionFilterProp="label"
-              options={[
-                {
-                  value: true,
-                  label: "Hiển thị",
-                },
-                {
-                  value: false,
-                  label: "Không hiển thị",
-                },
-              ]}
-              readOnly={isReadOnly()}
-              placeholder="Chọn trạng thái"
-            />
-          </Form.Item>
-          <Form.Item label="Màn hình" name="screen">
-            <Select
-              allowClear
-              optionFilterProp="label"
-              options={[
-                {
-                  value: "HOME",
-                  label: "Trang chủ",
-                },
-                {
-                  value: "PRODUCT",
-                  label: "Sản phẩm",
-                },
-              ]}
-              readOnly={isReadOnly()}
-              placeholder="Chọn màn hình hiển thị"
-            />
-          </Form.Item>
+
           <Form.Item
-            label="Số thứ tự"
-            name="sequenceNo"
-            rules={[{ required: true, message: "Hãy nhập số thứ tự!" }]}
+            label="Mô tả"
+            name="description"
+            rules={[{ required: true, message: "Hãy nhập mô tả danh mục!" }]}
           >
-            <InputNumber
-              style={{ width: "100%" }}
-              formatter={(value) =>
-                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-              }
-              min={0}
+            <Input readOnly={isReadOnly()} placeholder="Nhập mô tả danh mục" />
+          </Form.Item>
+
+          <Form.Item label="Parent Category" name="parentCategoryId">
+            <Select
+              allowClear
+              optionFilterProp="label"
+              options={[
+                { value: "", label: "Mặc định default" },
+                ...categories.map((category) => ({
+                  value: category.id,
+                  label: category.name,
+                })),
+              ]}
               readOnly={isReadOnly()}
-              placeholder="Nhập số thứ tự"
+              placeholder="Mặc định default"
             />
           </Form.Item>
+
           <>
             <Button onClick={handleCancel}>{getButtonCancelText()}</Button>
             {isReadOnly() ? (
@@ -266,3 +303,51 @@ CategoriesDetail.propTypes = {
 };
 
 export default CategoriesDetail;
+// <Form.Item
+//             className="flex justify-center"
+//             name="image"
+//             rules={[{ required: true, message: "Hãy chọn ảnh bìa!" }]}
+//           >
+//             <UploadSinglePictureGetUrl
+//               remoteMode={UploadSinglePictureGetUrlRemoteMode.Private}
+//               disabled={isReadOnly()}
+//               maxCount={1}
+//               fileList={fileList}
+//               setFileList={setFileList}
+//             />
+
+// trạng thái
+
+// <Form.Item label="Trạng thái" name="isActive">
+//             <Select
+//               allowClear
+//               optionFilterProp="label"
+//               options={[
+//                 {
+//                   value: true,
+//                   label: "Hiển thị",
+//                 },
+//                 {
+//                   value: false,
+//                   label: "Không hiển thị",
+//                 },
+//               ]}
+//               readOnly={isReadOnly()}
+//               placeholder="Chọn trạng thái"
+//             />
+//           </Form.Item>
+// <Form.Item
+//             label="Số thứ tự"
+//             name="sequenceNo"
+//             rules={[{ required: true, message: "Hãy nhập số thứ tự!" }]}
+//           >
+//             <InputNumber
+//               style={{ width: "100%" }}
+//               formatter={(value) =>
+//                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+//               }
+//               min={0}
+//               readOnly={isReadOnly()}
+//               placeholder="Nhập số thứ tự"
+//             />
+//           </Form.Item>

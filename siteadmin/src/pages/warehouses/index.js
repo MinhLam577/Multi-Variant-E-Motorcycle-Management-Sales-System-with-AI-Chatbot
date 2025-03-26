@@ -4,7 +4,7 @@ import {
   PushpinOutlined,
 } from "@ant-design/icons";
 import { Button, message, Space, Tag, Tooltip } from "antd";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import {
   ProcessModalName,
@@ -12,56 +12,78 @@ import {
 } from "../../containers/processWithModals";
 import TableComponent from "../../containers/TableComponent";
 import { GlobalContext } from "../../contexts/global";
+import { useStore } from "../../stores";
+import apiClient from "../../api/apiClient";
+import endpoints from "../../api/endpoints";
 
 const WareHouses = () => {
   const navigate = useNavigate();
   const { globalDispatch } = useContext(GlobalContext);
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
+  // Gọi API khi component mount
+  useEffect(() => {
+    console.log("useEffect running on mount");
+    setLoading(true);
+    const getWarehouse = async () => {
+      const data = await apiClient.get(endpoints.warehouse.list());
+      setLoading(false);
+      setData(data.data); // Đồng bộ dữ liệu
+    };
+    getWarehouse();
+  }, []);
+  console.log(data);
   const handleAddCategories = () => {
     navigate("/warehouse/add", { replace: true });
   };
 
-  const handleEditCategories = (categoriesData) => {
-    globalDispatch({
-      type: "breadcrum",
-      data: categoriesData.categoryName,
-    });
-    navigate(`/warehouse/${categoriesData.categoryId}/edit`, {
-      replace: true,
-    });
-  };
-
-  const handleViewCategories = (categoriesData) => {
-    globalDispatch({
-      type: "breadcrum",
-      data: categoriesData.categoryName,
-    });
-    navigate(`/warehouse/${categoriesData.categoryId}`, { replace: true });
-  };
-
-  const handleDeleteCategories = (id) => {
+  const handleDeleteProducts = (id) => {
     processWithModals(ProcessModalName.ConfirmCustomContent)(
       "Xác nhận",
       "Bạn chắc chắn muốn xóa danh mục này?"
     )(() => removeCategory(id));
   };
 
-  const removeCategory = (id) => {
-    message.success("Xóa danh mục thành công!", id);
+  const removeCategory = async (id) => {
+    const data = await apiClient.delete(endpoints.warehouse.delete(id));
+    if (data) {
+      console.log(data);
+      message.success("Xóa kho thành công!");
+      const data1 = await apiClient.get(endpoints.warehouse.list());
+      setData(data1.data); // Đồng bộ dữ liệu
+    }
   };
 
-  const getColumnsConfig = ({
-    handleEditProducts,
-    handleViewProducts,
-    handleStatusProducts,
-    handleDeleteProducts,
-  }) => {
+  const getColumnsConfig = ({ handleStatusProducts }) => {
+    const handleViewWareHouse = (item) => {
+      globalDispatch({
+        type: "breadcrum",
+        data: item.name,
+      });
+      if (item?.id) {
+        navigate(`/warehouse/${item.id}`); // Điều hướng đến trang chi tiết
+      } else {
+        console.error("Item không có id:", item);
+      }
+    };
+
+    const handleEditWarehouse = (categoriesData) => {
+      globalDispatch({
+        type: "breadcrum",
+        data: categoriesData.name,
+      });
+      navigate(`/warehouse/${categoriesData.id}/edit`, {
+        replace: true,
+      });
+    };
+
     return [
       {
-        title: "Địa điểm",
-        dataIndex: "location",
-        key: "location",
+        title: "Tên kho",
+        dataIndex: "name",
+        key: "name",
+
         render: (value, item) => {
           return (
             <div className="flex items-center gap-4">
@@ -69,7 +91,7 @@ const WareHouses = () => {
                 <Button
                   type="link"
                   className="items-center justify-start p-0"
-                  onClick={() => handleViewProducts(item)}
+                  onClick={() => handleViewWareHouse(item)}
                 >
                   {value}
                 </Button>
@@ -97,26 +119,16 @@ const WareHouses = () => {
       },
 
       {
-        title: "Tỉnh/ Thành Phố",
-        dataIndex: "province",
-        key: "province",
+        title: "Ngày Tạo",
+        dataIndex: "created_at",
+        key: "created_at",
         render: (value) => {
           return <div className="break-words">{value}</div>;
         },
         ellipsis: false,
         width: "120px",
       },
-      {
-        title: "Quận/ Huyện",
-        dataIndex: "district",
-        key: "district",
-        render: (value) => {
-          if (!value) return "-";
-          return <div className="break-words">{value}</div>;
-        },
-        ellipsis: false,
-        width: "100px",
-      },
+
       // Action
       {
         title: "Thao tác",
@@ -160,31 +172,12 @@ const WareHouses = () => {
         </Space>
       </div>
       <TableComponent
+        loading={loading}
         filtersInput="filters"
         getColumnsConfig={getColumnsConfig}
         filterValue={null}
         loadData={() => {}}
-        data={[
-          {
-            location: "Kho 1",
-            address: "123 ABC Street",
-            province: "Hanoi",
-            district: "Hoan Kiem",
-            isDefault: true,
-          },
-          {
-            location: "Kho 2",
-            address: "456 DEF Avenue",
-            province: "Ho Chi Minh",
-            district: "District 1",
-          },
-          {
-            location: "Kho 3",
-            address: "789 GHI Boulevard",
-            province: "Da Nang",
-            district: "Hai Chau",
-          },
-        ]}
+        data={data}
       />
     </>
   );

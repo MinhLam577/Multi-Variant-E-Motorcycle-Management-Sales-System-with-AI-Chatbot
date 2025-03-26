@@ -40,6 +40,8 @@ import WareHouses from "./pages/warehouses";
 import WareHouseDetail from "./pages/warehouses/WareHouseDetail";
 import { StoreProvider } from "./stores";
 import GlobalProvider from "./contexts/global";
+import CategoriesNews from "./pages/categoriesNews";
+import CategoriesNewsDetail from "./pages/categoriesNews/CategoriesNewsDetail";
 
 function App() {
   return (
@@ -300,21 +302,39 @@ function App() {
                   }
                 />
                 <Route
-                  path="/news"
+                  path="/categorynews"
                   element={
                     <ProtectedRoute>
-                      <News />
+                      <CategoriesNews />
                     </ProtectedRoute>
                   }
                 />
                 <Route
-                  path="/news/add"
+                  path="/categorynews/add"
                   element={
                     <ProtectedRoute>
-                      <NewsDetail mode={NewsDetailMode.Add} />
+                      <CategoriesNewsDetail mode={NewsDetailMode.Add} />
                     </ProtectedRoute>
                   }
                 />
+                <Route
+                  path="/categorynews/:id"
+                  element={
+                    <ProtectedRoute>
+                      <CategoriesNewsDetail mode={NewsDetailMode.View} />
+                    </ProtectedRoute>
+                  }
+                />
+
+                <Route
+                  path="/categorynews/:id/edit"
+                  element={
+                    <ProtectedRoute>
+                      <CategoriesNewsDetail mode={NewsDetailMode.Edit} />
+                    </ProtectedRoute>
+                  }
+                />
+
                 <Route
                   path="/news/:id"
                   element={

@@ -6,9 +6,13 @@ import {
   processWithModals,
 } from "../../../containers/processWithModals";
 import { GET_ADDRESS_USER, REMOVE_ADDRESS } from "../../../graphql/users";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
+import GroupActionButton from "../../GroupActionButton";
+import apiClient from "../../../api/apiClient";
+import endpoints from "../../../api/endpoints";
 
-const getColumnsConfig = () => {
+const getColumnsConfig = ({ handleDeleteAddress, handleEditAddress }) => {
+  console.log(handleEditAddress);
   return [
     {
       title: "No",
@@ -58,17 +62,51 @@ const getColumnsConfig = () => {
       ellipsis: true,
       width: 140,
     },
+    {
+      title: "Thao tác",
+      dataIndex: "action",
+      key: "action",
+      render: (_value, item) => {
+        return (
+          <GroupActionButton
+            handleDeleteNews={handleDeleteAddress}
+            handleEditNews={handleEditAddress}
+            item={item}
+          />
+        );
+      },
+      width: 140,
+    },
   ];
 };
 
 const AddressUserTable = () => {
-  const { id } = useParams();
+  const navigate = useNavigate();
   const [loading] = useState(false);
-  const hanleDeleteAddress = (id) => {
+
+  const handleDeleteAddress = (id) => {
     processWithModals(ProcessModalName.ConfirmCustomContent)(
       "Xác nhận",
       "Bạn chắc chắn muốn xóa địa chỉ này?"
-    )(() => {});
+    )(async () => {
+      // Thêm `async` ở đây
+      try {
+        await apiClient.delete(endpoints.receive_address.delete(id)); // Đảm bảo truyền `id`
+        message.success("Xóa địa chỉ thành công!");
+        // Gọi API cập nhật danh sách nếu cần
+      } catch (error) {
+        console.error("Lỗi khi xóa địa chỉ:", error);
+        message.error("Xóa địa chỉ thất bại. Vui lòng thử lại!");
+      }
+    });
+  };
+
+  const handleEditAddress = (id) => {
+    if (!id) {
+      console.error("ID không hợp lệ:", id);
+      return;
+    }
+    navigate(`/customer/receive_address/${id}/edit`);
   };
 
   return (
@@ -79,7 +117,8 @@ const AddressUserTable = () => {
         }}
         className="table-fixed"
         columns={getColumnsConfig({
-          hanleDeleteAddress,
+          handleEditAddress,
+          handleDeleteAddress,
         })}
         loading={loading}
         key={0}

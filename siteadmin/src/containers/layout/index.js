@@ -39,7 +39,7 @@ const BreadcrumbLabel = {
   users: "Quản lý Người dùng",
   products: "Quản lý Sản phẩm",
   categories: "Danh mục sản phẩm",
-  news: "Thông tin/tin tức/khuyến mãi",
+  categoriesnews: "Thông tin/tin tức",
   orders: "Quản lý Đơn hàng",
   add: "Tạo",
   edit: "Sửa",
@@ -78,8 +78,8 @@ const AppLayout = (props) => {
     getItem("Danh mục", "7", <FileDoneOutlined />, null, () =>
       navigate("/categories")
     ),
-    getItem("Tin tức", "8", <CalendarOutlined />, null, () =>
-      navigate("/news")
+    getItem("Danh mục tin tức", "8", <CalendarOutlined />, null, () =>
+      navigate("/categorynews")
     ),
     getItem("Đơn hàng", "9", <OrderedListOutlined />, [
       getItem("Tất cả", "10", null, null, () => navigate("/orders")),
@@ -157,7 +157,7 @@ const AppLayout = (props) => {
         "/users": "2",
         "/stores": "3",
         "/categories": "7",
-        "/news": "8",
+        "/categorynews": "8",
         "/products": "5",
         "/e-motorbike": "6",
         "/combo_product": "7",
@@ -173,12 +173,12 @@ const AppLayout = (props) => {
         "/statistic": "18",
         "/customer": "19",
       };
-      for (let key in menuKeys) {
-        if (path.includes(key)) {
+      for (let key of Object.keys(menuKeys)) {
+        if (path.startsWith(key)) {
           if (Array.isArray(menuKeys[key])) {
             if (
-              search.includes(menuKeys[key][0]) ||
-              search.includes(menuKeys[key][1])
+              search.startsWith(menuKeys[key][0]) ||
+              search.startsWith(menuKeys[key][1])
             ) {
               return menuKeys[key];
             }
