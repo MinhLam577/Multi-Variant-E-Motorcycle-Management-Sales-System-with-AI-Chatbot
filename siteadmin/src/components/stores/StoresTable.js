@@ -101,6 +101,7 @@ const StoresTable = ({
   handleUpdateStores,
   handleViewStores,
   handleEditStores,
+  fetchUsers,
 }) => {
   const hanleDeleteStore = (id) => {
     processWithModals(ProcessModalName.ConfirmCustomContent)(
@@ -111,6 +112,7 @@ const StoresTable = ({
         await apiClient.delete(endpoints.branch.delete(id));
         message.success("Xóa cửa hàng thành công!");
         // Thêm logic cập nhật danh sách nếu cần
+        fetchUsers();
       } catch (error) {
         console.error("Lỗi khi xóa cửa hàng:", error);
         message.error("Có lỗi xảy ra, vui lòng thử lại!");
@@ -145,7 +147,7 @@ StoresTable.propTypes = {
   globalFilters: PropTypes.object,
   handleUpdateStores: PropTypes.func,
   handleViewStores: PropTypes.func,
-
+  fetchUsers: PropTypes.func,
   handleEditStores: PropTypes.func,
 };
 

@@ -140,17 +140,36 @@ const StoresDetail = ({ mode }) => {
     }
   };
   const handleFormFinish = async (values) => {
+    const { wareHouses, id, ...data } = values;
+    const warehouseObjects = wareHouses.map((id) => ({ id }));
+    console.log(warehouseObjects);
+
     try {
-      const dto = { ...values };
+      const dto = { ...data, wareHouses: warehouseObjects };
 
       if (mode === StoresDetailMode.Add) {
+        if (!dto.logo) {
+          dto.logo = "default";
+        }
         console.log("Thêm mới:", dto);
-        await apiClient.post(endpoints.branch.create(), dto);
+        const data = await apiClient.post(endpoints.branch.create, dto);
+        console.log(data);
+        if (data.status == 200) {
+          message.success(data.message);
+          navigate("/stores");
+        } else {
+          data.error("Thêm mới thất bại");
+        }
       } else if (mode === StoresDetailMode.Edit) {
         console.log("Chỉnh sửa:", dto);
-        await apiClient.patch(endpoints.branch.update(id), dto);
+        const data = await apiClient.patch(endpoints.branch.update(id), dto);
+        if (data.status == 200) {
+          message.success(data.message);
+          navigate("/stores");
+        } else {
+          data.error("Cập nhật chi nhánh thất bại");
+        }
       }
-      message.success("Lưu dữ liệu thành công!"); // Thông báo thành công
     } catch (error) {
       console.error("Lỗi khi lưu dữ liệu:", error);
       message.error("Có lỗi xảy ra, vui lòng thử lại!"); // Hiển thị thông báo lỗi
