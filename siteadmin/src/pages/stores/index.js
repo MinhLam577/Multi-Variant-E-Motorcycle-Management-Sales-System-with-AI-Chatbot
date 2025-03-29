@@ -38,24 +38,23 @@ const Stores = () => {
 
   // Gọi API danh sách chi nhánh  khi component mount
   useEffect(() => {
-    const fetchUsers = async () => {
-      setLoading(true);
-      try {
-        const response = await getListBranch({ pageSize: 1, current: 2 });
-        if (response.data) {
-          console.log(response);
-          setBranchs(response.data); // Cập nhật dữ liệu vào state
-        }
-      } catch (error) {
-        console.error("Lỗi khi lấy danh sách người dùng:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchUsers();
   }, []);
 
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      const response = await getListBranch({ pageSize: null, current: null });
+      if (response.data) {
+        console.log(response);
+        setBranchs(response.data); // Cập nhật dữ liệu vào state
+      }
+    } catch (error) {
+      console.error("Lỗi khi lấy danh sách người dùng:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   // Lọc danh sách người dùng khi globalFilters thay đổi
   useEffect(() => {
     if (!globalFilters) return;
@@ -78,12 +77,7 @@ const Stores = () => {
       return data;
     });
   }, [globalFilters, branchs]); // Chỉ chạy khi bộ lọc hoặc danh sách người dùng thay đổi
-  const csvData = [
-    ["firstname", "lastname", "email"],
-    ["Ahmed", "Tomi", "ah@smthing.co.com"],
-    ["Raed", "Labes", "rl@smthing.co.com"],
-    ["Yezzi", "Min l3b", "ymin@cocococo.com"],
-  ];
+
   return (
     <>
       <div className="w-full">
@@ -113,6 +107,7 @@ const Stores = () => {
         handleUpdateStores={handleEditStores}
         handleViewStores={handleViewStores}
         handleEditStores={handleEditStores}
+        fetchUsers={fetchUsers}
       />
     </>
   );
