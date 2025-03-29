@@ -1,17 +1,28 @@
-import { Button } from "antd";
+import { Button, Popconfirm } from "antd";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router";
+import {
+  CloudUploadOutlined,
+  DeleteTwoTone,
+  EditTwoTone,
+  ExportOutlined,
+  PlusOutlined,
+  ReloadOutlined,
+} from "@ant-design/icons";
 import {
   ProcessModalName,
   processWithModals,
 } from "../../containers/processWithModals";
 import TableComponent from "../../containers/TableComponent";
+import { useState } from "react";
 const getColumnsConfig = ({
   handleUpdateUser,
   handleViewUser,
   handleDeleteUser,
   handleResetPassword,
   hanleActivateUser,
+  setOpenModalUpdate,
+  setDataUpdate,
 }) => {
   return [
     {
@@ -29,7 +40,7 @@ const getColumnsConfig = ({
           </Button>
         );
       },
-      width: "140px",
+      width: "200px",
     },
     {
       title: "Số điện thoại",
@@ -42,7 +53,7 @@ const getColumnsConfig = ({
       title: "Địa chỉ nhận hàng",
       dataIndex: "receive_address",
       key: "receive_address",
-      width: "140px",
+      width: "250px",
       ellipsis: true,
       render: (address) => {
         if (!Array.isArray(address) || address.length === 0) {
@@ -78,22 +89,53 @@ const getColumnsConfig = ({
       title: "SL Đơn hàng",
       dataIndex: "quantity",
       key: "quantity",
-      width: "80px",
+      // width: "80px",
       ellipsis: true,
     },
     {
       title: "Nợ phải thu",
       dataIndex: "debt",
       key: "debt",
-      width: "80px",
+      // width: "80px",
       ellipsis: true,
     },
     {
       title: "Tổng chi tiêu",
       dataIndex: "totalSpent",
       key: "totalSpent",
-      width: "80px",
+      // width: "80px",
       ellipsis: true,
+    },
+    {
+      title: "Action",
+      render: (text, record, index) => {
+        return (
+          <>
+            <Popconfirm
+              placement="leftTop"
+              title={"Xác nhận xóa user"}
+              description={"Bạn có chắc chắn muốn xóa user này ?"}
+              onConfirm={() => handleDeleteUser(record._id)}
+              okText="Xác nhận"
+              cancelText="Hủy"
+            >
+              <span style={{ cursor: "pointer", margin: "0 20px" }}>
+                <DeleteTwoTone twoToneColor="#ff4d4f" />
+              </span>
+            </Popconfirm>
+
+            <EditTwoTone
+              twoToneColor="#f57800"
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                // setOpenModalUpdate(true);
+                // setDataUpdate(record);
+                handleUpdateUser(record);
+              }}
+            />
+          </>
+        );
+      },
     },
   ];
 };
@@ -106,12 +148,22 @@ const CustomerTable = ({
   loading,
 }) => {
   const navigate = useNavigate();
+  const [openModalCreate, setOpenModalCreate] = useState(false);
+  const [openViewDetail, setOpenViewDetail] = useState(false);
+  const [dataViewDetail, setDataViewDetail] = useState(null);
+
+  const [openModalImport, setOpenModalImport] = useState(false);
+
+  const [openModalUpdate, setOpenModalUpdate] = useState(false);
+  const [dataUpdate, setDataUpdate] = useState(null);
 
   const handleResetPassword = (id) => {
     processWithModals(ProcessModalName.ConfirmCustomContent)(
       "Xác nhận",
       "Bạn chắc chắn muốn cài lại mật khẩu của người dùng này về mặc định là ngày sinh (Ví dụ: ngày sinh 15/09/1990 thì mật khẩu là 15091990)?"
-    )(() => {});
+    )(() => {
+      
+    });
   };
 
   const handleDeleteUser = (id) => {
@@ -146,6 +198,8 @@ const CustomerTable = ({
         handleViewUser={handleViewUser}
         hanleActivateUser={hanleActivateUser}
         hanleAddressUser={hanleAddressUser}
+        setOpenModalUpdate={setOpenModalUpdate}
+        setDataUpdate={setDataUpdate}
       />
     </>
   );

@@ -25,6 +25,15 @@ export const updateImage = async (id) => {
   const response = await apiClient.post(endpoints.user.delete(id));
   return response?.data?.data;
 };
+
+export const callBulkCreateUser = async (data) => {
+  const response = await apiClient.post(
+    endpoints.user.callBulkCreateUser,
+    data
+  );
+  return response;
+};
+
 export const uploadUserImage = async (file) => {
   try {
     const formData = new FormData();
