@@ -1,4 +1,4 @@
-import { PlusOutlined } from "@ant-design/icons";
+import { ExportOutlined, PlusOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
@@ -6,7 +6,7 @@ import StoresSearch from "../../components/stores/StoresSearch";
 import StoresTable from "../../components/stores/StoresTable";
 import { GlobalContext } from "../../contexts/global";
 import { getListBranch } from "../../api/branch";
-
+import { CSVLink, CSVDownload } from "react-csv";
 const Stores = () => {
   const navigate = useNavigate();
   const [globalFilters, setGlobalFilters] = useState({ searchText: null });
@@ -78,19 +78,31 @@ const Stores = () => {
       return data;
     });
   }, [globalFilters, branchs]); // Chỉ chạy khi bộ lọc hoặc danh sách người dùng thay đổi
-
+  const csvData = [
+    ["firstname", "lastname", "email"],
+    ["Ahmed", "Tomi", "ah@smthing.co.com"],
+    ["Raed", "Labes", "rl@smthing.co.com"],
+    ["Yezzi", "Min l3b", "ymin@cocococo.com"],
+  ];
   return (
     <>
       <div className="w-full">
         <StoresSearch setFilters={setGlobalFilters} />
       </div>
       <div className="flex justify-end mb-4">
+        <CSVLink data={filteredBranchs} filename={"danh-sach.csv"}>
+          <Button className="mr-2 bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded">
+            <ExportOutlined />
+            Export
+          </Button>
+        </CSVLink>
+
         <Button
           type="primary"
           icon={<PlusOutlined />}
           onClick={handleAddStores}
         >
-          Tạo mới
+          Tạo mới 1
         </Button>
       </div>
 

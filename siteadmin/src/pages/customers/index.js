@@ -7,6 +7,7 @@ import { Button } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import apiClient from "../../api/apiClient";
 import endpoints from "../../api/endpoints";
+import CustomerModalCreate from "../../components/customers/CustomerModalCreate";
 
 const Customer = () => {
   const navigate = useNavigate();
@@ -15,24 +16,28 @@ const Customer = () => {
   const { globalDispatch } = useContext(GlobalContext);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
-  useEffect(() => {
-    const fetchCustomer = async () => {
-      try {
-        setLoading(true);
-        const response = await apiClient.get(endpoints.customers.list(1, 3));
-        console.log(response.data.result);
-        setOriginalData(response?.data?.result || []); // Lưu dữ liệu gốc
-        setData(response?.data?.result || []); // Đảm bảo dữ liệu hợp lệ
-      } catch (error) {
-        console.error("Error fetching customer data:", error);
-      } finally {
-        setLoading(false); // Luôn dừng loading dù có lỗi hay không
-      }
-    };
 
+  const [openModalCreate, setOpenModalCreate] = useState(false);
+  const [openViewDetail, setOpenViewDetail] = useState(false);
+  const [dataViewDetail, setDataViewDetail] = useState(null);
+
+  useEffect(() => {
     fetchCustomer();
     console.log(globalFilters);
   }, []);
+  const fetchCustomer = async () => {
+    try {
+      setLoading(true);
+      const response = await apiClient.get(endpoints.customers.list(1, 3));
+      console.log(response.data.result);
+      setOriginalData(response?.data?.result || []); // Lưu dữ liệu gốc
+      setData(response?.data?.result || []); // Đảm bảo dữ liệu hợp lệ
+    } catch (error) {
+      console.error("Error fetching customer data:", error);
+    } finally {
+      setLoading(false); // Luôn dừng loading dù có lỗi hay không
+    }
+  };
   // 🔍 Tìm kiếm ngay trên FE khi globalFilters thay đổi
   useEffect(() => {
     if (!globalFilters.searchText) {
@@ -69,7 +74,13 @@ const Customer = () => {
     <>
       <CustomerSearch setFilters={setGlobalFilters} />
       <div className="flex justify-end mb-4">
-        <Button type="primary" icon={<PlusOutlined />} onClick={() => {}}>
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={() => {
+            setOpenModalCreate(true);
+          }}
+        >
           Tạo mới
         </Button>
       </div>
@@ -80,6 +91,12 @@ const Customer = () => {
         globalFilters={globalFilters}
         handleUpdateUser={handleEditUser}
         handleViewUser={handleViewUser}
+      />
+
+      <CustomerModalCreate
+        openModalCreate={openModalCreate}
+        setOpenModalCreate={setOpenModalCreate}
+        fetchUser={fetchCustomer}
       />
     </>
   );
