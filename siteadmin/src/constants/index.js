@@ -71,6 +71,9 @@ export const DateTimeFormat = {
     TimeStamp: "DD/MM/YYYY HH:mm:ss",
     TimeStampExcludedSeconds: "DD/MM/YYYY HH:mm",
     Date: "DD/MM/YYYY",
+    TIME_STAMP_POSTGRES: "YYYY-MM-DD HH:mm:ss",
+    TIME_STAMP_ISO: "YYYY-MM-DDTHH:mm:ssZ",
+    TIME_STAMP_POSTGRES_TZ: "YYYY-MM-DDTHH:mm:ss.SSSZ",
 };
 
 export const RegExps = {
@@ -104,25 +107,55 @@ export const AntdTablePagingLocale = {
 };
 
 export const EnumOrderStatuses = {
-    NEW: "MỚI",
+    All: "Tất cả",
+    PENDING: "ĐANG CHỜ",
     CONFIRMED: "ĐÃ XÁC NHẬN",
-    PACKAGED: "ĐÃ ĐÓNG GÓI",
-    DELIVERING: "ĐÃ GIAO DVVC",
+    EXPORTED: "ĐÃ XUẤT KHO",
+    DELIVERING: "ĐANG VẬN CHUYỂN",
+    SHIPPING: "ĐANG GIAO HÀNG",
     DELIVERED: "GIAO THÀNH CÔNG",
-    FAILED: "THẤT BẠI",
-    COMPLETED: "HOÀN THÀNH",
     CANCELED: "HỦY ĐƠN",
+    RETURNED: "TRẢ HÀNG",
+    FAILED_DELIVERY: "GIAO THẤT BẠI",
+};
+
+export const EnumOrderStatusesValue = {
+    All: null,
+    PENDING: 0,
+    CONFIRMED: 1,
+    EXPORTED: 2,
+    DELIVERING: 3,
+    SHIPPING: 4,
+    DELIVERED: 5,
+    FAILED_DELIVERY: 6,
+    RETURNED: 7,
+    CANCELED: -1,
 };
 
 export const EnumOrderColorStatuses = {
-    NEW: "rgb(2 132 199)",
-    CONFIRMED: "rgb(34 197 94)",
-    PACKAGED: "rgb(123 245 66)",
-    DELIVERING: "rgb(234 179 8)",
-    DELIVERED: "rgb(163 230 53)",
-    COMPLETED: "rgb(5 150 105)",
-    CANCELED: "rgb(239 68 68)",
+    PENDING: "rgb(2 132 199)",
+    CONFIRMED: "#003eb3",
+    EXPORTED: "#389e0d",
+    DELIVERING: "#876800",
+    SHIPPING: "#006d75",
+    DELIVERED: "rgb(5 150 105)",
+    CANCELED: "#9e1068",
+    RETURNED: "#531dab",
+    FAILED_DELIVERY: "#f5222d",
+};
+
+export const PaymentStatus = {
+    PENDING: "ĐANG XỬ LÝ",
+    PAID: "ĐÃ THANH TOÁN",
+    FAILED: "THẤT BẠI",
+    REFUNDED: "ĐÃ HOÀN TIỀN",
+};
+
+export const EnumPaymentStatusColors = {
+    PENDING: "rgb(2 132 199)",
+    PAID: "rgb(34 197 94)",
     FAILED: "rgb(239 68 68)",
+    REFUNDED: "rgb(249 115 22)",
 };
 
 export const NewsStatus = {
@@ -138,8 +171,14 @@ export const NewsStatusLabel = {
 export const UserType = {
     user: "Khách hàng",
     hr: "Tuyển dụng",
+    staff: "Nhân viên",
     sales: "Sales",
     admin: "admin",
+};
+export const GenderType = {
+    male: "name",
+    female: "female",
+    other: "khác",
 };
 export const WareHouseDetailMode = {
     View: 1,

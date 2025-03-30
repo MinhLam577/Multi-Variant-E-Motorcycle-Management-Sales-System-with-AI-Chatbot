@@ -35,11 +35,24 @@ const getColumnsConfig = ({ handleViewUser }) => {
     },
 
     {
-      title: "Vai trò",
-      dataIndex: "role",
-      key: "role",
-      width: "80px",
+      title: "Ngày sinh",
+      dataIndex: "birthday",
+      key: "birthday",
+      width: "140px",
       ellipsis: true,
+    },
+
+    {
+      title: "Vai trò",
+      dataIndex: "Roles",
+      key: "role",
+      width: "200px",
+      ellipsis: true,
+      render: (Roles) => {
+        if (!Roles || Roles.length === 0) return "Chưa có vai trò";
+
+        return Roles.map((role) => role.name).join(", "); // Hiển thị danh sách tên vai trò, cách nhau bởi dấu phẩy
+      },
     },
   ];
 };
@@ -99,6 +112,7 @@ UserTable.propTypes = {
   globalFilters: PropTypes.object,
   handleUpdateUser: PropTypes.func,
   handleViewUser: PropTypes.func,
+  
   data: PropTypes.array.isRequired,
 };
 export default UserTable;

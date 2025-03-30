@@ -15,9 +15,9 @@ import {
     Row,
     Select,
 } from "antd";
-import { observe, reaction } from "mobx";
+import { reaction, toJS, values } from "mobx";
 import { useEffect, useState } from "react";
-import endpoints from "../api/endpoints";
+import endpoints from "../api/endpoints.ts";
 import ChangePasswordModal from "../containers/ChangePasswordModal";
 import {
     ProcessModalName,
@@ -37,6 +37,10 @@ const Profile = () => {
     const [openChangePasswordModal, setOpenChangePasswordModal] =
         useState(false);
     const [loading, setLoading] = useState(false);
+    // Đồng bộ form với dữ liệu từ userObservable khi mount hoặc khi user thay đổi
+    useEffect(() => {
+        form.setFieldsValue(user); // Cập nhật form với dữ liệu ban đầu
+    }, [user, form]);
     useEffect(() => {
         return reaction(
             () => userObservable.status,
@@ -60,13 +64,15 @@ const Profile = () => {
 
             case "updateSuccess": {
                 message.success("Thay đổi thông tin người dùng thành công!");
+                const updatedData = toJS(userObservable.me); // Lấy dữ liệu mới nhất
+                form.setFieldsValue(updatedData); // In dữ liệu ra để kiểm tra
+                switchMode(false); // Đóng chế độ chỉnh sửa
                 break;
             }
             case "updateFailed": {
                 message.error("Cập nhật thông tin thất bại!");
                 break;
             }
-
             default: {
                 break;
             }
@@ -81,12 +87,18 @@ const Profile = () => {
     };
 
     const handleUpdateUserProfile = async (values) => {
+        console.log(values);
         const dto = {
             ...values,
         };
-        await userObservable.updateUserProfile(dto, user?.userId);
+        await userObservable.updateUserProfile(dto, user?.userId || user?.id);
     };
 
+    // const handleUploadSuccess = (response) => {
+    //   console.log("upload thành công ", response);
+    //   form.setFieldsValue({ avatarUrl: response.url });
+    // };
+    console.log("re-render" + user);
     return (
         <>
             <Card
@@ -135,7 +147,6 @@ const Profile = () => {
                     form={form}
                     layout="vertical"
                     disabled={!isEditing}
-                    initialValues={user}
                     onFinish={(values) =>
                         processWithModals(ProcessModalName.ConfirmSaveEditing)(
                             () => handleUpdateUserProfile(values)
@@ -151,7 +162,7 @@ const Profile = () => {
                             remoteMode={
                                 UploadAvatarGetUrlWithImgCropRemoteMode.Private
                             }
-                            uploadUrl={endpoints.user.uploadAvatar}
+                            uploadUrl={endpoints.user.uploadAvatar()}
                         />
                     </Form.Item>
                     <Row gutter={16}>

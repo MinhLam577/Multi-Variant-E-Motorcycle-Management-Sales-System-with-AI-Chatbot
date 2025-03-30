@@ -8,16 +8,18 @@ import { Button } from "antd";
 import PropTypes from "prop-types";
 
 const GroupActionButton = ({
-  handleEditProducts,
   handleStatusProducts,
-  handleDeleteProducts,
+  hanleDeleteNews,
+  handleEditNews,
   item,
 }) => {
+  console.log(handleEditNews);
+  console.log(hanleDeleteNews);
   console.log("itemitem", item);
   return (
     <div className="flex gap-x-3 ">
       <Button
-        onClick={() => handleEditProducts(item)}
+        onClick={() => handleEditNews(item.id)}
         icon={<EditOutlined title="Chỉnh sửa" />}
         style={{ minWidth: "30px" }}
       />
@@ -31,7 +33,7 @@ const GroupActionButton = ({
       <Button
         icon={<DeleteOutlined />}
         title="Xóa"
-        onClick={() => handleDeleteProducts(item.id)}
+        onClick={() => hanleDeleteNews(item.id)}
         style={{ minWidth: "30px" }}
       />
     </div>
@@ -40,9 +42,9 @@ const GroupActionButton = ({
 
 GroupActionButton.propTypes = {
   filterValue: PropTypes.object,
-  handleEditProducts: PropTypes.func,
+  handleEditNews: PropTypes.func,
   handleViewProducts: PropTypes.func,
-  handleDeleteProducts: PropTypes.func,
+  hanleDeleteNews: PropTypes.func,
   handleStatusProducts: PropTypes.func,
   item: PropTypes.any,
 };

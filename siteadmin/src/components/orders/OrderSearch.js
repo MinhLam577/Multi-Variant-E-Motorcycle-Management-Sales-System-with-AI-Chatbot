@@ -1,46 +1,47 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { SearchOutlined } from "@ant-design/icons";
-import { Button, DatePicker, Form, Select } from "antd";
+import { Button, DatePicker, Form, Input, Select, Tooltip } from "antd";
 import moment from "moment";
 import PropTypes from "prop-types";
-import { EnumOrderStatuses, UserRoleConstant } from "../../constants";
+import {
+    DateTimeFormat,
+    EnumOrderStatuses,
+    PaymentStatus,
+    UserRoleConstant,
+} from "../../constants";
 import { GlobalContext } from "../../contexts/global";
+import { observer } from "mobx-react-lite";
+import { makeAutoObservable } from "mobx";
 
+// Khai báo store nhỏ cho trạng thái focus
+const statusSearch = makeAutoObservable({
+    isInputFocused: false,
+    isInputHover: false,
+
+    setInputFocused(focused) {
+        this.isInputFocused = focused;
+    },
+    setInputHover(hover) {
+        this.isInputHover = hover;
+    },
+});
 const { RangePicker } = DatePicker;
-
-const OrderSearch = ({ showStatus, setFilters }) => {
+const OrderSearch = ({
+    globalFilters,
+    setGlobalFilters,
+    order_status,
+    payment_status,
+    payment_method,
+    order_store,
+    load_data,
+}) => {
     const [form] = Form.useForm();
     const { user } = useContext(GlobalContext);
     const [sales, setSales] = useState([]);
 
-    const onFinish = (values) => {
-        var obj = {};
-        obj["searchText"] = values?.searchText;
-
-        if (values?.status) {
-            obj["status"] = [values.status];
-        }
-        if (values?.date) {
-            obj["fromDate"] = moment(values?.date[0].toDate())
-                .hours(0)
-                .minutes(0)
-                .seconds(1)
-                .toDate();
-            obj["toDate"] = moment(values?.date[1].toDate())
-                .hours(23)
-                .minutes(59)
-                .seconds(59)
-                .toDate();
-        }
-        if (values?.orderNos) {
-            obj["orderNos"] = values.orderNos;
-        }
-        if (values?.saleId) {
-            obj["salesId"] = values?.saleId;
-        }
-
-        setFilters(obj);
+    const onFinish = async () => {
+        load_data(globalFilters);
     };
 
     return (
@@ -48,59 +49,78 @@ const OrderSearch = ({ showStatus, setFilters }) => {
             <Form
                 form={form}
                 onFinish={onFinish}
-                labelCol={{ flex: "30%" }}
                 labelWrap
                 layout="vertical"
-                className="flex flex-col gap-2 justify-between items-center"
+                className="flex flex-col"
             >
                 <div className="flex justify-between w-full">
                     <Form.Item
-                        label={<span className="font-bold">Mã đơn hàng</span>}
-                        name="orderNos"
-                        className="w-48"
+                        label={<span className="font-bold">Search</span>}
+                        className="w-48 !mb-4"
+                        name="search"
                     >
-                        <Select
-                            allowClear
-                            showSearch
-                            optionFilterProp="label"
-                            options={[]?.map((i) => ({
-                                value: i.orderNo,
-                                label: i.orderNo,
-                            }))}
-                            placeholder="Chọn mã đơn hàng"
-                            mode="multiple"
-                            className="w-96"
-                        />
-                    </Form.Item>
-                    <Form.Item
-                        label={<span className="font-bold">Mã khách hàng</span>}
-                        name="customer_id"
-                        className="w-48"
-                    >
-                        <Select
-                            allowClear
-                            showSearch
-                            placeholder="Chọn mã khách hàng"
-                            optionFilterProp="label"
-                            mode="multiple"
-                        />
+                        <Tooltip
+                            title={
+                                <span className="text-xs text-gray-400 font-semibold">
+                                    Nhập mã đơn hàng, tên khách hàng, mã khách
+                                    hàng, email
+                                </span>
+                            }
+                            placement="topLeft"
+                            arrow={true}
+                            color="#000"
+                            trigger={"hover"}
+                            open={
+                                statusSearch.isInputFocused &&
+                                statusSearch.isInputHover
+                            }
+                        >
+                            <Input
+                                name="search"
+                                placeholder="Nhập mã đơn hàng, ..."
+                                value={globalFilters?.search || ""}
+                                onChange={(e) => {
+                                    setGlobalFilters({
+                                        search: e.target.value,
+                                    });
+                                }}
+                                onFocus={() => {
+                                    statusSearch.setInputFocused(true);
+                                }}
+                                onBlur={() => {
+                                    statusSearch.setInputFocused(false);
+                                }}
+                                onMouseEnter={() => {
+                                    statusSearch.setInputHover(true);
+                                }}
+                                onMouseLeave={() => {
+                                    statusSearch.setInputHover(false);
+                                }}
+                            />
+                        </Tooltip>
                     </Form.Item>
                     <Form.Item
                         label={
-                            <div className="font-bold">Trạng thái đơn hàng</div>
+                            <div className="font-bold">
+                                Phương thức thanh toán
+                            </div>
                         }
-                        name="status"
-                        className="w-48"
+                        name="payment_method"
+                        className="w-48 !mb-4"
                     >
                         <Select
                             allowClear
                             showSearch
-                            placeholder="Chọn trạng thái đơn"
+                            placeholder="Chọn phương thức thanh toán"
                             optionFilterProp="label"
-                            options={[]?.map((i) => ({
-                                value: i.value,
-                                label: EnumOrderStatuses[i.text],
+                            value={globalFilters?.payment_method}
+                            options={payment_method?.map((i) => ({
+                                value: i,
+                                label: i,
                             }))}
+                            onChange={(value) => {
+                                setGlobalFilters({ payment_method: value });
+                            }}
                         />
                     </Form.Item>
                     <Form.Item
@@ -109,32 +129,40 @@ const OrderSearch = ({ showStatus, setFilters }) => {
                                 Trạng thái thanh toán
                             </div>
                         }
-                        name="status"
-                        className="w-48"
+                        name="payment_status"
+                        className="w-48 !mb-4"
                     >
                         <Select
                             allowClear
                             showSearch
                             placeholder="Chọn trạng thái thanh toán"
                             optionFilterProp="label"
-                            options={[]?.map((i) => ({
-                                value: i.value,
-                                label: EnumOrderStatuses[i.text],
+                            value={globalFilters?.payment_status}
+                            options={payment_status?.map((i) => ({
+                                value: i.key,
+                                label: PaymentStatus[i.key],
                             }))}
+                            onChange={(value) => {
+                                setGlobalFilters({ payment_status: value });
+                            }}
                         />
                     </Form.Item>
                     <Form.Item
                         label={
-                            <div className="font-bold">
-                                Khoảng thời gian(day)
-                            </div>
+                            <div className="font-bold">Khoảng thời gian</div>
                         }
                         name="date"
-                        className="w-60"
+                        className="w-60 !mb-4"
                     >
                         <RangePicker
                             format={"DD/MM/YYYY"}
                             placeholder={["Start Day", "End Day"]}
+                            onChange={(_, dateString) => {
+                                setGlobalFilters({
+                                    created_from: dateString[0],
+                                    created_to: dateString[1],
+                                });
+                            }}
                         />
                     </Form.Item>
                 </div>
@@ -144,7 +172,17 @@ const OrderSearch = ({ showStatus, setFilters }) => {
                             type="primary"
                             danger
                             htmlType="reset"
-                            onClick={() => setFilters({ searchText: null })}
+                            onClick={() => {
+                                setGlobalFilters({
+                                    search: "",
+                                    order_status: null,
+                                    payment_status: null,
+                                    payment_method: null,
+                                    startDate: null,
+                                    endDate: null,
+                                });
+                                form.resetFields();
+                            }}
                         >
                             Hủy
                         </Button>
@@ -156,7 +194,7 @@ const OrderSearch = ({ showStatus, setFilters }) => {
                             Tìm kiếm
                         </Button>
                     </div>
-                    <Button type="primary">Xuất hóa đơn</Button>
+                    <Button type="primary">Xuất excel</Button>
                 </div>
             </Form>
         </>
@@ -165,7 +203,16 @@ const OrderSearch = ({ showStatus, setFilters }) => {
 
 OrderSearch.propTypes = {
     showStatus: PropTypes.bool,
-    setFilters: PropTypes.func,
+    order_status: PropTypes.array,
+    globalFilters: PropTypes.object,
+    setGlobalFilters: PropTypes.func,
+    set_order_status: PropTypes.func,
+    payment_status: PropTypes.array,
+    set_payment_status: PropTypes.func,
+    payment_method: PropTypes.array,
+    set_payment_method: PropTypes.func,
+    order_store: PropTypes.object,
+    load_data: PropTypes.func,
 };
 
-export default OrderSearch;
+export default observer(OrderSearch);

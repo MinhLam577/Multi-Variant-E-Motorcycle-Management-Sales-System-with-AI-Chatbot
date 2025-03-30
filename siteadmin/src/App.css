@@ -1,6 +1,6 @@
 .upload-new .ant-upload-list-item-container {
     width: 300px !important;
-    height: 200px !important
+    height: 200px !important;
 }
 
 .ant-tree-switcher {
@@ -10,4 +10,13 @@
 .ant-statistic-content {
     display: flex;
     align-items: center;
+}
+
+.ant-drawer-header {
+    padding: 0 !important;
+    border-bottom: none !important;
+}
+
+.ant-drawer-body {
+    padding: 0 !important;
 }

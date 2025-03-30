@@ -27,3 +27,4 @@ yarn-error.log*
 /src/generated
 
 */node_modules
+package-lock.json

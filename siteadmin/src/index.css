@@ -1,15 +1,15 @@
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+        "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+        "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+        monospace;
 }
 
 @tailwind base;
@@ -17,7 +17,9 @@ code {
 @tailwind utilities;
 
 :root {
-  --primary-dark-color: rgba(11, 10, 24, 255);
-  --primary-green-color: rgba(0, 123, 56, 255);
-  --primary-red-color: rgba(174, 3, 38, 255);
+    --primary-dark-color: rgba(11, 10, 24, 255);
+    --primary-green-color: rgba(0, 123, 56, 255);
+    --primary-red-color: rgba(174, 3, 38, 255);
+    --primary-blue-color: rgb(2 132 199);
+    --border-gray: #f0f0f0;
 }

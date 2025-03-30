@@ -3,15 +3,24 @@ import PropTypes from "prop-types";
 import GroupActionButton from "../../components/GroupActionButton";
 import { DateTimeFormat } from "../../constants";
 import TableComponent from "../../containers/TableComponent";
+import { Button } from "antd";
 
-const getColumnsConfig = ({ handleEditCategories, handleDeleteCategories }) => {
+const getColumnsConfig = ({
+  handleDeleteCategories,
+  handleViewCategories,
+  handleEditCategories,
+}) => {
   return [
     {
       title: "Tên danh mục",
       dataIndex: "name",
       key: "name",
-      render: (value) => {
-        return <span>{value}</span>;
+      render: (value, item) => {
+        return (
+          <Button type="link" onClick={() => handleViewCategories(item)}>
+            {value}
+          </Button>
+        );
       },
       ellipsis: true,
     },
@@ -26,10 +35,9 @@ const getColumnsConfig = ({ handleEditCategories, handleDeleteCategories }) => {
     },
     {
       title: "Thời gian tạo",
-      dataIndex: "created_at",
-      key: "created_at",
-      render: (created_at) =>
-        moment(created_at).format(DateTimeFormat.TimeStamp),
+      dataIndex: "deletedAt",
+      key: "deletedAt",
+      render: (deletedAt) => moment(deletedAt).format(DateTimeFormat.TimeStamp),
       sorter: true,
       ellipsis: true,
     },
@@ -40,8 +48,8 @@ const getColumnsConfig = ({ handleEditCategories, handleDeleteCategories }) => {
       render: (_value, item) => {
         return (
           <GroupActionButton
-            handleEditCategories={handleEditCategories}
-            handleDeleteCategories={handleDeleteCategories}
+            hanleDeleteNews={handleDeleteCategories}
+            handleUpdateNews={handleEditCategories}
             item={item}
           />
         );
@@ -61,13 +69,17 @@ const CategoriesTable = ({
     <>
       <TableComponent
         filtersInput="filters"
-        getColumnsConfig={getColumnsConfig}
+        getColumnsConfig={() =>
+          getColumnsConfig({
+            handleDeleteCategories,
+            handleViewCategories,
+            handleEditCategories,
+          })
+        }
         loadData={() => {}}
         data={data}
         filterValue={null}
-        handleEditCategories={handleEditCategories}
-        handleViewCategories={handleViewCategories}
-        handleDeleteCategories={handleDeleteCategories}
+        rowKey="id" // Đảm bảo mỗi hàng có một `id` duy nhất
       />
     </>
   );
@@ -77,7 +89,7 @@ CategoriesTable.propTypes = {
   handleEditCategories: PropTypes.func,
   handleViewCategories: PropTypes.func,
   handleDeleteCategories: PropTypes.func,
-  data: [],
+  data: PropTypes.array.isRequired,
 };
 
 export default CategoriesTable;

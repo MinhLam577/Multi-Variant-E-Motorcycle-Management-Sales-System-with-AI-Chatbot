@@ -6,8 +6,10 @@ import ProductObservable from "./product";
 import UploadImageObservable from "./uploadImage";
 import UserObservable from "./user";
 import OrderObservable from "./order";
+import PaymentMethodObservable from "./paymentMethod";
 export class RootStore {
     constructor() {
+        this.paymentMethodObservable = new PaymentMethodObservable(this);
         this.orderObservable = new OrderObservable(this);
         this.accountObservable = AccountObservable;
         this.loginObservable = new LoginObservable(this);

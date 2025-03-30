@@ -11,21 +11,24 @@ const endpoints = {
         update: (id) => `/users/${id}`,
         setRole: (id) => `/users/${id}`,
         changePassword: (id) => `/users/${id}`,
-        uploadAvatar: "/users/upload",
+        uploadAvatar: () => "/users/upload",
         list: (page, limit) => `/users?current=${page}&pageSize=${limit}`,
     },
+
     customers: {
         details: (id) => `/customers/${id}`,
         update: (id) => `/customers/${id}`,
         setRole: (id) => `/customers/${id}`,
         changePassword: (id) => `/customers/${id}`,
         uploadAvatar: "/customers/upload",
-        list: (page, limit) => `customers/?current=${page}&pageSize=${limit}`,
+        list: (page, limit) => `customers/?page=${page}&limit=${limit}`,
     },
     motorbike: {
         list: (page, size) => `/products?current=${page}&pageSize=${size}`,
         details: (id) => `/products/${id}`,
         //setting
+
+        // get
         categories: "/categories",
         color: "/color",
         brand: "/brand",
@@ -61,7 +64,7 @@ const endpoints = {
 
     //category
     category: {
-        list: (page, size) => `/categories?current=${page}&pageSize=${size}`,
+        list: `/categories`,
         details: (id) => `/categories/${id}`,
         create: "/categories",
         update: (id) => `/categories/${id}`,
@@ -79,7 +82,7 @@ const endpoints = {
 
     // branch
     branch: {
-        list: (page, size) => `/branch?current=${page}&pageSize=${size}`,
+        list: (page, size) => `/branch?pageSize=${page}&current=${size}`,
         details: (id) => `/branch/${id}`,
         update: (id) => `/branch/${id}`,
         delete: (id) => `/branch/${id}`,
@@ -123,9 +126,62 @@ const endpoints = {
         create: () => `/review`,
         upload: "/review/upload-images",
     },
+
+    // review
+    warehouse: {
+        list: () => `/warehouse`,
+        details: (id) => `/warehouse/${id}`,
+        update: (id) => `/warehouse/${id}`,
+        delete: (id) => `/warehouse/${id}`,
+        create: () => `/warehouse`,
+    },
+
+    // blogs - categories
+    blogcategories: {
+        list: () => `/blog-categories`,
+        details: (id) => `/blog-categories/${id}`,
+        update: (id) => `/blog-categories/${id}`,
+        delete: (id) => `/blog-categories/${id}`,
+        create: () => `/blog-categories`,
+    },
+    // blog - categories
+    blogs: {
+        list: () => `/blogs`,
+        details: (id) => `/blogs/${id}`,
+        update: (id) => `/blogs/${id}`,
+        delete: (id) => `/blogs/${id}`,
+        create: () => `/blogs`,
+        upload: "/blogs/upload-image",
+        uploads: "/blogs/upload-images",
+    },
+    // received - address
+    receive_address: {
+        list: () => `/receive-address`,
+        details: (id) => `/receive-address/${id}`,
+        update: (id) => `/receive-address/${id}`,
+        delete: (id) => `/receive-address/${id}`,
+        create: () => `/receive-address`,
+        upload: "/receive-address/upload-image",
+        uploads: "/receive-address/upload-images",
+    },
     order: {
-        list: (query) => `/order?${query}`,
-        details: (id) => `/order/${id}`,
+        list: (query: string = "current=1&pageSize=20") => `/order?${query}`,
+        getStatus: () => "/order/order-status",
+        getOrderDetail: (id: string) => `/order/${id}`,
+        updateOrderStatus: (id: string) => `/order/${id}/status`,
+        confirmOrder: () => `/order/confirm`,
+        cancelOrder: (id: string) => `/order/${id}/cancel`,
+        failedDelivery: (id: string) => `/order/${id}/failed-delivery`,
+        returnOrder: (id: string) => `/order/${id}/return-order`,
+    },
+    paymentMethod: {
+        list: () => `/payment-method`,
+        getPaymentName: () => `/payment-method/payment-method-name`,
+        getPaymentStatus: () => "/order/payment-status",
+    },
+
+    sku: {
+        getDetailImportsById: (id) => `/skus/${id}/detail-import`,
     },
 };
 

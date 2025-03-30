@@ -1,6 +1,6 @@
 import { makeAutoObservable } from "mobx";
 import apiClient from "../api/apiClient";
-import endpoints from "../api/endpoints";
+import endpoints from "../api/endpoints.ts";
 import { RootStore } from "./base";
 import { handleErrorMessage } from "../api/handleErrorMessage";
 
