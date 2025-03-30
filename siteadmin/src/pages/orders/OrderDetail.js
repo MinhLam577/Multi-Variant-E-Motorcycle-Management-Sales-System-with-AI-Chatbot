@@ -1,206 +1,355 @@
-import { Tag } from "antd";
-import moment from "moment";
+import { Button, Form, Steps } from "antd";
 import PropTypes from "prop-types";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import OrderPrint from "../../components/orders/detail/OrderPrint";
-import OrderProductsComboTable from "../../components/orders/detail/OrderProductsComboTable";
 import OrderProductsTable from "../../components/orders/detail/OrderProductsTable";
+import { EnumOrderStatusesValue } from "../../constants";
+import { reaction, toJS } from "mobx";
+import "./OrderDetail.css";
 import {
-  DateTimeFormat,
-  EnumOrderColorStatuses,
-  EnumOrderStatuses,
-} from "../../constants";
-import { formatVNDMoney } from "../../utils";
-
+    CheckOutlined,
+    CloseOutlined,
+    LoadingOutlined,
+} from "@ant-design/icons";
+import { CustomizeButton } from "../../components/common/CustomizeButton";
+import { observer } from "mobx-react-lite";
+import OrderDescription from "../../components/orders/detail/OrderDescription";
+import CustomerDescription from "../../components/orders/detail/CustomerDescription";
+import ModalConfirmReason from "../../components/orders/detail/ModalConfirmReason";
+import ModalExportOrder from "../../components/orders/detail/ModalExportOrder";
 export const OrderDetailMode = {
-  View: 1,
-  Edit: 2,
+    View: 1,
+    Edit: 2,
 };
 
-const orderStatusBtn = {
-  NEW: ["CONFIRMED", "PACKAGED", "DELIVERING", "CANCELED"],
-  CONFIRMED: ["DELIVERING", "DELIVERED", "CANCELED"],
-  DELIVERING: ["DELIVERED", "FAILED", "CANCELED"],
-  DELIVERED: [],
-  FAILED: [],
-  COMPLETED: [],
-  CANCELED: [],
-};
+const OrderDetail = ({
+    orderDetail,
+    orderNo,
+    order_store,
+    handleUpdateOrderStatus,
+    handleCancelOrderStatus,
+    handleFailedDelivery,
+    handleReturnOrder,
+    displayMessage,
+}) => {
+    const elementPrintOrder = useRef();
 
-const OrderDetail = ({ refreshOrders, orderNo }) => {
-  const [orderDetail, setOrderDetail] = useState();
+    //  In bill
+    const onPrint = useReactToPrint({
+        content: () => elementPrintOrder.current,
+    });
 
-  const elementPrintOrder = useRef();
+    const orderProductTableData = orderDetail?.order_details?.map((item) => {
+        return {
+            ...item,
+            key: item.id,
+        };
+    });
 
-  const updateStatusOrder = (status) => {};
+    const stepItems = [
+        {
+            title: "Đặt hàng",
+        },
+        {
+            title: "Xác nhận",
+        },
+        {
+            title: "Xuất kho",
+        },
+        {
+            title: "Vận chuyển",
+        },
+        {
+            title: "Đang giao",
+        },
+        {
+            title: "Đã giao",
+        },
+    ];
 
-  //  In bill
-  const onPrint = useReactToPrint({
-    content: () => elementPrintOrder.current,
-  });
+    const Icon_dot = (icon, { index, status, title, description }) => {
+        const isFinish = status === "finish";
+        const isError = status === "error";
+        const isProcess = status === "process";
+        const isWait = status === "wait";
 
-  console.log(orderDetail);
-  return (
-    <>
-      <div className="flex justify-between border-slate-100 bg-slate-50	p-4 my-4 rounded">
-        <div>
-          <div className="flex items-center">
-            <span className="font-bold">Đơn hàng:</span>{" "}
-            <span className="font-bold text-sky-600	text-base ml-1">
-              #{orderDetail?.orderNo}
-            </span>
-          </div>
-          <div className="mt-5">
-            <span className="font-semibold">Tổng tiền chưa khuyến mãi:</span>{" "}
-            <span className="text-base font-bold">
-              {formatVNDMoney(
-                orderDetail?.totalPrice +
-                  orderDetail?.totalDiscount -
-                  orderDetail?.shipmentFee
-              )}
-              đ
-            </span>
-          </div>
-          <div className="mt-2">
-            <span className="font-semibold">Tổng khuyễn mãi:</span>{" "}
-            <span className="text-base font-bold">
-              {formatVNDMoney(orderDetail?.totalDiscount)}đ
-            </span>
-          </div>
-          <div className="mt-2">
-            <span className="font-semibold">Phí ship:</span>{" "}
-            <span className="text-base font-bold">
-              {formatVNDMoney(orderDetail?.shipmentFee)}đ
-            </span>
-          </div>
-          <div className="mt-2 mb-5">
-            <span className="font-semibold">Tổng tiền:</span>{" "}
-            <span className="text-base font-bold">
-              {formatVNDMoney(orderDetail?.totalPrice)}đ
-            </span>
-          </div>
-
-          {orderDetail?.orderVouchers?.map((voucher) => {
-            return (
-              <div key={voucher?.discountCode}>
-                <div className="mt-2">
-                  <span className="font-semibold">
-                    Mã giảm giá: {voucher?.discountCode} -{" "}
-                    {voucher?.discountType} -{" "}
-                    {formatVNDMoney(voucher?.discountValue)} VND
-                  </span>
-                </div>
-              </div>
-            );
-          })}
-
-          <div className="mt-2">
-            <span className="font-semibold">Thời gian đặt hàng:</span>{" "}
-            <span className="text-base">
-              {moment(orderDetail?.created_at).format(DateTimeFormat.TimeStamp)}
-            </span>
-          </div>
-          <div className="mt-2">
-            <span className="font-semibold">
-              Thời gian mong muống nhận hàng:
-            </span>{" "}
-            <span className="text-base">
-              {moment(orderDetail?.expectedDeliveryTime)
-                .subtract(7, "hour")
-                .format(DateTimeFormat.TimeStamp)}
-            </span>
-          </div>
-          <div className="mt-2">
-            <span className="font-semibold">Ghi chú:</span>{" "}
-            <span className="text-base">{orderDetail?.note}</span>
-          </div>
-        </div>
-        <div>
-          <Tag color={EnumOrderColorStatuses[orderDetail?.status]}>
-            {EnumOrderStatuses[orderDetail?.status]}
-          </Tag>
-        </div>
-      </div>
-      <div className="flex justify-between my-4">
-        <div className="border-2	border-slate-200	border-solid rounded-md w-3/12">
-          <div className="font-bold mb-4 border-2	border-slate-200 bg-slate-100 p-4">
-            KHÁCH HÀNG
-          </div>
-          <div className="p-4">
-            <div>{orderDetail?.createdBy?.fullname}</div>
-            <div className="text-gray-400	">{orderDetail?.createdBy.phone}</div>
-          </div>
-        </div>
-        <div className="border-2	border-slate-200	border-solid rounded-md w-8/12">
-          <div className="font-bold mb-4 border-2	border-slate-200 bg-slate-100 p-4">
-            NGƯỜI NHẬN
-          </div>
-          <div className="p-4">
-            <div>{orderDetail?.orderAddress?.receiverPhone}</div>
-            <div className="text-gray-400">
-              {orderDetail?.orderAddress?.receiverPhone}
+        return (
+            <div className={`w-5 h-5 relative`}>
+                {isFinish ? (
+                    <>
+                        {icon}
+                        <CheckOutlined
+                            className="absolute left-1 top-1"
+                            style={{
+                                fontSize: 12,
+                                color: "white",
+                            }}
+                        />
+                    </>
+                ) : isError ? (
+                    <>
+                        {icon}
+                        <CloseOutlined
+                            className="absolute left-1 top-1"
+                            style={{
+                                fontSize: 12,
+                                color: "white",
+                            }}
+                        />
+                    </>
+                ) : isProcess ? (
+                    <LoadingOutlined
+                        className="absolute left-1 top-1"
+                        style={{
+                            fontSize: 14,
+                            color: "blue",
+                        }}
+                    />
+                ) : isWait ? (
+                    <>
+                        {icon}
+                        <span
+                            className="absolute left-1 top-1"
+                            style={{
+                                fontSize: 12,
+                                color: "white",
+                            }}
+                        ></span>
+                    </>
+                ) : null}
             </div>
-            <div className="text-gray-400">
-              {orderDetail?.orderAddress?.province ? (
-                <div>
-                  {""}{" "}
-                  {orderDetail?.orderAddress?.street +
-                    ", " +
-                    orderDetail?.orderAddress?.ward +
-                    ", " +
-                    orderDetail?.orderAddress?.district +
-                    ", " +
-                    orderDetail?.orderAddress?.province}{" "}
+        );
+    };
+
+    const [current_status, set_current_status] = useState(
+        EnumOrderStatusesValue[orderDetail?.order_status] || 0
+    );
+    const [isError, setIsError] = useState(false);
+
+    const handleCurrentStatus = (status, prev_status) => {
+        switch (EnumOrderStatusesValue[status]) {
+            case EnumOrderStatusesValue.PENDING:
+                set_current_status(EnumOrderStatusesValue.PENDING);
+                setIsError(false);
+                break;
+            case EnumOrderStatusesValue.CONFIRMED:
+                set_current_status(EnumOrderStatusesValue.CONFIRMED);
+                setIsError(false);
+                break;
+            case EnumOrderStatusesValue.EXPORTED:
+                set_current_status(EnumOrderStatusesValue.EXPORTED);
+                setIsError(false);
+                break;
+            case EnumOrderStatusesValue.DELIVERING:
+                set_current_status(EnumOrderStatusesValue.DELIVERING);
+                setIsError(false);
+                break;
+            case EnumOrderStatusesValue.SHIPPING:
+                set_current_status(EnumOrderStatusesValue.SHIPPING);
+                setIsError(false);
+                break;
+            case EnumOrderStatusesValue.DELIVERED:
+            case EnumOrderStatusesValue.RETURNED:
+                set_current_status(EnumOrderStatusesValue.DELIVERED);
+                setIsError(false);
+                break;
+            case EnumOrderStatusesValue.FAILED_DELIVERY:
+                switch (EnumOrderStatusesValue[prev_status]) {
+                    case EnumOrderStatusesValue.DELIVERING:
+                        set_current_status(EnumOrderStatusesValue.DELIVERING);
+                        setIsError(true);
+                        break;
+                    case EnumOrderStatusesValue.SHIPPING:
+                        set_current_status(EnumOrderStatusesValue.SHIPPING);
+                        setIsError(true);
+                        break;
+                    default:
+                        set_current_status(EnumOrderStatusesValue.SHIPPING);
+                        setIsError(true);
+                        break;
+                }
+                break;
+            case EnumOrderStatusesValue.CANCELED:
+                switch (EnumOrderStatusesValue[prev_status]) {
+                    case EnumOrderStatusesValue.PENDING:
+                        set_current_status(EnumOrderStatusesValue.PENDING);
+                        setIsError(true);
+                        break;
+                    case EnumOrderStatusesValue.CONFIRMED:
+                        set_current_status(EnumOrderStatusesValue.CONFIRMED);
+                        setIsError(true);
+                        break;
+                    default:
+                        set_current_status(EnumOrderStatusesValue.PENDING);
+                        setIsError(true);
+                        break;
+                }
+                break;
+            default:
+                set_current_status(EnumOrderStatusesValue.PENDING);
+                setIsError(true);
+                break;
+        }
+    };
+
+    useEffect(() => {
+        const reactionDisposer = reaction(
+            () => order_store.data.order_detail,
+            (order_detail, prev_order_detail) => {
+                const current_status = order_detail?.order_status;
+                const prev_status = prev_order_detail?.order_status;
+                handleCurrentStatus(current_status, prev_status);
+            },
+            {
+                fireImmediately: true,
+            }
+        );
+        return () => {
+            reactionDisposer();
+        };
+    }, []);
+
+    // Modal xác nhận lý do
+    const [openReasonModal, setOpenReasonModal] = useState(false);
+    const [typeOpenReasonModal, setTypeOpenReasonModal] = useState("cancel");
+    const [confirmReasonForm] = Form.useForm();
+    const handleSaveReasonModal = async () => {
+        const values = confirmReasonForm.getFieldsValue(true);
+        const reason = values.reason;
+        if (typeOpenReasonModal === "cancel") {
+            await handleCancelOrderStatus(orderNo, reason);
+        } else if (typeOpenReasonModal === "failed_delivery") {
+            await handleFailedDelivery(orderNo, reason);
+        } else if (typeOpenReasonModal === "return") {
+            await handleReturnOrder(orderNo, reason);
+        }
+        displayMessage(200, order_store, true);
+        setTypeOpenReasonModal("cancel");
+        setOpenReasonModal(false);
+        confirmReasonForm.resetFields();
+    };
+    const handleCloseReasonModal = () => {
+        setOpenReasonModal(false);
+        setTypeOpenReasonModal("cancel");
+        confirmReasonForm.resetFields();
+    };
+
+    // Modal xuất đơn hàng
+    const [open_modal_export_order, set_open_export_order] = useState(false);
+    const handleSaveExportOrderModal = async () => {};
+
+    const handleCloseExportOrderModal = () => {
+        set_open_export_order(false);
+    };
+
+    return (
+        <div key={orderNo} className="p-4" id={"order_detail_container"}>
+            <div className="flex flex-col gap-4">
+                <div className="flex justify-between items-center sticky top-0 z-10 bg-white">
+                    <h2 className="text-base font-semibold">
+                        Thông tin đơn hàng
+                    </h2>
+                    <div className="flex gap-2">
+                        <CustomizeButton>
+                            <Button onClick={onPrint}>In hóa đơn</Button>
+                            <Button
+                                onClick={() => {
+                                    set_open_export_order(true);
+                                }}
+                            >
+                                Xác nhận đơn
+                            </Button>
+                        </CustomizeButton>
+                    </div>
                 </div>
-              ) : (
-                <div>Nhận tại cửa hàng</div>
-              )}
+                <Steps
+                    current={current_status}
+                    items={stepItems}
+                    size="small"
+                    status={isError ? "error" : "process"}
+                    progressDot={(
+                        iconDot,
+                        { index, status, title, description }
+                    ) =>
+                        Icon_dot(iconDot, {
+                            index,
+                            status,
+                            title,
+                            description,
+                        })
+                    }
+                />
+
+                <OrderDescription orderDetail={orderDetail} />
+
+                <OrderProductsTable data={orderProductTableData} />
+                <div className="flex justify-between items-center">
+                    <CustomizeButton>
+                        <Button
+                            onClick={() => {
+                                handleUpdateOrderStatus(orderNo);
+                            }}
+                        >
+                            Cập nhật trạng thái
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                setTypeOpenReasonModal("failed_delivery");
+                                setOpenReasonModal(true);
+                            }}
+                        >
+                            Giao thất bại
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                setTypeOpenReasonModal("cancel");
+                                setOpenReasonModal(true);
+                            }}
+                        >
+                            Hủy đơn
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                setTypeOpenReasonModal("return");
+                                setOpenReasonModal(true);
+                            }}
+                        >
+                            Trả hàng
+                        </Button>
+                    </CustomizeButton>
+                </div>
+                <ModalConfirmReason
+                    isOpen={openReasonModal}
+                    handleCloseReasonModal={handleCloseReasonModal}
+                    handleSaveReasonModal={handleSaveReasonModal}
+                    form={confirmReasonForm}
+                />
+
+                <ModalExportOrder
+                    isOpen={open_modal_export_order}
+                    handleClose={handleCloseExportOrderModal}
+                    handleSave={handleSaveExportOrderModal}
+                    orderDetail={orderDetail}
+                />
+                <CustomerDescription orderDetail={orderDetail} />
             </div>
-          </div>
+            <div className="hidden">
+                <OrderPrint ref={elementPrintOrder} data={order_store} />
+            </div>
         </div>
-      </div>
-
-      <OrderProductsTable
-        orderType={orderDetail?.orderType}
-        data={orderDetail?.orderProducts}
-      />
-
-      <OrderProductsComboTable
-        orderType={orderDetail?.orderType}
-        data={orderDetail?.orderProductCombos}
-      />
-
-      <div className="flex justify-center">
-        {orderStatusBtn[orderDetail?.status]?.map((status) => {
-          return (
-            <>
-              <button
-                className="p-2 mx-2 my-4 border-0 rounded-md cursor-pointer"
-                style={{ backgroundColor: EnumOrderColorStatuses[status] }}
-                onClick={() => {
-                  updateStatusOrder(status);
-                }}
-              >
-                <span className="font-bold text-white">
-                  {EnumOrderStatuses[status]}
-                </span>
-              </button>
-            </>
-          );
-        })}
-      </div>
-
-      <div className="hidden">
-        <OrderPrint ref={elementPrintOrder} data={orderDetail} />
-      </div>
-    </>
-  );
+    );
 };
 
 OrderDetail.propTypes = {
-  refreshOrders: PropTypes.func,
-  orderNo: PropTypes.string,
+    orderDetail: PropTypes.object,
+    orderNo: PropTypes.string,
+    order_store: PropTypes.object,
+    handleUpdateOrderStatus: PropTypes.func,
+    handleCancelOrderStatus: PropTypes.func,
+    handleFailedDelivery: PropTypes.func,
+    handleReturnOrder: PropTypes.func,
+    displayMessage: PropTypes.func,
 };
 
-export default OrderDetail;
+export default observer(OrderDetail);

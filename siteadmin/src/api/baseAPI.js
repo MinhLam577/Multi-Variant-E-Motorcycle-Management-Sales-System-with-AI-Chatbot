@@ -1,15 +1,15 @@
 import apiClient from "./apiClient";
-import endpoints from "./endpoints";
+import endpoints from "./endpoints.ts";
 
 const BaseAPI = {
-  login: (username, password) => {
-    return apiClient
-      .post(endpoints.auth.login, {
-        username,
-        password,
-      })
-      .catch((e) => e);
-  },
+    login: (username, password) => {
+        return apiClient
+            .post(endpoints.auth.login, {
+                username,
+                password,
+            })
+            .catch((e) => e);
+    },
 };
 
 export default BaseAPI;

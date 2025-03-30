@@ -16,6 +16,7 @@
     "@popperjs/core": "^2.11.7",
     "aos": "^2.3.4",
     "axios": "^1.8.3",
+    "autohongson": "file:",
     "bootstrap": "^5.2.3",
     "chart.js": "^4.3.0",
     "dotenv": "^16.4.7",
