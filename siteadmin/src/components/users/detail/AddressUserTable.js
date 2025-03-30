@@ -1,4 +1,4 @@
-import { Table } from "antd";
+import { Popconfirm, Table } from "antd";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { AntdTableLocale } from "../../../constants";
@@ -9,8 +9,15 @@ import {
 import apiClient from "../../../api/apiClient";
 import endpoints from "../../../api/endpoints.ts";
 import GroupActionButton from "../../GroupActionButton";
+import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
+import UserModalUpdate from "../UserModalUpdate";
 
-const getColumnsConfig = ({ hanleDeleteAddress }) => {
+const getColumnsConfig = ({
+    hanleDeleteAddress,
+
+    setOpenModalUpdate,
+    setDataUpdate,
+}) => {
     return [
         {
             title: "No",
@@ -64,12 +71,33 @@ const getColumnsConfig = ({ hanleDeleteAddress }) => {
             title: "Thao tác",
             dataIndex: "action",
             key: "action",
-            render: (_value, item) => {
+            render: (text, record, index) => {
                 return (
-                    <GroupActionButton
-                        hanleDeleteNews={hanleDeleteAddress}
-                        item={item}
-                    />
+                    <>
+                        <Popconfirm
+                            placement="leftTop"
+                            title={"Xác nhận xóa user"}
+                            description={"Bạn có chắc chắn muốn xóa user này ?"}
+                            onConfirm={() => hanleDeleteAddress(record._id)}
+                            okText="Xác nhận"
+                            cancelText="Hủy"
+                        >
+                            <span
+                                style={{ cursor: "pointer", margin: "0 20px" }}
+                            >
+                                <DeleteTwoTone twoToneColor="#ff4d4f" />
+                            </span>
+                        </Popconfirm>
+
+                        <EditTwoTone
+                            twoToneColor="#f57800"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => {
+                                setOpenModalUpdate(true);
+                                setDataUpdate(record);
+                            }}
+                        />
+                    </>
                 );
             },
             width: 140,
@@ -78,31 +106,27 @@ const getColumnsConfig = ({ hanleDeleteAddress }) => {
 };
 
 const AddressUserTable = () => {
+    const [openModalUpdate, setOpenModalUpdate] = useState(false);
+    const [dataUpdate, setDataUpdate] = useState(null);
     const { id } = useParams();
     const [userInfo, setUserInfo] = useState([]);
     useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const data = await apiClient.get(
-                    endpoints.customers.details(id)
-                );
-                console.log(data.data);
-                setUserInfo(data.data.receive_address);
-            } catch (error) {
-                console.error("Lỗi khi lấy thông tin user:", error);
-            }
-        };
-
         if (id) {
             fetchUser();
         }
     }, [id]);
+    const fetchUser = async () => {
+        try {
+            const data = await apiClient.get(endpoints.customers.details(id));
+            console.log(data.data);
+            setUserInfo(data.data.receive_address);
+        } catch (error) {
+            console.error("Lỗi khi lấy thông tin user:", error);
+        }
+    };
     const [loading] = useState(false);
     const hanleDeleteAddress = async (id) => {
-        processWithModals(ProcessModalName.ConfirmCustomContent)(
-            "Xác nhận",
-            "Bạn chắc chắn muốn xóa địa chỉ này?"
-        )(() => {});
+        console.log("Xóa thành công ");
     };
 
     return (
@@ -114,12 +138,21 @@ const AddressUserTable = () => {
                 className="table-fixed"
                 columns={getColumnsConfig({
                     hanleDeleteAddress,
+                    setOpenModalUpdate,
+                    setDataUpdate,
                 })}
                 loading={loading}
                 key={0}
                 dataSource={userInfo}
                 rowKey={"categoryId"}
                 scroll={{ x: 400 }}
+            />
+            <UserModalUpdate
+                openModalUpdate={openModalUpdate}
+                setOpenModalUpdate={setOpenModalUpdate}
+                dataUpdate={dataUpdate}
+                setDataUpdate={setDataUpdate}
+                fetchUser={fetchUser}
             />
         </>
     );

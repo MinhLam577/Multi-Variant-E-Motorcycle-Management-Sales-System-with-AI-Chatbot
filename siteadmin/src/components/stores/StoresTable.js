@@ -1,145 +1,155 @@
-import { Button, Tag } from "antd";
+import { Button, message, Tag } from "antd";
 import * as moment from "moment";
 import PropTypes from "prop-types";
 import GroupActionButton from "../../components/GroupActionButton";
 import { DateTimeFormat } from "../../constants";
 import {
-  ProcessModalName,
-  processWithModals,
+    ProcessModalName,
+    processWithModals,
 } from "../../containers/processWithModals";
 import TableComponent from "../../containers/TableComponent";
+import apiClient from "../../api/apiClient";
+import endpoints from "../../api/endpoints.ts";
 
 const getColumnsConfig = ({
-  handleUpdateStores,
-  handleViewStores,
-  hanleDeleteStore,
+    handleUpdateStores,
+    handleViewStores,
+    hanleDeleteStore,
+    handleEditStores,
 }) => {
-  return [
-    {
-      title: "Tên cửa hàng",
-      dataIndex: "storeName",
-      key: "storeName",
-      render: (value, item) => {
-        return (
-          <Button
-            type="link"
-            className="custom-antd-btn-ellipsis-content !p-0"
-            onClick={() => handleViewStores(item)}
-          >
-            {value}
-          </Button>
-        );
-      },
-      sorter: true,
-      ellipsis: true,
-      width: "140px",
-    },
+    return [
+        {
+            title: "Tên cửa hàng",
+            dataIndex: "name",
+            key: "name",
+            render: (value, item) => {
+                return (
+                    <Button
+                        type="link"
+                        className="custom-antd-btn-ellipsis-content !p-0"
+                        onClick={() => handleViewStores(item)}
+                    >
+                        {value}
+                    </Button>
+                );
+            },
+            sorter: true,
+            ellipsis: true,
+            width: "140px",
+        },
 
-    {
-      title: "Địa chỉ",
-      dataIndex: "address",
-      key: "address",
-      ellipsis: true,
-      width: "200px",
-    },
+        {
+            title: "Địa chỉ",
+            dataIndex: "address",
+            key: "address",
+            ellipsis: true,
+            width: "200px",
+        },
 
-    {
-      title: "Trạng thái",
-      dataIndex: "status",
-      key: "status",
-      render: (status) => (
-        <Tag
-          className="uppercase"
-          color={
-            status === "active"
-              ? "#87d068"
-              : status === "inactive"
-              ? "#ff4d4f"
-              : "#108ee9"
-          }
-        >
-          {status}
-        </Tag>
-      ),
-      ellipsis: true,
-      width: "100px",
-    },
-    {
-      title: "Thời gian tạo",
-      dataIndex: "created_at",
-      key: "created_at",
-      render: (created_at) =>
-        moment(created_at).format(DateTimeFormat.TimeStamp),
-      sorter: true,
-      ellipsis: true,
-      width: "140px",
-    },
-    {
-      title: "Thao tác",
-      dataIndex: "action",
-      key: "action",
-      render: (_value, item) => {
-        return <GroupActionButton item={item} />;
-      },
-      width: 100,
-    },
-  ];
+        {
+            title: "Trạng thái",
+            dataIndex: "active",
+            key: "active",
+            render: (active) => (
+                <Tag
+                    className="uppercase"
+                    color={
+                        active === true
+                            ? "#87d068"
+                            : active === false
+                            ? "#ff4d4f"
+                            : "#108ee9"
+                    }
+                >
+                    {active === true ? "Hiển thị" : "Không Hiển thị"}
+                </Tag>
+            ),
+            ellipsis: true,
+            width: "100px",
+        },
+        {
+            title: "Thời gian tạo",
+            dataIndex: "createdAt",
+            key: "createdAt",
+            render: (createdAt) =>
+                moment(createdAt).format(DateTimeFormat.TimeStamp),
+            sorter: true,
+            ellipsis: true,
+            width: "140px",
+        },
+        {
+            title: "Thao tác",
+            dataIndex: "action",
+            key: "action",
+            render: (_value, item) => {
+                return (
+                    <GroupActionButton
+                        item={item}
+                        handleUpdate={handleEditStores}
+                        hanleDelete={hanleDeleteStore}
+                    />
+                );
+            },
+            width: 100,
+        },
+    ];
 };
 
 const StoresTable = ({
-  globalFilters,
-  handleUpdateStores,
-  handleViewStores,
+    data,
+    loading,
+    globalFilters,
+    handleUpdateStores,
+    handleViewStores,
+    handleEditStores,
+    fetchUsers,
 }) => {
-  const loading = false;
+    const hanleDeleteStore = (id) => {
+        processWithModals(ProcessModalName.ConfirmCustomContent)(
+            "Xác nhận",
+            "Bạn chắc chắn muốn xóa cửa hàng này?"
+        )(async () => {
+            try {
+                await apiClient.delete(endpoints.branch.delete(id));
+                message.success("Xóa cửa hàng thành công!");
+                // Thêm logic cập nhật danh sách nếu cần
+                fetchUsers();
+            } catch (error) {
+                console.error("Lỗi khi xóa cửa hàng:", error);
+                message.error("Có lỗi xảy ra, vui lòng thử lại!");
+            }
+        });
+    };
 
-  const hanleDeleteStore = (id) => {
-    processWithModals(ProcessModalName.ConfirmCustomContent)(
-      "Xác nhận",
-      "Bạn chắc chắn muốn xóa cửa hàng này?"
-    )(() => {});
-  };
-
-  return (
-    <>
-      <TableComponent
-        loading={loading}
-        filtersInput="filters"
-        getColumnsConfig={getColumnsConfig}
-        filterValue={globalFilters}
-        loadData={() => {}}
-        data={[
-          {
-            storeName: "Cửa hàng 1",
-            address: "123 Phố Chính",
-            phone: "123-456-7890",
-            status: "Hoạt động",
-          },
-          {
-            storeName: "Cửa hàng 2",
-            address: "456 Phố Tùng",
-            phone: "987-654-3210",
-            status: "Không hoạt động",
-          },
-          {
-            storeName: "Cửa hàng 3",
-            address: "789 Phố Sồi",
-            phone: "555-123-4567",
-            status: "Hoạt động",
-          },
-        ]}
-        handleUpdateStores={handleUpdateStores}
-        handleViewStores={handleViewStores}
-        hanleDeleteStore={hanleDeleteStore}
-      />
-    </>
-  );
+    return (
+        <>
+            <TableComponent
+                loading={loading}
+                filtersInput="filters"
+                getColumnsConfig={() =>
+                    getColumnsConfig({
+                        handleEditStores,
+                        handleViewStores,
+                        hanleDeleteStore,
+                    })
+                }
+                filterValue={globalFilters}
+                loadData={() => {}}
+                data={data}
+                handleUpdateStores={handleUpdateStores}
+            />
+        </>
+    );
 };
 
 StoresTable.propTypes = {
-  globalFilters: PropTypes.object,
-  handleUpdateStores: PropTypes.func,
-  handleViewStores: PropTypes.func,
+    data: PropTypes.array.isRequired,
+    loading: PropTypes.bool,
+    globalFilters: PropTypes.object,
+    handleUpdateStores: PropTypes.func,
+    handleViewStores: PropTypes.func,
+    fetchUsers: PropTypes.func,
+    handleEditStores: PropTypes.func,
 };
 
 export default StoresTable;

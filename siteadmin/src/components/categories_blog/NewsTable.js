@@ -59,8 +59,8 @@ const getColumnsConfig = ({
                 return (
                     <GroupActionButton
                         item={item}
-                        hanleDeleteNews={hanleDeleteNews}
-                        handleUpdateNews={handleUpdateNews}
+                        hanleDelete={hanleDeleteNews}
+                        handleUpdate={handleUpdateNews}
                     />
                 );
             },

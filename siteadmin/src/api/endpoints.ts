@@ -13,6 +13,7 @@ const endpoints = {
         changePassword: (id) => `/users/${id}`,
         uploadAvatar: () => "/users/upload",
         list: (page, limit) => `/users?current=${page}&pageSize=${limit}`,
+        callBulkCreateUser: "/users/callBulkCreateUser",
     },
 
     customers: {
@@ -22,6 +23,7 @@ const endpoints = {
         changePassword: (id) => `/customers/${id}`,
         uploadAvatar: "/customers/upload",
         list: (page, limit) => `customers/?page=${page}&limit=${limit}`,
+        callBulkCreateCustomer: "/users/callBulkCreateCustomer",
     },
     motorbike: {
         list: (page, size) => `/products?current=${page}&pageSize=${size}`,
@@ -78,6 +80,7 @@ const endpoints = {
         update: (id) => `/brand/${id}`,
         delete: (id) => `/brand/${id}`,
         upload: "/upload",
+        create: "/branch",
     },
 
     // branch

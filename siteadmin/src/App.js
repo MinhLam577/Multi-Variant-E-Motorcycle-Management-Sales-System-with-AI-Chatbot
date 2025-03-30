@@ -40,9 +40,10 @@ import WareHouses from "./pages/warehouses";
 import WareHouseDetail from "./pages/warehouses/WareHouseDetail";
 import { StoreProvider } from "./stores";
 import GlobalProvider from "./contexts/global";
+import CustomerDetail from "./pages/customers/CustomerDetail";
+
 import CategoriesNews from "./pages/categoriesNews";
 import CategoriesNewsDetail from "./pages/categoriesNews/CategoriesNewsDetail";
-
 function App() {
     return (
         <StoreProvider>
@@ -262,6 +263,42 @@ function App() {
                                         }
                                     />
                                 </Route>
+
+                                <Route path="customer">
+                                    <Route
+                                        index
+                                        element={
+                                            <ProtectedRoute>
+                                                <Customer />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="add"
+                                        element={
+                                            <ProtectedRoute>
+                                                <CustomerDetail />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path=":id"
+                                        element={
+                                            <ProtectedRoute>
+                                                <CustomerDetail />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path=":id/edit"
+                                        element={
+                                            <ProtectedRoute>
+                                                <CustomerDetail />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                </Route>
+
                                 <Route
                                     path="/profile"
                                     element={
@@ -346,6 +383,7 @@ function App() {
                                         </ProtectedRoute>
                                     }
                                 />
+
                                 <Route
                                     path="/categorynews"
                                     element={
@@ -386,6 +424,24 @@ function App() {
                                     }
                                 />
 
+                                <Route
+                                    path="/news"
+                                    element={
+                                        <ProtectedRoute>
+                                            <News />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/news/add"
+                                    element={
+                                        <ProtectedRoute>
+                                            <NewsDetail
+                                                mode={NewsDetailMode.Add}
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
                                 <Route
                                     path="/news/:id"
                                     element={

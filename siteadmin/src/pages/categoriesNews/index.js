@@ -31,7 +31,7 @@ const CategoriesNews = () => {
     const handleEditNews = (newsData) => {
         globalDispatch({
             type: "breadcrum",
-            data: newsData.title,
+            data: newsData.name,
         });
         navigate(`/categorynews/${newsData.id}/edit`, { replace: true });
     };
@@ -40,7 +40,7 @@ const CategoriesNews = () => {
         console.log(newsData);
         globalDispatch({
             type: "breadcrum",
-            data: newsData.title,
+            data: newsData.name,
         });
         navigate(`/categorynews/${newsData.id}`, { replace: true });
     };

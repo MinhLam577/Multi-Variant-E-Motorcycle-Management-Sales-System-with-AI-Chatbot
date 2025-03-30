@@ -9,17 +9,17 @@ import PropTypes from "prop-types";
 
 const GroupActionButton = ({
   handleStatusProducts,
-  hanleDeleteNews,
-  handleEditNews,
+  hanleDelete,
+  handleUpdate,
   item,
 }) => {
-  console.log(handleEditNews);
-  console.log(hanleDeleteNews);
+  console.log(handleUpdate);
+  console.log(hanleDelete);
   console.log("itemitem", item);
   return (
     <div className="flex gap-x-3 ">
       <Button
-        onClick={() => handleEditNews(item.id)}
+        onClick={() => handleUpdate(item)}
         icon={<EditOutlined title="Chỉnh sửa" />}
         style={{ minWidth: "30px" }}
       />
@@ -33,7 +33,7 @@ const GroupActionButton = ({
       <Button
         icon={<DeleteOutlined />}
         title="Xóa"
-        onClick={() => hanleDeleteNews(item.id)}
+        onClick={() => hanleDelete(item.id)}
         style={{ minWidth: "30px" }}
       />
     </div>
@@ -42,9 +42,9 @@ const GroupActionButton = ({
 
 GroupActionButton.propTypes = {
   filterValue: PropTypes.object,
-  handleEditNews: PropTypes.func,
+  handleUpdate: PropTypes.func,
   handleViewProducts: PropTypes.func,
-  hanleDeleteNews: PropTypes.func,
+  hanleDelete: PropTypes.func,
   handleStatusProducts: PropTypes.func,
   item: PropTypes.any,
 };

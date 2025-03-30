@@ -26,10 +26,10 @@ class UploadImageObservable {
       });
 
       console.log("dataupload", data, status);
-      if (data) {
+      if (status !== 201) {
         this.status = "fetchFailed";
         this.errorMsg = "Failed to upload image";
-        return;
+        return null; // Trả về null nếu lỗi
       }
       this.status = "uploadSuccess";
       return data;
@@ -37,6 +37,7 @@ class UploadImageObservable {
       this.status = "uploadFailed";
       this.errorMsg = error?.message;
     }
+    
   }
 
   clearAccount() {
