@@ -1,11 +1,11 @@
 import { makeAutoObservable } from "mobx";
 import apiClient from "../api/apiClient";
-import endpoints from "../api/endpoints.ts";
+import endpoints from "../api/endpoints";
 
 export default class PaymentMethodObservable {
-    status = 50;
-    errorMsg = "";
-    successMsg = "";
+    status: number = null;
+    errorMsg: string = "";
+    successMsg: string = "";
     rootStore;
     data = {
         payments: [],
@@ -33,7 +33,7 @@ export default class PaymentMethodObservable {
                 this.status = status;
                 this.errorMsg = message;
             }
-        } catch (e) {
+        } catch (e: any) {
             console.error(e);
             this.status = 500;
             this.errorMsg = e?.message || "Lỗi không xác định";
@@ -54,7 +54,7 @@ export default class PaymentMethodObservable {
                 this.status = status;
                 this.errorMsg = message;
             }
-        } catch (e) {
+        } catch (e: any) {
             console.error(e);
             this.status = 500;
             this.errorMsg = e?.message || "Lỗi không xác định";
@@ -76,7 +76,7 @@ export default class PaymentMethodObservable {
                 this.status = status;
                 this.errorMsg = message;
             }
-        } catch (e) {
+        } catch (e: any) {
             console.error(e);
             this.status = 500;
             this.errorMsg = e?.message || "Lỗi không xác định";

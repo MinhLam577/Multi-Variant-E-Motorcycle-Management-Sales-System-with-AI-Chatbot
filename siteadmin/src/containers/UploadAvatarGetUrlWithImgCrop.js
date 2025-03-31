@@ -4,7 +4,7 @@ import ImgCrop from "antd-img-crop";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { useStore } from "../stores";
-import { sleepFuntions } from "../utils";
+// import { sleepFuntions } from "../utils";
 
 export const UploadAvatarGetUrlWithImgCropRemoteMode = {
     Private: "private",

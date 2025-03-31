@@ -6,10 +6,7 @@ import {
     EnumPaymentStatusColors,
     PaymentStatus,
 } from "../../../constants";
-import {
-    convertDD_MM_YYYY_To_DateToTimeStamp,
-    formatVNDMoney,
-} from "../../../utils";
+import { convertDate, formatVNDMoney } from "../../../utils";
 import PropTypes from "prop-types";
 
 const getDescriptionCustomerItems = (orderDetail) => [
