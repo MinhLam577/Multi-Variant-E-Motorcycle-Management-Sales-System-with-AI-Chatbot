@@ -6,10 +6,7 @@ import {
     EnumPaymentStatusColors,
     PaymentStatus,
 } from "../../../constants";
-import {
-    convertDD_MM_YYYY_To_DateToTimeStamp,
-    formatVNDMoney,
-} from "../../../utils";
+import { convertDate, formatVNDMoney } from "../../../utils";
 import PropTypes from "prop-types";
 
 const getDescriptionOrderItems = (orderDetail) => [
@@ -27,7 +24,7 @@ const getDescriptionOrderItems = (orderDetail) => [
         label: "Thời gian tạo",
         children: (
             <span className="text-sm font-semibold">
-                {convertDD_MM_YYYY_To_DateToTimeStamp(
+                {convertDate(
                     orderDetail?.createdAt,
                     DateTimeFormat.TIME_STAMP_POSTGRES_TZ,
                     DateTimeFormat.TimeStamp

@@ -1,4 +1,4 @@
-import { Button } from "antd";
+import { Button, Tag } from "antd";
 import PropTypes from "prop-types";
 import { useState } from "react";
 import { EnumOrderStatuses } from "../../constants";
@@ -11,7 +11,7 @@ const OrderStatusSearch = ({ order_status, order_store }) => {
     const [status_selected, set_status_selected] = useState("All");
 
     return (
-        <div className="flex flex-wrap justify-start items-center gap-y-4 gap-x-6">
+        <div className="flex flex-wrap justify-center items-center gap-y-4 gap-x-2">
             {order_status?.map((status) => {
                 const isSelected = status_selected === status.key;
                 return (
@@ -23,9 +23,19 @@ const OrderStatusSearch = ({ order_status, order_store }) => {
                             order_store?.setOrderStatusSelected(status.key);
                         }}
                         {...(isSelected ? button_extra_style : {})}
+                        size="small"
                     >
-                        <span className="text-sm ">
-                            {EnumOrderStatuses[status.key]}
+                        <span className="text-sm font-semibold">
+                            #
+                            {EnumOrderStatuses[status.key]
+                                .toLowerCase()
+                                .split(" ")
+                                .map(
+                                    (word) =>
+                                        word.charAt(0).toUpperCase() +
+                                        word.slice(1)
+                                )
+                                .join(" ")}
                         </span>
                     </Button>
                 );

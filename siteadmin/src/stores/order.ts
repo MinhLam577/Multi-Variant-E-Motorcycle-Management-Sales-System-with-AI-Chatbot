@@ -1,23 +1,52 @@
 import { makeAutoObservable, toJS } from "mobx";
-import apiClient from "../api/apiClient";
-import endpoints from "../api/endpoints.ts";
-import { convertDD_MM_YYYY_To_DateToTimeStamp } from "../utils";
+import { convertDate } from "../utils";
 import { DateTimeFormat } from "../constants";
-import OrderAPI from "../api/order.ts";
+import OrderAPI, { ExportOrder, ResponsePromise } from "../api/order";
+import { RootStore } from "./base";
+
+export type OrderStatus = {
+    key?: string;
+};
+
+export type globalFiltersData = {
+    search?: string;
+    sortOrder?: string;
+    sortBy?: string;
+    order_status?: string;
+    payment_status?: string;
+    payment_method?: string;
+    created_from?: string;
+    created_to?: string;
+};
+
+export type paginationData = {
+    current: number;
+    pageSize: number;
+};
+
+export type orderData = {
+    orders: any[];
+    order_status: OrderStatus[];
+    order_status_selected?: string;
+    order_selected?: string;
+    order_detail?: any;
+    confirm_order_data?: ExportOrder;
+};
 export default class OrderObservable {
-    status = null;
-    errorMsg = null;
-    successMsg = null;
-    showSuccessMsg = false;
-    rootStore;
-    data = {
+    status: number | null = null;
+    errorMsg: string | null = null;
+    successMsg: string | null = null;
+    showSuccessMsg: boolean = false;
+    rootStore: RootStore;
+    data: orderData = {
         orders: [],
         order_status: [],
         order_status_selected: null,
         order_selected: null,
         order_detail: null,
+        confirm_order_data: null,
     };
-    globalFilters = {
+    globalFilters: globalFiltersData = {
         search: null,
         sortOrder: null,
         sortBy: null,
@@ -27,18 +56,19 @@ export default class OrderObservable {
         created_from: null,
         created_to: null,
     };
-    pagination = {
+    pagination: paginationData = {
         current: 1,
         pageSize: 100,
     };
-    loading = false;
-    isOpenDetail = false;
-    constructor(rootStore) {
+    loading: boolean = false;
+    isOpenDetail: boolean = false;
+    constructor(rootStore: RootStore) {
         makeAutoObservable(this);
         this.rootStore = rootStore;
         this.setGlobalFilters = this.setGlobalFilters.bind(this);
         this.setPagination = this.setPagination.bind(this);
         this.getListOrder = this.getListOrder.bind(this);
+        this.getOrderDetail = this.getOrderDetail.bind(this);
         this.getOrderStatus = this.getOrderStatus.bind(this);
         this.clearMessage = this.clearMessage.bind(this);
         this.setOrderDetail = this.setOrderDetail.bind(this);
@@ -50,50 +80,63 @@ export default class OrderObservable {
         this.failedDelivery = this.failedDelivery.bind(this);
         this.returnOrder = this.returnOrder.bind(this);
         this.setStatusMessage = this.setStatusMessage.bind(this);
+        this.confirmOrder = this.confirmOrder.bind(this);
     }
 
-    *getListOrder(query) {
+    *getListOrder(query?: string | object) {
         try {
             this.loading = true;
-            let parsedQuery = {};
-            if (typeof query === "string" && query) {
-                query = query.trim();
-                parsedQuery = Object.fromEntries(new URLSearchParams(query));
-            } else if (query && typeof query === "object") {
-                parsedQuery = { ...query };
-            }
 
-            const filters = {
-                ...parsedQuery,
+            // Xử lý chuyển đổi query string thành object
+            let parsedQuery: globalFiltersData & paginationData = {
+                ...(typeof query === "string"
+                    ? Object.fromEntries(new URLSearchParams(query.trim()))
+                    : query),
+                current: Number(this.pagination.current),
+                pageSize: Number(this.pagination.pageSize),
+            };
+
+            // Gộp filters và xử lý dữ liệu
+            const filters: paginationData & globalFiltersData = {
                 ...this.globalFilters,
                 ...this.pagination,
+                ...parsedQuery,
+                created_from: parsedQuery?.created_from
+                    ? convertDate(
+                          parsedQuery.created_from,
+                          DateTimeFormat.TIME_STAMP_POSTGRES
+                      )
+                    : undefined,
+                created_to: parsedQuery?.created_to
+                    ? convertDate(
+                          parsedQuery.created_to,
+                          DateTimeFormat.TIME_STAMP_POSTGRES
+                      )
+                    : undefined,
+                search: parsedQuery?.search?.trim(),
             };
-            if (query?.created_from && query?.created_to) {
-                filters.created_from = convertDD_MM_YYYY_To_DateToTimeStamp(
-                    query.created_from,
-                    DateTimeFormat.TIME_STAMP_POSTGRES
-                );
-                filters.created_to = convertDD_MM_YYYY_To_DateToTimeStamp(
-                    query.created_to,
-                    DateTimeFormat.TIME_STAMP_POSTGRES
-                );
-            }
 
-            if (query?.search) {
-                filters.search = query.search.trim();
-            }
-
-            for (const key in filters) {
+            // Xóa các key có giá trị null, undefined hoặc ""
+            Object.keys(filters).forEach((key) => {
                 if (
                     filters[key] === null ||
                     filters[key] === undefined ||
                     filters[key] === ""
-                ) {
+                )
                     delete filters[key];
-                }
-            }
-            const queryString = new URLSearchParams(filters).toString();
-            const response = yield OrderAPI.getOrderList(queryString);
+            });
+
+            // Tạo query string
+            const queryString = new URLSearchParams(
+                Object.fromEntries(
+                    Object.entries(filters).map(([key, value]) => [
+                        key,
+                        String(value),
+                    ])
+                )
+            ).toString();
+            const response: ResponsePromise =
+                yield OrderAPI.getOrderList(queryString);
             const { data, status, message } = response;
             const success_status = [200, 201, 204];
             if (success_status.includes(status)) {
@@ -106,7 +149,7 @@ export default class OrderObservable {
                     ? message.join(", ")
                     : message;
             }
-        } catch (e) {
+        } catch (e: any) {
             console.error(e);
             this.status = 500;
             this.errorMsg = e?.message || "Lỗi không xác định";
@@ -117,7 +160,7 @@ export default class OrderObservable {
 
     *getOrderStatus() {
         try {
-            const response = yield OrderAPI.getOrderStatus();
+            const response: ResponsePromise = yield OrderAPI.getOrderStatus();
             const { data, status, message } = response;
             const success_status = [200, 201, 204];
             if (success_status.includes(status)) {
@@ -134,16 +177,16 @@ export default class OrderObservable {
                 this.status = status;
                 this.errorMsg = message;
             }
-        } catch (e) {
+        } catch (e: any) {
             console.error(e);
             this.status = 500;
             this.errorMsg = e?.message || "Lỗi không xác định";
         }
     }
 
-    *getOrderDetail(id) {
+    *getOrderDetail(id: string) {
         try {
-            const response = yield OrderAPI.getOrderDetail(id);
+            const response: ResponsePromise = yield OrderAPI.getOrderDetail(id);
             const { data, status, message } = response;
             const success_status = [200, 201, 204];
             if (success_status.includes(status)) {
@@ -154,16 +197,17 @@ export default class OrderObservable {
                 this.status = status;
                 this.errorMsg = message;
             }
-        } catch (e) {
+        } catch (e: any) {
             console.error(e);
             this.status = 500;
             this.errorMsg = e?.message || "Lỗi không xác định";
         }
     }
 
-    *updateOrderStatus(id) {
+    *updateOrderStatus(id: string) {
         try {
-            const response = yield OrderAPI.updateOrderStatus(id);
+            const response: ResponsePromise =
+                yield OrderAPI.updateOrderStatus(id);
             const { status, message } = response;
             const success_status = [200, 201, 204];
             if (success_status.includes(status)) {
@@ -176,26 +220,19 @@ export default class OrderObservable {
                 this.status = status;
                 this.errorMsg = message;
             }
-        } catch (e) {
+        } catch (e: any) {
             console.error(e);
             this.status = 500;
             this.errorMsg = e?.message || "Lỗi không xác định";
         }
     }
 
-    *cancelOrder(id, reason) {
+    *cancelOrder(id: string, reason?: string) {
         try {
-            let response = null;
-            if (!reason) {
-                response = yield apiClient.patch(
-                    endpoints.order.cancelOrder(id)
-                );
-            } else {
-                response = yield apiClient.patch(
-                    endpoints.order.cancelOrder(id),
-                    JSON.stringify({ reason: reason })
-                );
-            }
+            let response: ResponsePromise = yield OrderAPI.cancelOrder(
+                id,
+                reason
+            );
             const { status, message } = response;
             const success_status = [200, 201, 204];
             if (success_status.includes(status)) {
@@ -208,26 +245,19 @@ export default class OrderObservable {
                 this.status = status;
                 this.errorMsg = message;
             }
-        } catch (e) {
+        } catch (e: any) {
             console.error(e);
             this.status = 500;
             this.errorMsg = e?.message || "Lỗi không xác định";
         }
     }
 
-    *failedDelivery(id, reason) {
+    *failedDelivery(id: string, reason?: string) {
         try {
-            let response = null;
-            if (!reason) {
-                response = yield apiClient.patch(
-                    endpoints.order.failedDelivery(id)
-                );
-            } else {
-                response = yield apiClient.patch(
-                    endpoints.order.failedDelivery(id),
-                    JSON.stringify({ reason: reason })
-                );
-            }
+            let response: ResponsePromise = yield OrderAPI.failedDelivery(
+                id,
+                reason
+            );
             const { status, message } = response;
             const success_status = [200, 201, 204];
             if (success_status.includes(status)) {
@@ -240,26 +270,19 @@ export default class OrderObservable {
                 this.status = status;
                 this.errorMsg = message;
             }
-        } catch (e) {
+        } catch (e: any) {
             console.error(e);
             this.status = 500;
             this.errorMsg = e?.message || "Lỗi không xác định";
         }
     }
 
-    *returnOrder(id, reason) {
+    *returnOrder(id: string, reason?: string) {
         try {
-            let response = null;
-            if (!reason) {
-                response = yield apiClient.patch(
-                    endpoints.order.returnOrder(id)
-                );
-            } else {
-                response = yield apiClient.patch(
-                    endpoints.order.returnOrder(id),
-                    JSON.stringify({ reason: reason })
-                );
-            }
+            let response: ResponsePromise = yield OrderAPI.returnOrder(
+                id,
+                reason
+            );
             const { status, message } = response;
             const success_status = [200, 201, 204];
             if (success_status.includes(status)) {
@@ -272,7 +295,30 @@ export default class OrderObservable {
                 this.status = status;
                 this.errorMsg = message;
             }
-        } catch (e) {
+        } catch (e: any) {
+            console.error(e);
+            this.status = 500;
+            this.errorMsg = e?.message || "Lỗi không xác định";
+        }
+    }
+
+    *confirmOrder(data: ExportOrder) {
+        try {
+            const response: ResponsePromise = yield OrderAPI.confirmOrder(data);
+            const { status, message } = response;
+            const success_status = [200, 201, 204];
+            if (success_status.includes(status)) {
+                yield this.getListOrder();
+                yield this.getOrderDetail(data.order_id);
+                this.status = status;
+                this.successMsg = message;
+                this.showSuccessMsg = true;
+            } else {
+                this.status = status;
+                this.errorMsg = message;
+                this.showSuccessMsg = false;
+            }
+        } catch (e: any) {
             console.error(e);
             this.status = 500;
             this.errorMsg = e?.message || "Lỗi không xác định";
@@ -286,7 +332,12 @@ export default class OrderObservable {
         this.successMsg = null;
     }
 
-    setStatusMessage(status, errorMsg, successMsg, showSuccessMsg) {
+    setStatusMessage(
+        status?: number,
+        errorMsg?: string,
+        successMsg?: string,
+        showSuccessMsg?: boolean
+    ) {
         if (showSuccessMsg) {
             this.showSuccessMsg = showSuccessMsg;
         }
@@ -301,15 +352,14 @@ export default class OrderObservable {
         }
     }
 
-    setGlobalFilters(filters) {
+    setGlobalFilters(filters: globalFiltersData) {
         this.globalFilters = {
             ...this.globalFilters,
             ...filters,
         };
     }
 
-    setPagination(page, pageSize) {
-        if (!page || !pageSize) return;
+    setPagination(page: number, pageSize: number) {
         if (page < 1 || pageSize < 1) return;
 
         this.pagination = {
@@ -323,15 +373,15 @@ export default class OrderObservable {
         this.data.order_detail = orderDetail;
     }
 
-    setOpenDetail(isOpen) {
+    setOpenDetail(isOpen: boolean) {
         this.isOpenDetail = isOpen;
     }
 
-    setOrderSelected(order_selected) {
+    setOrderSelected(order_selected: string) {
         this.data.order_selected = order_selected;
     }
 
-    setOrderStatusSelected(order_status_selected) {
+    setOrderStatusSelected(order_status_selected: string) {
         this.data.order_status_selected = order_status_selected;
     }
 }

@@ -85,21 +85,9 @@ const AppLayout = (props) => {
         getItem("Danh mục tin tức", "8", <CalendarOutlined />, null, () =>
             navigate("/categorynews")
         ),
-        getItem("Đơn hàng", "9", <OrderedListOutlined />, [
-            getItem("Tất cả", "10", null, null, () => navigate("/orders")),
-            getItem("Mới", "11", null, null, () =>
-                navigate("/orders?status=new")
-            ),
-            getItem("Đã đóng gói", "12", null, null, () =>
-                navigate("/orders?status=confirmed")
-            ),
-            getItem("Đã giao DVVC", "13", null, null, () =>
-                navigate("/orders?status=delivering")
-            ),
-            getItem("Hoàn thành", "14", null, null, () =>
-                navigate("/orders?status=completed")
-            ),
-        ]),
+        getItem("Đơn hàng", "9", <OrderedListOutlined />, null, () =>
+            navigate("/orders")
+        ),
         getItem("Thông báo", "15", <NotificationOutlined />, null, () =>
             navigate("/notifications")
         ),
@@ -167,12 +155,7 @@ const AppLayout = (props) => {
                 "/products": "5",
                 "/e-motorbike": "6",
                 "/combo_product": "7",
-                "/orders": {
-                    "?status=new": ["9", "11"],
-                    "?status=confirmed": ["9", "12"],
-                    "?status=delivering": ["13"],
-                    "?status=completed": ["14"],
-                },
+                "/orders": "9",
                 "/notifications": "15",
                 "/vouchers": "16",
                 "/warehouse": "17",

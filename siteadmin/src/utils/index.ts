@@ -45,11 +45,11 @@ export const convertSortFromAntToServer = (value) => {
     return "desc";
 };
 
-export const convertDD_MM_YYYY_To_DateToTimeStamp = (
-    date,
-    dateFormatCheck = DateTimeFormat.Date,
-    dateFormat = DateTimeFormat.TIME_STAMP_POSTGRES
-) => {
+export const convertDate = (
+    date: string | null,
+    dateFormatCheck: DateTimeFormat = DateTimeFormat.Date,
+    dateFormatToConvert: DateTimeFormat = DateTimeFormat.TIME_STAMP_POSTGRES
+): string => {
     try {
         if (!date) {
             return null;
@@ -61,7 +61,7 @@ export const convertDD_MM_YYYY_To_DateToTimeStamp = (
             );
             return null;
         }
-        return momentDate.format(dateFormat);
+        return momentDate.format(dateFormatToConvert);
     } catch (e) {
         console.log(e);
         return null;

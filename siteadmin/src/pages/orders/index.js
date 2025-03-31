@@ -7,16 +7,17 @@ import OrderDetail from "./OrderDetail";
 import { useStore } from "../../stores";
 import { observer } from "mobx-react-lite";
 import OrderStatusSearch from "../../components/orders/OrderStatusSearch";
-import { convertDD_MM_YYYY_To_DateToTimeStamp } from "../../utils";
+import { convertDate } from "../../utils";
 import { reaction } from "mobx";
 
 const Orders = () => {
     const [messageApi, contextHolder] = message.useMessage();
     const store = useStore();
     const orderStore = store.orderObservable;
+    const skusStore = store.skusObservable;
     const paymentMethodStore = store.paymentMethodObservable;
     const fetchListOrder = async (query = undefined) => {
-        return await orderStore.getListOrder(query);
+        return orderStore.getListOrder(query);
     };
     const [filterData, setFilterData] = useState([]);
     const fetchData = async () => {
@@ -129,14 +130,10 @@ const Orders = () => {
                     globalFilters?.payment_status?.toLowerCase();
 
             const createdFrom = globalFilters?.created_from
-                ? convertDD_MM_YYYY_To_DateToTimeStamp(
-                      globalFilters?.created_from
-                  )
+                ? convertDate(globalFilters?.created_from)
                 : null;
             const createdTo = globalFilters?.created_to
-                ? convertDD_MM_YYYY_To_DateToTimeStamp(
-                      globalFilters?.created_to
-                  )
+                ? convertDate(globalFilters?.created_to)
                 : null;
 
             const matchDate =
@@ -213,12 +210,12 @@ const Orders = () => {
 
     return (
         <div className="flex flex-col gap-4">
+            {contextHolder}
             <OrderStatusSearch
                 order_status={orderStore?.data?.order_status}
                 order_store={orderStore}
             />
             <div className="flex flex-col gap-4 p-4 border border-gray-200 rounded-lg bg-white shadow-sm">
-                {contextHolder}
                 <OrderSearch
                     globalFilters={orderStore.globalFilters}
                     setGlobalFilters={orderStore.setGlobalFilters}
@@ -256,6 +253,7 @@ const Orders = () => {
                     <OrderDetail
                         orderDetail={orderStore.data.order_detail}
                         order_store={orderStore}
+                        skus_store={skusStore}
                         orderNo={orderStore.data.order_selected}
                         handleUpdateOrderStatus={handleUpdateOrderStatus}
                         handleCancelOrderStatus={handleCancelOrderStatus}
