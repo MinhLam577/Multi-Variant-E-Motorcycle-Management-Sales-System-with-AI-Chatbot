@@ -16,17 +16,37 @@ import { CustomizeButton } from "../../components/common/CustomizeButton";
 import { observer } from "mobx-react-lite";
 import OrderDescription from "../../components/orders/detail/OrderDescription";
 import CustomerDescription from "../../components/orders/detail/CustomerDescription";
-import ModalConfirmReason from "../../components/orders/detail/ModalConfirmReason";
-import ModalExportOrder from "../../components/orders/detail/ModalExportOrder";
+import ModalConfirmReason from "src/components/orders/detail/ModalConfirmReason";
+import ModalExportOrder from "src/components/orders/detail/ModalExportOrder";
+import OrderObservable from "../../stores/order";
+import SkusObservable from "../../stores/skus";
+import { CreateDetailExport, ExportOrder } from "src/api/order";
 export const OrderDetailMode = {
     View: 1,
     Edit: 2,
 };
 
-const OrderDetail = ({
+interface OrderDetailProps {
+    orderDetail: any;
+    orderNo: string;
+    order_store: OrderObservable;
+    skus_store: SkusObservable;
+    handleUpdateOrderStatus: (orderNo: string) => void;
+    handleCancelOrderStatus: (orderNo: string, reason: string) => void;
+    handleFailedDelivery: (orderNo: string, reason: string) => void;
+    handleReturnOrder: (orderNo: string, reason: string) => void;
+    displayMessage: (
+        statusCode: number,
+        store: any,
+        isSuccess?: boolean
+    ) => void;
+}
+
+const OrderDetail: React.FC<OrderDetailProps> = ({
     orderDetail,
     orderNo,
     order_store,
+    skus_store,
     handleUpdateOrderStatus,
     handleCancelOrderStatus,
     handleFailedDelivery,
@@ -127,7 +147,10 @@ const OrderDetail = ({
     );
     const [isError, setIsError] = useState(false);
 
-    const handleCurrentStatus = (status, prev_status) => {
+    const handleCurrentStatus = (
+        status: EnumOrderStatusesValue,
+        prev_status: EnumOrderStatusesValue
+    ) => {
         switch (EnumOrderStatusesValue[status]) {
             case EnumOrderStatusesValue.PENDING:
                 set_current_status(EnumOrderStatusesValue.PENDING);
@@ -224,7 +247,6 @@ const OrderDetail = ({
         } else if (typeOpenReasonModal === "return") {
             await handleReturnOrder(orderNo, reason);
         }
-        displayMessage(200, order_store, true);
         setTypeOpenReasonModal("cancel");
         setOpenReasonModal(false);
         confirmReasonForm.resetFields();
@@ -237,11 +259,53 @@ const OrderDetail = ({
 
     // Modal xuất đơn hàng
     const [open_modal_export_order, set_open_export_order] = useState(false);
-    const handleSaveExportOrderModal = async () => {};
+    const handleSaveExportOrderModal = async (
+        orderExport: CreateDetailExport[],
+        note: string
+    ): Promise<boolean> => {
+        try {
+            const data: ExportOrder = {
+                order_id: orderDetail.id,
+                detail_export: orderExport,
+                note: note,
+            };
+            await order_store.confirmOrder(data);
+            const status = order_store.status;
+            const success_status = [200, 201, 204];
+            return success_status.includes(status);
+        } catch (e: any) {
+            console.error(e);
+            order_store.setStatusMessage(
+                500,
+                e?.message || "Lỗi khi xác nhận và lưu xuất đơn hàng",
+                ""
+            );
+        }
+    };
 
     const handleCloseExportOrderModal = () => {
         set_open_export_order(false);
     };
+
+    const skus_ids = orderDetail?.order_details.map((item) => item.skus.id);
+    const map_detail_import_skus = new Map<string, any>();
+
+    const fetchDetailImportsBySkusIds = async (skus_ids: string[]) => {
+        await skus_store.getDetailImportsByIds(skus_ids);
+        const data = skus_store.data.detail_imports;
+        if (data.length > 0) {
+            data.forEach((item, index) => {
+                if (!map_detail_import_skus.has(skus_ids[index])) {
+                    map_detail_import_skus.set(skus_ids[index], item);
+                }
+            });
+        }
+    };
+    useEffect(() => {
+        if (skus_ids) {
+            fetchDetailImportsBySkusIds(skus_ids);
+        }
+    }, [skus_ids]);
 
     return (
         <div key={orderNo} className="p-4" id={"order_detail_container"}>
@@ -255,7 +319,21 @@ const OrderDetail = ({
                             <Button onClick={onPrint}>In hóa đơn</Button>
                             <Button
                                 onClick={() => {
-                                    set_open_export_order(true);
+                                    const orderDetail =
+                                        order_store.data.order_detail
+                                            ?.order_status;
+                                    if (
+                                        EnumOrderStatusesValue[orderDetail] ===
+                                        EnumOrderStatusesValue.PENDING
+                                    ) {
+                                        set_open_export_order(true);
+                                    } else {
+                                        order_store.setStatusMessage(
+                                            400,
+                                            "Chỉ có thể xác nhận khi đơn hàng đang ở trạng thái chờ xử lí",
+                                            ""
+                                        );
+                                    }
                                 }}
                             >
                                 Xác nhận đơn
@@ -324,6 +402,10 @@ const OrderDetail = ({
                     handleCloseReasonModal={handleCloseReasonModal}
                     handleSaveReasonModal={handleSaveReasonModal}
                     form={confirmReasonForm}
+                    okText="Xác nhận"
+                    cancelText="Hủy"
+                    label_input={`Nhập lý do ${typeOpenReasonModal}`}
+                    placeholder_input={`Nhập lý do`}
                 />
 
                 <ModalExportOrder
@@ -331,6 +413,7 @@ const OrderDetail = ({
                     handleClose={handleCloseExportOrderModal}
                     handleSave={handleSaveExportOrderModal}
                     orderDetail={orderDetail}
+                    map_skus_detail_import={map_detail_import_skus}
                 />
                 <CustomerDescription orderDetail={orderDetail} />
             </div>
@@ -344,7 +427,8 @@ const OrderDetail = ({
 OrderDetail.propTypes = {
     orderDetail: PropTypes.object,
     orderNo: PropTypes.string,
-    order_store: PropTypes.object,
+    order_store: PropTypes.instanceOf(OrderObservable),
+    skus_store: PropTypes.instanceOf(SkusObservable),
     handleUpdateOrderStatus: PropTypes.func,
     handleCancelOrderStatus: PropTypes.func,
     handleFailedDelivery: PropTypes.func,

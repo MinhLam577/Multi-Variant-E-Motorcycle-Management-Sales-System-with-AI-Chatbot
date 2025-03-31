@@ -184,7 +184,8 @@ const endpoints = {
     },
 
     sku: {
-        getDetailImportsById: (id) => `/skus/${id}/detail-import`,
+        getDetailImportsById: (id: string) => `/skus/${id}/detail-import`,
+        getDetailImportsByIds: () => `/skus/detail-imports-by-ids`,
     },
 };
 
