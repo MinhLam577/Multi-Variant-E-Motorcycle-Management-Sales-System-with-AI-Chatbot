@@ -169,7 +169,6 @@ const getExpandedRowConfig = (
                                 className="w-full"
                                 placeholder="Chọn lô hàng"
                                 onChange={(_, option) => {
-                                    console.log("option", option);
                                     const newLot = !option
                                         ? undefined
                                         : !Array.isArray(option)
