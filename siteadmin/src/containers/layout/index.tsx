@@ -12,13 +12,14 @@ import {
     TruckOutlined,
     UserOutlined,
 } from "@ant-design/icons";
-import { Breadcrumb, Grid, Layout, Menu } from "antd";
+import { Breadcrumb, ConfigProvider, Grid, Layout, Menu, theme } from "antd";
 import PropTypes from "prop-types";
 import { useContext, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import Logo from "../../components/Logo";
 import { GlobalContext } from "../../contexts/global";
 import HeaderComponent from "./header";
+import "./index.css";
 
 const { Content, Footer, Sider } = Layout;
 const { useBreakpoint } = Grid;
@@ -51,13 +52,47 @@ const BreadcrumbLabel = {
     customer: "Quản lý khách hàng",
 };
 
+export const getBreadcrumbItems = (path: string) => {
+    if (typeof path !== "string") {
+        return [];
+    }
+
+    let arr = path
+        .split("/")
+        .map((value) => value.trim())
+        .filter((value) => value !== "");
+    let breadcrumbDataList = arr.map((value, index) => {
+        let routeArr = arr.slice(0, index + 1);
+
+        return {
+            key: index + 1,
+            href: "/" + routeArr.join("/"),
+            title: BreadcrumbLabel[value] ? BreadcrumbLabel[value] : name,
+        };
+    });
+
+    // set default to user page
+    breadcrumbDataList =
+        breadcrumbDataList.length === 0
+            ? [
+                  {
+                      key: 1,
+                      href: "/",
+                      title: BreadcrumbLabel["dashboard"],
+                  },
+              ]
+            : breadcrumbDataList;
+
+    return breadcrumbDataList;
+};
+
 const AppLayout = (props) => {
     const location = useLocation();
     const navigate = useNavigate();
     const { children } = props;
     const [collapsed, setCollapsed] = useState(false);
 
-    const { name } = useContext(GlobalContext);
+    const { name } = useContext(GlobalContext) as { name: string };
     const screens = useBreakpoint();
 
     //set user role
@@ -85,21 +120,9 @@ const AppLayout = (props) => {
         getItem("Danh mục tin tức", "8", <CalendarOutlined />, null, () =>
             navigate("/categorynews")
         ),
-        getItem("Đơn hàng", "9", <OrderedListOutlined />, [
-            getItem("Tất cả", "10", null, null, () => navigate("/orders")),
-            getItem("Mới", "11", null, null, () =>
-                navigate("/orders?status=new")
-            ),
-            getItem("Đã đóng gói", "12", null, null, () =>
-                navigate("/orders?status=confirmed")
-            ),
-            getItem("Đã giao DVVC", "13", null, null, () =>
-                navigate("/orders?status=delivering")
-            ),
-            getItem("Hoàn thành", "14", null, null, () =>
-                navigate("/orders?status=completed")
-            ),
-        ]),
+        getItem("Đơn hàng", "9", <OrderedListOutlined />, null, () =>
+            navigate("/orders")
+        ),
         getItem("Thông báo", "15", <NotificationOutlined />, null, () =>
             navigate("/notifications")
         ),
@@ -117,40 +140,6 @@ const AppLayout = (props) => {
         ),
     ];
 
-    const getBreadcrumbItems = (path) => {
-        if (typeof path !== "string") {
-            return [];
-        }
-
-        let arr = path
-            .split("/")
-            .map((value) => value.trim())
-            .filter((value) => value !== "");
-        let breadcrumbDataList = arr.map((value, index) => {
-            let routeArr = arr.slice(0, index + 1);
-
-            return {
-                key: index + 1,
-                href: "/" + routeArr.join("/"),
-                title: BreadcrumbLabel[value] ? BreadcrumbLabel[value] : name,
-            };
-        });
-
-        // set default to user page
-        breadcrumbDataList =
-            breadcrumbDataList.length === 0
-                ? [
-                      {
-                          key: 1,
-                          href: "/",
-                          title: BreadcrumbLabel["dashboard"],
-                      },
-                  ]
-                : breadcrumbDataList;
-
-        return breadcrumbDataList;
-    };
-
     const getSideMenuSelectedKeys = () => {
         const path = location.pathname;
         const search = location.search;
@@ -167,12 +156,7 @@ const AppLayout = (props) => {
                 "/products": "5",
                 "/e-motorbike": "6",
                 "/combo_product": "7",
-                "/orders": {
-                    "?status=new": ["9", "11"],
-                    "?status=confirmed": ["9", "12"],
-                    "?status=delivering": ["13"],
-                    "?status=completed": ["14"],
-                },
+                "/orders": "9",
                 "/notifications": "15",
                 "/vouchers": "16",
                 "/warehouse": "17",
@@ -198,54 +182,56 @@ const AppLayout = (props) => {
     };
 
     return (
-        <Layout
-            style={{
-                minHeight: "100vh",
+        <ConfigProvider
+            theme={{
+                components: {
+                    Layout: {
+                        siderBg: "var(--sideBar-background-color)",
+                        triggerBg: "var(--sideBar-background-color)",
+                    },
+                },
             }}
         >
-            <Sider
-                xs={2}
-                md={6}
-                collapsible
-                collapsed={collapsed}
-                onCollapse={(value) => setCollapsed(value)}
+            <Layout
+                style={{
+                    minHeight: "100vh",
+                }}
             >
-                <div className="my-10">
-                    <div className="w-full flex justify-center flex-col items-center px-2 cursor-pointer">
+                <Sider
+                    collapsible
+                    collapsed={collapsed}
+                    onCollapse={(value) => setCollapsed(value)}
+                    width={screens.md ? 256 : 256}
+                >
+                    <div className="w-full h-16 flex justify-center flex-col items-center cursor-pointer bg-[var(--sideBar-logo-background-color)]">
                         <Logo
                             handleClick={() => navigate("/")}
                             collapsed={screens.md ? collapsed : true}
                         />
                     </div>
-                </div>
 
-                <Menu
-                    theme="dark"
-                    defaultSelectedKeys={["1"]}
-                    selectedKeys={getSideMenuSelectedKeys()}
-                    mode="inline"
-                    items={items}
-                />
-            </Sider>
-            <Layout>
-                <HeaderComponent />
-                <Content style={{ margin: "0 16px" }}>
-                    <Breadcrumb
-                        style={{ margin: "16px 0" }}
-                        items={[...getBreadcrumbItems(location.pathname)]}
+                    <Menu
+                        defaultSelectedKeys={["1"]}
+                        selectedKeys={getSideMenuSelectedKeys()}
+                        items={items}
+                        mode="inline"
                     />
-
-                    <div style={{ paddingRight: "16px" }}>{children}</div>
-                </Content>
-                <Footer
-                    style={{
-                        textAlign: "center",
-                    }}
-                >
-                    Ô tô hồng sơn ©2024 Created by Openserce
-                </Footer>
+                </Sider>
+                <Layout>
+                    <HeaderComponent />
+                    <Content style={{ margin: "0 1rem" }}>
+                        <div style={{ paddingRight: "16px" }}>{children}</div>
+                    </Content>
+                    <Footer
+                        style={{
+                            textAlign: "center",
+                        }}
+                    >
+                        Ô tô hồng sơn ©2024 Created by Openserce
+                    </Footer>
+                </Layout>
             </Layout>
-        </Layout>
+        </ConfigProvider>
     );
 };
 

@@ -1,5 +1,5 @@
-import * as dayjs from "dayjs";
-
+import dayjs from "dayjs";
+import { OrderStatus } from "src/stores/order";
 export const Language = {
     english: "en",
     vietnamese: "vi",
@@ -67,14 +67,14 @@ export const DefaultValues = {
         .set("hour", 0),
 };
 
-export const DateTimeFormat = {
-    TimeStamp: "DD/MM/YYYY HH:mm:ss",
-    TimeStampExcludedSeconds: "DD/MM/YYYY HH:mm",
-    Date: "DD/MM/YYYY",
-    TIME_STAMP_POSTGRES: "YYYY-MM-DD HH:mm:ss",
-    TIME_STAMP_ISO: "YYYY-MM-DDTHH:mm:ssZ",
-    TIME_STAMP_POSTGRES_TZ: "YYYY-MM-DDTHH:mm:ss.SSSZ",
-};
+export enum DateTimeFormat {
+    TimeStamp = "DD/MM/YYYY HH:mm:ss",
+    TimeStampExcludedSeconds = "DD/MM/YYYY HH:mm",
+    Date = "DD/MM/YYYY",
+    TIME_STAMP_POSTGRES = "YYYY-MM-DD HH:mm:ss",
+    TIME_STAMP_ISO = "YYYY-MM-DDTHH:mm:ssZ",
+    TIME_STAMP_POSTGRES_TZ = "YYYY-MM-DDTHH:mm:ss.SSSZ",
+}
 
 export const RegExps = {
     ImageType: /^image\//,
@@ -119,18 +119,27 @@ export const EnumOrderStatuses = {
     FAILED_DELIVERY: "GIAO THẤT BẠI",
 };
 
-export const EnumOrderStatusesValue = {
-    All: null,
-    PENDING: 0,
-    CONFIRMED: 1,
-    EXPORTED: 2,
-    DELIVERING: 3,
-    SHIPPING: 4,
-    DELIVERED: 5,
-    FAILED_DELIVERY: 6,
-    RETURNED: 7,
-    CANCELED: -1,
+export const EnumOrderSteps = {
+    PENDING: "ĐẶT HÀNG",
+    CONFIRMED: "ĐÃ XÁC NHẬN",
+    EXPORTED: "ĐÃ XUẤT KHO",
+    DELIVERING: "VẬN CHUYỂN",
+    SHIPPING: "GIAO HÀNG",
 };
+
+// order-status.ts
+export enum EnumOrderStatusesValue {
+    All = null as any,
+    PENDING = 0,
+    CONFIRMED = 1,
+    EXPORTED = 2,
+    DELIVERING = 3,
+    SHIPPING = 4,
+    DELIVERED = 5,
+    FAILED_DELIVERY = 6,
+    RETURNED = 7,
+    CANCELED = -1,
+}
 
 export const EnumOrderColorStatuses = {
     PENDING: "rgb(2 132 199)",

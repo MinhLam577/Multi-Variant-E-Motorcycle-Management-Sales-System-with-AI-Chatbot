@@ -1,4 +1,7 @@
 const endpoints = {
+    product: {
+        getListProduct: (query: string) => "/products?" + query,
+    },
     auth: {
         login: "/auth/admin/login",
         logout: "/auth/admin/logout",
@@ -25,31 +28,7 @@ const endpoints = {
         list: (page, limit) => `customers/?page=${page}&limit=${limit}`,
         callBulkCreateCustomer: "/users/callBulkCreateCustomer",
     },
-    motorbike: {
-        list: (page, size) => `/products?current=${page}&pageSize=${size}`,
-        details: (id) => `/products/${id}`,
-        //setting
 
-        // get
-        categories: "/categories",
-        color: "/color",
-        brand: "/brand",
-    },
-    cars: {
-        list: (page, size) => `/products?current=${page}&pageSize=${size}`,
-        details: (id) => `/cars/${id}`,
-        create: "/products",
-        update: (id) => `/products/${id}`,
-        delete: (id) => `/products/${id}`,
-
-        //setting
-        categories: () => `/category`,
-        color: () => `/color`,
-        brand: () => `/brand`,
-
-        //upload image
-        uploadImage: () => "/products/upload",
-    },
     showroom: {
         list: "/showrooms",
         details: (id) => `/showrooms/${id}`,

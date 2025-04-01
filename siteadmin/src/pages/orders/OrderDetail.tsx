@@ -1,10 +1,9 @@
 import { Button, Form, Steps } from "antd";
-import PropTypes from "prop-types";
 import { useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import OrderPrint from "../../components/orders/detail/OrderPrint";
 import OrderProductsTable from "../../components/orders/detail/OrderProductsTable";
-import { EnumOrderStatusesValue } from "../../constants";
+import { EnumOrderStatusesValue, EnumOrderSteps } from "src/constants";
 import { reaction, toJS } from "mobx";
 import "./OrderDetail.css";
 import {
@@ -35,11 +34,6 @@ interface OrderDetailProps {
     handleCancelOrderStatus: (orderNo: string, reason: string) => void;
     handleFailedDelivery: (orderNo: string, reason: string) => void;
     handleReturnOrder: (orderNo: string, reason: string) => void;
-    displayMessage: (
-        statusCode: number,
-        store: any,
-        isSuccess?: boolean
-    ) => void;
 }
 
 const OrderDetail: React.FC<OrderDetailProps> = ({
@@ -51,9 +45,8 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
     handleCancelOrderStatus,
     handleFailedDelivery,
     handleReturnOrder,
-    displayMessage,
 }) => {
-    const elementPrintOrder = useRef();
+    const elementPrintOrder = useRef<HTMLDivElement | null>(null);
 
     //  In bill
     const onPrint = useReactToPrint({
@@ -67,26 +60,13 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
         };
     });
 
-    const stepItems = [
-        {
-            title: "Đặt hàng",
-        },
-        {
-            title: "Xác nhận",
-        },
-        {
-            title: "Xuất kho",
-        },
-        {
-            title: "Vận chuyển",
-        },
-        {
-            title: "Đang giao",
-        },
-        {
-            title: "Đã giao",
-        },
-    ];
+    const stepItems = Object.values(EnumOrderSteps).map((item) => ({
+        title: item
+            .toLowerCase()
+            .split(" ")
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(" "),
+    }));
 
     const Icon_dot = (icon, { index, status, title, description }) => {
         const isFinish = status === "finish";
@@ -142,77 +122,60 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
         );
     };
 
-    const [current_status, set_current_status] = useState(
-        EnumOrderStatusesValue[orderDetail?.order_status] || 0
+    const [current_status, set_current_status] = useState<number>(
+        EnumOrderStatusesValue[orderDetail?.order_status as string] || 0
     );
     const [isError, setIsError] = useState(false);
-
     const handleCurrentStatus = (
         status: EnumOrderStatusesValue,
         prev_status: EnumOrderStatusesValue
     ) => {
-        switch (EnumOrderStatusesValue[status]) {
-            case EnumOrderStatusesValue.PENDING:
-                set_current_status(EnumOrderStatusesValue.PENDING);
-                setIsError(false);
-                break;
-            case EnumOrderStatusesValue.CONFIRMED:
-                set_current_status(EnumOrderStatusesValue.CONFIRMED);
-                setIsError(false);
-                break;
-            case EnumOrderStatusesValue.EXPORTED:
-                set_current_status(EnumOrderStatusesValue.EXPORTED);
-                setIsError(false);
-                break;
-            case EnumOrderStatusesValue.DELIVERING:
-                set_current_status(EnumOrderStatusesValue.DELIVERING);
-                setIsError(false);
-                break;
-            case EnumOrderStatusesValue.SHIPPING:
-                set_current_status(EnumOrderStatusesValue.SHIPPING);
-                setIsError(false);
-                break;
-            case EnumOrderStatusesValue.DELIVERED:
-            case EnumOrderStatusesValue.RETURNED:
-                set_current_status(EnumOrderStatusesValue.DELIVERED);
-                setIsError(false);
-                break;
-            case EnumOrderStatusesValue.FAILED_DELIVERY:
-                switch (EnumOrderStatusesValue[prev_status]) {
-                    case EnumOrderStatusesValue.DELIVERING:
-                        set_current_status(EnumOrderStatusesValue.DELIVERING);
-                        setIsError(true);
-                        break;
-                    case EnumOrderStatusesValue.SHIPPING:
-                        set_current_status(EnumOrderStatusesValue.SHIPPING);
-                        setIsError(true);
-                        break;
-                    default:
-                        set_current_status(EnumOrderStatusesValue.SHIPPING);
-                        setIsError(true);
-                        break;
-                }
-                break;
-            case EnumOrderStatusesValue.CANCELED:
-                switch (EnumOrderStatusesValue[prev_status]) {
-                    case EnumOrderStatusesValue.PENDING:
-                        set_current_status(EnumOrderStatusesValue.PENDING);
-                        setIsError(true);
-                        break;
-                    case EnumOrderStatusesValue.CONFIRMED:
-                        set_current_status(EnumOrderStatusesValue.CONFIRMED);
-                        setIsError(true);
-                        break;
-                    default:
-                        set_current_status(EnumOrderStatusesValue.PENDING);
-                        setIsError(true);
-                        break;
-                }
-                break;
-            default:
-                set_current_status(EnumOrderStatusesValue.PENDING);
-                setIsError(true);
-                break;
+        try {
+            let newStatus: EnumOrderStatusesValue;
+            let isError = false;
+
+            switch (status) {
+                case EnumOrderStatusesValue.PENDING:
+                case EnumOrderStatusesValue.CONFIRMED:
+                case EnumOrderStatusesValue.EXPORTED:
+                case EnumOrderStatusesValue.DELIVERING:
+                case EnumOrderStatusesValue.SHIPPING:
+                    newStatus = status;
+                    break;
+                case EnumOrderStatusesValue.DELIVERED:
+                case EnumOrderStatusesValue.RETURNED:
+                    newStatus = EnumOrderStatusesValue.DELIVERED;
+                    break;
+                case EnumOrderStatusesValue.FAILED_DELIVERY:
+                    newStatus =
+                        prev_status === EnumOrderStatusesValue.DELIVERING
+                            ? EnumOrderStatusesValue.DELIVERING
+                            : EnumOrderStatusesValue.SHIPPING;
+                    isError = true;
+                    break;
+                case EnumOrderStatusesValue.CANCELED:
+                    newStatus =
+                        prev_status === EnumOrderStatusesValue.CONFIRMED
+                            ? EnumOrderStatusesValue.CONFIRMED
+                            : EnumOrderStatusesValue.PENDING;
+                    isError = true;
+                    break;
+                default:
+                    newStatus = EnumOrderStatusesValue.PENDING;
+                    isError = true;
+                    break;
+            }
+            set_current_status(newStatus);
+            setIsError(isError);
+        } catch (e: any) {
+            console.error(e);
+            set_current_status(EnumOrderStatusesValue.PENDING);
+            setIsError(true);
+            order_store.setStatusMessage(
+                500,
+                e?.message || "Lỗi khi cập nhật trạng thái đơn hàng",
+                ""
+            );
         }
     };
 
@@ -220,9 +183,14 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
         const reactionDisposer = reaction(
             () => order_store.data.order_detail,
             (order_detail, prev_order_detail) => {
-                const current_status = order_detail?.order_status;
-                const prev_status = prev_order_detail?.order_status;
-                handleCurrentStatus(current_status, prev_status);
+                const current_status: string | undefined =
+                    order_detail?.order_status;
+                const prev_status: string | undefined =
+                    prev_order_detail?.order_status;
+                handleCurrentStatus(
+                    EnumOrderStatusesValue[current_status],
+                    EnumOrderStatusesValue[prev_status]
+                );
             },
             {
                 fireImmediately: true,
@@ -241,11 +209,11 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
         const values = confirmReasonForm.getFieldsValue(true);
         const reason = values.reason;
         if (typeOpenReasonModal === "cancel") {
-            await handleCancelOrderStatus(orderNo, reason);
+            handleCancelOrderStatus(orderNo, reason);
         } else if (typeOpenReasonModal === "failed_delivery") {
-            await handleFailedDelivery(orderNo, reason);
+            handleFailedDelivery(orderNo, reason);
         } else if (typeOpenReasonModal === "return") {
-            await handleReturnOrder(orderNo, reason);
+            handleReturnOrder(orderNo, reason);
         }
         setTypeOpenReasonModal("cancel");
         setOpenReasonModal(false);
@@ -319,11 +287,17 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
                             <Button onClick={onPrint}>In hóa đơn</Button>
                             <Button
                                 onClick={() => {
-                                    const orderDetail =
+                                    const orderDetailStatus:
+                                        | string
+                                        | undefined =
                                         order_store.data.order_detail
                                             ?.order_status;
+                                    const status: number | undefined =
+                                        EnumOrderStatusesValue[
+                                            orderDetailStatus
+                                        ];
                                     if (
-                                        EnumOrderStatusesValue[orderDetail] ===
+                                        status ===
                                         EnumOrderStatusesValue.PENDING
                                     ) {
                                         set_open_export_order(true);
@@ -422,18 +396,6 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
             </div>
         </div>
     );
-};
-
-OrderDetail.propTypes = {
-    orderDetail: PropTypes.object,
-    orderNo: PropTypes.string,
-    order_store: PropTypes.instanceOf(OrderObservable),
-    skus_store: PropTypes.instanceOf(SkusObservable),
-    handleUpdateOrderStatus: PropTypes.func,
-    handleCancelOrderStatus: PropTypes.func,
-    handleFailedDelivery: PropTypes.func,
-    handleReturnOrder: PropTypes.func,
-    displayMessage: PropTypes.func,
 };
 
 export default observer(OrderDetail);
