@@ -130,14 +130,22 @@ const getExpandedRowConfig = (
     updateDetailImportData: (
         skus_id: string,
         lot_Id: string,
-        newLotData: { detail_import_id?: string; quantity_export?: number }
+        newLotData: {
+            detail_import_id?: string;
+            quantity_export?: number;
+            warehouse_id?: string;
+        }
     ) => void,
     lotNameData: lotOptionType[],
     skus_id: string,
     getQuantityRemainingByDetailImportID: (
         skus_id: string,
         detail_import_id?: string
-    ) => number
+    ) => number,
+    getWareHouseIdByDetailImportID: (
+        skus_id: string,
+        detail_import_id: string
+    ) => string
 ) => {
     return [
         {
@@ -165,9 +173,14 @@ const getExpandedRowConfig = (
                                         ? undefined
                                         : !Array.isArray(option)
                                           ? option.value
-                                          : option[0].value;
+                                          : undefined;
                                     updateDetailImportData(skus_id, record.id, {
                                         detail_import_id: newLot,
+                                        warehouse_id:
+                                            getWareHouseIdByDetailImportID(
+                                                skus_id,
+                                                newLot
+                                            ),
                                     });
                                 }}
                             />
@@ -271,6 +284,19 @@ const ModalExportOrder: React.FC<ModalExportOrderProps> = ({
         return lot?.detail_import[0]?.warehouse?.id;
     };
 
+    const getWareHouseIdByDetailImportID = (
+        skus_id: string,
+        detail_import_id: string
+    ): string => {
+        const lot = map_skus_detail_import.get(skus_id);
+        if (!lot) return "";
+        const detail_import = lot.detail_import.find(
+            (lot) => lot.id === detail_import_id
+        )?.warehouse?.id;
+        if (!detail_import) return "";
+        return detail_import;
+    };
+
     const getQuantityRemainingByDetailImportID = (
         skus_id: string,
         detail_import_id: string
@@ -291,10 +317,10 @@ const ModalExportOrder: React.FC<ModalExportOrderProps> = ({
     };
 
     // Thêm mới chi tiết thông tin xuất hàng
-    const addNewDetailImport = (skus_id: string, warehouse_id: string) => {
+    const addNewDetailImport = (skus_id: string) => {
         const newLot: LotType = {
             id: `${skus_id}-${Date.now()}`,
-            warehouse_id: warehouse_id,
+            warehouse_id: "",
             detail_import_id: "",
             quantity_export: 0,
         };
@@ -308,7 +334,11 @@ const ModalExportOrder: React.FC<ModalExportOrderProps> = ({
     const updateDetailImportData = (
         skus_id: string,
         lotId: string,
-        newLotData: { detail_import_id?: string; quantity_export?: number }
+        newLotData: {
+            detail_import_id?: string;
+            quantity_export?: number;
+            warehouse_id?: string;
+        }
     ) => {
         const newDetailImportTableData = detailImportTableData[skus_id]?.map(
             (detail_import) => {
@@ -354,7 +384,8 @@ const ModalExportOrder: React.FC<ModalExportOrderProps> = ({
                         updateDetailImportData,
                         lotNameData,
                         skus_id,
-                        getQuantityRemainingByDetailImportID
+                        getQuantityRemainingByDetailImportID,
+                        getWareHouseIdByDetailImportID
                     )}
                     dataSource={expandTableData}
                     pagination={false}
@@ -363,7 +394,7 @@ const ModalExportOrder: React.FC<ModalExportOrderProps> = ({
                     className="relative"
                 />
                 <Button
-                    onClick={() => addNewDetailImport(skus_id, warehouse_id)}
+                    onClick={() => addNewDetailImport(skus_id)}
                     className="rounded-[50%] w-6 h-6 flex items-center justify-center absolute top-full left-0 -translate-x-1/2 -translate-y-full !hover:bg-opacity-80 transition-all duration-200"
                     color="default"
                     variant="filled"
@@ -489,8 +520,8 @@ const ModalExportOrder: React.FC<ModalExportOrderProps> = ({
             return;
         }
         const result = await handleSave(tempData, note);
-        handleCancelNote();
         if (result) {
+            handleCancelNote();
             handleCancelModalExport();
         }
     };

@@ -17,7 +17,7 @@ const Orders = () => {
     const skusStore = store.skusObservable;
     const paymentMethodStore = store.paymentMethodObservable;
     const fetchListOrder = async (query = undefined) => {
-        return await orderStore.getListOrder(query);
+        return orderStore.getListOrder(query);
     };
     const [filterData, setFilterData] = useState([]);
     const fetchData = async () => {
@@ -210,12 +210,12 @@ const Orders = () => {
 
     return (
         <div className="flex flex-col gap-4">
+            {contextHolder}
             <OrderStatusSearch
                 order_status={orderStore?.data?.order_status}
                 order_store={orderStore}
             />
             <div className="flex flex-col gap-4 p-4 border border-gray-200 rounded-lg bg-white shadow-sm">
-                {contextHolder}
                 <OrderSearch
                     globalFilters={orderStore.globalFilters}
                     setGlobalFilters={orderStore.setGlobalFilters}
