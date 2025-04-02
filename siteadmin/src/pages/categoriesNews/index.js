@@ -6,73 +6,73 @@ import NewsSearch from "../../components/categories_blog/NewsSearch";
 import NewsTable from "../../components/categories_blog/NewsTable";
 import { GlobalContext } from "../../contexts/global";
 import apiClient from "../../api/apiClient";
-import endpoints from "../../api/endpoints";
+import endpoints from "../../api/endpoints.ts";
 
 const CategoriesNews = () => {
-  const navigate = useNavigate();
-  const [globalFilters, setGlobalFilters] = useState({ searchText: null });
-  const { globalDispatch } = useContext(GlobalContext);
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const fetchBlogNew = async () => {
-    setLoading(true);
-    const data = await apiClient.get(endpoints.blogcategories.list());
-    console.log(data);
-    setLoading(false);
-    setData(data.data);
-  };
-  useEffect(() => {
-    fetchBlogNew();
-  }, []);
-  const handleAddNews = () => {
-    navigate("/categorynews/add", { replace: true });
-  };
+    const navigate = useNavigate();
+    const [globalFilters, setGlobalFilters] = useState({ searchText: null });
+    const { globalDispatch } = useContext(GlobalContext);
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const fetchBlogNew = async () => {
+        setLoading(true);
+        const data = await apiClient.get(endpoints.blogcategories.list());
+        console.log(data);
+        setLoading(false);
+        setData(data.data);
+    };
+    useEffect(() => {
+        fetchBlogNew();
+    }, []);
+    const handleAddNews = () => {
+        navigate("/categorynews/add", { replace: true });
+    };
 
-  const handleEditNews = (newsData) => {
-    globalDispatch({
-      type: "breadcrum",
-      data: newsData.name,
-    });
-    navigate(`/categorynews/${newsData.id}/edit`, { replace: true });
-  };
+    const handleEditNews = (newsData) => {
+        globalDispatch({
+            type: "breadcrum",
+            data: newsData.name,
+        });
+        navigate(`/categorynews/${newsData.id}/edit`, { replace: true });
+    };
 
-  const handleViewNews = (newsData) => {
-    console.log(newsData);
-    globalDispatch({
-      type: "breadcrum",
-      data: newsData.name,
-    });
-    navigate(`/categorynews/${newsData.id}`, { replace: true });
-  };
+    const handleViewNews = (newsData) => {
+        console.log(newsData);
+        globalDispatch({
+            type: "breadcrum",
+            data: newsData.name,
+        });
+        navigate(`/categorynews/${newsData.id}`, { replace: true });
+    };
 
-  return (
-    <>
-      <Row gutter={[16, 0]}>
-        <Col span={24}>
-          <NewsSearch setFilters={setGlobalFilters} />
-        </Col>
-        <Col span={24} className="flex justify-end">
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={handleAddNews}
-          >
-            Tạo mới
-          </Button>
-        </Col>
-        <Col span={24}>
-          <NewsTable
-            data={data}
-            loading={loading}
-            globalFilters={globalFilters}
-            handleUpdateNews={handleEditNews}
-            handleViewNews={handleViewNews}
-            refreshData={fetchBlogNew} // Truyền hàm này vào NewsTable
-          />
-        </Col>
-      </Row>
-    </>
-  );
+    return (
+        <>
+            <Row gutter={[16, 0]}>
+                <Col span={24}>
+                    <NewsSearch setFilters={setGlobalFilters} />
+                </Col>
+                <Col span={24} className="flex justify-end">
+                    <Button
+                        type="primary"
+                        icon={<PlusOutlined />}
+                        onClick={handleAddNews}
+                    >
+                        Tạo mới
+                    </Button>
+                </Col>
+                <Col span={24}>
+                    <NewsTable
+                        data={data}
+                        loading={loading}
+                        globalFilters={globalFilters}
+                        handleUpdateNews={handleEditNews}
+                        handleViewNews={handleViewNews}
+                        refreshData={fetchBlogNew} // Truyền hàm này vào NewsTable
+                    />
+                </Col>
+            </Row>
+        </>
+    );
 };
 
 export default CategoriesNews;

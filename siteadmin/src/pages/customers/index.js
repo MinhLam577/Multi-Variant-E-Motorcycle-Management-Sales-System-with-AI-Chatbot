@@ -6,21 +6,21 @@ import { GlobalContext } from "../../contexts/global";
 import { Button } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import apiClient from "../../api/apiClient";
-import endpoints from "../../api/endpoints";
+import endpoints from "../../api/endpoints.ts";
 import CustomerModalCreate from "../../components/customers/CustomerModalCreate";
 import AddressModalUpdate from "../../components/customers/AddressModalUpdate";
 
 const Customer = () => {
-  const navigate = useNavigate();
-  const [globalFilters, setGlobalFilters] = useState({ searchText: null });
-  const [originalData, setOriginalData] = useState([]); // Lưu dữ liệu gốc
-  const { globalDispatch } = useContext(GlobalContext);
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+    const [globalFilters, setGlobalFilters] = useState({ searchText: null });
+    const [originalData, setOriginalData] = useState([]); // Lưu dữ liệu gốc
+    const { globalDispatch } = useContext(GlobalContext);
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(false);
 
-  const [openModalCreate, setOpenModalCreate] = useState(false);
-  const [openViewDetail, setOpenViewDetail] = useState(false);
-  const [dataViewDetail, setDataViewDetail] = useState(null);
+    const [openModalCreate, setOpenModalCreate] = useState(false);
+    const [openViewDetail, setOpenViewDetail] = useState(false);
+    const [dataViewDetail, setDataViewDetail] = useState(null);
 
   useEffect(() => {
     fetchCustomer();
@@ -55,36 +55,36 @@ const Customer = () => {
     }
   }, [globalFilters, originalData]); // Theo dõi cả filters và dữ liệu gốc
 
-  const handleEditUser = (usersData) => {
-    globalDispatch({
-      type: "breadcrum",
-      data: usersData.username,
-    });
-    navigate(`/customer/${usersData.id}/edit`, { replace: true });
-  };
+    const handleEditUser = (usersData) => {
+        globalDispatch({
+            type: "breadcrum",
+            data: usersData.username,
+        });
+        navigate(`/customer/${usersData.id}/edit`, { replace: true });
+    };
 
-  const handleViewUser = (usersData) => {
-    globalDispatch({
-      type: "breadcrum",
-      data: usersData.username,
-    });
-    navigate(`/customer/${usersData.id}`, { replace: true });
-  };
+    const handleViewUser = (usersData) => {
+        globalDispatch({
+            type: "breadcrum",
+            data: usersData.username,
+        });
+        navigate(`/customer/${usersData.id}`, { replace: true });
+    };
 
-  return (
-    <>
-      <CustomerSearch setFilters={setGlobalFilters} />
-      <div className="flex justify-end mb-4">
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={() => {
-            setOpenModalCreate(true);
-          }}
-        >
-          Tạo mới
-        </Button>
-      </div>
+    return (
+        <>
+            <CustomerSearch setFilters={setGlobalFilters} />
+            <div className="flex justify-end mb-4">
+                <Button
+                    type="primary"
+                    icon={<PlusOutlined />}
+                    onClick={() => {
+                        setOpenModalCreate(true);
+                    }}
+                >
+                    Tạo mới
+                </Button>
+            </div>
 
       <CustomerTable
         data={data}
@@ -95,13 +95,13 @@ const Customer = () => {
         fetchCustomer={fetchCustomer}
       />
 
-      <CustomerModalCreate
-        openModalCreate={openModalCreate}
-        setOpenModalCreate={setOpenModalCreate}
-        fetchUser={fetchCustomer}
-      />
-    </>
-  );
+            <CustomerModalCreate
+                openModalCreate={openModalCreate}
+                setOpenModalCreate={setOpenModalCreate}
+                fetchUser={fetchCustomer}
+            />
+        </>
+    );
 };
 
 export default Customer;

@@ -3,11 +3,11 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { AntdTableLocale } from "../../../constants";
 import {
-  ProcessModalName,
-  processWithModals,
+    ProcessModalName,
+    processWithModals,
 } from "../../../containers/processWithModals";
 import apiClient from "../../../api/apiClient";
-import endpoints from "../../../api/endpoints";
+import endpoints from "../../../api/endpoints.ts";
 import GroupActionButton from "../../GroupActionButton";
 import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
 import UserModalUpdate from "../UserModalUpdate";
@@ -16,9 +16,9 @@ import AddressModalCreate from "../../customers/AddressModalCreate";
 import AddressModalUpdate from "../../customers/AddressModalUpdate";
 
 const getColumnsConfig = ({
-  hanleDeleteAddress,
-  setOpenAddressModalUpdate,
-  setDataUpdate,
+    hanleDeleteAddress,
+    setOpenAddressModalUpdate,
+    setDataUpdate,
   setAddressDataUpdate,
 }) => {
   return [

@@ -2,8 +2,8 @@ import { Button, Popconfirm, Table, message } from "antd";
 import { AntdTableLocale } from "../../../constants";
 import { useEffect, useState } from "react";
 import {
-  ProcessModalName,
-  processWithModals,
+    ProcessModalName,
+    processWithModals,
 } from "../../../containers/processWithModals";
 import { GET_ADDRESS_USER, REMOVE_ADDRESS } from "../../../graphql/users";
 import { useNavigate, useParams } from "react-router";
@@ -103,31 +103,30 @@ const AddressCustomerTable = () => {
   const navigate = useNavigate();
   const [loading] = useState(false);
 
-  const handleDeleteAddress = (id) => {
-    console.log(id);
-    processWithModals(ProcessModalName.ConfirmCustomContent)(
-      "Xác nhận",
-      "Bạn chắc chắn muốn xóa địa chỉ này?"
-    )(async () => {
-      // Thêm `async` ở đây
-      try {
-        await apiClient.delete(endpoints.receive_address.delete(id)); // Đảm bảo truyền `id`
-        message.success("Xóa địa chỉ thành công!");
-        // Gọi API cập nhật danh sách nếu cần
-      } catch (error) {
-        console.error("Lỗi khi xóa địa chỉ:", error);
-        message.error("Xóa địa chỉ thất bại. Vui lòng thử lại!");
-      }
-    });
-  };
+    const handleDeleteAddress = (id) => {
+        processWithModals(ProcessModalName.ConfirmCustomContent)(
+            "Xác nhận",
+            "Bạn chắc chắn muốn xóa địa chỉ này?"
+        )(async () => {
+            // Thêm `async` ở đây
+            try {
+                await apiClient.delete(endpoints.receive_address.delete(id)); // Đảm bảo truyền `id`
+                message.success("Xóa địa chỉ thành công!");
+                // Gọi API cập nhật danh sách nếu cần
+            } catch (error) {
+                console.error("Lỗi khi xóa địa chỉ:", error);
+                message.error("Xóa địa chỉ thất bại. Vui lòng thử lại!");
+            }
+        });
+    };
 
-  const handleEditAddress = (id) => {
-    if (!id) {
-      console.error("ID không hợp lệ:", id);
-      return;
-    }
-    navigate(`/customer/receive_address/${id}/edit`);
-  };
+    const handleEditAddress = (id) => {
+        if (!id) {
+            console.error("ID không hợp lệ:", id);
+            return;
+        }
+        navigate(`/customer/receive_address/${id}/edit`);
+    };
 
   return (
     <>

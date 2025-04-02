@@ -8,33 +8,35 @@ import endpoints from "../../api/endpoints";
 import AddressCustomerTable from "../../components/users/detail/AddressUserTable";
 
 const CustomerDetail = () => {
-  const { id } = useParams();
-  const [error] = useState(false);
-  const [loading] = useState(false);
+    const { id } = useParams();
+    const [error] = useState(false);
+    const [loading] = useState(false);
 
-  const [userInfo, setUserInfo] = useState([]);
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const data = await apiClient.get(endpoints.customers.details(id));
-        console.log(data.data);
-        if (data) {
-          setUserInfo(data.data);
-        } else {
-          setUserInfo([]);
+    const [userInfo, setUserInfo] = useState([]);
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const data = await apiClient.get(
+                    endpoints.customers.details(id)
+                );
+                console.log(data.data);
+                if (data) {
+                    setUserInfo(data.data);
+                } else {
+                    setUserInfo([]);
+                }
+            } catch (error) {
+                console.error("Lỗi khi lấy thông tin user:", error);
+            }
+        };
+
+        if (id) {
+            fetchUser();
         }
-      } catch (error) {
-        console.error("Lỗi khi lấy thông tin user:", error);
-      }
-    };
-
-    if (id) {
-      fetchUser();
+    }, [id]);
+    if (error) {
+        return <div>Error!</div>;
     }
-  }, [id]);
-  if (error) {
-    return <div>Error!</div>;
-  }
 
   const items = [
     {

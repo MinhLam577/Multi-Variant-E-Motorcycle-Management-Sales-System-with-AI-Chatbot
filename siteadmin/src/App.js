@@ -11,7 +11,7 @@ import Policy from "./pages/Policy";
 import Profile from "./pages/Profile";
 import Categories from "./pages/categories";
 import CategoriesDetail, {
-  CategoriesDetailMode,
+    CategoriesDetailMode,
 } from "./pages/categories/CategoriesDetail";
 import Customer from "./pages/customers";
 import Dashboard from "./pages/dashboard";
@@ -26,7 +26,7 @@ import OrderDetail, { OrderDetailMode } from "./pages/orders/OrderDetail";
 import { ProductUnitsDetailMode } from "./pages/product_units/ProductUnitsDetail";
 import Products from "./pages/products";
 import ProductsDetail, {
-  ProductsDetailMode,
+    ProductsDetailMode,
 } from "./pages/products/ProductsDetail";
 import Statistic from "./pages/statistic";
 import Stores from "./pages/stores";
@@ -45,333 +45,384 @@ import CustomerDetail from "./pages/customers/CustomerDetail";
 import CategoriesNews from "./pages/categoriesNews";
 import CategoriesNewsDetail from "./pages/categoriesNews/CategoriesNewsDetail";
 function App() {
-  return (
-    <StoreProvider>
-      <BrowserRouter>
-        <AuthProvider>
-          <GlobalProvider>
-            <Suspense fallback={<Loading />}>
-              <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/policy" element={<Policy />} />
-                <Route path="/Forbidden" element={<Forbidden />} />
-                <Route
-                  path="/"
-                  element={
-                    <ProtectedRoute>
-                      <Dashboard />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/statistic"
-                  element={
-                    <ProtectedRoute>
-                      <Statistic />
-                    </ProtectedRoute>
-                  }
-                />
+    return (
+        <StoreProvider>
+            <BrowserRouter>
+                <AuthProvider>
+                    <GlobalProvider>
+                        <Suspense fallback={<Loading />}>
+                            <Routes>
+                                <Route path="/login" element={<Login />} />
+                                <Route path="/policy" element={<Policy />} />
+                                <Route
+                                    path="/Forbidden"
+                                    element={<Forbidden />}
+                                />
+                                <Route
+                                    path="/"
+                                    element={
+                                        <ProtectedRoute>
+                                            <Dashboard />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/statistic"
+                                    element={
+                                        <ProtectedRoute>
+                                            <Statistic />
+                                        </ProtectedRoute>
+                                    }
+                                />
 
-                <Route path="/warehouse">
-                  <Route
-                    index
-                    element={
-                      <ProtectedRoute>
-                        <WareHouses />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="add"
-                    element={
-                      <ProtectedRoute>
-                        <WareHouseDetail mode={WareHouseDetailMode.Add} />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path=":id"
-                    element={
-                      <ProtectedRoute>
-                        <WareHouseDetail mode={WareHouseDetailMode.View} />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path=":id/edit"
-                    element={
-                      <ProtectedRoute>
-                        <WareHouseDetail mode={WareHouseDetailMode.Edit} />
-                      </ProtectedRoute>
-                    }
-                  />
-                </Route>
+                                <Route path="/warehouse">
+                                    <Route
+                                        index
+                                        element={
+                                            <ProtectedRoute>
+                                                <WareHouses />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="add"
+                                        element={
+                                            <ProtectedRoute>
+                                                <WareHouseDetail
+                                                    mode={
+                                                        WareHouseDetailMode.Add
+                                                    }
+                                                />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path=":id"
+                                        element={
+                                            <ProtectedRoute>
+                                                <WareHouseDetail
+                                                    mode={
+                                                        WareHouseDetailMode.View
+                                                    }
+                                                />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path=":id/edit"
+                                        element={
+                                            <ProtectedRoute>
+                                                <WareHouseDetail
+                                                    mode={
+                                                        WareHouseDetailMode.Edit
+                                                    }
+                                                />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                </Route>
 
-                <Route
-                  path="user"
-                  element={
-                    <ProtectedRoute>
-                      <User />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="customer"
-                  element={
-                    <ProtectedRoute>
-                      <Customer />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/notifications"
-                  element={
-                    <ProtectedRoute>
-                      <Notification />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/vouchers"
-                  element={
-                    <ProtectedRoute>
-                      <Vouchers />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/vouchers/add"
-                  element={
-                    <ProtectedRoute>
-                      <VoucherDetail mode={ProductUnitsDetailMode.Add} />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/vouchers/:id"
-                  element={
-                    <ProtectedRoute>
-                      <VoucherDetail mode={ProductUnitsDetailMode.View} />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/vouchers/:id/edit"
-                  element={
-                    <ProtectedRoute>
-                      <VoucherDetail mode={ProductUnitsDetailMode.Edit} />
-                    </ProtectedRoute>
-                  }
-                />
+                                <Route
+                                    path="user"
+                                    element={
+                                        <ProtectedRoute>
+                                            <User />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="customer"
+                                    element={
+                                        <ProtectedRoute>
+                                            <Customer />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/notifications"
+                                    element={
+                                        <ProtectedRoute>
+                                            <Notification />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/vouchers"
+                                    element={
+                                        <ProtectedRoute>
+                                            <Vouchers />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/vouchers/add"
+                                    element={
+                                        <ProtectedRoute>
+                                            <VoucherDetail
+                                                mode={
+                                                    ProductUnitsDetailMode.Add
+                                                }
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/vouchers/:id"
+                                    element={
+                                        <ProtectedRoute>
+                                            <VoucherDetail
+                                                mode={
+                                                    ProductUnitsDetailMode.View
+                                                }
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/vouchers/:id/edit"
+                                    element={
+                                        <ProtectedRoute>
+                                            <VoucherDetail
+                                                mode={
+                                                    ProductUnitsDetailMode.Edit
+                                                }
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
 
-                <Route
-                  path="/stores"
-                  element={
-                    <ProtectedRoute>
-                      <Stores />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/stores/add"
-                  element={
-                    <ProtectedRoute>
-                      <StoresDetail mode={StoresDetailMode.Add} />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/stores/:id"
-                  element={
-                    <ProtectedRoute>
-                      <StoresDetail mode={StoresDetailMode.View} />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/stores/:id/edit"
-                  element={
-                    <ProtectedRoute>
-                      <StoresDetail mode={StoresDetailMode.Edit} />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route path="users">
-                  <Route
-                    index
-                    element={
-                      <ProtectedRoute>
-                        <User />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="add"
-                    element={
-                      <ProtectedRoute>
-                        <UserDetail />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path=":id"
-                    element={
-                      <ProtectedRoute>
-                        <UserDetail />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path=":id/edit"
-                    element={
-                      <ProtectedRoute>
-                        <UserDetail />
-                      </ProtectedRoute>
-                    }
-                  />
-                </Route>
+                                <Route
+                                    path="/stores"
+                                    element={
+                                        <ProtectedRoute>
+                                            <Stores />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/stores/add"
+                                    element={
+                                        <ProtectedRoute>
+                                            <StoresDetail
+                                                mode={StoresDetailMode.Add}
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/stores/:id"
+                                    element={
+                                        <ProtectedRoute>
+                                            <StoresDetail
+                                                mode={StoresDetailMode.View}
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/stores/:id/edit"
+                                    element={
+                                        <ProtectedRoute>
+                                            <StoresDetail
+                                                mode={StoresDetailMode.Edit}
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route path="users">
+                                    <Route
+                                        index
+                                        element={
+                                            <ProtectedRoute>
+                                                <User />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="add"
+                                        element={
+                                            <ProtectedRoute>
+                                                <UserDetail />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path=":id"
+                                        element={
+                                            <ProtectedRoute>
+                                                <UserDetail />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path=":id/edit"
+                                        element={
+                                            <ProtectedRoute>
+                                                <UserDetail />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                </Route>
 
-                <Route path="customer">
-                  <Route
-                    index
-                    element={
-                      <ProtectedRoute>
-                        <Customer />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="add"
-                    element={
-                      <ProtectedRoute>
-                        <CustomerDetail />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path=":id"
-                    element={
-                      <ProtectedRoute>
-                        <CustomerDetail />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path=":id/edit"
-                    element={
-                      <ProtectedRoute>
-                        <CustomerDetail />
-                      </ProtectedRoute>
-                    }
-                  />
-                </Route>
+                                <Route path="customer">
+                                    <Route
+                                        index
+                                        element={
+                                            <ProtectedRoute>
+                                                <Customer />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="add"
+                                        element={
+                                            <ProtectedRoute>
+                                                <CustomerDetail />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path=":id"
+                                        element={
+                                            <ProtectedRoute>
+                                                <CustomerDetail />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path=":id/edit"
+                                        element={
+                                            <ProtectedRoute>
+                                                <CustomerDetail />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                </Route>
 
-                <Route
-                  path="/profile"
-                  element={
-                    <ProtectedRoute>
-                      <Profile />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/products"
-                  element={
-                    <ProtectedRoute>
-                      <Products />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/products/add"
-                  element={
-                    <ProtectedRoute>
-                      <ProductsDetail mode={ProductsDetailMode.Add} />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/products/:id"
-                  element={
-                    <ProtectedRoute>
-                      <ProductsDetail mode={ProductsDetailMode.View} />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/products/:id/edit"
-                  element={
-                    <ProtectedRoute>
-                      <ProductsDetail mode={ProductsDetailMode.Edit} />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/categories"
-                  element={
-                    <ProtectedRoute>
-                      <Categories />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/categories/add"
-                  element={
-                    <ProtectedRoute>
-                      <CategoriesDetail mode={CategoriesDetailMode.Add} />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/categories/:id"
-                  element={
-                    <ProtectedRoute>
-                      <CategoriesDetail mode={CategoriesDetailMode.View} />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/categories/:id/edit"
-                  element={
-                    <ProtectedRoute>
-                      <CategoriesDetail mode={CategoriesDetailMode.Edit} />
-                    </ProtectedRoute>
-                  }
-                />
+                                <Route
+                                    path="/profile"
+                                    element={
+                                        <ProtectedRoute>
+                                            <Profile />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/products"
+                                    element={
+                                        <ProtectedRoute>
+                                            <Products />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/products/add"
+                                    element={
+                                        <ProtectedRoute>
+                                            <ProductsDetail
+                                                mode={ProductsDetailMode.Add}
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/products/:id"
+                                    element={
+                                        <ProtectedRoute>
+                                            <ProductsDetail
+                                                mode={ProductsDetailMode.View}
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/products/:id/edit"
+                                    element={
+                                        <ProtectedRoute>
+                                            <ProductsDetail
+                                                mode={ProductsDetailMode.Edit}
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/categories"
+                                    element={
+                                        <ProtectedRoute>
+                                            <Categories />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/categories/add"
+                                    element={
+                                        <ProtectedRoute>
+                                            <CategoriesDetail
+                                                mode={CategoriesDetailMode.Add}
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/categories/:id"
+                                    element={
+                                        <ProtectedRoute>
+                                            <CategoriesDetail
+                                                mode={CategoriesDetailMode.View}
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/categories/:id/edit"
+                                    element={
+                                        <ProtectedRoute>
+                                            <CategoriesDetail
+                                                mode={CategoriesDetailMode.Edit}
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
 
-                <Route
-                  path="/categorynews"
-                  element={
-                    <ProtectedRoute>
-                      <CategoriesNews />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/categorynews/add"
-                  element={
-                    <ProtectedRoute>
-                      <CategoriesNewsDetail mode={NewsDetailMode.Add} />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/categorynews/:id"
-                  element={
-                    <ProtectedRoute>
-                      <CategoriesNewsDetail mode={NewsDetailMode.View} />
-                    </ProtectedRoute>
-                  }
-                />
+                                <Route
+                                    path="/categorynews"
+                                    element={
+                                        <ProtectedRoute>
+                                            <CategoriesNews />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/categorynews/add"
+                                    element={
+                                        <ProtectedRoute>
+                                            <CategoriesNewsDetail
+                                                mode={NewsDetailMode.Add}
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/categorynews/:id"
+                                    element={
+                                        <ProtectedRoute>
+                                            <CategoriesNewsDetail
+                                                mode={NewsDetailMode.View}
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
 
-                <Route
-                  path="/categorynews/:id/edit"
-                  element={
-                    <ProtectedRoute>
-                      <CategoriesNewsDetail mode={NewsDetailMode.Edit} />
-                    </ProtectedRoute>
-                  }
-                />
+                                <Route
+                                    path="/categorynews/:id/edit"
+                                    element={
+                                        <ProtectedRoute>
+                                            <CategoriesNewsDetail
+                                                mode={NewsDetailMode.Edit}
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
 
                 <Route
                   path="/categorynews/:id/news"
@@ -476,14 +527,14 @@ function App() {
                   }
                 />
 
-                <Route path="/:404" element={<Page404 />} />
-              </Routes>
-            </Suspense>
-          </GlobalProvider>
-        </AuthProvider>
-      </BrowserRouter>
-    </StoreProvider>
-  );
+                                <Route path="/:404" element={<Page404 />} />
+                            </Routes>
+                        </Suspense>
+                    </GlobalProvider>
+                </AuthProvider>
+            </BrowserRouter>
+        </StoreProvider>
+    );
 }
 
 export default App;

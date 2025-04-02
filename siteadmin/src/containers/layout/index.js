@@ -25,13 +25,13 @@ const { Content, Footer, Sider } = Layout;
 const { useBreakpoint } = Grid;
 
 function getItem(label, key, icon, children, onClick = () => {}) {
-  return {
-    key,
-    icon,
-    children,
-    label,
-    onClick,
-  };
+    return {
+        key,
+        icon,
+        children,
+        label,
+        onClick,
+    };
 }
 
 const BreadcrumbLabel = {
@@ -54,101 +54,95 @@ const BreadcrumbLabel = {
 };
 
 const AppLayout = (props) => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { children } = props;
-  const [collapsed, setCollapsed] = useState(false);
+    const location = useLocation();
+    const navigate = useNavigate();
+    const { children } = props;
+    const [collapsed, setCollapsed] = useState(false);
 
-  const { name } = useContext(GlobalContext);
-  const screens = useBreakpoint();
+    const { name } = useContext(GlobalContext);
+    const screens = useBreakpoint();
 
-  //set user role
-  const items = [
-    getItem("Tổng quan", "1", <ProductOutlined />, null, () => navigate("/")),
-    getItem("Nhân viên", "2", <UserOutlined />, null, () => navigate("/users")),
-    getItem("Chi nhánh", "3", <ShopOutlined />, null, () =>
-      navigate("/stores")
-    ),
-    getItem("Sản phẩm", "4", <ShoppingOutlined />, [
-      getItem("Ô tô tải", "5", <TruckOutlined />, null, () =>
-        navigate("/products")
-      ),
-      getItem("Xe máy điện", "6", <TruckOutlined />, null, () =>
-        navigate("/e-motorbike")
-      ),
-    ]),
-    getItem("Danh mục", "7", <FileDoneOutlined />, null, () =>
-      navigate("/categories")
-    ),
-    getItem("Danh mục tin tức", "8", <CalendarOutlined />, null, () =>
-      navigate("/categorynews")
-    ),
-    getItem("Đơn hàng", "9", <OrderedListOutlined />, [
-      getItem("Tất cả", "10", null, null, () => navigate("/orders")),
-      getItem("Mới", "11", null, null, () => navigate("/orders?status=new")),
-      getItem("Đã đóng gói", "12", null, null, () =>
-        navigate("/orders?status=confirmed")
-      ),
-      getItem("Đã giao DVVC", "13", null, null, () =>
-        navigate("/orders?status=delivering")
-      ),
-      getItem("Hoàn thành", "14", null, null, () =>
-        navigate("/orders?status=completed")
-      ),
-    ]),
-    getItem("Thông báo", "15", <NotificationOutlined />, null, () =>
-      navigate("/notifications")
-    ),
-    getItem("Voucher", "16", <GiftOutlined />, null, () =>
-      navigate("/vouchers")
-    ),
-    getItem("Kho", "17", <DashboardOutlined />, null, () =>
-      navigate("/warehouse")
-    ),
-    getItem("Thống kê", "18", <BarChartOutlined />, null, () =>
-      navigate("/statistic")
-    ),
-    getItem("Khách hàng", "19", <UserOutlined />, null, () =>
-      navigate("/customer")
-    ),
+    //set user role
+    const items = [
+        getItem("Tổng quan", "1", <ProductOutlined />, null, () =>
+            navigate("/")
+        ),
+        getItem("Nhân viên", "2", <UserOutlined />, null, () =>
+            navigate("/users")
+        ),
+        getItem("Chi nhánh", "3", <ShopOutlined />, null, () =>
+            navigate("/stores")
+        ),
+        getItem("Sản phẩm", "4", <ShoppingOutlined />, [
+            getItem("Ô tô tải", "5", <TruckOutlined />, null, () =>
+                navigate("/products")
+            ),
+            getItem("Xe máy điện", "6", <TruckOutlined />, null, () =>
+                navigate("/e-motorbike")
+            ),
+        ]),
+        getItem("Danh mục", "7", <FileDoneOutlined />, null, () =>
+            navigate("/categories")
+        ),
+        getItem("Danh mục tin tức", "8", <CalendarOutlined />, null, () =>
+            navigate("/categorynews")
+        ),
+        getItem("Đơn hàng", "9", <OrderedListOutlined />, null, () =>
+            navigate("/orders")
+        ),
+        getItem("Thông báo", "15", <NotificationOutlined />, null, () =>
+            navigate("/notifications")
+        ),
+        getItem("Voucher", "16", <GiftOutlined />, null, () =>
+            navigate("/vouchers")
+        ),
+        getItem("Kho", "17", <DashboardOutlined />, null, () =>
+            navigate("/warehouse")
+        ),
+        getItem("Thống kê", "18", <BarChartOutlined />, null, () =>
+            navigate("/statistic")
+        ),
+        getItem("Khách hàng", "19", <UserOutlined />, null, () =>
+            navigate("/customer")
+        ),
     getItem("Cấu hình", "20", <SettingOutlined />, null, () =>
       navigate("/setting")
     ),
-  ];
+    ];
 
-  const getBreadcrumbItems = (path) => {
-    if (typeof path !== "string") {
-      return [];
-    }
+    const getBreadcrumbItems = (path) => {
+        if (typeof path !== "string") {
+            return [];
+        }
 
-    let arr = path
-      .split("/")
-      .map((value) => value.trim())
-      .filter((value) => value !== "");
-    let breadcrumbDataList = arr.map((value, index) => {
-      let routeArr = arr.slice(0, index + 1);
+        let arr = path
+            .split("/")
+            .map((value) => value.trim())
+            .filter((value) => value !== "");
+        let breadcrumbDataList = arr.map((value, index) => {
+            let routeArr = arr.slice(0, index + 1);
 
-      return {
-        key: index + 1,
-        href: "/" + routeArr.join("/"),
-        title: BreadcrumbLabel[value] ? BreadcrumbLabel[value] : name,
-      };
-    });
+            return {
+                key: index + 1,
+                href: "/" + routeArr.join("/"),
+                title: BreadcrumbLabel[value] ? BreadcrumbLabel[value] : name,
+            };
+        });
 
-    // set default to user page
-    breadcrumbDataList =
-      breadcrumbDataList.length === 0
-        ? [
-            {
-              key: 1,
-              href: "/",
-              title: BreadcrumbLabel["dashboard"],
-            },
-          ]
-        : breadcrumbDataList;
+        // set default to user page
+        breadcrumbDataList =
+            breadcrumbDataList.length === 0
+                ? [
+                      {
+                          key: 1,
+                          href: "/",
+                          title: BreadcrumbLabel["dashboard"],
+                      },
+                  ]
+                : breadcrumbDataList;
 
-    return breadcrumbDataList;
-  };
+        return breadcrumbDataList;
+    };
 
   const getSideMenuSelectedKeys = () => {
     const path = location.pathname;
@@ -177,7 +171,6 @@ const AppLayout = (props) => {
         "/warehouse": "17",
         "/statistic": "18",
         "/customer": "19",
-        "/setting": "20",
       };
       for (let key of Object.keys(menuKeys)) {
         if (path.startsWith(key)) {
@@ -197,59 +190,59 @@ const AppLayout = (props) => {
     }
   };
 
-  return (
-    <Layout
-      style={{
-        minHeight: "100vh",
-      }}
-    >
-      <Sider
-        xs={2}
-        md={6}
-        collapsible
-        collapsed={collapsed}
-        onCollapse={(value) => setCollapsed(value)}
-      >
-        <div className="my-10">
-          <div className="w-full flex justify-center flex-col items-center px-2 cursor-pointer">
-            <Logo
-              handleClick={() => navigate("/")}
-              collapsed={screens.md ? collapsed : true}
-            />
-          </div>
-        </div>
-
-        <Menu
-          theme="dark"
-          defaultSelectedKeys={["1"]}
-          selectedKeys={getSideMenuSelectedKeys()}
-          mode="inline"
-          items={items}
-        />
-      </Sider>
-      <Layout>
-        <HeaderComponent />
-        <Content style={{ margin: "0 16px" }}>
-          <Breadcrumb
-            style={{ margin: "16px 0" }}
-            items={[...getBreadcrumbItems(location.pathname)]}
-          />
-
-          <div style={{ paddingRight: "16px" }}>{children}</div>
-        </Content>
-        <Footer
-          style={{
-            textAlign: "center",
-          }}
+    return (
+        <Layout
+            style={{
+                minHeight: "100vh",
+            }}
         >
-          Ô tô hồng sơn ©2024 Created by Openserce
-        </Footer>
-      </Layout>
-    </Layout>
-  );
+            <Sider
+                xs={2}
+                md={6}
+                collapsible
+                collapsed={collapsed}
+                onCollapse={(value) => setCollapsed(value)}
+            >
+                <div className="my-10">
+                    <div className="w-full flex justify-center flex-col items-center px-2 cursor-pointer">
+                        <Logo
+                            handleClick={() => navigate("/")}
+                            collapsed={screens.md ? collapsed : true}
+                        />
+                    </div>
+                </div>
+
+                <Menu
+                    theme="dark"
+                    defaultSelectedKeys={["1"]}
+                    selectedKeys={getSideMenuSelectedKeys()}
+                    mode="inline"
+                    items={items}
+                />
+            </Sider>
+            <Layout>
+                <HeaderComponent />
+                <Content style={{ margin: "0 16px" }}>
+                    <Breadcrumb
+                        style={{ margin: "16px 0" }}
+                        items={[...getBreadcrumbItems(location.pathname)]}
+                    />
+
+                    <div style={{ paddingRight: "16px" }}>{children}</div>
+                </Content>
+                <Footer
+                    style={{
+                        textAlign: "center",
+                    }}
+                >
+                    Ô tô hồng sơn ©2024 Created by Openserce
+                </Footer>
+            </Layout>
+        </Layout>
+    );
 };
 
 AppLayout.propTypes = {
-  children: PropTypes.node,
+    children: PropTypes.node,
 };
 export default AppLayout;

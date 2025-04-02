@@ -70,6 +70,7 @@ const endpoints = {
   },
 
   //category
+  //category
   category: {
     list: `/categories`,
     details: (id) => `/categories/${id}`,
@@ -85,6 +86,7 @@ const endpoints = {
     update: (id) => `/brand/${id}`,
     delete: (id) => `/brand/${id}`,
     upload: "/upload",
+    create: "/branch",
   },
 
   // branch
@@ -94,7 +96,6 @@ const endpoints = {
     update: (id) => `/branch/${id}`,
     delete: (id) => `/branch/${id}`,
     upload: "/upload",
-    create: "/branch",
   },
 
   // voucher
@@ -106,7 +107,6 @@ const endpoints = {
     create: () => `/vouchers`,
     upload: "/upload",
   },
-
   // role
   role: {
     list: (page, size) => `/vouchers?current=${page}&pageSize=${size}`,
@@ -126,7 +126,6 @@ const endpoints = {
     create: () => `/permission`,
     upload: "/upload",
   },
-
   // review
   review: {
     list: (page, size) => `/review?current=${page}&pageSize=${size}`,
@@ -154,7 +153,7 @@ const endpoints = {
     delete: (id) => `/blog-categories/${id}`,
     create: () => `/blog-categories`,
   },
-  // blog 
+  // blog - categories
   blogs: {
     list: () => `/blogs`,
     details: (id) => `/blogs/${id}`,
@@ -170,9 +169,29 @@ const endpoints = {
     details: (id) => `/receive-address/${id}`,
     update: (id) => `/receive-address/${id}`,
     delete: (id) => `/receive-address/${id}`,
-    create: `/receive-address`,
+    create: () => `/receive-address`,
     upload: "/receive-address/upload-image",
     uploads: "/receive-address/upload-images",
+  },
+  order: {
+    list: (query: string = "current=1&pageSize=20") => `/order?${query}`,
+    getStatus: () => "/order/order-status",
+    getOrderDetail: (id: string) => `/order/${id}`,
+    updateOrderStatus: (id: string) => `/order/${id}/status`,
+    confirmOrder: () => `/order/confirm`,
+    cancelOrder: (id: string) => `/order/${id}/cancel`,
+    failedDelivery: (id: string) => `/order/${id}/failed-delivery`,
+    returnOrder: (id: string) => `/order/${id}/return-order`,
+  },
+  paymentMethod: {
+    list: () => `/payment-method`,
+    getPaymentName: () => `/payment-method/payment-method-name`,
+    getPaymentStatus: () => "/order/payment-status",
+  },
+
+  sku: {
+    getDetailImportsById: (id: string) => `/skus/${id}/detail-import`,
+    getDetailImportsByIds: () => `/skus/detail-imports-by-ids`,
   },
   // province
   province: {
@@ -188,8 +207,6 @@ const endpoints = {
     wardByName: (districtId) => `/ward?districtId=${districtId}`,
   },
   // Blogs
-  
-
 };
 
 export default endpoints;

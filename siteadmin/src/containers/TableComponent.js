@@ -4,7 +4,7 @@ import { convertSortFromAntToServer } from "../utils";
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
-const pageSizeOptions = [5, 10, 20, 30, 40, 50];
+const pageSizeOptions = [5, 10, 20, 30, 40, 50, 100];
 
 const TableComponent = ({
   loading,
@@ -14,6 +14,7 @@ const TableComponent = ({
   data,
   loadData,
   pagination,
+  order_store,
   ...res
 }) => {
   const [filters, setFilters] = useState({
@@ -22,20 +23,10 @@ const TableComponent = ({
     },
     paging: {
       page: 1,
-      pageSize: pageSizeOptions[0],
+      pageSize: order_store?.pagination?.pageSize || 10,
     },
     sorters: null,
   });
-
-  useEffect(() => {
-    loadData({
-      variables: {
-        [filtersInput]: {
-          ...filters,
-        },
-      },
-    });
-  }, [filters, loadData]);
 
   useEffect(() => {
     setFilters((filters) => ({
@@ -56,13 +47,31 @@ const TableComponent = ({
     return sortValue;
   };
 
+  const handleOnchange = (pagination, paramFilters, sorter) => {
+    setFilters((filters) => ({
+      ...filters,
+      filters: {
+        ...paramFilters,
+        ...filterValue,
+      },
+      paging: {
+        page: pagination.current,
+        pageSize: pagination.pageSize,
+      },
+      sorters: handleSort(sorter.field, sorter.order),
+    }));
+    if (order_store) {
+      order_store?.setPagination(pagination.current, pagination.pageSize);
+    }
+  };
+
   return (
     <Table
       {...res}
       locale={{
         ...AntdTableLocale,
       }}
-      loading={loading}
+      loading={order_store?.loading || loading}
       columns={getColumnsConfig({
         page: filters?.paging?.page,
         pageSize: filters?.paging?.pageSize,
@@ -84,22 +93,9 @@ const TableComponent = ({
               ...pagination,
             }
       }
-      onChange={(pagination, paramFilters, sorter) => {
-        setFilters((filters) => ({
-          ...filters,
-          filters: {
-            ...paramFilters,
-            ...filterValue,
-          },
-          paging: {
-            page: pagination.current,
-            pageSize: pagination.pageSize,
-          },
-          sorters: handleSort(sorter.field, sorter.order),
-        }));
-      }}
+      onChange={handleOnchange}
       dataSource={data?.data || data || []}
-      scroll={{ x: 400 }}
+      scroll={{ x: 200, ...res.scroll }}
     />
   );
 };
@@ -112,5 +108,6 @@ TableComponent.propTypes = {
   data: PropTypes.object,
   loadData: PropTypes.func,
   pagination: PropTypes.any,
+  order_store: PropTypes.object,
 };
 export default TableComponent;
