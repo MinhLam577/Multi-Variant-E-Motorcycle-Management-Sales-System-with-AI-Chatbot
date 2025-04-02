@@ -41,12 +41,12 @@ const handleError = async (error) => {
   switch (respStatus) {
     case 400:
       console.log("Bad Request");
-      return respStatus;
+      return respData;
     case 403:
     case 401:
       return handleError401(originalRequest, error);
     case 404: {
-      return respStatus;
+      return respData;
     }
 
     default:

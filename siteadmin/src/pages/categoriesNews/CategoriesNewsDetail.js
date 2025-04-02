@@ -1,6 +1,7 @@
 import {
   CloseOutlined,
   EditOutlined,
+  EyeOutlined,
   PlusOutlined,
   SaveOutlined,
 } from "@ant-design/icons";
@@ -113,6 +114,17 @@ const CategoriesNewsDetail = ({ mode }) => {
     }
   };
 
+  const getButtonViewBlogText = () => {
+    if (mode === NewsDetailMode.View) {
+      return (
+        <>
+          <EyeOutlined />
+          &nbsp;Xem bài viết
+        </>
+      );
+    }
+  };
+
   const prepareForm = (loadedData) => {
     if (mode === NewsDetailMode.View) {
       form.setFieldsValue({
@@ -160,6 +172,10 @@ const CategoriesNewsDetail = ({ mode }) => {
     if (mode === NewsDetailMode.View) {
       navigate(`/categorynews/${id}/edit`, { replace: true });
     }
+  };
+
+  const handleViewBlog = () => {
+    navigate(`/categorynews/${id}/news`, { replace: true });
   };
 
   const handleFormFinish = (values) => {
@@ -267,6 +283,11 @@ const CategoriesNewsDetail = ({ mode }) => {
               <>
                 <Divider type="vertical" />
                 <Button onClick={handleEdit}>{getButtonEditText()}</Button>
+
+                <Divider type="vertical" />
+                <Button onClick={handleViewBlog}>
+                  {getButtonViewBlogText()}
+                </Button>
               </>
             ) : (
               <>

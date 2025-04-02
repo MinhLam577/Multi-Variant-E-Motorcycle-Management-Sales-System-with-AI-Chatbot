@@ -8,10 +8,16 @@ import {
   Row,
   message,
   InputNumber,
+  notification,
 } from "antd";
 import PropTypes from "prop-types";
 import { useEffect } from "react";
-import { GenderType, RegExps, UserType } from "../../../constants";
+import {
+  CustomerType,
+  GenderType,
+  RegExps,
+  UserType,
+} from "../../../constants";
 import UploadAvatarGetUrlWithImgCrop, {
   UploadAvatarGetUrlWithImgCropRemoteMode,
 } from "../../../containers/UploadAvatarGetUrlWithImgCrop";
@@ -37,16 +43,14 @@ const UserForm = ({ userBasicInfo, refetch }) => {
     console.log(values);
     const updateInfo = {
       username: values.username || userBasicInfo.username,
-      age: values.age || userBasicInfo.age,
       phoneNumber: values.phoneNumber || userBasicInfo.phoneNumber,
       gender: values.gender || userBasicInfo.gender,
-      Roles: values.roles, // Đổi key 'roles' thành 'Roles'
+      // BE đang thiếu 2 trường này
+      Roles: values.Roles, // Đổi key 'roles' thành 'Roles'
       birthday: values.birthday ? values.birthday.format("YYYY-MM-DD") : null, // Chỉ lấy ngày, tránh lỗi múi giờ
     };
     const ignoredKeys = ["__typename", "parent", "created_at", "userCode"];
     ignoredKeys.forEach((key) => delete updateInfo[key]);
-    // gọi api
-    console.log(values);
     try {
       const data = await apiClient.patch(
         endpoints.customers.update(values.id),
@@ -54,14 +58,12 @@ const UserForm = ({ userBasicInfo, refetch }) => {
       );
       console.log(data);
       if (data.status == 200) {
-        console.log(data);
         message.success(data.message);
-        navigate("/users");
+        navigate("/customer");
       } else {
-        message.error("Cập nhật thông tin thất bại");
+        message.error(data?.message[0] || data?.message);
       }
     } catch (error) {
-      console.log(error);
       message.error(error);
       throw new Error("Lỗi cập nhật");
     }
@@ -157,20 +159,6 @@ const UserForm = ({ userBasicInfo, refetch }) => {
         </Col>
 
         <Col span={12}>
-          <Form.Item
-            label="Tuổi"
-            name="age"
-            rules={[{ required: true, message: "Hãy nhập tuổi" }]}
-          >
-            <InputNumber
-              placeholder="Nhập số tuổi"
-              style={{ width: "100%" }}
-              min={1} // Giới hạn số tuổi không âm
-            />
-          </Form.Item>
-        </Col>
-
-        <Col span={12}>
           <Form.Item label="Giới tính" name="gender">
             <Select
               allowClear
@@ -189,11 +177,11 @@ const UserForm = ({ userBasicInfo, refetch }) => {
             <Select
               allowClear
               optionFilterProp="label"
-              options={Object.keys(UserType).map((item) => ({
+              options={Object.keys(CustomerType).map((item) => ({
                 value: item,
-                label: UserType[item],
+                label: CustomerType[item],
               }))}
-              placeholder="Chọn loại người dùng"
+              placeholder="Chọn loại người dùng customer "
             />
           </Form.Item>
         </Col>

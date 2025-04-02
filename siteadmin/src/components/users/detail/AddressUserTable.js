@@ -1,4 +1,4 @@
-import { Popconfirm, Table } from "antd";
+import { message, notification, Popconfirm, Table } from "antd";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { AntdTableLocale } from "../../../constants";
@@ -11,12 +11,15 @@ import endpoints from "../../../api/endpoints";
 import GroupActionButton from "../../GroupActionButton";
 import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
 import UserModalUpdate from "../UserModalUpdate";
+import { Button } from "antd";
+import AddressModalCreate from "../../customers/AddressModalCreate";
+import AddressModalUpdate from "../../customers/AddressModalUpdate";
 
 const getColumnsConfig = ({
   hanleDeleteAddress,
-
-  setOpenModalUpdate,
+  setOpenAddressModalUpdate,
   setDataUpdate,
+  setAddressDataUpdate,
 }) => {
   return [
     {
@@ -55,15 +58,15 @@ const getColumnsConfig = ({
     },
     {
       title: "Người nhận",
-      dataIndex: "receiverName",
-      key: "receiverName",
+      dataIndex: "receiver_name",
+      key: "receiver_name",
       ellipsis: true,
       width: 150,
     },
     {
       title: "Số ĐT người nhận",
-      dataIndex: "receiverPhone",
-      key: "receiverPhone",
+      dataIndex: "receiver_phone",
+      key: "receiver_phone",
       ellipsis: true,
       width: 140,
     },
@@ -71,14 +74,15 @@ const getColumnsConfig = ({
       title: "Thao tác",
       dataIndex: "action",
       key: "action",
-      render: (text, record, index) => {
+      render: (text, record) => {
+        console.log(record);
         return (
           <>
             <Popconfirm
               placement="leftTop"
               title={"Xác nhận xóa user"}
               description={"Bạn có chắc chắn muốn xóa user này ?"}
-              onConfirm={() => hanleDeleteAddress(record._id)}
+              onConfirm={() => hanleDeleteAddress(record.id)}
               okText="Xác nhận"
               cancelText="Hủy"
             >
@@ -91,8 +95,8 @@ const getColumnsConfig = ({
               twoToneColor="#f57800"
               style={{ cursor: "pointer" }}
               onClick={() => {
-                setOpenModalUpdate(true);
-                setDataUpdate(record);
+                setOpenAddressModalUpdate(true);
+                setAddressDataUpdate(record);
               }}
             />
           </>
@@ -106,8 +110,16 @@ const getColumnsConfig = ({
 const AddressUserTable = () => {
   const [openModalUpdate, setOpenModalUpdate] = useState(false);
   const [dataUpdate, setDataUpdate] = useState(null);
+
+  const [openAddressModalUpdate, setOpenAddressModalUpdate] = useState(false);
+  const [dataAddressUpdate, setAddressDataUpdate] = useState(null);
+
+  const [openModalCreate, setOpenModalCreate] = useState(false);
+  const [dataCreate, setDataCreate] = useState(null);
+
   const { id } = useParams();
   const [userInfo, setUserInfo] = useState([]);
+
   useEffect(() => {
     if (id) {
       fetchUser();
@@ -124,11 +136,28 @@ const AddressUserTable = () => {
   };
   const [loading] = useState(false);
   const hanleDeleteAddress = async (id) => {
+    console.log(id);
+    const data = await apiClient.delete(endpoints.receive_address.delete(id));
+    if (data && data.data) {
+      message.success("Xóa địa chỉ thành công");
+      setOpenModalCreate(false);
+      await fetchUser();
+    } else {
+      notification.error({
+        message: "Đã có lỗi xảy ra",
+      });
+    }
     console.log("Xóa thành công ");
   };
 
   return (
     <>
+      <div className="w-full flex items-end justify-end min-h-[50px] mb-3">
+        <Button type="primary" onClick={() => setOpenModalCreate(true)}>
+          Tạo mới
+        </Button>
+      </div>
+
       <Table
         locale={{
           ...AntdTableLocale,
@@ -137,7 +166,8 @@ const AddressUserTable = () => {
         columns={getColumnsConfig({
           hanleDeleteAddress,
           setOpenModalUpdate,
-          setDataUpdate,
+          setAddressDataUpdate,
+          setOpenAddressModalUpdate,
         })}
         loading={loading}
         key={0}
@@ -145,11 +175,18 @@ const AddressUserTable = () => {
         rowKey={"categoryId"}
         scroll={{ x: 400 }}
       />
-      <UserModalUpdate
-        openModalUpdate={openModalUpdate}
-        setOpenModalUpdate={setOpenModalUpdate}
-        dataUpdate={dataUpdate}
-        setDataUpdate={setDataUpdate}
+
+      <AddressModalCreate
+        openModalCreate={openModalCreate}
+        setOpenModalCreate={setOpenModalCreate}
+        fetchUser={fetchUser}
+      />
+
+      <AddressModalUpdate
+        openAddressModalUpdate={openAddressModalUpdate}
+        setOpenModalUpdate={setOpenAddressModalUpdate}
+        dataAddressUpdate={dataAddressUpdate}
+        setAddressDataUpdate={setAddressDataUpdate}
         fetchUser={fetchUser}
       />
     </>

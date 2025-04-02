@@ -1,4 +1,4 @@
-import { Table, message } from "antd";
+import { Button, Popconfirm, Table, message } from "antd";
 import { AntdTableLocale } from "../../../constants";
 import { useEffect, useState } from "react";
 import {
@@ -10,9 +10,9 @@ import { useNavigate, useParams } from "react-router";
 import GroupActionButton from "../../GroupActionButton";
 import apiClient from "../../../api/apiClient";
 import endpoints from "../../../api/endpoints";
+import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
 
 const getColumnsConfig = ({ handleDeleteAddress, handleEditAddress }) => {
-  console.log(handleEditAddress);
   return [
     {
       title: "No",
@@ -67,24 +67,44 @@ const getColumnsConfig = ({ handleDeleteAddress, handleEditAddress }) => {
       dataIndex: "action",
       key: "action",
       render: (_value, item) => {
+        console.log(item);
         return (
-          <GroupActionButton
-            hanleDelete={handleDeleteAddress}
-            handleUpdate={handleEditAddress}
-            item={item}
-          />
+          <>
+            <Popconfirm
+              placement="leftTop"
+              title={"Xác nhận xóa user"}
+              description={"Bạn có chắc chắn muốn xóa user này ?"}
+              onConfirm={() => handleDeleteAddress(item._id)}
+              okText="Xác nhận"
+              cancelText="Hủy"
+            >
+              <span style={{ cursor: "pointer", margin: "0 20px" }}>
+                <DeleteTwoTone twoToneColor="#ff4d4f" />
+              </span>
+            </Popconfirm>
+
+            <EditTwoTone
+              twoToneColor="#f57800"
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                // setOpenModalUpdate(true);
+                // setDataUpdate(record);
+                handleEditAddress(item);
+              }}
+            />
+          </>
         );
       },
-      width: 140,
     },
   ];
 };
 
-const AddressUserTable = () => {
+const AddressCustomerTable = () => {
   const navigate = useNavigate();
   const [loading] = useState(false);
 
   const handleDeleteAddress = (id) => {
+    console.log(id);
     processWithModals(ProcessModalName.ConfirmCustomContent)(
       "Xác nhận",
       "Bạn chắc chắn muốn xóa địa chỉ này?"
@@ -111,16 +131,17 @@ const AddressUserTable = () => {
 
   return (
     <>
+      <div>
+        <Button>Tạo mới</Button>
+      </div>
       <Table
         locale={{
           ...AntdTableLocale,
         }}
         className="table-fixed"
-        columns={getColumnsConfig({
-          handleEditAddress,
-          handleDeleteAddress,
-        })}
+        columns={getColumnsConfig}
         handleEditAddress={handleEditAddress}
+        handleDeleteAddress={handleDeleteAddress}
         loading={loading}
         key={0}
         dataSource={[]}
@@ -131,4 +152,4 @@ const AddressUserTable = () => {
   );
 };
 
-export default AddressUserTable;
+export default AddressCustomerTable;

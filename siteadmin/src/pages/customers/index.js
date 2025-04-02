@@ -8,6 +8,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import apiClient from "../../api/apiClient";
 import endpoints from "../../api/endpoints";
 import CustomerModalCreate from "../../components/customers/CustomerModalCreate";
+import AddressModalUpdate from "../../components/customers/AddressModalUpdate";
 
 const Customer = () => {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ const Customer = () => {
   const fetchCustomer = async () => {
     try {
       setLoading(true);
-      const response = await apiClient.get(endpoints.customers.list(1, 3));
+      const response = await apiClient.get(endpoints.customers.list("", ""));
       console.log(response.data.result);
       setOriginalData(response?.data?.result || []); // Lưu dữ liệu gốc
       setData(response?.data?.result || []); // Đảm bảo dữ liệu hợp lệ
@@ -91,6 +92,7 @@ const Customer = () => {
         globalFilters={globalFilters}
         handleUpdateUser={handleEditUser}
         handleViewUser={handleViewUser}
+        fetchCustomer={fetchCustomer}
       />
 
       <CustomerModalCreate

@@ -1,10 +1,11 @@
 import { Spin, Tabs } from "antd";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import AddressUserTable from "../../components/users/detail/AddressUserTable";
+
 import UserForm from "../../components/customers/detail/UserForm";
 import apiClient from "../../api/apiClient";
 import endpoints from "../../api/endpoints";
+import AddressCustomerTable from "../../components/users/detail/AddressUserTable";
 
 const CustomerDetail = () => {
   const { id } = useParams();
@@ -48,7 +49,7 @@ const CustomerDetail = () => {
     {
       key: "2",
       label: "Quản lý địa chỉ",
-      children: <AddressUserTable />,
+      children: <AddressCustomerTable />,
     },
   ];
   return (

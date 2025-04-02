@@ -374,7 +374,7 @@ function App() {
                 />
 
                 <Route
-                  path="/news"
+                  path="/categorynews/:id/news"
                   element={
                     <ProtectedRoute>
                       <News />
@@ -382,7 +382,7 @@ function App() {
                   }
                 />
                 <Route
-                  path="/news/add"
+                  path="/categorynews/:id/news/add"
                   element={
                     <ProtectedRoute>
                       <NewsDetail mode={NewsDetailMode.Add} />
@@ -390,7 +390,7 @@ function App() {
                   }
                 />
                 <Route
-                  path="/news/:id"
+                  path="/categorynews/:id/news/:idblog"
                   element={
                     <ProtectedRoute>
                       <NewsDetail mode={NewsDetailMode.View} />
@@ -398,7 +398,7 @@ function App() {
                   }
                 />
                 <Route
-                  path="/news/:id/edit"
+                  path="/categorynews/:id/news/:idblog/edit"
                   element={
                     <ProtectedRoute>
                       <NewsDetail mode={NewsDetailMode.Edit} />
@@ -463,6 +463,15 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <EMotorbikeDetail mode={ProductUnitsDetailMode.Edit} />
+                    </ProtectedRoute>
+                  }
+                />
+
+                <Route
+                  path="/setting"
+                  element={
+                    <ProtectedRoute>
+                      <NewsDetail mode={NewsDetailMode.Edit} />
                     </ProtectedRoute>
                   }
                 />

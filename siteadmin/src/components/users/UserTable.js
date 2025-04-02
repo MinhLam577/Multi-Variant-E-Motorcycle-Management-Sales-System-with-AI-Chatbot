@@ -27,6 +27,13 @@ const getColumnsConfig = ({ handleViewUser }) => {
       width: "140px",
     },
     {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+      width: "140px",
+      ellipsis: true,
+    },
+    {
       title: "Số điện thoại",
       dataIndex: "phoneNumber",
       key: "phoneNumber",
@@ -62,6 +69,7 @@ const UserTable = ({
   globalFilters,
   handleUpdateUser,
   handleViewUser,
+
 }) => {
   const navigate = useNavigate();
 
@@ -112,7 +120,8 @@ UserTable.propTypes = {
   globalFilters: PropTypes.object,
   handleUpdateUser: PropTypes.func,
   handleViewUser: PropTypes.func,
-  
+
+
   data: PropTypes.array.isRequired,
 };
 export default UserTable;

@@ -14,6 +14,8 @@ const endpoints = {
     uploadAvatar: () => "/users/upload",
     list: (page, limit) => `/users?current=${page}&pageSize=${limit}`,
     callBulkCreateUser: "/users/callBulkCreateUser",
+    // tạo customer
+    create: "/users",
   },
 
   customers: {
@@ -23,7 +25,10 @@ const endpoints = {
     changePassword: (id) => `/customers/${id}`,
     uploadAvatar: "/customers/upload",
     list: (page, limit) => `customers/?page=${page}&limit=${limit}`,
+    // tạo thông qua import file
     callBulkCreateCustomer: "/users/callBulkCreateCustomer",
+    create: "/customers",
+    delete: (id) => `/customers/${id}`,
   },
   motorbike: {
     list: (page, size) => `/products?current=${page}&pageSize=${size}`,
@@ -101,6 +106,7 @@ const endpoints = {
     create: () => `/vouchers`,
     upload: "/upload",
   },
+
   // role
   role: {
     list: (page, size) => `/vouchers?current=${page}&pageSize=${size}`,
@@ -120,6 +126,7 @@ const endpoints = {
     create: () => `/permission`,
     upload: "/upload",
   },
+
   // review
   review: {
     list: (page, size) => `/review?current=${page}&pageSize=${size}`,
@@ -147,7 +154,7 @@ const endpoints = {
     delete: (id) => `/blog-categories/${id}`,
     create: () => `/blog-categories`,
   },
-  // blog - categories
+  // blog 
   blogs: {
     list: () => `/blogs`,
     details: (id) => `/blogs/${id}`,
@@ -163,10 +170,26 @@ const endpoints = {
     details: (id) => `/receive-address/${id}`,
     update: (id) => `/receive-address/${id}`,
     delete: (id) => `/receive-address/${id}`,
-    create: () => `/receive-address`,
+    create: `/receive-address`,
     upload: "/receive-address/upload-image",
     uploads: "/receive-address/upload-images",
   },
+  // province
+  province: {
+    list: `/province`,
+  },
+
+  // district
+  district: {
+    districtByName: (provinceId) => `/district?provinceId=${provinceId}`,
+  },
+  // ward
+  ward: {
+    wardByName: (districtId) => `/ward?districtId=${districtId}`,
+  },
+  // Blogs
+  
+
 };
 
 export default endpoints;

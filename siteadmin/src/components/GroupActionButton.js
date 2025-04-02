@@ -13,7 +13,6 @@ const GroupActionButton = ({
   handleUpdate,
   item,
 }) => {
-  console.log(handleUpdate);
   console.log(hanleDelete);
   console.log("itemitem", item);
   return (

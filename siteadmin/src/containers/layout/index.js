@@ -7,6 +7,7 @@ import {
   NotificationOutlined,
   OrderedListOutlined,
   ProductOutlined,
+  SettingOutlined,
   ShopOutlined,
   ShoppingOutlined,
   TruckOutlined,
@@ -49,6 +50,7 @@ const BreadcrumbLabel = {
   warehouse: "Kho",
   "e-motorbike": "Xe máy điện",
   customer: "Quản lý khách hàng",
+  setting: "Cấu hình",
 };
 
 const AppLayout = (props) => {
@@ -108,6 +110,9 @@ const AppLayout = (props) => {
     ),
     getItem("Khách hàng", "19", <UserOutlined />, null, () =>
       navigate("/customer")
+    ),
+    getItem("Cấu hình", "20", <SettingOutlined />, null, () =>
+      navigate("/setting")
     ),
   ];
 
@@ -172,6 +177,7 @@ const AppLayout = (props) => {
         "/warehouse": "17",
         "/statistic": "18",
         "/customer": "19",
+        "/setting": "20",
       };
       for (let key of Object.keys(menuKeys)) {
         if (path.startsWith(key)) {

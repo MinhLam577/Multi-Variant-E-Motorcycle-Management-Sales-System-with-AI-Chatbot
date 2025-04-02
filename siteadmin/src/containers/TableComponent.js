@@ -13,6 +13,7 @@ const TableComponent = ({
   filterValue,
   data,
   loadData,
+  pagination,
   ...res
 }) => {
   const [filters, setFilters] = useState({
@@ -80,6 +81,7 @@ const TableComponent = ({
               locale: {
                 ...AntdTablePagingLocale,
               },
+              ...pagination,
             }
       }
       onChange={(pagination, paramFilters, sorter) => {
@@ -109,5 +111,6 @@ TableComponent.propTypes = {
   filterValue: PropTypes.object,
   data: PropTypes.object,
   loadData: PropTypes.func,
+  pagination: PropTypes.any,
 };
 export default TableComponent;
