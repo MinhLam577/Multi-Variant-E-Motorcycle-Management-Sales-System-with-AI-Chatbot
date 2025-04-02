@@ -1,4 +1,4 @@
-import { Button } from "antd";
+import { Button, message, Popconfirm } from "antd";
 import * as moment from "moment";
 import PropTypes from "prop-types";
 import GroupActionButton from "../../components/GroupActionButton";
@@ -8,118 +8,153 @@ import {
   processWithModals,
 } from "../../containers/processWithModals";
 import TableComponent from "../../containers/TableComponent";
+import { Link, useParams } from "react-router";
+import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
+import apiClient from "../../api/apiClient";
+import endpoints from "../../api/endpoints";
 
 // Fake newsList data
 const newsList = [
   {
-    newsId: 1,
+    id: 1,
     title: "Tin Mẫu 1",
-    brief: "Đây là tóm tắt cho tin mẫu 1",
+    thumbnail:
+      "http://res.cloudinary.com/dk6yblsoj/image/upload/v1743245569/user/frlwijhfjqdknz2poit0.jpg",
+    description:
+      "Đây là tóm tắt cho tin mẫu 1  Đây là tóm tắt cho tin mẫu 1  Đây là tóm tắt cho tin mẫu 1 Đây là tóm tắt cho tin mẫu 1  Đây là tóm tắt cho tin mẫu 1  Đây là tóm tắt cho tin mẫu 1 Đây là tóm tắt cho tin mẫu 1  Đây là tóm tắt cho tin mẫu 1  Đây là tóm tắt cho tin mẫu 1 Đây là tóm tắt cho tin mẫu 1  Đây là tóm tắt cho tin mẫu 1  Đây là tóm tắt cho tin mẫu 1 ",
     created_at: "2022-01-01T00:00:00Z",
     status: Status.Active,
   },
   {
-    newsId: 2,
+    id: 2,
     title: "Tin Mẫu 2",
-    brief: "Đây là tóm tắt cho tin mẫu 2",
+    thumbnail:
+      "http://res.cloudinary.com/dk6yblsoj/image/upload/v1743245569/user/frlwijhfjqdknz2poit0.jpg",
+    description:
+      "Đây là tóm tắt cho tin mẫu 2 Đây là tóm tắt cho tin mẫu 1 Đây là tóm tắt cho tin mẫu 1",
     created_at: "2022-01-02T00:00:00Z",
     status: Status.InActive,
   },
   // Add more news items as needed
 ];
 
-const getColumnsConfig = ({
-  handleUpdateNews,
-  handleViewNews,
-  hanleDeleteNews,
-  hanleActivateNews,
-  hanleDeactivateNews,
-}) => {
+const getColumnsConfig = ({ hanleDeleteNews, handleUpdateNews }) => {
+  const { id } = useParams();
   return [
     {
-      title: "Tiêu đề",
-      dataIndex: "title",
-      key: "title",
+      title: "Ảnh",
+      dataIndex: "thumbnail",
+      key: "thumbnail",
+
       render: (value, item) => {
         return (
-          <Button
-            type="link"
-            className="custom-antd-btn-ellipsis-content !p-0"
-            onClick={() => handleViewNews(item)}
-          >
-            {value}
-          </Button>
+          <Link to={`/categorynews/${id}/news/${item.id}`}>
+            <img
+              src={value}
+              alt="thumbnail"
+              className="w-16 h-16 object-cover rounded cursor-pointer"
+            />
+          </Link>
+        );
+      },
+      width: 100,
+    },
+    {
+      title: "Tiêu đề & Mô tả",
+      key: "title_description",
+      render: (_, item) => {
+        return (
+          <div>
+            <div className="font-medium mb-2">{item.title}</div>
+            <div className="text-gray-500 text-sm truncate overflow-hidden whitespace-nowrap text-ellipsis ">
+              {item.description}
+            </div>
+          </div>
         );
       },
       ellipsis: true,
-    },
-    {
-      title: "Tóm tắt",
-      dataIndex: "brief",
-      key: "brief",
-      ellipsis: true,
-    },
-    {
-      title: "Thời gian tạo",
-      dataIndex: "created_at",
-      key: "created_at",
-      render: (created_at) =>
-        moment(created_at).format(DateTimeFormat.TimeStamp),
-      sorter: true,
-      ellipsis: true,
+      width: "100%",
     },
     {
       title: "Thao tác",
       dataIndex: "action",
       key: "action",
       render: (_value, item) => {
-        return <GroupActionButton item={item} />;
+        return (
+          <>
+            <Popconfirm
+              placement="leftTop"
+              title={"Xác nhận xóa tin tức này"}
+              description={"Bạn có chắc chắn muốn xóa tin tức này ?"}
+              onConfirm={() => hanleDeleteNews(item.id)}
+              okText="Xác nhận"
+              cancelText="Hủy"
+            >
+              <span style={{ cursor: "pointer", margin: "0 20px" }}>
+                <DeleteTwoTone twoToneColor="#ff4d4f" />
+              </span>
+            </Popconfirm>
+
+            <EditTwoTone
+              twoToneColor="#f57800"
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                // setOpenModalUpdate(true);
+                // setDataUpdate(record);
+                handleUpdateNews(item);
+              }}
+            />
+          </>
+        );
       },
       width: 140,
     },
   ];
 };
 
-const NewsTable = ({ globalFilters, handleUpdateNews, handleViewNews }) => {
+const NewsTable = ({
+  globalFilters,
+  handleUpdateNews,
+  handleViewNews,
+
+  fetchData,
+}) => {
   // Use fake newsList data
   const data = { newsList };
   const loading = false;
 
-  const hanleDeleteNews = (id) => {
-    processWithModals(ProcessModalName.ConfirmCustomContent)(
-      "Xác nhận",
-      "Bạn chắc chắn muốn xóa tin tức này?"
-    )(() => {});
+  const handleDeleteNews = async (id) => {
+    try {
+      const response = await apiClient.delete(endpoints.blogs.delete(id));
+      console.log("Xóa thành công:", response);
+      message.success("Xóa thành công");
+      fetchData();
+
+      // Có thể cập nhật lại danh sách tin tức sau khi xóa thành công
+    } catch (error) {
+      console.error("Lỗi khi xóa tin tức:", error);
+      message.success("Xóa thất bại");
+    }
   };
 
-  const hanleActivateNews = (id) => {
-    processWithModals(ProcessModalName.ConfirmCustomContent)(
-      "Xác nhận",
-      "Bạn chắc chắn muốn đăng tải tin tức này lên?"
-    )(() => {});
-  };
-
-  const hanleDeactivateNews = (id) => {
-    processWithModals(ProcessModalName.ConfirmCustomContent)(
-      "Xác nhận",
-      "Bạn chắc chắn muốn gỡ bỏ tin tức này xuống?"
-    )(() => {});
-  };
+  const handleChange = () => {};
 
   return (
     <>
+      <h2>Tìm thấy {newsList.length} kết quả </h2>
       <TableComponent
         loading={loading}
         filtersInput="filters"
         getColumnsConfig={getColumnsConfig}
         filterValue={globalFilters}
-        data={data?.newsList}
+        data={data.newsList}
         handleUpdateNews={handleUpdateNews}
         handleViewNews={handleViewNews}
-        hanleDeactivateNews={hanleDeactivateNews}
-        hanleActivateNews={hanleActivateNews}
-        hanleDeleteNews={hanleDeleteNews}
+        hanleDeleteNews={handleDeleteNews}
+        onChange={handleChange}
+        pagination={{ position: ["bottomCenter"], showSizeChanger: false }} // Đặt vị trí pagination ở giữa
         loadData={() => {}}
+        showHeader={false} // Ẩn header
       />
     </>
   );
@@ -129,6 +164,8 @@ NewsTable.propTypes = {
   globalFilters: PropTypes.object,
   handleUpdateNews: PropTypes.func,
   handleViewNews: PropTypes.func,
+  dataNews: PropTypes.array.isRequired,
+  fetchData: PropTypes.func,
 };
 
 export default NewsTable;

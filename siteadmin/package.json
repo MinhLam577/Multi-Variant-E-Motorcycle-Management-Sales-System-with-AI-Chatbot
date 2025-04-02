@@ -9,6 +9,8 @@
         "@testing-library/react": "^13.4.0",
         "@testing-library/user-event": "^13.5.0",
         "@types/node": "^22.13.13",
+        "ajv": "^6.12.6",
+        "ajv-keywords": "^3.5.2",
         "antd": "^5.23.0",
         "antd-img-crop": "^4.21.0",
         "axios": "^1.7.9",
@@ -71,6 +73,7 @@
     },
     "devDependencies": {
         "@types/prop-types": "^15",
+        "@types/react": "^19.1.0",
         "@typescript-eslint/eslint-plugin": "^8.28.0",
         "@typescript-eslint/parser": "^8.28.0",
         "eslint": "^8.56.0",

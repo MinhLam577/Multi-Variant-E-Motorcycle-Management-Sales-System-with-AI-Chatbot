@@ -2,13 +2,18 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import {
   Button,
+  DatePicker,
   Divider,
   Form,
   Input,
   message,
   Modal,
   notification,
+  Select,
 } from "antd";
+import { CustomerType, GenderType, UserType } from "../../constants";
+import apiClient from "../../api/apiClient";
+import endpoints from "../../api/endpoints";
 
 const CustomerModalCreate = (props) => {
   const { openModalCreate, setOpenModalCreate } = props;
@@ -18,10 +23,17 @@ const CustomerModalCreate = (props) => {
   const [form] = Form.useForm();
 
   const onFinish = async (values) => {
-    const { fullName, password, email, phone } = values;
+    console.log(values);
     setIsSubmit(true);
-    // const res = await callCreateAUser(fullName, password, email, phone);
-    const res = [];
+    const updateInfo = {
+      ...values,
+      birthday: values.birthday ? values.birthday.format("YYYY-MM-DD") : null, // Chỉ lấy ngày, tránh lỗi múi giờ
+    };
+
+    console.log(updateInfo);
+    setIsSubmit(true);
+
+    const res = await apiClient.post(endpoints.customers.create, updateInfo);
     if (res && res.data) {
       message.success("Tạo mới user thành công");
       form.resetFields();
@@ -29,8 +41,7 @@ const CustomerModalCreate = (props) => {
       await props.fetchUser();
     } else {
       notification.error({
-        message: "Đã có lỗi xảy ra",
-        description: res.message,
+        message: "lỗi",
       });
     }
     setIsSubmit(false);
@@ -54,43 +65,100 @@ const CustomerModalCreate = (props) => {
         <Form
           form={form}
           name="basic"
-          style={{ maxWidth: 600 }}
+          layout="vertical"
           onFinish={onFinish}
           autoComplete="off"
         >
           <Form.Item
-            labelCol={{ span: 24 }}
             label="Tên hiển thị"
-            name="fullName"
+            name="username"
             rules={[{ required: true, message: "Vui lòng nhập tên hiển thị!" }]}
+            style={{ marginBottom: "10px" }} // Giảm khoảng cách xuống 8px
           >
-            <Input />
+            <Input placeholder="Nhập tên hiển thị" />
           </Form.Item>
+
           <Form.Item
-            labelCol={{ span: 24 }}
-            label="Password"
-            name="password"
-            rules={[{ required: true, message: "Vui lòng nhập mật khẩu!" }]}
-          >
-            <Input.Password />
-          </Form.Item>
-          <Form.Item
-            labelCol={{ span: 24 }}
             label="Email"
             name="email"
             rules={[{ required: true, message: "Vui lòng nhập email!" }]}
+            style={{ marginBottom: "10px" }} // Giảm khoảng cách xuống 8px
           >
-            <Input />
+            <Input placeholder="Nhập email" />
           </Form.Item>
+
           <Form.Item
-            labelCol={{ span: 24 }}
             label="Số điện thoại"
-            name="phone"
+            name="phoneNumber"
+            style={{ marginBottom: "10px" }}
             rules={[
               { required: true, message: "Vui lòng nhập số điện thoại!" },
+              {
+                pattern: /^\d{10}$/,
+                message: "Số điện thoại phải có đúng 10 số!",
+              },
             ]}
           >
-            <Input />
+            <Input placeholder="Nhập số điện thoại" />
+          </Form.Item>
+
+          <Form.Item
+            label="Địa chỉ"
+            name="address"
+            style={{ marginBottom: "10px" }}
+            rules={[{ required: true, message: "Vui lòng nhập địa chỉ!" }]}
+          >
+            <Input placeholder="Nhập địa chỉ" />
+          </Form.Item>
+          
+          <Form.Item
+            label="Ngày sinh"
+            name="birthday"
+            style={{ marginBottom: "10px" }}
+            rules={[
+              {
+                required: true,
+                message: "Vui lòng chọn ngày sinh!",
+              },
+            ]}
+          >
+            <DatePicker
+              placeholder="Chọn ngày sinh"
+              format="YYYY-MM-DD"
+              style={{ width: "100%" }}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Giới tính"
+            name="gender"
+            style={{ marginBottom: "10px" }}
+          >
+            <Select
+              allowClear
+              optionFilterProp="label"
+              options={Object.keys(GenderType).map((item) => ({
+                value: item,
+                label: GenderType[item], // Fix nhầm UserType thành GenderType
+              }))}
+              placeholder="Chọn giới tính"
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Loại người dùng"
+            name="role"
+            style={{ marginBottom: "10px" }}
+          >
+            <Select
+              allowClear
+              optionFilterProp="label"
+              options={Object.keys(CustomerType).map((item) => ({
+                value: item,
+                label: UserType[item],
+              }))}
+              placeholder="Chọn loại người dùng"
+            />
           </Form.Item>
         </Form>
       </Modal>

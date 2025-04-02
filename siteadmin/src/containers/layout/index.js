@@ -1,16 +1,17 @@
 import {
-    BarChartOutlined,
-    CalendarOutlined,
-    DashboardOutlined,
-    FileDoneOutlined,
-    GiftOutlined,
-    NotificationOutlined,
-    OrderedListOutlined,
-    ProductOutlined,
-    ShopOutlined,
-    ShoppingOutlined,
-    TruckOutlined,
-    UserOutlined,
+  BarChartOutlined,
+  CalendarOutlined,
+  DashboardOutlined,
+  FileDoneOutlined,
+  GiftOutlined,
+  NotificationOutlined,
+  OrderedListOutlined,
+  ProductOutlined,
+  SettingOutlined,
+  ShopOutlined,
+  ShoppingOutlined,
+  TruckOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 import { Breadcrumb, Grid, Layout, Menu } from "antd";
 import PropTypes from "prop-types";
@@ -34,21 +35,22 @@ function getItem(label, key, icon, children, onClick = () => {}) {
 }
 
 const BreadcrumbLabel = {
-    dashboard: "Tổng quan",
-    profile: "Thông tin người dùng",
-    users: "Quản lý Người dùng",
-    products: "Quản lý Sản phẩm",
-    categories: "Danh mục sản phẩm",
-    categoriesnews: "Thông tin/tin tức",
-    orders: "Quản lý Đơn hàng",
-    add: "Tạo",
-    edit: "Sửa",
-    vouchers: "Quản lý vouchers",
-    material: "Quản lý kho",
-    statistic: "Quản lý thống kê",
-    warehouse: "Kho",
-    "e-motorbike": "Xe máy điện",
-    customer: "Quản lý khách hàng",
+  dashboard: "Tổng quan",
+  profile: "Thông tin người dùng",
+  users: "Quản lý Người dùng",
+  products: "Quản lý Sản phẩm",
+  categories: "Danh mục sản phẩm",
+  categoriesnews: "Thông tin/tin tức",
+  orders: "Quản lý Đơn hàng",
+  add: "Tạo",
+  edit: "Sửa",
+  vouchers: "Quản lý vouchers",
+  material: "Quản lý kho",
+  statistic: "Quản lý thống kê",
+  warehouse: "Kho",
+  "e-motorbike": "Xe máy điện",
+  customer: "Quản lý khách hàng",
+  setting: "Cấu hình",
 };
 
 const AppLayout = (props) => {
@@ -103,6 +105,9 @@ const AppLayout = (props) => {
         getItem("Khách hàng", "19", <UserOutlined />, null, () =>
             navigate("/customer")
         ),
+    getItem("Cấu hình", "20", <SettingOutlined />, null, () =>
+      navigate("/setting")
+    ),
     ];
 
     const getBreadcrumbItems = (path) => {
@@ -139,46 +144,51 @@ const AppLayout = (props) => {
         return breadcrumbDataList;
     };
 
-    const getSideMenuSelectedKeys = () => {
-        const path = location.pathname;
-        const search = location.search;
-        if (typeof path !== "string") {
-            return ["100"];
-        } else {
-            const menuKeys = {
-                "/dashboard": "1",
-                "/profile": "19",
-                "/users": "2",
-                "/stores": "3",
-                "/categories": "7",
-                "/categorynews": "8",
-                "/products": "5",
-                "/e-motorbike": "6",
-                "/combo_product": "7",
-                "/orders": "9",
-                "/notifications": "15",
-                "/vouchers": "16",
-                "/warehouse": "17",
-                "/statistic": "18",
-                "/customer": "19",
-            };
-            for (let key of Object.keys(menuKeys)) {
-                if (path.startsWith(key)) {
-                    if (Array.isArray(menuKeys[key])) {
-                        if (
-                            search.startsWith(menuKeys[key][0]) ||
-                            search.startsWith(menuKeys[key][1])
-                        ) {
-                            return menuKeys[key];
-                        }
-                    } else {
-                        return [menuKeys[key]];
-                    }
-                }
+  const getSideMenuSelectedKeys = () => {
+    const path = location.pathname;
+    const search = location.search;
+    if (typeof path !== "string") {
+      return ["100"];
+    } else {
+      const menuKeys = {
+        "/dashboard": "1",
+        "/profile": "19",
+        "/users": "2",
+        "/stores": "3",
+        "/categories": "7",
+        "/categorynews": "8",
+        "/products": "5",
+        "/e-motorbike": "6",
+        "/combo_product": "7",
+        "/orders": {
+          "?status=new": ["9", "11"],
+          "?status=confirmed": ["9", "12"],
+          "?status=delivering": ["13"],
+          "?status=completed": ["14"],
+        },
+        "/notifications": "15",
+        "/vouchers": "16",
+        "/warehouse": "17",
+        "/statistic": "18",
+        "/customer": "19",
+      };
+      for (let key of Object.keys(menuKeys)) {
+        if (path.startsWith(key)) {
+          if (Array.isArray(menuKeys[key])) {
+            if (
+              search.startsWith(menuKeys[key][0]) ||
+              search.startsWith(menuKeys[key][1])
+            ) {
+              return menuKeys[key];
             }
-            return ["1"];
+          } else {
+            return [menuKeys[key]];
+          }
         }
-    };
+      }
+      return ["1"];
+    }
+  };
 
     return (
         <Layout

@@ -1,4 +1,4 @@
-import { Button, Popconfirm } from "antd";
+import { Button, message, notification, Popconfirm } from "antd";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router";
 import {
@@ -15,14 +15,12 @@ import {
 } from "../../containers/processWithModals";
 import TableComponent from "../../containers/TableComponent";
 import { useState } from "react";
+import apiClient from "../../api/apiClient";
+import endpoints from "../../api/endpoints";
 const getColumnsConfig = ({
   handleUpdateUser,
   handleViewUser,
   handleDeleteUser,
-  handleResetPassword,
-  hanleActivateUser,
-  setOpenModalUpdate,
-  setDataUpdate,
 }) => {
   return [
     {
@@ -77,7 +75,6 @@ const getColumnsConfig = ({
         );
       },
     },
-
     {
       title: "Tuổi",
       dataIndex: "age",
@@ -115,7 +112,7 @@ const getColumnsConfig = ({
               placement="leftTop"
               title={"Xác nhận xóa user"}
               description={"Bạn có chắc chắn muốn xóa user này ?"}
-              onConfirm={() => handleDeleteUser(record._id)}
+              onConfirm={() => handleDeleteUser(record.id)}
               okText="Xác nhận"
               cancelText="Hủy"
             >
@@ -146,6 +143,7 @@ const CustomerTable = ({
   handleViewUser,
   data,
   loading,
+  fetchCustomer,
 }) => {
   const navigate = useNavigate();
   const [openModalCreate, setOpenModalCreate] = useState(false);
@@ -161,16 +159,26 @@ const CustomerTable = ({
     processWithModals(ProcessModalName.ConfirmCustomContent)(
       "Xác nhận",
       "Bạn chắc chắn muốn cài lại mật khẩu của người dùng này về mặc định là ngày sinh (Ví dụ: ngày sinh 15/09/1990 thì mật khẩu là 15091990)?"
-    )(() => {
-      
-    });
+    )(() => {});
   };
 
   const handleDeleteUser = (id) => {
     processWithModals(ProcessModalName.ConfirmCustomContent)(
       "Xác nhận",
       "Bạn có chắc chắn ngưng hoạt động của người dùng này?"
-    )(() => {});
+    )(async () => {
+      const res = await apiClient.delete(endpoints.customers.delete(id));
+      if (res && res.data) {
+        message.success(res.message);
+        setOpenModalCreate(false);
+        await fetchCustomer();
+      } else {
+        notification.error({
+          message: "You can only have max 3 receive address",
+          description: res.message,
+        });
+      }
+    });
   };
   const hanleAddressUser = (item) => {
     navigate(`/users/${item}/address`, { replace: true });
@@ -210,5 +218,6 @@ CustomerTable.propTypes = {
   handleViewUser: PropTypes.func,
   data: PropTypes.array.isRequired,
   loading: PropTypes.bool,
+  fetchCustomer: PropTypes.func,
 };
 export default CustomerTable;
