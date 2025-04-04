@@ -1,6 +1,6 @@
 import moment from "moment";
 import numbro from "numbro";
-import { DateTimeFormat } from "../constants";
+import { DateTimeFormat } from "src/constants";
 
 export const generateFileName = (fileName) => {
     const fileExtensions = fileName.split(".");
@@ -65,5 +65,24 @@ export const convertDate = (
     } catch (e) {
         console.log(e);
         return null;
+    }
+};
+
+export const getStatusKeyByEnumType = (
+    status: number | string,
+    enumType: any
+) => {
+    try {
+        if (typeof status === "number") {
+            const keys = Object.keys(enumType).filter(
+                (key) => enumType[key] === status
+            );
+            return keys[0];
+        }
+        const keys = Object.keys(enumType).filter((key) => key === status);
+        return keys[0];
+    } catch (e) {
+        console.error(e);
+        throw new Error("Invalid status or enum type when get status key");
     }
 };

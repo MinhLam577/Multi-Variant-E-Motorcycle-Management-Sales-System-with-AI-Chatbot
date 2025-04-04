@@ -2,10 +2,25 @@ import axios from "axios";
 import secureLocalStorage from "react-secure-storage";
 import { keyStorageAccount } from "../constants";
 import { AccountObservable } from "../stores/account";
-import endpoints from "./endpoints.ts";
+import endpoints from "./endpoints";
 
 let isRefreshing = false;
 let refreshSubscribers = [];
+export enum API_Header_Content_Type_Format {
+    JSON = "application/json",
+    FORM = "application/x-www-form-urlencoded",
+    MULTIPART = "multipart/form-data",
+    TEXT = "text/plain",
+    HTML = "text/html",
+    XML = "application/xml",
+    JAVASCRIPT = "application/javascript",
+    PDF = "application/pdf",
+    ZIP = "application/zip",
+    IMAGE = "image/*",
+    AUDIO = "audio/*",
+    VIDEO = "video/*",
+    ANY = "*/*",
+}
 
 const apiClient = axios.create({
     baseURL: process.env.REACT_APP_API_BASE_URL,

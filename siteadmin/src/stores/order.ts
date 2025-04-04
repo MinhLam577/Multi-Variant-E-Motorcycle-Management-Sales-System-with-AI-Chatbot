@@ -2,13 +2,13 @@ import { makeAutoObservable, toJS } from "mobx";
 import { convertDate } from "../utils";
 import { DateTimeFormat } from "../constants";
 import OrderAPI, { ExportOrder, ResponsePromise } from "../api/order";
-import { RootStore } from "./base";
+import { paginationData, RootStore } from "./base";
 
 export type OrderStatus = {
     key?: string;
 };
 
-export type globalFiltersData = {
+export type globalFiltersDataOrder = {
     search?: string;
     sortOrder?: string;
     sortBy?: string;
@@ -17,11 +17,6 @@ export type globalFiltersData = {
     payment_method?: string;
     created_from?: string;
     created_to?: string;
-};
-
-export type paginationData = {
-    current: number;
-    pageSize: number;
 };
 
 export type orderData = {
@@ -46,7 +41,7 @@ export default class OrderObservable {
         order_detail: null,
         confirm_order_data: null,
     };
-    globalFilters: globalFiltersData = {
+    globalFilters: globalFiltersDataOrder = {
         search: null,
         sortOrder: null,
         sortBy: null,
@@ -83,58 +78,63 @@ export default class OrderObservable {
         this.confirmOrder = this.confirmOrder.bind(this);
     }
 
+    private validateQuery(query?: string | object): string {
+        // Xử lý chuyển đổi query string thành object
+        let parsedQuery: globalFiltersDataOrder & paginationData = {
+            ...(typeof query === "string"
+                ? Object.fromEntries(new URLSearchParams(query.trim()))
+                : query),
+            current: Number(this.pagination.current),
+            pageSize: Number(this.pagination.pageSize),
+        };
+
+        // Gộp filters và xử lý dữ liệu
+        const filters: paginationData & globalFiltersDataOrder = {
+            ...this.globalFilters,
+            ...this.pagination,
+            ...parsedQuery,
+            created_from: parsedQuery?.created_from
+                ? convertDate(
+                      parsedQuery.created_from,
+                      DateTimeFormat.TIME_STAMP_POSTGRES
+                  )
+                : undefined,
+            created_to: parsedQuery?.created_to
+                ? convertDate(
+                      parsedQuery.created_to,
+                      DateTimeFormat.TIME_STAMP_POSTGRES
+                  )
+                : undefined,
+            search: parsedQuery?.search?.trim(),
+        };
+
+        // Xóa các key có giá trị null, undefined hoặc ""
+        Object.keys(filters).forEach((key) => {
+            if (
+                filters[key] === null ||
+                filters[key] === undefined ||
+                filters[key] === ""
+            )
+                delete filters[key];
+        });
+
+        // Tạo query string
+        const queryString = new URLSearchParams(
+            Object.fromEntries(
+                Object.entries(filters).map(([key, value]) => [
+                    key,
+                    String(value),
+                ])
+            )
+        ).toString();
+        return queryString;
+    }
+
     *getListOrder(query?: string | object) {
         try {
             this.loading = true;
 
-            // Xử lý chuyển đổi query string thành object
-            let parsedQuery: globalFiltersData & paginationData = {
-                ...(typeof query === "string"
-                    ? Object.fromEntries(new URLSearchParams(query.trim()))
-                    : query),
-                current: Number(this.pagination.current),
-                pageSize: Number(this.pagination.pageSize),
-            };
-
-            // Gộp filters và xử lý dữ liệu
-            const filters: paginationData & globalFiltersData = {
-                ...this.globalFilters,
-                ...this.pagination,
-                ...parsedQuery,
-                created_from: parsedQuery?.created_from
-                    ? convertDate(
-                          parsedQuery.created_from,
-                          DateTimeFormat.TIME_STAMP_POSTGRES
-                      )
-                    : undefined,
-                created_to: parsedQuery?.created_to
-                    ? convertDate(
-                          parsedQuery.created_to,
-                          DateTimeFormat.TIME_STAMP_POSTGRES
-                      )
-                    : undefined,
-                search: parsedQuery?.search?.trim(),
-            };
-
-            // Xóa các key có giá trị null, undefined hoặc ""
-            Object.keys(filters).forEach((key) => {
-                if (
-                    filters[key] === null ||
-                    filters[key] === undefined ||
-                    filters[key] === ""
-                )
-                    delete filters[key];
-            });
-
-            // Tạo query string
-            const queryString = new URLSearchParams(
-                Object.fromEntries(
-                    Object.entries(filters).map(([key, value]) => [
-                        key,
-                        String(value),
-                    ])
-                )
-            ).toString();
+            const queryString = this.validateQuery(query);
             const response: ResponsePromise =
                 yield OrderAPI.getOrderList(queryString);
             const { data, status, message } = response;
@@ -206,6 +206,7 @@ export default class OrderObservable {
 
     *updateOrderStatus(id: string) {
         try {
+            this.loading = true;
             const response: ResponsePromise =
                 yield OrderAPI.updateOrderStatus(id);
             const { status, message } = response;
@@ -224,11 +225,14 @@ export default class OrderObservable {
             console.error(e);
             this.status = 500;
             this.errorMsg = e?.message || "Lỗi không xác định";
+        } finally {
+            this.loading = false;
         }
     }
 
     *cancelOrder(id: string, reason?: string) {
         try {
+            this.loading = true;
             let response: ResponsePromise = yield OrderAPI.cancelOrder(
                 id,
                 reason
@@ -249,11 +253,14 @@ export default class OrderObservable {
             console.error(e);
             this.status = 500;
             this.errorMsg = e?.message || "Lỗi không xác định";
+        } finally {
+            this.loading = false;
         }
     }
 
     *failedDelivery(id: string, reason?: string) {
         try {
+            this.loading = true;
             let response: ResponsePromise = yield OrderAPI.failedDelivery(
                 id,
                 reason
@@ -274,11 +281,14 @@ export default class OrderObservable {
             console.error(e);
             this.status = 500;
             this.errorMsg = e?.message || "Lỗi không xác định";
+        } finally {
+            this.loading = false;
         }
     }
 
     *returnOrder(id: string, reason?: string) {
         try {
+            this.loading = true;
             let response: ResponsePromise = yield OrderAPI.returnOrder(
                 id,
                 reason
@@ -299,6 +309,8 @@ export default class OrderObservable {
             console.error(e);
             this.status = 500;
             this.errorMsg = e?.message || "Lỗi không xác định";
+        } finally {
+            this.loading = false;
         }
     }
 
@@ -352,7 +364,7 @@ export default class OrderObservable {
         }
     }
 
-    setGlobalFilters(filters: globalFiltersData) {
+    setGlobalFilters(filters: globalFiltersDataOrder) {
         this.globalFilters = {
             ...this.globalFilters,
             ...filters,

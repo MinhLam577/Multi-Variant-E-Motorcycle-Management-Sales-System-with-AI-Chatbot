@@ -11,7 +11,7 @@ const OrderStatusSearch = ({ order_status, order_store }) => {
     const [status_selected, set_status_selected] = useState("All");
 
     return (
-        <div className="flex flex-wrap justify-center items-center gap-y-4 gap-x-2">
+        <div className="flex flex-wrap justify-between items-center gap-y-4 ">
             {order_status?.map((status) => {
                 const isSelected = status_selected === status.key;
                 return (
@@ -23,7 +23,7 @@ const OrderStatusSearch = ({ order_status, order_store }) => {
                             order_store?.setOrderStatusSelected(status.key);
                         }}
                         {...(isSelected ? button_extra_style : {})}
-                        size="small"
+                        size="middle"
                     >
                         <span className="text-sm font-semibold">
                             #

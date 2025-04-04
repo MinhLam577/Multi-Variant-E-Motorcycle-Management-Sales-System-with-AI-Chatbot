@@ -1,36 +1,34 @@
-import PropTypes from "prop-types";
-
-const Logo = ({ handleClick, bgColor, collapsed }) => {
-  return (
-    <div className="w-full flex justify-center">
-      <button
-        onClick={handleClick}
-        className={`w-full border-0 rounded-2xl ${collapsed ? "" : "p-2"}`}
-        style={{ backgroundColor: "white" }}
-      >
-        {bgColor === "#FFFFFF" && (
-          <div>
-            <img alt="logo" className="w-2/3 md:w-120" src="/logo192.png" />
-          </div>
-        )}
-        {collapsed ? (
-          <div>
-            <img alt="logo" className="w-10 md:w-10" src="/logo192.png" />
-          </div>
-        ) : (
-          <div>
-            <img alt="logo" className="w-10 md:w-20" src="/logo2048.png" />
-          </div>
-        )}
-      </button>
-    </div>
-  );
-};
-
-Logo.propTypes = {
-  handleClick: PropTypes.func,
-  bgColor: PropTypes.string,
-  collapsed: PropTypes.bool,
+import anhtest from "./Logo.jpg";
+const Logo = ({ handleClick, collapsed }) => {
+    return (
+        <div className="w-full h-full flex justify-center p-[14px]">
+            <button
+                onClick={handleClick}
+                className={`w-full border-0 bg-transparent flex items-center gap-4`}
+            >
+                {collapsed ? (
+                    <img
+                        alt="logo"
+                        className="max-w-10 max-h-10 object-cover"
+                        src={anhtest}
+                    />
+                ) : (
+                    <>
+                        <img
+                            alt="logo"
+                            className="h-auto w-12 object-cover rounded"
+                            src={anhtest}
+                        />
+                    </>
+                )}
+                <span
+                    className={`text-xl text-white font-semibold ${collapsed ? "hidden" : ""}`}
+                >
+                    Ô tô hồng sơn
+                </span>
+            </button>
+        </div>
+    );
 };
 
 export default Logo;

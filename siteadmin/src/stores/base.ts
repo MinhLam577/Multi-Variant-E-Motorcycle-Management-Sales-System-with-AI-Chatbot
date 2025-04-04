@@ -2,12 +2,17 @@ import AccountObservable from "./account";
 import BrandObservable from "./brand";
 import LoginObservable from "./login";
 import EMotorbikeObservable from "./motorbike";
-import ProductObservable from "./product";
+import ProductObservable from "./productStore";
 import UploadImageObservable from "./uploadImage";
 import UserObservable from "./user";
 import OrderObservable from "./order";
 import PaymentMethodObservable from "./paymentMethod";
 import SkusObservable from "./skus";
+
+export type paginationData = {
+    current: number;
+    pageSize: number;
+};
 export class RootStore {
     paymentMethodObservable: PaymentMethodObservable;
     orderObservable: OrderObservable;

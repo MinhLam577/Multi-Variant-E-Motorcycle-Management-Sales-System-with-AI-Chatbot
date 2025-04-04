@@ -17,7 +17,7 @@ const Orders = () => {
     const skusStore = store.skusObservable;
     const paymentMethodStore = store.paymentMethodObservable;
     const fetchListOrder = async (query = undefined) => {
-        return orderStore.getListOrder(query);
+        orderStore.getListOrder(query);
     };
     const [filterData, setFilterData] = useState([]);
     const fetchData = async () => {
