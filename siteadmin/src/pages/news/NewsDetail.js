@@ -34,6 +34,7 @@ const formItemLayout = {
 
 const NewsDetail = ({ mode }) => {
   const { id } = useParams();
+  const { idblog } = useParams();
   const navigate = useNavigate();
   const [fileList, setFileList] = useState([]);
 
@@ -136,17 +137,19 @@ const NewsDetail = ({ mode }) => {
 
   const handleCancel = () => {
     if (mode === NewsDetailMode.Edit) {
+      console.log(id);
+      console.log(idblog);
       processWithModals(ProcessModalName.ConfirmCancelEditing)(() => {
-        navigate(`/news`);
+        navigate(`/categorynews/${id}/news`);
       });
     } else {
-      navigate("/news");
+      navigate(`/categorynews/${id}/news`);
     }
   };
 
   const handleEdit = () => {
     if (mode === NewsDetailMode.View) {
-      navigate(`/news/${id}/edit`, { replace: true });
+      navigate(`/categorynews/${id}/news/${idblog}/edit`, { replace: true });
     }
   };
 
@@ -176,7 +179,7 @@ const NewsDetail = ({ mode }) => {
           </Form.Item>
           <Form.Item
             className="flex justify-center"
-            name="cover"
+            name="thumbnail"
             rules={[{ required: true, message: "Hãy chọn ảnh bìa!" }]}
           >
             <UploadSinglePictureGetUrl
@@ -195,20 +198,20 @@ const NewsDetail = ({ mode }) => {
             <Input readOnly={isReadOnly()} placeholder="Nhập Tiêu đề tin tức" />
           </Form.Item>
           <Form.Item
-            label="Tóm tắt"
-            name="brief"
-            rules={[{ required: true, message: "Hãy nhập tóm tắt tin tức!" }]}
+            label="Slug"
+            name="slug"
+            rules={[{ required: true, message: "Hãy nhập slug tin tức!" }]}
           >
             <Input
               maxLength={255}
               readOnly={isReadOnly()}
-              placeholder="Nhập Tóm tắt tin tức"
+              placeholder="vd: blog-slug"
             />
           </Form.Item>
           <Form.Item
             className="custom-antd-richtext-editor mb-20"
             label="Nội dung"
-            name="description"
+            name="content"
             rules={[{ required: true, message: "Hãy nhập nội dung tin tức!" }]}
           >
             <RichTextEditor

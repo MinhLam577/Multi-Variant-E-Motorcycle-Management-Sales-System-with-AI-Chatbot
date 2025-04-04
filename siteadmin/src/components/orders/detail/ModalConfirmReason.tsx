@@ -2,7 +2,7 @@ import { Form, FormInstance, Input } from "antd";
 import PropTypes from "prop-types";
 import CustomizeModal from "../../common/CustomizeModal";
 import { useEffect } from "react";
-
+import React from 'react'
 type ModalConfirmReasonProps = {
     isOpen: boolean;
     handleCloseReasonModal: () => void;

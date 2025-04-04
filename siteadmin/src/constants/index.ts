@@ -184,6 +184,12 @@ export const UserType = {
     sales: "Sales",
     admin: "admin",
 };
+
+export const CustomerType = {
+  user: "Khách hàng",
+  hr: "Tuyển dụng",
+  sales: "Sales",
+};
 export const GenderType = {
     male: "name",
     female: "female",

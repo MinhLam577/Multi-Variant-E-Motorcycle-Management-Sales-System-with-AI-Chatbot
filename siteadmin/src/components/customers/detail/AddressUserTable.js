@@ -1,4 +1,4 @@
-import { Table, message } from "antd";
+import { Button, Popconfirm, Table, message } from "antd";
 import { AntdTableLocale } from "../../../constants";
 import { useEffect, useState } from "react";
 import {
@@ -9,80 +9,99 @@ import { GET_ADDRESS_USER, REMOVE_ADDRESS } from "../../../graphql/users";
 import { useNavigate, useParams } from "react-router";
 import GroupActionButton from "../../GroupActionButton";
 import apiClient from "../../../api/apiClient";
-import endpoints from "../../../api/endpoints.ts";
+import endpoints from "../../../api/endpoints";
+import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
 
 const getColumnsConfig = ({ handleDeleteAddress, handleEditAddress }) => {
-    console.log(handleEditAddress);
-    return [
-        {
-            title: "No",
-            key: "index",
-            render: (_value, _item, index) => index + 1,
-            width: 80,
-        },
-        {
-            title: "Số nhà",
-            dataIndex: "street",
-            key: "street",
-            ellipsis: true,
-            width: 150,
-        },
-        {
-            title: "Phường/xã",
-            dataIndex: "ward",
-            key: "ward",
-            ellipsis: true,
-            width: 100,
-        },
-        {
-            title: "Quận/huyện",
-            dataIndex: "district",
-            key: "district",
-            ellipsis: true,
-            width: 100,
-        },
-        {
-            title: "Tỉnh/TP",
-            dataIndex: "province",
-            key: "province",
-            ellipsis: true,
-            width: 100,
-        },
-        {
-            title: "Người nhận",
-            dataIndex: "receiverName",
-            key: "receiverName",
-            ellipsis: true,
-            width: 150,
-        },
-        {
-            title: "Số ĐT người nhận",
-            dataIndex: "receiverPhone",
-            key: "receiverPhone",
-            ellipsis: true,
-            width: 140,
-        },
-        {
-            title: "Thao tác",
-            dataIndex: "action",
-            key: "action",
-            render: (_value, item) => {
-                return (
-                    <GroupActionButton
-                        hanleDelete={handleDeleteAddress}
-                        handleUpdate={handleEditAddress}
-                        item={item}
-                    />
-                );
-            },
-            width: 140,
-        },
-    ];
+  return [
+    {
+      title: "No",
+      key: "index",
+      render: (_value, _item, index) => index + 1,
+      width: 80,
+    },
+    {
+      title: "Số nhà",
+      dataIndex: "street",
+      key: "street",
+      ellipsis: true,
+      width: 150,
+    },
+    {
+      title: "Phường/xã",
+      dataIndex: "ward",
+      key: "ward",
+      ellipsis: true,
+      width: 100,
+    },
+    {
+      title: "Quận/huyện",
+      dataIndex: "district",
+      key: "district",
+      ellipsis: true,
+      width: 100,
+    },
+    {
+      title: "Tỉnh/TP",
+      dataIndex: "province",
+      key: "province",
+      ellipsis: true,
+      width: 100,
+    },
+    {
+      title: "Người nhận",
+      dataIndex: "receiverName",
+      key: "receiverName",
+      ellipsis: true,
+      width: 150,
+    },
+    {
+      title: "Số ĐT người nhận",
+      dataIndex: "receiverPhone",
+      key: "receiverPhone",
+      ellipsis: true,
+      width: 140,
+    },
+    {
+      title: "Thao tác",
+      dataIndex: "action",
+      key: "action",
+      render: (_value, item) => {
+        console.log(item);
+        return (
+          <>
+            <Popconfirm
+              placement="leftTop"
+              title={"Xác nhận xóa user"}
+              description={"Bạn có chắc chắn muốn xóa user này ?"}
+              onConfirm={() => handleDeleteAddress(item._id)}
+              okText="Xác nhận"
+              cancelText="Hủy"
+            >
+              <span style={{ cursor: "pointer", margin: "0 20px" }}>
+                <DeleteTwoTone twoToneColor="#ff4d4f" />
+              </span>
+            </Popconfirm>
+
+            <EditTwoTone
+              twoToneColor="#f57800"
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                // setOpenModalUpdate(true);
+                // setDataUpdate(record);
+                handleEditAddress(item);
+              }}
+            />
+          </>
+        );
+      },
+    },
+  ];
 };
 
-const AddressUserTable = () => {
-    const navigate = useNavigate();
-    const [loading] = useState(false);
+const AddressCustomerTable = () => {
+  const navigate = useNavigate();
+  const [loading] = useState(false);
 
     const handleDeleteAddress = (id) => {
         processWithModals(ProcessModalName.ConfirmCustomContent)(
@@ -109,26 +128,27 @@ const AddressUserTable = () => {
         navigate(`/customer/receive_address/${id}/edit`);
     };
 
-    return (
-        <>
-            <Table
-                locale={{
-                    ...AntdTableLocale,
-                }}
-                className="table-fixed"
-                columns={getColumnsConfig({
-                    handleEditAddress,
-                    handleDeleteAddress,
-                })}
-                handleEditAddress={handleEditAddress}
-                loading={loading}
-                key={0}
-                dataSource={[]}
-                rowKey={"categoryId"}
-                scroll={{ x: 400 }}
-            />
-        </>
-    );
+  return (
+    <>
+      <div>
+        <Button>Tạo mới</Button>
+      </div>
+      <Table
+        locale={{
+          ...AntdTableLocale,
+        }}
+        className="table-fixed"
+        columns={getColumnsConfig}
+        handleEditAddress={handleEditAddress}
+        handleDeleteAddress={handleDeleteAddress}
+        loading={loading}
+        key={0}
+        dataSource={[]}
+        rowKey={"categoryId"}
+        scroll={{ x: 400 }}
+      />
+    </>
+  );
 };
 
-export default AddressUserTable;
+export default AddressCustomerTable;

@@ -1,8 +1,9 @@
 import {
-    CloseOutlined,
-    EditOutlined,
-    PlusOutlined,
-    SaveOutlined,
+  CloseOutlined,
+  EditOutlined,
+  EyeOutlined,
+  PlusOutlined,
+  SaveOutlined,
 } from "@ant-design/icons";
 import { Button, Card, Divider, Form, Input, message } from "antd";
 import PropTypes from "prop-types";
@@ -104,16 +105,27 @@ const CategoriesNewsDetail = ({ mode }) => {
         }
     };
 
-    const getButtonEditText = () => {
-        if (mode === NewsDetailMode.View) {
-            return (
-                <>
-                    <EditOutlined />
-                    &nbsp;Sửa
-                </>
-            );
-        }
-    };
+  const getButtonEditText = () => {
+    if (mode === NewsDetailMode.View) {
+      return (
+        <>
+          <EditOutlined />
+          &nbsp;Sửa
+        </>
+      );
+    }
+  };
+
+  const getButtonViewBlogText = () => {
+    if (mode === NewsDetailMode.View) {
+      return (
+        <>
+          <EyeOutlined />
+          &nbsp;Xem bài viết
+        </>
+      );
+    }
+  };
 
     const prepareForm = (loadedData) => {
         if (mode === NewsDetailMode.View) {
@@ -158,11 +170,15 @@ const CategoriesNewsDetail = ({ mode }) => {
         }
     };
 
-    const handleEdit = () => {
-        if (mode === NewsDetailMode.View) {
-            navigate(`/categorynews/${id}/edit`, { replace: true });
-        }
-    };
+  const handleEdit = () => {
+    if (mode === NewsDetailMode.View) {
+      navigate(`/categorynews/${id}/edit`, { replace: true });
+    }
+  };
+
+  const handleViewBlog = () => {
+    navigate(`/categorynews/${id}/news`, { replace: true });
+  };
 
     const handleFormFinish = (values) => {
         const { id, ...createCategoriesBlog } = values;
@@ -279,30 +295,29 @@ const CategoriesNewsDetail = ({ mode }) => {
                         />
                     </Form.Item>
 
-                    <>
-                        <Button onClick={handleCancel}>
-                            {getButtonCancelText()}
-                        </Button>
-                        {isReadOnly() ? (
-                            <>
-                                <Divider type="vertical" />
-                                <Button onClick={handleEdit}>
-                                    {getButtonEditText()}
-                                </Button>
-                            </>
-                        ) : (
-                            <>
-                                <Divider type="vertical" />
-                                <Button onClick={handleOk}>
-                                    {getButtonOkText()}
-                                </Button>
-                            </>
-                        )}
-                    </>
-                </Form>
-            </Card>
-        </>
-    );
+          <>
+            <Button onClick={handleCancel}>{getButtonCancelText()}</Button>
+            {isReadOnly() ? (
+              <>
+                <Divider type="vertical" />
+                <Button onClick={handleEdit}>{getButtonEditText()}</Button>
+
+                <Divider type="vertical" />
+                <Button onClick={handleViewBlog}>
+                  {getButtonViewBlogText()}
+                </Button>
+              </>
+            ) : (
+              <>
+                <Divider type="vertical" />
+                <Button onClick={handleOk}>{getButtonOkText()}</Button>
+              </>
+            )}
+          </>
+        </Form>
+      </Card>
+    </>
+  );
 };
 
 CategoriesNewsDetail.propTypes = {

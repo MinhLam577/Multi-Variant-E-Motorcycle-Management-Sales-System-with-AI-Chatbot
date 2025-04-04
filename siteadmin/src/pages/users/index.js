@@ -13,6 +13,7 @@ import { getListUser } from "../../api/user";
 import { CSVLink } from "react-csv";
 import UserImport from "../../components/users/UserImport";
 import UserModalCreate from "../../components/users/UserModalCreate";
+import dayjs from "dayjs";
 
 const User = () => {
   const navigate = useNavigate();
@@ -93,11 +94,11 @@ const User = () => {
       id: item.id,
       username: item.username,
       email: item.email,
-      age: item.age.toString(), // Chuyển số về string để tránh lỗi
+      age: item.age, // Chuyển số về string để tránh lỗi
       address: item.address,
-      phoneNumber: item.phoneNumber?.toString() || "", // Đảm bảo là string
+      phoneNumber: item.phoneNumber || "", // Đảm bảo là string
       avatarUrl: item.avatarUrl,
-      birthday: item.birthday,
+      birthday: item.birthday ? dayjs(item.birthday).format("MM/DD/YYYY") : "", // Định dạng ngày
       isActive: item.isActive ? "TRUE" : "FALSE", // Chuyển boolean về string
       role: item?.Roles?.[0]?.name || "N/A", // Tránh lỗi undefined
     }));
@@ -167,6 +168,7 @@ const User = () => {
       <UserImport
         openModalImport={openModalImport}
         setOpenModalImport={setOpenModalImport}
+        fetchUser={fetchUsers}
       />
 
       <UserModalCreate

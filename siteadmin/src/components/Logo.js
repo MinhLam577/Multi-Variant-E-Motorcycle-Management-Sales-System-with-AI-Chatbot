@@ -1,4 +1,3 @@
-import PropTypes from "prop-types";
 import anhtest from "./Logo.jpg";
 const Logo = ({ handleClick, collapsed }) => {
     return (
@@ -20,11 +19,13 @@ const Logo = ({ handleClick, collapsed }) => {
                             className="h-auto w-12 object-cover rounded"
                             src={anhtest}
                         />
-                        <span className="text-xl text-white font-semibold">
-                            Ô tô hồng sơn
-                        </span>
                     </>
                 )}
+                <span
+                    className={`text-xl text-white font-semibold ${collapsed ? "hidden" : ""}`}
+                >
+                    Ô tô hồng sơn
+                </span>
             </button>
         </div>
     );

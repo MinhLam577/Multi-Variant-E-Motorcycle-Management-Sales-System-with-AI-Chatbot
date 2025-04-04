@@ -1,26 +1,41 @@
 import { PlusOutlined } from "@ant-design/icons";
 import { Button, Col, Row } from "antd";
-import { useContext, useState } from "react";
-import { useNavigate } from "react-router";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router";
 import NewsSearch from "../../components/news/NewsSearch";
 import NewsTable from "../../components/news/NewsTable";
 import { GlobalContext } from "../../contexts/global";
+import apiClient from "../../api/apiClient";
+import endpoints from "../../api/endpoints";
+import NewsDetail from "./NewsDetail";
 
 const News = () => {
   const navigate = useNavigate();
   const [globalFilters, setGlobalFilters] = useState({ searchText: null });
   const { globalDispatch } = useContext(GlobalContext);
-
+  const [News, setNewsData] = useState([]);
+  const { id } = useParams();
+  useEffect(() => {
+    fetchData();
+  }, []);
+  const fetchData = async () => {
+    const data = await apiClient.get(endpoints.blogcategories.details(id));
+    console.log(data.data.blogs);
+    setNewsData(data.data.blogs);
+  };
   const handleAddNews = () => {
-    navigate("/news/add", { replace: true });
+    navigate(`/categorynews/${id}/news/add`, { replace: true });
   };
 
   const handleEditNews = (newsData) => {
+    console.log(newsData);
     globalDispatch({
       type: "breadcrum",
       data: newsData.title,
     });
-    navigate(`/news/${newsData.newsId}/edit`, { replace: true });
+    navigate(`/categorynews/${id}/news/${newsData.id}/edit`, {
+      replace: true,
+    });
   };
 
   const handleViewNews = (newsData) => {
@@ -28,7 +43,7 @@ const News = () => {
       type: "breadcrum",
       data: newsData.title,
     });
-    navigate(`/news/${newsData.newsId}`, { replace: true });
+    navigate(`/categorynews/${id}/news/${newsData.id}`, { replace: true });
   };
 
   return (
@@ -51,6 +66,8 @@ const News = () => {
             globalFilters={globalFilters}
             handleUpdateNews={handleEditNews}
             handleViewNews={handleViewNews}
+            dataNews={News}
+            fetchData={fetchData}
           />
         </Col>
       </Row>

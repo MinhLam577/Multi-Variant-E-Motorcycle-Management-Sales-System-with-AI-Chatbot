@@ -17,6 +17,8 @@ const endpoints = {
         uploadAvatar: () => "/users/upload",
         list: (page, limit) => `/users?current=${page}&pageSize=${limit}`,
         callBulkCreateUser: "/users/callBulkCreateUser",
+        // tạo customer
+        create: "/users",
     },
 
     customers: {
@@ -26,9 +28,36 @@ const endpoints = {
         changePassword: (id) => `/customers/${id}`,
         uploadAvatar: "/customers/upload",
         list: (page, limit) => `customers/?page=${page}&limit=${limit}`,
+        // tạo thông qua import file
         callBulkCreateCustomer: "/users/callBulkCreateCustomer",
+        create: "/customers",
+        delete: (id) => `/customers/${id}`,
     },
+    motorbike: {
+        list: (page, size) => `/products?current=${page}&pageSize=${size}`,
+        details: (id) => `/products/${id}`,
+        //setting
 
+        // get
+        categories: "/categories",
+        color: "/color",
+        brand: "/brand",
+    },
+    cars: {
+        list: (page, size) => `/products?current=${page}&pageSize=${size}`,
+        details: (id) => `/cars/${id}`,
+        create: "/products",
+        update: (id) => `/products/${id}`,
+        delete: (id) => `/products/${id}`,
+
+        //setting
+        categories: () => `/category`,
+        color: () => `/color`,
+        brand: () => `/brand`,
+
+        //upload image
+        uploadImage: () => "/products/upload",
+    },
     showroom: {
         list: "/showrooms",
         details: (id) => `/showrooms/${id}`,
@@ -43,6 +72,7 @@ const endpoints = {
         delete: (id) => `/products/${id}`,
     },
 
+    //category
     //category
     category: {
         list: `/categories`,
@@ -166,6 +196,20 @@ const endpoints = {
         getDetailImportsById: (id: string) => `/skus/${id}/detail-import`,
         getDetailImportsByIds: () => `/skus/detail-imports-by-ids`,
     },
+    // province
+    province: {
+        list: `/province`,
+    },
+
+    // district
+    district: {
+        districtByName: (provinceId) => `/district?provinceId=${provinceId}`,
+    },
+    // ward
+    ward: {
+        wardByName: (districtId) => `/ward?districtId=${districtId}`,
+    },
+    // Blogs
 };
 
 export default endpoints;

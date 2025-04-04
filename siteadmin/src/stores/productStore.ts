@@ -126,7 +126,7 @@ class ProductObservable {
             }
         } catch (e: any) {
             console.error(e);
-            this.setStatusMessage(0, e.message, "");
+            this.setStatusMessage(0, e?.message, "");
         }
     }
 }

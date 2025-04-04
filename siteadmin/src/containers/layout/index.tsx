@@ -7,6 +7,7 @@ import {
     NotificationOutlined,
     OrderedListOutlined,
     ProductOutlined,
+    SettingOutlined,
     ShopOutlined,
     ShoppingOutlined,
     TruckOutlined,
@@ -50,6 +51,7 @@ const BreadcrumbLabel = {
     warehouse: "Kho",
     "e-motorbike": "Xe máy điện",
     customer: "Quản lý khách hàng",
+    setting: "Cấu hình",
 };
 
 export const getBreadcrumbItems = (path: string) => {
@@ -138,7 +140,44 @@ const AppLayout = (props) => {
         getItem("Khách hàng", "19", <UserOutlined />, null, () =>
             navigate("/customer")
         ),
+        getItem("Cấu hình", "20", <SettingOutlined />, null, () =>
+            navigate("/setting")
+        ),
     ];
+
+    const getBreadcrumbItems = (path) => {
+        if (typeof path !== "string") {
+            return [];
+        }
+
+        let arr = path
+            .split("/")
+            .map((value) => value.trim())
+            .filter((value) => value !== "");
+        let breadcrumbDataList = arr.map((value, index) => {
+            let routeArr = arr.slice(0, index + 1);
+
+            return {
+                key: index + 1,
+                href: "/" + routeArr.join("/"),
+                title: BreadcrumbLabel[value] ? BreadcrumbLabel[value] : name,
+            };
+        });
+
+        // set default to user page
+        breadcrumbDataList =
+            breadcrumbDataList.length === 0
+                ? [
+                      {
+                          key: 1,
+                          href: "/",
+                          title: BreadcrumbLabel["dashboard"],
+                      },
+                  ]
+                : breadcrumbDataList;
+
+        return breadcrumbDataList;
+    };
 
     const getSideMenuSelectedKeys = () => {
         const path = location.pathname;
@@ -202,6 +241,7 @@ const AppLayout = (props) => {
                     collapsed={collapsed}
                     onCollapse={(value) => setCollapsed(value)}
                     width={screens.md ? 256 : 256}
+                    className={collapsed ? "sider-collapsed" : "sider-expanded"}
                 >
                     <div className="w-full h-16 flex justify-center flex-col items-center cursor-pointer bg-[var(--sideBar-logo-background-color)]">
                         <Logo
@@ -209,7 +249,6 @@ const AppLayout = (props) => {
                             collapsed={screens.md ? collapsed : true}
                         />
                     </div>
-
                     <Menu
                         defaultSelectedKeys={["1"]}
                         selectedKeys={getSideMenuSelectedKeys()}
