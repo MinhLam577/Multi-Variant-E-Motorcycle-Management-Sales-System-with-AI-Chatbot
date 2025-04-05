@@ -1,5 +1,5 @@
 export interface IPermission {
-  _id?: string;
+  id?: string;
   name?: string;
   // path
   path?: string;

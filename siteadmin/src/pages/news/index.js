@@ -1,5 +1,5 @@
 import { PlusOutlined } from "@ant-design/icons";
-import { Button, Col, Row } from "antd";
+import { Button, Col, message, Row } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import NewsSearch from "../../components/news/NewsSearch";
@@ -19,9 +19,21 @@ const News = () => {
     fetchData();
   }, []);
   const fetchData = async () => {
-    const data = await apiClient.get(endpoints.blogcategories.details(id));
-    console.log(data.data.blogs);
-    setNewsData(data.data.blogs);
+    try {
+      const response = await apiClient.get(
+        endpoints.blogcategories.details(id)
+      );
+      console.log("Dữ liệu blog:", response);
+
+      if (response?.data?.blogs) {
+        setNewsData(response.data.blogs);
+      } else {
+        message.error("Dữ liệu không hợp lệ hoặc rỗng");
+      }
+    } catch (error) {
+      console.error("Lỗi khi lấy dữ liệu blog:", error);
+      message.error("Lấy dữ liệu thất bại");
+    }
   };
   const handleAddNews = () => {
     navigate(`/categorynews/${id}/news/add`, { replace: true });

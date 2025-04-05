@@ -1,55 +1,84 @@
-import DataTable from "@/components/client/data-table";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { IPermission } from "@/types/backend";
-import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
+// import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+// import { IPermission } from "@/types/backend";
+// import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { ActionType, ProColumns } from "@ant-design/pro-components";
 import { Button, Popconfirm, Space, message, notification } from "antd";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import dayjs from "dayjs";
-import { callDeletePermission } from "@/config/api";
+import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
+import { IPermission } from "src/types/backend";
+import { colorMethod } from "src/constants/until";
+
+// import { callDeletePermission } from "@/config/api";
 import queryString from "query-string";
-import { fetchPermission } from "@/redux/slice/permissionSlide";
-import ViewDetailPermission from "@/components/admin/permission/view.permission";
-import ModalPermission from "@/components/admin/permission/modal.permission";
-import { colorMethod } from "@/config/utils";
-import Access from "@/components/share/access";
-import { ALL_PERMISSIONS } from "@/config/permissions";
+import DataTable from "src/components/data-table";
+import apiClient from "src/api/apiClient";
+import endpoints from "src/api/endpoints";
+import ModalPermission from "src/components/setting/permission/modal.permission";
+import ViewDetailPermission from "src/components/setting/permission/view.permission";
+import { set } from "mobx";
+// import { fetchPermission } from "@/redux/slice/permissionSlide";
+// import ViewDetailPermission from "@/components/admin/permission/view.permission";
+// import ModalPermission from "@/components/admin/permission/modal.permission";
+// import { colorMethod } from "@/config/utils";
+// import Access from "@/components/share/access";
+// import { ALL_PERMISSIONS } from "@/config/permissions";
 
 const PermissionPage = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [dataInit, setDataInit] = useState<IPermission | null>(null);
   const [openViewDetail, setOpenViewDetail] = useState<boolean>(false);
+  const tableRef = useRef<ActionType | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const tableRef = useRef<ActionType>();
-
-  const isFetching = useAppSelector((state) => state.permission.isFetching);
-  const meta = useAppSelector((state) => state.permission.meta);
-  const permissions = useAppSelector((state) => state.permission.result);
-  const dispatch = useAppDispatch();
-
+  const [permissions, setPermission] = useState([]);
   const handleDeletePermission = async (_id: string | undefined) => {
     if (_id) {
-      const res = await callDeletePermission(_id);
+      console.log(_id);
+
+      const res = await apiClient.delete(endpoints.permission.delete(_id));
+      //  const res = await callDeletePermission(_id);
       if (res && res.data) {
         message.success("Xóa Permission thành công");
-        reloadTable();
+        // reloadTable();
+        fetchPermissions();
       } else {
         notification.error({
           message: "Có lỗi xảy ra",
-          description: res.message,
+          // description: res.message,
         });
       }
     }
   };
 
+  useEffect(() => {
+    fetchPermissions();
+  }, []);
+  const fetchPermissions = async () => {
+    try {
+      setLoading(true);
+      const { data } = await apiClient.get(endpoints.permission.list("", ""));
+      console.log(data);
+      setLoading(false);
+      if (data) {
+        console.log(data);
+        setPermission(data);
+      } else {
+        message.error("Lỗi khi không lấy dữ liệu permission được");
+      }
+    } catch (error) {
+      message.error("Lỗi khi lấy dữ liệu permission");
+    }
+  };
   const reloadTable = () => {
+    console.log("tableRef:", tableRef.current);
     tableRef?.current?.reload();
   };
 
   const columns: ProColumns<IPermission>[] = [
     {
       title: "Id",
-      dataIndex: "_id",
+      dataIndex: "id",
       width: 250,
       render: (text, record, index, action) => {
         return (
@@ -60,7 +89,7 @@ const PermissionPage = () => {
               setDataInit(record);
             }}
           >
-            {record._id}
+            {record.id}
           </a>
         );
       },
@@ -73,7 +102,7 @@ const PermissionPage = () => {
     },
     {
       title: "API",
-      dataIndex: "apiPath",
+      dataIndex: "path",
       sorter: true,
     },
     {
@@ -126,38 +155,35 @@ const PermissionPage = () => {
       width: 50,
       render: (_value, entity, _index, _action) => (
         <Space>
-          <Access permission={ALL_PERMISSIONS.PERMISSIONS.UPDATE} hideChildren>
-            <EditOutlined
-              style={{
-                fontSize: 20,
-                color: "#ffa500",
-              }}
-              type=""
-              onClick={() => {
-                setOpenModal(true);
-                setDataInit(entity);
-              }}
-            />
-          </Access>
-          <Access permission={ALL_PERMISSIONS.PERMISSIONS.DELETE} hideChildren>
-            <Popconfirm
-              placement="leftTop"
-              title={"Xác nhận xóa permission"}
-              description={"Bạn có chắc chắn muốn xóa permission này ?"}
-              onConfirm={() => handleDeletePermission(entity._id)}
-              okText="Xác nhận"
-              cancelText="Hủy"
-            >
-              <span style={{ cursor: "pointer", margin: "0 10px" }}>
-                <DeleteOutlined
-                  style={{
-                    fontSize: 20,
-                    color: "#ff4d4f",
-                  }}
-                />
-              </span>
-            </Popconfirm>
-          </Access>
+          <EditOutlined
+            style={{
+              fontSize: 20,
+              color: "#ffa500",
+            }}
+            type=""
+            onClick={() => {
+              setOpenModal(true);
+              setDataInit(entity);
+            }}
+          />
+
+          <Popconfirm
+            placement="leftTop"
+            title={"Xác nhận xóa permission"}
+            description={"Bạn có chắc chắn muốn xóa permission này ?"}
+            onConfirm={() => handleDeletePermission(entity.id)}
+            okText="Xác nhận"
+            cancelText="Hủy"
+          >
+            <span style={{ cursor: "pointer", margin: "0 10px" }}>
+              <DeleteOutlined
+                style={{
+                  fontSize: 20,
+                  color: "#ff4d4f",
+                }}
+              />
+            </span>
+          </Popconfirm>
         </Space>
       ),
     },
@@ -206,53 +232,54 @@ const PermissionPage = () => {
 
   return (
     <div>
-      <Access permission={ALL_PERMISSIONS.PERMISSIONS.GET_PAGINATE}>
-        <DataTable<IPermission>
-          actionRef={tableRef}
-          headerTitle="Danh sách Permissions (Quyền Hạn)"
-          rowKey="_id"
-          loading={isFetching}
-          columns={columns}
-          dataSource={permissions}
-          request={async (params, sort, filter): Promise<any> => {
-            const query = buildQuery(params, sort, filter);
-            dispatch(fetchPermission({ query }));
-          }}
-          scroll={{ x: true }}
-          pagination={{
-            current: meta.current,
-            pageSize: meta.pageSize,
-            showSizeChanger: true,
-            total: meta.total,
-            showTotal: (total, range) => {
-              return (
-                <div>
-                  {" "}
-                  {range[0]}-{range[1]} trên {total} rows
-                </div>
-              );
-            },
-          }}
-          rowSelection={false}
-          toolBarRender={(_action, _rows): any => {
+      <DataTable<IPermission>
+        actionRef={tableRef}
+        headerTitle="Danh sách Permissions (Quyền Hạn)"
+        rowKey="_id"
+        loading={loading}
+        columns={columns}
+        dataSource={permissions}
+        scroll={{ x: true }}
+        rowSelection={false}
+        // goi api
+        request={async (params, sort, filter): Promise<any> => {
+          const query = buildQuery(params, sort, filter);
+          console.log(query);
+        }}
+        // lấy data sau khi gọi api
+        pagination={{
+          current: 1,
+          pageSize: 10,
+          showSizeChanger: true,
+          total: 10,
+          showTotal: (total, range) => {
             return (
-              <Button
-                icon={<PlusOutlined />}
-                type="primary"
-                onClick={() => setOpenModal(true)}
-              >
-                Thêm mới
-              </Button>
+              <div>
+                {" "}
+                {range[0]}-{range[1]} trên {total} rows
+              </div>
             );
-          }}
-        />
-      </Access>
+          },
+        }}
+        toolBarRender={(_action, _rows): any => {
+          return (
+            <Button
+              icon={<PlusOutlined />}
+              type="primary"
+              onClick={() => setOpenModal(true)}
+            >
+              Thêm mới
+            </Button>
+          );
+        }}
+      />
       <ModalPermission
         openModal={openModal}
         setOpenModal={setOpenModal}
         reloadTable={reloadTable}
         dataInit={dataInit}
         setDataInit={setDataInit}
+        fetchPermissions={fetchPermissions}
       />
 
       <ViewDetailPermission
@@ -260,6 +287,7 @@ const PermissionPage = () => {
         open={openViewDetail}
         dataInit={dataInit}
         setDataInit={setDataInit}
+        fetchPermissions={fetchPermissions}
       />
     </div>
   );

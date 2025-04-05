@@ -1,179 +1,180 @@
 import * as dayjs from "dayjs";
 
 export const Language = {
-    english: "en",
-    vietnamese: "vi",
+  english: "en",
+  vietnamese: "vi",
 };
 
 export const RequestStatus = {
-    INITIAL: "initial",
-    SUBMITTING: "submitting",
-    FETCH_SUCCESS: "fetchSuccess",
-    FETCH_FAILED: "fetchFailed",
-    FETCH_DETAIL_SUCCESS: "fetchDetailSuccess",
-    FETCH_DETAIL_FAILED: "fetchDetailFailed",
+  INITIAL: "initial",
+  SUBMITTING: "submitting",
+  FETCH_SUCCESS: "fetchSuccess",
+  FETCH_FAILED: "fetchFailed",
+  FETCH_DETAIL_SUCCESS: "fetchDetailSuccess",
+  FETCH_DETAIL_FAILED: "fetchDetailFailed",
 };
 
 export const keyStorageAccount = "account";
 export const ColorList = ["#f56a00", "#7265e6", "#ffbf00", "#00a2ae"];
 export const UserRoleConstant = {
-    ADMIN: "admin",
-    USER: "user",
-    SALES: "sales",
+  ADMIN: "admin",
+  USER: "user",
+  SALES: "sales",
 };
 
 export const Status = {
-    New: "new",
-    InActive: "inactive",
-    Active: "active",
+  New: "new",
+  InActive: "inactive",
+  Active: "active",
 };
 
 export const EventType = {
-    Online: "online",
-    Offline: "offline",
+  Online: "online",
+  Offline: "offline",
 };
 
 export const EventScope = {
-    Private: "private",
-    Public: "public",
+  Private: "private",
+  Public: "public",
 };
 
 export const ResourceCategory = {
-    avatar: "avatar",
-    image: "image",
-    video: "video",
-    other: "other",
+  avatar: "avatar",
+  image: "image",
+  video: "video",
+  other: "other",
 };
 
 export const DataImportType = {
-    UserImport: "UserImport",
+  UserImport: "UserImport",
 };
 
 export const TicketTransactionStatus = {
-    New: "new",
-    Completed: "completed",
+  New: "new",
+  Completed: "completed",
 };
 
 export const TicketTransactionStatusText = {
-    [TicketTransactionStatus.New]: "Chưa duyệt",
-    [TicketTransactionStatus.Completed]: "Đã duyệt",
+  [TicketTransactionStatus.New]: "Chưa duyệt",
+  [TicketTransactionStatus.Completed]: "Đã duyệt",
 };
 
 export const DefaultValues = {
-    DatePickerValue: dayjs(new Date())
-        .set("millisecond", 0)
-        .set("second", 0)
-        .set("minute", 0)
-        .set("hour", 0),
+  DatePickerValue: dayjs(new Date())
+    .set("millisecond", 0)
+    .set("second", 0)
+    .set("minute", 0)
+    .set("hour", 0),
 };
 
 export const DateTimeFormat = {
-    TimeStamp: "DD/MM/YYYY HH:mm:ss",
-    TimeStampExcludedSeconds: "DD/MM/YYYY HH:mm",
-    Date: "DD/MM/YYYY",
-    TIME_STAMP_POSTGRES: "YYYY-MM-DD HH:mm:ss",
-    TIME_STAMP_ISO: "YYYY-MM-DDTHH:mm:ssZ",
-    TIME_STAMP_POSTGRES_TZ: "YYYY-MM-DDTHH:mm:ss.SSSZ",
+  TimeStamp: "DD/MM/YYYY HH:mm:ss",
+  TimeStampExcludedSeconds: "DD/MM/YYYY HH:mm",
+  Date: "DD/MM/YYYY",
+  TIME_STAMP_POSTGRES: "YYYY-MM-DD HH:mm:ss",
+  TIME_STAMP_ISO: "YYYY-MM-DDTHH:mm:ssZ",
+  TIME_STAMP_POSTGRES_TZ: "YYYY-MM-DDTHH:mm:ss.SSSZ",
 };
 
 export const RegExps = {
-    ImageType: /^image\//,
-    IdentityNo: /^([0-9]{9}|[0-9]{12})$/,
-    PhoneNumber:
-        /^(0|84)((3[2-9])|(5[2689])|(7[06789])|(8[12345689])|(9[012346789]))\d{7}$/,
-    Email: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+  ImageType: /^image\//,
+  IdentityNo: /^([0-9]{9}|[0-9]{12})$/,
+  PhoneNumber:
+    /^(0|84)((3[2-9])|(5[2689])|(7[06789])|(8[12345689])|(9[012346789]))\d{7}$/,
+  Email:
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
 };
 
 export const AntdTableSelectionType = {
-    All: "all",
-    Single: "single",
+  All: "all",
+  Single: "single",
 };
 
 export const AntdTableLocale = {
-    emptyText: "Không có dữ liệu",
-    sortTitle: "Sắp xếp",
-    triggerAsc: "Sắp xếp tăng dần",
-    triggerDesc: "Sắp xếp giảm dần",
-    cancelSort: "Hủy sắp xếp",
+  emptyText: "Không có dữ liệu",
+  sortTitle: "Sắp xếp",
+  triggerAsc: "Sắp xếp tăng dần",
+  triggerDesc: "Sắp xếp giảm dần",
+  cancelSort: "Hủy sắp xếp",
 };
 
 export const AntdTablePagingLocale = {
-    items_per_page: "/ Trang",
-    jump_to: "Nhảy tới",
-    jump_to_confirm: "Xác nhận nhảy tới",
-    next_page: "Trang sau",
-    page: "Trang",
-    prev_page: "Trang trước",
+  items_per_page: "/ Trang",
+  jump_to: "Nhảy tới",
+  jump_to_confirm: "Xác nhận nhảy tới",
+  next_page: "Trang sau",
+  page: "Trang",
+  prev_page: "Trang trước",
 };
 
 export const EnumOrderStatuses = {
-    All: "Tất cả",
-    PENDING: "ĐANG CHỜ",
-    CONFIRMED: "ĐÃ XÁC NHẬN",
-    EXPORTED: "ĐÃ XUẤT KHO",
-    DELIVERING: "ĐANG VẬN CHUYỂN",
-    SHIPPING: "ĐANG GIAO HÀNG",
-    DELIVERED: "GIAO THÀNH CÔNG",
-    CANCELED: "HỦY ĐƠN",
-    RETURNED: "TRẢ HÀNG",
-    FAILED_DELIVERY: "GIAO THẤT BẠI",
+  All: "Tất cả",
+  PENDING: "ĐANG CHỜ",
+  CONFIRMED: "ĐÃ XÁC NHẬN",
+  EXPORTED: "ĐÃ XUẤT KHO",
+  DELIVERING: "ĐANG VẬN CHUYỂN",
+  SHIPPING: "ĐANG GIAO HÀNG",
+  DELIVERED: "GIAO THÀNH CÔNG",
+  CANCELED: "HỦY ĐƠN",
+  RETURNED: "TRẢ HÀNG",
+  FAILED_DELIVERY: "GIAO THẤT BẠI",
 };
 
 export const EnumOrderStatusesValue = {
-    All: null,
-    PENDING: 0,
-    CONFIRMED: 1,
-    EXPORTED: 2,
-    DELIVERING: 3,
-    SHIPPING: 4,
-    DELIVERED: 5,
-    FAILED_DELIVERY: 6,
-    RETURNED: 7,
-    CANCELED: -1,
+  All: null,
+  PENDING: 0,
+  CONFIRMED: 1,
+  EXPORTED: 2,
+  DELIVERING: 3,
+  SHIPPING: 4,
+  DELIVERED: 5,
+  FAILED_DELIVERY: 6,
+  RETURNED: 7,
+  CANCELED: -1,
 };
 
 export const EnumOrderColorStatuses = {
-    PENDING: "rgb(2 132 199)",
-    CONFIRMED: "#003eb3",
-    EXPORTED: "#389e0d",
-    DELIVERING: "#876800",
-    SHIPPING: "#006d75",
-    DELIVERED: "rgb(5 150 105)",
-    CANCELED: "#9e1068",
-    RETURNED: "#531dab",
-    FAILED_DELIVERY: "#f5222d",
+  PENDING: "rgb(2 132 199)",
+  CONFIRMED: "#003eb3",
+  EXPORTED: "#389e0d",
+  DELIVERING: "#876800",
+  SHIPPING: "#006d75",
+  DELIVERED: "rgb(5 150 105)",
+  CANCELED: "#9e1068",
+  RETURNED: "#531dab",
+  FAILED_DELIVERY: "#f5222d",
 };
 
 export const PaymentStatus = {
-    PENDING: "ĐANG XỬ LÝ",
-    PAID: "ĐÃ THANH TOÁN",
-    FAILED: "THẤT BẠI",
-    REFUNDED: "ĐÃ HOÀN TIỀN",
+  PENDING: "ĐANG XỬ LÝ",
+  PAID: "ĐÃ THANH TOÁN",
+  FAILED: "THẤT BẠI",
+  REFUNDED: "ĐÃ HOÀN TIỀN",
 };
 
 export const EnumPaymentStatusColors = {
-    PENDING: "rgb(2 132 199)",
-    PAID: "rgb(34 197 94)",
-    FAILED: "rgb(239 68 68)",
-    REFUNDED: "rgb(249 115 22)",
+  PENDING: "rgb(2 132 199)",
+  PAID: "rgb(34 197 94)",
+  FAILED: "rgb(239 68 68)",
+  REFUNDED: "rgb(249 115 22)",
 };
 
 export const NewsStatus = {
-    Inactive: "inactive",
-    Active: "active",
+  Inactive: "inactive",
+  Active: "active",
 };
 
 export const NewsStatusLabel = {
-    [NewsStatus.Inactive]: "Không hiển thị",
-    [NewsStatus.Active]: "Hiển thị",
+  [NewsStatus.Inactive]: "Không hiển thị",
+  [NewsStatus.Active]: "Hiển thị",
 };
 
 export const UserType = {
-    user: "Khách hàng",
-    hr: "Tuyển dụng",
-    staff: "Nhân viên",
-    sales: "Sales",
-    admin: "admin",
+  user: "Khách hàng",
+  hr: "Tuyển dụng",
+  staff: "Nhân viên",
+  sales: "Sales",
+  admin: "admin",
 };
 
 export const CustomerType = {
@@ -182,19 +183,20 @@ export const CustomerType = {
   sales: "Sales",
 };
 export const GenderType = {
-    male: "name",
-    female: "female",
-    other: "khác",
+  male: "name",
+  female: "female",
+  other: "khác",
 };
 export const WareHouseDetailMode = {
-    View: 1,
-    Add: 2,
-    Edit: 3,
+  View: 1,
+  Add: 2,
+  Edit: 3,
 };
 
 export const AUTH_STORAGE_KEYS = {
-    ACCESS_TOKEN: "hs_client_access_token",
-    REFRESH_TOKEN: "hs_client_refresh_token",
+  ACCESS_TOKEN: "hs_client_access_token",
+  REFRESH_TOKEN: "hs_client_refresh_token",
 };
+
 
 export const SUCCESS_STATUSES = [200, 201, 204];

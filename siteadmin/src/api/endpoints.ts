@@ -70,7 +70,6 @@ const endpoints = {
   },
 
   //category
-  //category
   category: {
     list: `/categories`,
     details: (id) => `/categories/${id}`,
@@ -100,12 +99,22 @@ const endpoints = {
 
   // voucher
   vouchers: {
-    list: (page, size) => `/vouchers?current=${page}&pageSize=${size}`,
-    details: (id) => `/vouchers/${id}`,
-    update: (id) => `/vouchers/${id}`,
-    delete: (id) => `/vouchers/${id}`,
-    create: () => `/vouchers`,
+    list: () => `/vourchers`,
+    details: (id) => `/vourchers/${id}`,
+    update: (id) => `/vourchers/${id}`,
+    delete: (id) => `/vourchers/${id}`,
+    create: `/vourchers`,
     upload: "/upload",
+    getList_Customer_no_voucher: (id) => `/vourchers/customer_no_voucher/${id}`,
+    give_customer_voucher: (id) => `/vourchers/give_customer/${id}`,
+  },
+  // type-coucher
+  type_voucher: {
+    list: `/type-voucher`,
+    details: (id) => `/type-voucher/${id}`,
+    update: (id) => `/type-voucher/${id}`,
+    delete: (id) => `/type-voucher/${id}`,
+    create: () => `/type-voucher`,
   },
   // role
   role: {
@@ -123,7 +132,7 @@ const endpoints = {
     details: (id) => `/permission/${id}`,
     update: (id) => `/permission/${id}`,
     delete: (id) => `/permission/${id}`,
-    create: () => `/permission`,
+    create: `/permission`,
     upload: "/upload",
   },
   // review

@@ -1,5 +1,5 @@
 import { ExportOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button } from "antd";
+import { Button, message } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import StoresSearch from "../../components/stores/StoresSearch";
@@ -44,17 +44,20 @@ const Stores = () => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const response = await getListBranch({ pageSize: null, current: null });
-      if (response.data) {
-        console.log(response);
-        setBranchs(response.data); // Cập nhật dữ liệu vào state
+      const params = {}; // Không truyền pageSize và current nếu không cần
+      const response = await getListBranch(params);
+      console.log(response);
+      if (response?.data) {        setBranchs(response.data);
+      } else {
+        message.error("Dữ liệu rỗng hoặc không hợp lệ:", response);
       }
     } catch (error) {
-      console.error("Lỗi khi lấy danh sách người dùng:", error);
+      message.error("Lỗi khi lấy danh sách chi nhánh:", error);
     } finally {
       setLoading(false);
     }
   };
+
   // Lọc danh sách người dùng khi globalFilters thay đổi
   useEffect(() => {
     if (!globalFilters) return;

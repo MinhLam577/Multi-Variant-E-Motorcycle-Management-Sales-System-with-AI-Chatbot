@@ -2,7 +2,7 @@ import axios from "axios";
 import secureLocalStorage from "react-secure-storage";
 import { keyStorageAccount } from "../constants";
 import { AccountObservable } from "../stores/account";
-import endpoints from "./endpoints.ts";
+import endpoints from "./endpoints";
 
 let isRefreshing = false;
 let refreshSubscribers = [];
