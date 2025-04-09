@@ -1,4 +1,7 @@
 const endpoints = {
+  product: {
+    getListProduct: (query: string) => "/products?" + query,
+  },
   auth: {
     login: "/auth/admin/login",
     logout: "/auth/admin/logout",
@@ -118,12 +121,14 @@ const endpoints = {
   },
   // role
   role: {
-    list: (page, size) => `/vouchers?current=${page}&pageSize=${size}`,
-    details: (id) => `/vouchers/${id}`,
-    update: (id) => `/vouchers/${id}`,
-    delete: (id) => `/vouchers/${id}`,
-    create: () => `/vouchers`,
+    list: () => `/role`,
+    details: (id) => `/role/${id}`,
+    update: (id) => `/role/update_role_permission/${id}`,
+    delete: (id) => `/role/${id}`,
+    create: () => `/role`,
     upload: "/upload",
+    // delete permission dựa vào role
+    delete_Role_Permission: (id) => `/delete_role_permision/${id}`,
   },
 
   //permission
@@ -132,6 +137,7 @@ const endpoints = {
     details: (id) => `/permission/${id}`,
     update: (id) => `/permission/${id}`,
     delete: (id) => `/permission/${id}`,
+
     create: `/permission`,
     upload: "/upload",
   },

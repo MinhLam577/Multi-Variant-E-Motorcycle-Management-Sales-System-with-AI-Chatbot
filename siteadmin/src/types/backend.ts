@@ -14,10 +14,11 @@ export interface IPermission {
 }
 
 export interface IRole {
-  _id?: string;
+  id?: string;
   name: string;
+  description: string;
   permissions: IPermission[] | string[];
-
+  isActive: boolean;
   createdBy?: string;
   isDeleted?: boolean;
   deletedAt?: boolean | null;
