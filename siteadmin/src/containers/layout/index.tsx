@@ -52,6 +52,7 @@ const BreadcrumbLabel = {
     "e-motorbike": "Xe máy điện",
     customer: "Quản lý khách hàng",
     setting: "Cấu hình",
+    role: "Role",
 };
 
 export const getBreadcrumbItems = (path: string) => {
@@ -143,6 +144,9 @@ const AppLayout = (props) => {
         getItem("Cấu hình", "20", <SettingOutlined />, null, () =>
             navigate("/setting")
         ),
+        getItem("Role", "21", <SettingOutlined />, null, () =>
+            navigate("/role")
+        ),
     ];
 
     const getBreadcrumbItems = (path) => {
@@ -201,6 +205,8 @@ const AppLayout = (props) => {
                 "/warehouse": "17",
                 "/statistic": "18",
                 "/customer": "19",
+                "/role": "21",
+                
             };
             for (let key of Object.keys(menuKeys)) {
                 if (path.startsWith(key)) {
