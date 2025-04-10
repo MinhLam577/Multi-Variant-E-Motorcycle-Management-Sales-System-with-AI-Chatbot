@@ -8,9 +8,10 @@ import {
     EnumOrderColorStatuses,
     EnumOrderStatuses,
 } from "../../constants";
-import TableComponent from "../../containers/TableComponent";
+import TableComponent from "src/containers/TableComponent";
 import { formatVNDMoney } from "../../utils";
 import { useEffect } from "react";
+import { useStore } from "src/stores";
 
 const handleCopy = (text) => {
     navigator.clipboard.writeText(text);
@@ -139,15 +140,10 @@ const getColumnsConfig = ({ handleViewOrders }) => {
         },
     ];
 };
-const OrdersTable = ({
-    globalFilters,
-    handleViewOrders,
-    data,
-    loadData,
-    order_store,
-}) => {
+const OrdersTable = ({ globalFilters, handleViewOrders, data }) => {
     const navigate = useNavigate();
-
+    const store = useStore();
+    const order_store = store.orderObservable;
     const handleViewUser = (id) => {
         navigate(`/users/${id}`, { replace: true });
     };
@@ -155,16 +151,14 @@ const OrdersTable = ({
     return (
         <>
             <TableComponent
-                filtersInput="filterOrderInput"
                 filterValue={globalFilters}
-                loadData={loadData}
                 data={data}
-                rowKey="id"
+                observableName={order_store.constructor.name}
+                loading={order_store.loading}
                 getColumnsConfig={getColumnsConfig}
                 handleViewOrders={handleViewOrders}
                 handleViewUser={handleViewUser}
                 scroll={{ y: "350px" }}
-                order_store={order_store}
             />
         </>
     );

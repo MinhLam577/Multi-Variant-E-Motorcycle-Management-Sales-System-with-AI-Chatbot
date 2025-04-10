@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { OrderStatus } from "src/stores/order";
+import { OrderStatus } from "src/stores/order.store";
 export const Language = {
     english: "en",
     vietnamese: "vi",
@@ -26,6 +26,12 @@ export const Status = {
     New: "new",
     InActive: "inactive",
     Active: "active",
+};
+
+export const StatusColor = {
+    New: "#f56a00",
+    InActive: "#7265e6",
+    Active: "#00a2ae",
 };
 
 export const EventType = {
@@ -186,9 +192,9 @@ export const UserType = {
 };
 
 export const CustomerType = {
-  user: "Khách hàng",
-  hr: "Tuyển dụng",
-  sales: "Sales",
+    user: "Khách hàng",
+    hr: "Tuyển dụng",
+    sales: "Sales",
 };
 export const GenderType = {
     male: "name",

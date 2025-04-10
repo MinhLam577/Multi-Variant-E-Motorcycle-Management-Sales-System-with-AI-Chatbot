@@ -1,6 +1,8 @@
 import moment from "moment";
 import numbro from "numbro";
 import { DateTimeFormat } from "src/constants";
+import { MessageInstance } from "antd/es/message/interface";
+import { MessageStore } from "src/stores/base";
 
 export const generateFileName = (fileName) => {
     const fileExtensions = fileName.split(".");
@@ -85,4 +87,22 @@ export const getStatusKeyByEnumType = (
         console.error(e);
         throw new Error("Invalid status or enum type when get status key");
     }
+};
+
+export const displayMessage = (
+    messageApi: MessageInstance,
+    status: number,
+    store: MessageStore,
+    isDisplaySuccess: boolean = false,
+    duration: number = 5
+) => {
+    const success_status = [200, 201, 204];
+    if (!success_status.includes(status) && store?.errorMsg) {
+        messageApi.error(store?.errorMsg, duration);
+    } else {
+        if (isDisplaySuccess && store?.successMsg) {
+            messageApi.success(store?.successMsg, duration);
+        }
+    }
+    store?.clearMessage();
 };

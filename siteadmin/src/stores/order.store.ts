@@ -1,8 +1,9 @@
 import { makeAutoObservable, toJS } from "mobx";
 import { convertDate } from "../utils";
 import { DateTimeFormat } from "../constants";
-import OrderAPI, { ExportOrder, ResponsePromise } from "../api/order";
-import { paginationData, RootStore } from "./base";
+import OrderAPI, { ExportOrder } from "../api/order.api";
+import { MessageStore, paginationData, RootStore } from "./base";
+import { ResponsePromise } from "src/api";
 
 export type OrderStatus = {
     key?: string;
@@ -27,7 +28,7 @@ export type orderData = {
     order_detail?: any;
     confirm_order_data?: ExportOrder;
 };
-export default class OrderObservable {
+export default class OrderObservable implements MessageStore {
     status: number | null = null;
     errorMsg: string | null = null;
     successMsg: string | null = null;

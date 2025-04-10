@@ -1,6 +1,5 @@
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusCircleOutlined } from "@ant-design/icons";
 import { Breadcrumb, Button } from "antd";
-import { MouseEventHandler } from "react";
 import { getBreadcrumbItems } from "src/containers/layout";
 
 interface ProductHeaderProps {
@@ -12,19 +11,19 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({ onCreateNew }) => {
         <div className="flex justify-between items-center mb-4">
             <Breadcrumb
                 style={{
-                    margin: "1rem 0",
-                    fontSize: "1.5rem",
+                    margin: "0.25rem 0 1rem 0",
                 }}
                 items={[...getBreadcrumbItems(location.pathname)]}
             />
             <div className="flex gap-2">
                 <Button
                     type="primary"
-                    icon={<PlusOutlined />}
+                    icon={<PlusCircleOutlined />}
                     onClick={onCreateNew}
                     size="large"
+                    className="!rounded-none"
                 >
-                    Tạo mới
+                    Tạo sản phẩm
                 </Button>
             </div>
         </div>

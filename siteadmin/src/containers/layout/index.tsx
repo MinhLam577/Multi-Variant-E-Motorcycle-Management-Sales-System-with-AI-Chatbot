@@ -39,10 +39,10 @@ const BreadcrumbLabel = {
     dashboard: "Tổng quan",
     profile: "Thông tin người dùng",
     users: "Quản lý Người dùng",
-    products: "Quản lý Sản phẩm",
+    cars: "Quản lý xe ô tô",
     categories: "Danh mục sản phẩm",
     categoriesnews: "Thông tin/tin tức",
-    orders: "Quản lý Đơn hàng",
+    orders: "Quản lý đơn hàng",
     add: "Tạo",
     edit: "Sửa",
     vouchers: "Quản lý vouchers",
@@ -108,9 +108,9 @@ const AppLayout = (props) => {
         getItem("Chi nhánh", "3", <ShopOutlined />, null, () =>
             navigate("/stores")
         ),
-        getItem("Sản phẩm", "4", <ShoppingOutlined />, [
+        getItem("Ô tô tải", "4", <ShoppingOutlined />, [
             getItem("Ô tô tải", "5", <TruckOutlined />, null, () =>
-                navigate("/products")
+                navigate("/cars")
             ),
             getItem("Xe máy điện", "6", <TruckOutlined />, null, () =>
                 navigate("/e-motorbike")
@@ -145,40 +145,6 @@ const AppLayout = (props) => {
         ),
     ];
 
-    const getBreadcrumbItems = (path) => {
-        if (typeof path !== "string") {
-            return [];
-        }
-
-        let arr = path
-            .split("/")
-            .map((value) => value.trim())
-            .filter((value) => value !== "");
-        let breadcrumbDataList = arr.map((value, index) => {
-            let routeArr = arr.slice(0, index + 1);
-
-            return {
-                key: index + 1,
-                href: "/" + routeArr.join("/"),
-                title: BreadcrumbLabel[value] ? BreadcrumbLabel[value] : name,
-            };
-        });
-
-        // set default to user page
-        breadcrumbDataList =
-            breadcrumbDataList.length === 0
-                ? [
-                      {
-                          key: 1,
-                          href: "/",
-                          title: BreadcrumbLabel["dashboard"],
-                      },
-                  ]
-                : breadcrumbDataList;
-
-        return breadcrumbDataList;
-    };
-
     const getSideMenuSelectedKeys = () => {
         const path = location.pathname;
         const search = location.search;
@@ -192,7 +158,7 @@ const AppLayout = (props) => {
                 "/stores": "3",
                 "/categories": "7",
                 "/categorynews": "8",
-                "/products": "5",
+                "/cars": "5",
                 "/e-motorbike": "6",
                 "/combo_product": "7",
                 "/orders": "9",
@@ -240,8 +206,10 @@ const AppLayout = (props) => {
                     collapsible
                     collapsed={collapsed}
                     onCollapse={(value) => setCollapsed(value)}
-                    width={screens.md ? 256 : 256}
+                    width={256}
                     className={collapsed ? "sider-collapsed" : "sider-expanded"}
+                    breakpoint="lg"
+                    collapsedWidth={80}
                 >
                     <div className="w-full h-16 flex justify-center flex-col items-center cursor-pointer bg-[var(--sideBar-logo-background-color)]">
                         <Logo
@@ -258,8 +226,8 @@ const AppLayout = (props) => {
                 </Sider>
                 <Layout>
                     <HeaderComponent />
-                    <Content style={{ margin: "0 1rem" }}>
-                        <div style={{ paddingRight: "16px" }}>{children}</div>
+                    <Content className="mx-6 !bg-[#f3f4f6]">
+                        <div>{children}</div>
                     </Content>
                     <Footer
                         style={{

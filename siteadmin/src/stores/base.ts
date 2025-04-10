@@ -1,18 +1,31 @@
 import AccountObservable from "./account";
-import BrandObservable from "./brand";
+import BrandObservable from "./brand.store";
 import LoginObservable from "./login";
 import EMotorbikeObservable from "./motorbike";
-import ProductObservable from "./productStore";
+import ProductObservable from "./product.store";
 import UploadImageObservable from "./uploadImage";
 import UserObservable from "./user";
-import OrderObservable from "./order";
+import OrderObservable from "./order.store";
 import PaymentMethodObservable from "./paymentMethod";
 import SkusObservable from "./skus";
+import CategoriesObservable from "./categories.store";
 
 export type paginationData = {
     current: number;
     pageSize: number;
 };
+export interface MessageStore {
+    status?: number;
+    errorMsg?: string;
+    successMsg?: string;
+    showSuccessMsg?: boolean;
+    clearMessage: () => void;
+    setStatusMessage: (
+        status: number,
+        errorMsg: string,
+        successMsg: string
+    ) => void;
+}
 export class RootStore {
     paymentMethodObservable: PaymentMethodObservable;
     orderObservable: OrderObservable;
@@ -24,7 +37,9 @@ export class RootStore {
     productObservable: ProductObservable;
     motorbikeObservable: EMotorbikeObservable;
     skusObservable: SkusObservable;
+    categoriesObservable: CategoriesObservable;
     constructor() {
+        this.categoriesObservable = new CategoriesObservable(this);
         this.paymentMethodObservable = new PaymentMethodObservable(this);
         this.skusObservable = new SkusObservable(this);
         this.orderObservable = new OrderObservable(this);

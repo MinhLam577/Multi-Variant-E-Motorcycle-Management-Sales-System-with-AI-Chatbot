@@ -115,9 +115,9 @@
 }
 
 .ant-breadcrumb a {
-    color: var(--primary-dark-color) !important;
+    color: var(--breadcrumb-color) !important;
     font-weight: 400 !important;
-    font-size: 1.3rem !important;
+    font-size: 1.25rem !important;
 }
 
 .ant-breadcrumb a:hover {

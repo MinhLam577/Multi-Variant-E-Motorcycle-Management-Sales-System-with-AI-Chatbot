@@ -27,4 +27,7 @@ code {
     --sideBar-text-color: #ffffff;
     --sideBar-item-active-color: #008f99;
     --sideBar-logo-background-color: #1d242e;
+    --content-background-color: #f2f3f5;
+    --content-table-background-color: #ffffff;
+    --breadcrumb-color: #042659;
 }

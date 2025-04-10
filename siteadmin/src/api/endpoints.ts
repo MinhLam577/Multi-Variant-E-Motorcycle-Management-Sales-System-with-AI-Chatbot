@@ -33,31 +33,6 @@ const endpoints = {
         create: "/customers",
         delete: (id) => `/customers/${id}`,
     },
-    motorbike: {
-        list: (page, size) => `/products?current=${page}&pageSize=${size}`,
-        details: (id) => `/products/${id}`,
-        //setting
-
-        // get
-        categories: "/categories",
-        color: "/color",
-        brand: "/brand",
-    },
-    cars: {
-        list: (page, size) => `/products?current=${page}&pageSize=${size}`,
-        details: (id) => `/cars/${id}`,
-        create: "/products",
-        update: (id) => `/products/${id}`,
-        delete: (id) => `/products/${id}`,
-
-        //setting
-        categories: () => `/category`,
-        color: () => `/color`,
-        brand: () => `/brand`,
-
-        //upload image
-        uploadImage: () => "/products/upload",
-    },
     showroom: {
         list: "/showrooms",
         details: (id) => `/showrooms/${id}`,
@@ -72,24 +47,13 @@ const endpoints = {
         delete: (id) => `/products/${id}`,
     },
 
-    //category
-    //category
-    category: {
+    categories: {
         list: `/categories`,
-        details: (id) => `/categories/${id}`,
-        create: "/categories",
-        update: (id) => `/categories/${id}`,
-        delete: (id) => `/categories/${id}`,
     },
 
     //brand
     brand: {
-        list: (page, size) => `/brand?current=${page}&pageSize=${size}`,
-        details: (id) => `/brand/${id}`,
-        update: (id) => `/brand/${id}`,
-        delete: (id) => `/brand/${id}`,
-        upload: "/upload",
-        create: "/branch",
+        list: (query: string) => `/brand?${query}`,
     },
 
     // branch

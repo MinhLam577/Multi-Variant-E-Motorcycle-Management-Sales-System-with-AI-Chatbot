@@ -1,3 +1,4 @@
+import { ResponsePromise } from ".";
 import apiClient from "./apiClient";
 import endpoints from "./endpoints";
 const orderEndpoints = endpoints.order;
@@ -14,12 +15,6 @@ export interface ExportOrder {
     order_id: string;
     detail_export: CreateDetailExport[];
 }
-
-export type ResponsePromise = {
-    status: number;
-    message: string;
-    data: any;
-};
 
 const OrderAPI: {
     getOrderList: (query: string) => Promise<ResponsePromise>;

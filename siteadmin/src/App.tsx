@@ -22,12 +22,8 @@ import News from "./pages/news";
 import NewsDetail, { NewsDetailMode } from "./pages/news/NewsDetail";
 import Notification from "./pages/notifications";
 import Orders from "./pages/orders";
-import OrderDetail, { OrderDetailMode } from "./pages/orders/OrderDetail";
 import { ProductUnitsDetailMode } from "./pages/product_units/ProductUnitsDetail";
-import Products from "./pages/products";
-import ProductsDetail, {
-    ProductsDetailMode,
-} from "./pages/products/ProductsDetail";
+import Cars from "./pages/cars";
 import Statistic from "./pages/statistic";
 import Stores from "./pages/stores";
 import StoresDetail, { StoresDetailMode } from "./pages/stores/StoresDetail";
@@ -308,40 +304,10 @@ function App() {
                                     }
                                 />
                                 <Route
-                                    path="/products"
+                                    path="/cars"
                                     element={
                                         <ProtectedRoute>
-                                            <Products />
-                                        </ProtectedRoute>
-                                    }
-                                />
-                                <Route
-                                    path="/products/add"
-                                    element={
-                                        <ProtectedRoute>
-                                            <ProductsDetail
-                                                mode={ProductsDetailMode.Add}
-                                            />
-                                        </ProtectedRoute>
-                                    }
-                                />
-                                <Route
-                                    path="/products/:id"
-                                    element={
-                                        <ProtectedRoute>
-                                            <ProductsDetail
-                                                mode={ProductsDetailMode.View}
-                                            />
-                                        </ProtectedRoute>
-                                    }
-                                />
-                                <Route
-                                    path="/products/:id/edit"
-                                    element={
-                                        <ProtectedRoute>
-                                            <ProductsDetail
-                                                mode={ProductsDetailMode.Edit}
-                                            />
+                                            <Cars />
                                         </ProtectedRoute>
                                     }
                                 />
@@ -424,108 +390,108 @@ function App() {
                                     }
                                 />
 
-                <Route
-                  path="/categorynews/:id/news"
-                  element={
-                    <ProtectedRoute>
-                      <News />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/categorynews/:id/news/add"
-                  element={
-                    <ProtectedRoute>
-                      <NewsDetail mode={NewsDetailMode.Add} />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/categorynews/:id/news/:idblog"
-                  element={
-                    <ProtectedRoute>
-                      <NewsDetail mode={NewsDetailMode.View} />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/categorynews/:id/news/:idblog/edit"
-                  element={
-                    <ProtectedRoute>
-                      <NewsDetail mode={NewsDetailMode.Edit} />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/orders"
-                  element={
-                    <ProtectedRoute>
-                      <Orders />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/orders/:id"
-                  element={
-                    <ProtectedRoute>
-                      <OrderDetail mode={OrderDetailMode.View} />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/orders/:id/edit"
-                  element={
-                    <ProtectedRoute>
-                      <OrderDetail mode={OrderDetailMode.Edit} />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/yeu-cau-xoa-tai-khoan"
-                  element={<DeleteUser mode={OrderDetailMode.Edit} />}
-                />
+                                <Route
+                                    path="/categorynews/:id/news"
+                                    element={
+                                        <ProtectedRoute>
+                                            <News />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/categorynews/:id/news/add"
+                                    element={
+                                        <ProtectedRoute>
+                                            <NewsDetail
+                                                mode={NewsDetailMode.Add}
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/categorynews/:id/news/:idblog"
+                                    element={
+                                        <ProtectedRoute>
+                                            <NewsDetail
+                                                mode={NewsDetailMode.View}
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/categorynews/:id/news/:idblog/edit"
+                                    element={
+                                        <ProtectedRoute>
+                                            <NewsDetail
+                                                mode={NewsDetailMode.Edit}
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/orders"
+                                    element={
+                                        <ProtectedRoute>
+                                            <Orders />
+                                        </ProtectedRoute>
+                                    }
+                                />
 
-                <Route
-                  path="/e-motorbike"
-                  element={
-                    <ProtectedRoute>
-                      <EMotorbike />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/e-motorbike/add"
-                  element={
-                    <ProtectedRoute>
-                      <EMotorbikeDetail mode={ProductUnitsDetailMode.Add} />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/e-motorbike/:id"
-                  element={
-                    <ProtectedRoute>
-                      <EMotorbikeDetail mode={ProductUnitsDetailMode.View} />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/e-motorbike/:id/edit"
-                  element={
-                    <ProtectedRoute>
-                      <EMotorbikeDetail mode={ProductUnitsDetailMode.Edit} />
-                    </ProtectedRoute>
-                  }
-                />
+                                <Route
+                                    path="/e-motorbike"
+                                    element={
+                                        <ProtectedRoute>
+                                            <EMotorbike />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/e-motorbike/add"
+                                    element={
+                                        <ProtectedRoute>
+                                            <EMotorbikeDetail
+                                                mode={
+                                                    ProductUnitsDetailMode.Add
+                                                }
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/e-motorbike/:id"
+                                    element={
+                                        <ProtectedRoute>
+                                            <EMotorbikeDetail
+                                                mode={
+                                                    ProductUnitsDetailMode.View
+                                                }
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/e-motorbike/:id/edit"
+                                    element={
+                                        <ProtectedRoute>
+                                            <EMotorbikeDetail
+                                                mode={
+                                                    ProductUnitsDetailMode.Edit
+                                                }
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
 
-                <Route
-                  path="/setting"
-                  element={
-                    <ProtectedRoute>
-                      <NewsDetail mode={NewsDetailMode.Edit} />
-                    </ProtectedRoute>
-                  }
-                />
+                                <Route
+                                    path="/setting"
+                                    element={
+                                        <ProtectedRoute>
+                                            <NewsDetail
+                                                mode={NewsDetailMode.Edit}
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
 
                                 <Route path="/:404" element={<Page404 />} />
                             </Routes>

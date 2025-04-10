@@ -7,7 +7,7 @@ import OrderDetail from "./OrderDetail";
 import { useStore } from "../../stores";
 import { observer } from "mobx-react-lite";
 import OrderStatusSearch from "../../components/orders/OrderStatusSearch";
-import { convertDate } from "../../utils";
+import { convertDate, displayMessage } from "../../utils";
 import { reaction } from "mobx";
 
 const Orders = () => {
@@ -38,12 +38,13 @@ const Orders = () => {
             );
         }
     };
+
     useEffect(() => {
         fetchData();
     }, []);
 
     useEffect(() => {
-        const reaction_status = reaction(
+        const orderStatusReaction = reaction(
             () => ({
                 status: orderStore.status,
                 showSuccessMsg: orderStore.showSuccessMsg,
@@ -51,28 +52,22 @@ const Orders = () => {
             (current_status) => {
                 if (!current_status) return;
                 const { status, showSuccessMsg } = current_status;
-                displayMessage(status, orderStore, showSuccessMsg || false);
+                displayMessage(
+                    messageApi,
+                    status,
+                    orderStore,
+                    showSuccessMsg,
+                    5
+                );
             }
         );
         return () => {
-            reaction_status();
+            orderStatusReaction();
         };
     }, []);
 
     const loadData = async (query) => {
         await fetchData(query);
-    };
-
-    const displayMessage = (status, orderStore, isDisplaySuccess) => {
-        const success_status = [200, 201, 204];
-        if (!success_status.includes(status) && orderStore.errorMsg) {
-            messageApi.error(orderStore.errorMsg, 5);
-        } else {
-            if (isDisplaySuccess && orderStore.successMsg) {
-                messageApi.success(orderStore.successMsg, 5);
-            }
-        }
-        orderStore.clearMessage();
     };
 
     const handleViewOrders = async (id) => {
@@ -96,10 +91,6 @@ const Orders = () => {
 
         // Kiểm tra dữ liệu đầu vào
         if (!Array.isArray(filteredData)) {
-            console.error(
-                "orderStore.data.orders is not an array:",
-                filteredData
-            );
             filteredData = [];
         }
         filteredData = filteredData.filter((order) => {
@@ -259,7 +250,6 @@ const Orders = () => {
                         handleCancelOrderStatus={handleCancelOrderStatus}
                         handleFailedDelivery={handleFailedDelivery}
                         handleReturnOrder={handleReturnOrder}
-                        displayMessage={displayMessage}
                     />
                 </Drawer>
                 <OrdersTable
