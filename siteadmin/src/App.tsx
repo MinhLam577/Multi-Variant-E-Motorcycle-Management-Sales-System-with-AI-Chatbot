@@ -38,6 +38,9 @@ import { StoreProvider } from "./stores";
 import GlobalProvider from "./contexts/global";
 import CustomerDetail from "./pages/customers/CustomerDetail";
 
+import PermissionPage from "./pages/permission/permission";
+import RolePage from "./pages/role/role";
+// import Role from
 import CategoriesNews from "./pages/categoriesNews";
 import CategoriesNewsDetail from "./pages/categoriesNews/CategoriesNewsDetail";
 function App() {
@@ -486,9 +489,15 @@ function App() {
                                     path="/setting"
                                     element={
                                         <ProtectedRoute>
-                                            <NewsDetail
-                                                mode={NewsDetailMode.Edit}
-                                            />
+                                            <PermissionPage />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/role"
+                                    element={
+                                        <ProtectedRoute>
+                                            <RolePage />
                                         </ProtectedRoute>
                                     }
                                 />

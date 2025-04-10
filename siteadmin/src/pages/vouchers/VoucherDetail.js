@@ -12,15 +12,20 @@ import {
   Form,
   Input,
   InputNumber,
+  message,
   Select,
 } from "antd";
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import {
   ProcessModalName,
   processWithModals,
 } from "../../containers/processWithModals";
+import { useStore } from "../../stores";
+import dayjs from "dayjs";
+import { DateTimeFormat } from "../../constants";
+import { observer } from "mobx-react-lite";
 
 export const VoucherDetailMode = {
   View: 1,
@@ -37,8 +42,34 @@ const formItemLayout = {
   },
 };
 
-const VoucherDetail = ({ mode }) => {
+const VoucherDetail = observer(({ mode }) => {
   const { id } = useParams();
+
+  const store = useStore();
+  const voucherStore = store.voucherObservable;
+  useEffect(() => {
+    console.log("user effect ");
+    fetchVoucherDetail();
+  }, [id]);
+
+  // Khi `voucherStore.dataDetail` thay đổi, cập nhật form
+  useEffect(() => {
+    if (voucherStore.dataDetail && mode !== VoucherDetailMode.Add) {
+      form.setFieldsValue({
+        ...voucherStore.dataDetail,
+        type_voucher_id: voucherStore.dataDetail?.type_voucher?.id,
+        start_date: dayjs(voucherStore.dataDetail.start_date),
+        end_date: dayjs(voucherStore.dataDetail.end_date),
+      });
+    }
+
+    // }
+  }, [voucherStore.dataDetail]);
+
+  const fetchVoucherDetail = async () => {
+    await voucherStore.getVoucherDetail(id);
+    await voucherStore.getListTypeVoucher();
+  };
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
@@ -141,7 +172,46 @@ const VoucherDetail = ({ mode }) => {
     }
   };
 
-  const handleFormFinish = (values) => {};
+  const handleFormFinish = async (values) => {
+    try {
+      const { discountId, ...data } = values;
+      // Chuyển discount_amount từ chuỗi (với dấu phẩy) sang số
+      const discountAmount =
+        typeof data.discount_amount === "string"
+          ? parseFloat(data.discount_amount.replace(/,/g, "")) // Loại bỏ dấu phẩy và chuyển thành số
+          : data.discount_amount;
+      const object = {
+        ...data,
+        discount_amount: discountAmount, // Truyền giá trị discount_amount đã chuyển thành số
+        start_date: dayjs(values.start_date).format(
+          DateTimeFormat.TIME_STAMP_POSTGRES_TZ
+        ),
+        end_date: dayjs(values.end_date).format(
+          DateTimeFormat.TIME_STAMP_POSTGRES_TZ
+        ),
+      };
+      console.log(object);
+      if (mode === VoucherDetailMode.Add) {
+        await voucherStore.createVoucher(object);
+        if (voucherStore.status == 200) {
+          message.success(voucherStore.successMsg);
+          navigate("/vouchers");
+        } else {
+          message.error(voucherStore.errorMsg);
+        }
+      } else {
+        // gọi api chỉnh sửa
+        console.log(values);
+        await voucherStore.editVoucher(id, object);
+        if (voucherStore.status == 200) {
+          message.success(voucherStore.successMsg);
+          navigate("/vouchers");
+        } else {
+          message.error(voucherStore.errorMsg);
+        }
+      }
+    } catch (error) {}
+  };
 
   return (
     <>
@@ -153,50 +223,87 @@ const VoucherDetail = ({ mode }) => {
           autoComplete="off"
           onFinish={handleFormFinish}
         >
-          <Form.Item name="discountId" hidden>
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Mã giảm giá"
-            name="discountCode"
-            rules={[{ required: true, message: "Vui lòng nhập mã giảm giá!" }]}
-          >
-            <Input readOnly={isReadOnly()} placeholder="Nhập mã giảm giá" />
-          </Form.Item>
-          <Form.Item
-            label="Tên giảm giá"
-            name="discountName"
-            rules={[{ required: true, message: "Hãy nhập tên giảm giá!" }]}
-          >
-            <Input readOnly={isReadOnly()} placeholder="Nhập tên giảm giá" />
-          </Form.Item>
-          <Form.Item
-            label="Loại giảm giá"
-            name="discountType"
-            rules={[
-              { required: true, message: "Vui lòng chọn loại giảm giá!" },
-            ]}
-          >
-            <Select
-              disabled={isReadOnly()}
-              options={[
-                {
-                  value: "ORDER",
-                  label: "ORDER",
-                },
-                {
-                  value: "SHIPPING",
-                  label: "SHIPPING",
-                },
+          <div className="grid grid-cols-2 gap-4">
+            <Form.Item name="discountId" hidden>
+              <Input />
+            </Form.Item>
+            <Form.Item
+              label="Mã giảm giá"
+              name="voucher_code"
+              rules={[
+                { required: true, message: "Vui lòng nhập mã giảm giá!" },
               ]}
-              placeholder="Chọn loại giảm giá"
-              optionFilterProp="label"
-            />
+            >
+              <Input readOnly={isReadOnly()} placeholder="Nhập mã giảm giá" />
+            </Form.Item>
+            <Form.Item
+              label="Tên giảm giá"
+              name="voucher_name"
+              rules={[{ required: true, message: "Hãy nhập tên giảm giá!" }]}
+            >
+              <Input readOnly={isReadOnly()} placeholder="Nhập tên giảm giá" />
+            </Form.Item>
+          </div>
+
+          <Form.Item
+            label="Mô tả"
+            name="description"
+            rules={[{ required: true, message: "Hãy mô tả!" }]}
+          >
+            <Input readOnly={isReadOnly()} placeholder="Nhập mô tả" />
           </Form.Item>
-          <div className="grid lg:grid-cols-3 gap-4">
+
+          <div className="grid lg:grid-cols-2 gap-4">
+            <Form.Item
+              label="Loại giảm giá"
+              name="type_voucher_id"
+              rules={[
+                { required: true, message: "Vui lòng chọn loại giảm giá!" },
+              ]}
+            >
+              <Select
+                disabled={isReadOnly()}
+                options={
+                  voucherStore?.typeVoucher?.map((item) => ({
+                    value: item.id,
+                    label: item.name_type_voucher,
+                  })) || []
+                }
+                placeholder="Chọn loại giảm giá"
+                optionFilterProp="label"
+              />
+            </Form.Item>
+
+            <Form.Item
+              label="Số lượng voucher"
+              name="limit"
+              rules={[{ required: true, message: "Vui lòng nhập số lượng!" }]}
+            >
+              <InputNumber
+                className="w-full"
+                min={0}
+                placeholder="Vui lòng nhập số số lượng!"
+                readOnly={isReadOnly()}
+              />
+            </Form.Item>
+            <Form.Item
+              label="Giảm giá theo % "
+              name="fixed"
+              rules={[{ required: true, message: "Hãy chọn trạng thái!" }]}
+            >
+              <Select
+                disabled={isReadOnly()}
+                options={[
+                  { value: true, label: "TRUE" },
+                  { value: false, label: "FALSE" },
+                ]}
+                placeholder="Chọn trạng thái"
+                optionFilterProp="label"
+              />
+            </Form.Item>
             <Form.Item
               label="Giá trị giảm giá"
-              name="discountValue"
+              name="discount_amount"
               rules={[
                 { required: true, message: "Vui lòng nhập giá trị giảm giá!" },
               ]}
@@ -208,40 +315,7 @@ const VoucherDetail = ({ mode }) => {
                 formatter={(value) =>
                   `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
                 }
-                readOnly={isReadOnly()}
-              />
-            </Form.Item>
-            <Form.Item
-              label="Tổng giá trị đơn hàng tối thiểu"
-              name="minOrderTotalPrice"
-              rules={[
-                {
-                  required: true,
-                  message: "Vui lòng nhập tổng giá trị đơn hàng tối thiểu!",
-                },
-              ]}
-            >
-              <InputNumber
-                className="w-full"
-                min={0}
-                placeholder="Vui lòng nhập tổng giá trị đơn hàng tối thiểu"
-                formatter={(value) =>
-                  `${value} đ`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                }
-                readOnly={isReadOnly()}
-              />
-            </Form.Item>
-            <Form.Item
-              label="Số lần trong ngày"
-              name="timesInDate"
-              rules={[
-                { required: true, message: "Vui lòng nhập số lần trong ngày!" },
-              ]}
-            >
-              <InputNumber
-                className="w-full"
-                min={0}
-                placeholder="Vui lòng nhập số lần trong ngày!"
+                parser={(value) => value.replace(/\$\s?|(,*)/g, "")} // Lấy giá trị số mà không có dấu phẩy
                 readOnly={isReadOnly()}
               />
             </Form.Item>
@@ -249,7 +323,7 @@ const VoucherDetail = ({ mode }) => {
           <div className="grid lg:grid-cols-3 gap-4">
             <Form.Item
               label="Ngày bắt đầu"
-              name="fromDate"
+              name="start_date"
               rules={[
                 { required: true, message: "Vui lòng chọn ngày bắt đầu!" },
               ]}
@@ -258,7 +332,7 @@ const VoucherDetail = ({ mode }) => {
             </Form.Item>
             <Form.Item
               label="Ngày kết thúc"
-              name="toDate"
+              name="end_date"
               rules={[
                 { required: true, message: "Vui lòng chọn ngày kết thúc!" },
               ]}
@@ -266,6 +340,7 @@ const VoucherDetail = ({ mode }) => {
               <DatePicker disabled={isReadOnly()} className="w-full" showTime />
             </Form.Item>
           </div>
+
           <Form.Item
             label="Trạng thái"
             name="status"
@@ -274,8 +349,8 @@ const VoucherDetail = ({ mode }) => {
             <Select
               disabled={isReadOnly()}
               options={[
-                { value: "ACTIVE", label: "Hoạt động" },
-                { value: "INACTIVE", label: "Ngưng hoạt động" },
+                { value: "active", label: "Hoạt động" },
+                { value: "inactive", label: "Ngưng hoạt động" },
               ]}
               placeholder="Chọn trạng thái"
               optionFilterProp="label"
@@ -299,10 +374,46 @@ const VoucherDetail = ({ mode }) => {
       </Card>
     </>
   );
-};
+});
 
 VoucherDetail.propTypes = {
   mode: PropTypes.number,
 };
 
 export default VoucherDetail;
+// <Form.Item
+//   label="Ngày bắt đầu"
+//   name="start_date"
+//   rules={[
+//     { required: true, message: "Vui lòng chọn ngày bắt đầu!" },
+//   ]}
+// >
+//   <DatePicker disabled={isReadOnly()} className="w-full" showTime />
+// </Form.Item>
+// <Form.Item
+//   label="Ngày kết thúc"
+//   name="end_date"
+//   rules={[
+//     { required: true, message: "Vui lòng chọn ngày kết thúc!" },
+//   ]}
+// >
+//   <DatePicker disabled={isReadOnly()} className="w-full" showTime />
+// </Form.Item>
+// formatter={(value) =>
+//   `${value} `.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+// }
+// <Form.Item
+//               label="Khách hàng nhận voucher"
+//               name="status"
+//               rules={[{ required: true, message: "Hãy chọn trạng thái!" }]}
+//             >
+//               <Select
+//                 disabled={isReadOnly()}
+//                 options={[
+//                   { value: "ACTIVE", label: "Hoạt động" },
+//                   { value: "INACTIVE", label: "Ngưng hoạt động" },
+//                 ]}
+//                 placeholder="Chọn trạng thái"
+//                 optionFilterProp="label"
+//               />
+//             </Form.Item>

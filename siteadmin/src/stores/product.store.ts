@@ -32,9 +32,61 @@ export type ProductType =
       }[]
     | null;
 
+export type CreateProductSpecificationDto = {
+    name: string;
+    value: string;
+};
+
+export type VariantCombinationDto = {
+    option_id: string;
+    value: string;
+};
+
+export type SkusDetailImportDto = {
+    warehouse_id: string;
+    quantity_import: number;
+    price_import: number;
+};
+
+export type CreateSkusDto = {
+    masku?: string;
+    barcode?: string;
+    name?: string;
+    image?: string;
+    price_sold: number;
+    price_compare: number;
+    variants?: VariantCombinationDto[];
+    detail_import: SkusDetailImportDto[];
+};
+
+export type CreateProductVariantDto = {
+    type: EnumProductStore;
+    slug_product: string;
+    title: string;
+    description?: string;
+    brand_id: string;
+    category_id: string;
+    specifications?: CreateProductSpecificationDto[];
+    images?: string[];
+    skus: CreateSkusDto[];
+};
+
+export type CreateProductDto = {
+    type: EnumProductStore;
+    slug_product: string;
+    title: string;
+    description?: string;
+    brand_id: string;
+    category_id: string;
+    specifications?: CreateProductSpecificationDto[];
+    images?: string[];
+    skus: CreateSkusDto[];
+};
+
 type ProductData = {
     cars: {
         data: ProductType;
+        createProductData: CreateProductDto | null;
     };
     motobikes: {
         data: ProductType;
@@ -55,6 +107,7 @@ class ProductObservable implements MessageStore {
     data: ProductData = {
         cars: {
             data: null,
+            createProductData: null,
         },
         motobikes: {
             data: null,

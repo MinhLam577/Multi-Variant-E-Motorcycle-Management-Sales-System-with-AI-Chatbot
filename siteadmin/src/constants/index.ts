@@ -133,7 +133,6 @@ export const EnumOrderSteps = {
     SHIPPING: "GIAO HÀNG",
 };
 
-// order-status.ts
 export enum EnumOrderStatusesValue {
     All = null as any,
     PENDING = 0,
@@ -201,6 +200,7 @@ export const GenderType = {
     female: "female",
     other: "khác",
 };
+
 export const WareHouseDetailMode = {
     View: 1,
     Add: 2,
@@ -213,3 +213,5 @@ export const AUTH_STORAGE_KEYS = {
 };
 
 export const SUCCESS_STATUSES = [200, 201, 204];
+
+export const AcceptImageTypes = ["image/jpeg", "image/png", "image/jpg"];

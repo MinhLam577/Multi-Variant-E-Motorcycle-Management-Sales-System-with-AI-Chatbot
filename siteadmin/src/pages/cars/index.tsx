@@ -8,6 +8,7 @@ import { useStore } from "../../stores";
 import { observer } from "mobx-react-lite";
 import { paginationData } from "src/stores/base";
 import {
+    CreateProductDto,
     EnumProductStore,
     EnumProductType,
     globalFilterType,
@@ -19,6 +20,7 @@ import { reaction, set, toJS } from "mobx";
 import { displayMessage } from "src/utils";
 import { CategoriesType } from "src/stores/categories.store";
 import { BrandType } from "src/stores/brand.store";
+import ModalCreateProduct from "src/components/products/ModalCreateProduct";
 
 type product_brand_type = {
     id: string;
@@ -153,7 +155,39 @@ const Cars = () => {
     }, []);
 
     const [form] = Form.useForm();
-    const handleCreateNewProduct = () => {};
+    const handleCreateNewProduct = () => {
+        setIsOpenCreateProductModal(true);
+    };
+
+    // Create new product
+    const [isOpenCreateProductModal, setIsOpenCreateProductModal] =
+        useState(false);
+    const handleSaveCreateProductModal = async () => {
+        try {
+            const values = await createProductForm.validateFields();
+            const { brand_id, category_id, title, description } = values;
+            console.log("values", values);
+        } catch (e) {
+            const errorMessage =
+                e &&
+                typeof e === "object" &&
+                "errorFields" in e &&
+                Array.isArray(e.errorFields)
+                    ? e.errorFields
+                          .map((item) => item?.errors)
+                          ?.flat()
+                          ?.join(", ")
+                    : e instanceof Error
+                      ? e.message
+                      : "Có lỗi xảy ra lưu trong quá trình tạo mới sản phẩm";
+
+            productStore.setStatusMessage(400, errorMessage, "");
+        }
+    };
+    const handleCloseCreateProductModal = () => {
+        setIsOpenCreateProductModal(false);
+    };
+    const [createProductForm] = Form.useForm<CreateProductDto>();
     return (
         <section className="w-full">
             {contextHolder}
@@ -176,6 +210,19 @@ const Cars = () => {
                         brandSelectData={getBrandSelect(brandStore.data)}
                     />
                 </div>
+                <ModalCreateProduct
+                    isOpen={isOpenCreateProductModal}
+                    onClose={handleCloseCreateProductModal}
+                    onSave={handleSaveCreateProductModal}
+                    okText="Tạo mới"
+                    cancelText="Hủy"
+                    form={createProductForm}
+                    categorySelectData={getCategoriesTreeSelect(
+                        categoriesStore.data
+                    )}
+                    brandSelectData={getBrandSelect(brandStore.data)}
+                />
+
                 <ProductsTable data={filterData} />
             </div>
         </section>

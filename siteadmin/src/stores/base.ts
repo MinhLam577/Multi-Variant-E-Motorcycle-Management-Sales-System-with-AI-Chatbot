@@ -14,6 +14,8 @@ export type paginationData = {
     current: number;
     pageSize: number;
 };
+import VoucherObservable from "./voucher";
+import SettingObservable from "./setting";
 export interface MessageStore {
     status?: number;
     errorMsg?: string;
@@ -26,7 +28,12 @@ export interface MessageStore {
         successMsg: string
     ) => void;
 }
-export class RootStore {
+export class RootStore implements MessageStore {
+    status: number = null;
+    errorMsg: string = null;
+    successMsg: string = null;
+    showSuccessMsg: boolean = false;
+
     paymentMethodObservable: PaymentMethodObservable;
     orderObservable: OrderObservable;
     accountObservable: AccountObservable;
@@ -37,6 +44,8 @@ export class RootStore {
     productObservable: ProductObservable;
     motorbikeObservable: EMotorbikeObservable;
     skusObservable: SkusObservable;
+    voucherObservable: VoucherObservable;
+    settingObservable: SettingObservable;
     categoriesObservable: CategoriesObservable;
     constructor() {
         this.categoriesObservable = new CategoriesObservable(this);
@@ -50,5 +59,24 @@ export class RootStore {
         this.brandObservable = new BrandObservable(this);
         this.productObservable = new ProductObservable(this);
         this.motorbikeObservable = new EMotorbikeObservable(this);
+        this.voucherObservable = new VoucherObservable(this);
+        this.settingObservable = new SettingObservable(this);
+    }
+    clearMessage() {
+        this.status = null;
+        this.errorMsg = null;
+        this.successMsg = null;
+        this.showSuccessMsg = false;
+    }
+    setStatusMessage(
+        status: number,
+        errorMsg: string,
+        successMsg: string,
+        showSuccessMsg: boolean = false
+    ) {
+        if (status) this.status = status;
+        if (errorMsg) this.errorMsg = errorMsg;
+        if (successMsg) this.successMsg = successMsg;
+        this.showSuccessMsg = showSuccessMsg;
     }
 }

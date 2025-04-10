@@ -23,7 +23,7 @@ export const getBase64 = (file) =>
     new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
+        reader.onload = () => resolve(reader.result as string);
         reader.onerror = (error) => reject(error);
     });
 
@@ -105,4 +105,75 @@ export const displayMessage = (
         }
     }
     store?.clearMessage();
+};
+
+export const calculateImageSize = (
+    width: number,
+    height: number,
+    maxHeight: number,
+    maxWidth: number
+) => {
+    if (width <= 0 || height <= 0) {
+        return { width: maxWidth, height: maxHeight }; // Giá trị mặc định
+    }
+
+    // Nếu ảnh nhỏ hơn giới hạn, giữ nguyên kích thước
+    if (width <= maxWidth && height <= maxHeight) {
+        return { width, height };
+    }
+    const ratio = Math.min(maxWidth / width, maxHeight / height);
+
+    return {
+        width: Math.round(width * ratio),
+        height: Math.round(height * ratio),
+    };
+};
+
+export const getImageSize = async (file: File) => {
+    return new Promise<{ width: number; height: number }>((resolve, reject) => {
+        const img = new Image();
+        img.src = URL.createObjectURL(file);
+        img.onload = () => {
+            resolve({ width: img.width, height: img.height });
+        };
+        img.onerror = (error) => {
+            reject(error);
+        };
+        URL.revokeObjectURL(img.src);
+    });
+};
+
+export const resizeImage = (
+    file: File,
+    width: number,
+    height: number,
+    quality: number = 1.0
+): Promise<File> => {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.src = URL.createObjectURL(file);
+        img.onload = () => {
+            const canvas = document.createElement("canvas");
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext("2d");
+            if (ctx) {
+                ctx.drawImage(img, 0, 0, width, height);
+                canvas.toBlob(
+                    (blob) => {
+                        if (blob) {
+                            const resizedFile = new File([blob], file.name, {
+                                type: file.type,
+                                lastModified: Date.now(),
+                            });
+                            resolve(resizedFile);
+                        }
+                    },
+                    file.type,
+                    quality
+                );
+            }
+            URL.revokeObjectURL(img.src);
+        };
+    });
 };

@@ -1,0 +1,73 @@
+.modal-create-product .ant-modal-header > .ant-modal-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--breadcrumb-color);
+}
+
+.modal-create-product .ant-modal-header {
+    background-color: #f2f3f5;
+    margin-bottom: 1.125rem;
+}
+.modal-create-product .ant-modal-content {
+    background-color: #f2f3f5;
+}
+
+.ant-spin-fullscreen {
+    z-index: 2000 !important;
+}
+
+.ql-editor {
+    height: 100% !important;
+    overflow: scroll !important;
+    padding-bottom: 16px !important;
+}
+
+.ql-container {
+    height: calc(100% - 2.5rem) !important;
+    overflow: hidden;
+    border: none !important;
+}
+
+.ql-toolbar {
+    border: none !important;
+    border-bottom: 1px solid var(--border-gray) !important;
+    height: 2.5rem !important;
+}
+
+.editor-container:has(.ql-editor:focus):not(:has(.ql-fullscreenActive)) {
+    border: 1px solid var(--primary-blue-color) !important;
+    box-shadow: 0 0 0 2px rgba(5, 145, 255, 0.1) !important;
+}
+
+.editor-container:has(.ql-editor:focus):not(:has(.ql-fullscreenActive))
+    .ql-toolbar {
+    border: none !important;
+    border-bottom: 1px solid var(--primary-blue-color) !important;
+    box-shadow: 0 0 0 2px rgba(5, 145, 255, 0.1) !important;
+}
+
+.ql-fullscreen:focus > svg,
+.ql-fullscreen:hover > svg {
+    color: var(--primary-blue-color) !important;
+}
+
+.editor-container:has(.ql-fullscreenActive) {
+    width: 100vw !important;
+    height: 100vh !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 9999 !important;
+    background-color: #f2f3f5 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0px !important;
+}
+
+.editor-container:has(.ql-fullscreenActive) .ql-toolbar {
+    z-index: 10000;
+    border: none !important;
+    border-bottom: 1px solid rgb(0, 0, 0, 0.3) !important;
+}

@@ -1,6 +1,10 @@
 const endpoints = {
+    base: {
+        uploadImagesToServer: "/products/upload/multipleImage",
+    },
     product: {
         getListProduct: (query: string) => "/products?" + query,
+        uploadImagesToServer: "/products/upload/multipleImage",
     },
     auth: {
         login: "/auth/admin/login",
@@ -67,21 +71,34 @@ const endpoints = {
 
     // voucher
     vouchers: {
-        list: (page, size) => `/vouchers?current=${page}&pageSize=${size}`,
-        details: (id) => `/vouchers/${id}`,
-        update: (id) => `/vouchers/${id}`,
-        delete: (id) => `/vouchers/${id}`,
-        create: () => `/vouchers`,
+        list: () => `/vourchers`,
+        details: (id) => `/vourchers/${id}`,
+        update: (id) => `/vourchers/${id}`,
+        delete: (id) => `/vourchers/${id}`,
+        create: `/vourchers`,
         upload: "/upload",
+        getList_Customer_no_voucher: (id) =>
+            `/vourchers/customer_no_voucher/${id}`,
+        give_customer_voucher: (id) => `/vourchers/give_customer/${id}`,
+    },
+    // type-coucher
+    type_voucher: {
+        list: `/type-voucher`,
+        details: (id) => `/type-voucher/${id}`,
+        update: (id) => `/type-voucher/${id}`,
+        delete: (id) => `/type-voucher/${id}`,
+        create: () => `/type-voucher`,
     },
     // role
     role: {
-        list: (page, size) => `/vouchers?current=${page}&pageSize=${size}`,
-        details: (id) => `/vouchers/${id}`,
-        update: (id) => `/vouchers/${id}`,
-        delete: (id) => `/vouchers/${id}`,
-        create: () => `/vouchers`,
+        list: () => `/role`,
+        details: (id) => `/role/${id}`,
+        update: (id) => `/role/update_role_permission/${id}`,
+        delete: (id) => `/role/${id}`,
+        create: () => `/role`,
         upload: "/upload",
+        // delete permission dựa vào role
+        delete_Role_Permission: (id) => `/delete_role_permision/${id}`,
     },
 
     //permission
@@ -90,7 +107,8 @@ const endpoints = {
         details: (id) => `/permission/${id}`,
         update: (id) => `/permission/${id}`,
         delete: (id) => `/permission/${id}`,
-        create: () => `/permission`,
+
+        create: `/permission`,
         upload: "/upload",
     },
     // review

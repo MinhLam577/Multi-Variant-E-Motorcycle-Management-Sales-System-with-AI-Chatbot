@@ -53,5 +53,6 @@ module.exports = {
         "no-empty-function": "off",
         "react/prop-types": "off",
         "no-useless-catch": "off",
+        "no-useless-escape": "off",
     },
 };

@@ -6,6 +6,7 @@ import React from "react";
 import { useStore } from "src/stores";
 import { toJS } from "mobx";
 import { Status, StatusColor } from "src/constants";
+import { observer } from "mobx-react-lite";
 const { useBreakpoint } = Grid;
 const getColumnsConfig = ({
     handleEditProducts,
@@ -202,4 +203,4 @@ const ProductsTable: React.FC<IProductsTableProps> = ({ data }) => {
     );
 };
 
-export default ProductsTable;
+export default observer(ProductsTable);
