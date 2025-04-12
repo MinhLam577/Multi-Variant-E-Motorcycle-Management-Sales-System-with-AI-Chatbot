@@ -1,0 +1,4 @@
+/* Ẩn ô input và chữ "Trang" */
+.ant-pagination-options-quick-jumper {
+  display: none !important;
+}

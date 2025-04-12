@@ -47,6 +47,8 @@ import RolePage from "./pages/role/role";
 // import Role from
 import CategoriesNews from "./pages/categoriesNews";
 import CategoriesNewsDetail from "./pages/categoriesNews/CategoriesNewsDetail";
+
+import Setting from "./pages/setting/index";
 function App() {
   return (
     <StoreProvider>
@@ -474,18 +476,29 @@ function App() {
                   path="/setting"
                   element={
                     <ProtectedRoute>
+                      <Setting />
+                    </ProtectedRoute>
+                  }
+                />
+
+                <Route
+                  path="/setting/role"
+                  element={
+                    <ProtectedRoute>
+                      <RolePage />
+                    </ProtectedRoute>
+                  }
+                />
+
+                <Route
+                  path="/setting/permission"
+                  element={
+                    <ProtectedRoute>
                       <PermissionPage />
                     </ProtectedRoute>
                   }
                 />
-                <Route
-                  path="/role"
-                  element={
-                    <ProtectedRoute>
-                      <RolePage/>
-                    </ProtectedRoute>
-                  }
-                />
+                
 
                 <Route path="/:404" element={<Page404 />} />
               </Routes>
