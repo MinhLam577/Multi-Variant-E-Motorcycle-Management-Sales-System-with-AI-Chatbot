@@ -52,6 +52,13 @@ export default class SettingObservable {
         isActive: false,
         permissions: [],
     };
+
+    meta = {
+        current: 1,
+        pageSize: 10,
+        pages: 0,
+        total: 0,
+    };
     dataListCustomer_no_voucher = [];
     idRole: string = "";
 
@@ -83,6 +90,7 @@ export default class SettingObservable {
         this.createVoucher = this.createVoucher.bind(this);
         this.editRole = this.editRole.bind(this);
         this.resetSingleRole = this.resetSingleRole.bind(this);
+        this.setMeta = this.setMeta.bind(this);
     }
 
     *getListRole() {
@@ -253,5 +261,16 @@ export default class SettingObservable {
             current: page,
             pageSize: pageSize,
         };
+    }
+
+    setMeta(page: number, pageSize: number) {
+        if (page < 1 || pageSize < 1) return;
+
+        this.meta = {
+            ...this.meta,
+            current: page,
+            pageSize: pageSize,
+        };
+        console.log(page, pageSize);
     }
 }

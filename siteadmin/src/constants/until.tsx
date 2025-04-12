@@ -16,14 +16,3 @@ export function colorMethod(
   }
 }
 
-export const ALL_MODULES = {
-  AUTH: "AUTH",
-  COMPANIES: "COMPANIES",
-  FILES: "FILES",
-  JOBS: "JOBS",
-  PERMISSIONS: "PERMISSIONS",
-  RESUMES: "RESUMES",
-  ROLES: "ROLES",
-  USERS: "USERS",
-  SUBSCRIBERS: "SUBSCRIBERS",
-};

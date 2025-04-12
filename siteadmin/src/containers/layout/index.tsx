@@ -144,9 +144,7 @@ const AppLayout = (props) => {
         getItem("Cấu hình", "20", <SettingOutlined />, null, () =>
             navigate("/setting")
         ),
-        getItem("Role", "21", <SettingOutlined />, null, () =>
-            navigate("/role")
-        ),
+     
     ];
 
     const getSideMenuSelectedKeys = () => {

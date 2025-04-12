@@ -7,7 +7,7 @@ import { Col, Form, Row, message, notification } from "antd";
 import { isMobile } from "react-device-detect";
 // import { callCreatePermission, callUpdatePermission } from "@/config/api";
 import { IPermission } from "src/types/backend";
-import { ALL_MODULES } from "src/constants/until";
+import { ALL_MODULES } from "src/constants/permissions";
 import apiClient from "src/api/apiClient";
 import endpoints from "src/api/endpoints";
 

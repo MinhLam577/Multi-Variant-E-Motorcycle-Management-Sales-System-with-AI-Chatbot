@@ -22,8 +22,8 @@ import News from "./pages/news";
 import NewsDetail, { NewsDetailMode } from "./pages/news/NewsDetail";
 import Notification from "./pages/notifications";
 import Orders from "./pages/orders";
+import OrderDetail, { OrderDetailMode } from "./pages/orders/OrderDetail";
 import { ProductUnitsDetailMode } from "./pages/product_units/ProductUnitsDetail";
-import Cars from "./pages/cars";
 import Statistic from "./pages/statistic";
 import Stores from "./pages/stores";
 import StoresDetail, { StoresDetailMode } from "./pages/stores/StoresDetail";
@@ -43,6 +43,9 @@ import RolePage from "./pages/role/role";
 // import Role from
 import CategoriesNews from "./pages/categoriesNews";
 import CategoriesNewsDetail from "./pages/categoriesNews/CategoriesNewsDetail";
+
+import Setting from "./pages/setting/index";
+import Cars from "./pages/cars";
 function App() {
     return (
         <StoreProvider>
@@ -439,6 +442,34 @@ function App() {
                                         </ProtectedRoute>
                                     }
                                 />
+                                <Route
+                                    path="/orders/:id"
+                                    element={
+                                        <ProtectedRoute>
+                                            <OrderDetail
+                                                mode={OrderDetailMode.View}
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/orders/:id/edit"
+                                    element={
+                                        <ProtectedRoute>
+                                            <OrderDetail
+                                                mode={OrderDetailMode.Edit}
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/yeu-cau-xoa-tai-khoan"
+                                    element={
+                                        <DeleteUser
+                                            mode={OrderDetailMode.Edit}
+                                        />
+                                    }
+                                />
 
                                 <Route
                                     path="/e-motorbike"
@@ -489,15 +520,25 @@ function App() {
                                     path="/setting"
                                     element={
                                         <ProtectedRoute>
-                                            <PermissionPage />
+                                            <Setting />
                                         </ProtectedRoute>
                                     }
                                 />
+
                                 <Route
-                                    path="/role"
+                                    path="/setting/role"
                                     element={
                                         <ProtectedRoute>
                                             <RolePage />
+                                        </ProtectedRoute>
+                                    }
+                                />
+
+                                <Route
+                                    path="/setting/permission"
+                                    element={
+                                        <ProtectedRoute>
+                                            <PermissionPage />
                                         </ProtectedRoute>
                                     }
                                 />
