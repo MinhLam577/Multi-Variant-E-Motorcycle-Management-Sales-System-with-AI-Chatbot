@@ -28,9 +28,11 @@ const RolePage = observer(() => {
 
   const Store = useStore();
   const roleStore = Store.settingObservable;
+  const meta = roleStore.meta ;
   useEffect(() => {
     fetchData();
   }, []);
+
   const fetchData = () => {
     roleStore.getListRole();
   };
@@ -57,6 +59,7 @@ const RolePage = observer(() => {
 
   const columns: ProColumns<IRole>[] = [
     {
+      
       title: "Id",
       dataIndex: "id",
       width: 250,
@@ -187,6 +190,37 @@ const RolePage = observer(() => {
           const query = buildQuery(params, sort, filter);
           //  dispatch(fetchRole({ query }));
         }}
+        // pagination={{
+        //   current: 1,
+        //   pageSize: 2,
+        //   showSizeChanger: true,
+        //   total: 10,
+        //   showTotal: (total, range) => {
+        //     return (
+        //       <div>
+        //         {" "}
+        //         {range[0]}-{range[1]} trên {total} rows
+        //       </div>
+        //     );
+        //   },
+        // }}
+        pagination={{
+          current: meta.current,
+          pageSize: meta.pageSize,
+          showSizeChanger: true,
+          total: meta.total,
+          onChange: (page, pageSize) => {
+            roleStore.setMeta(page, pageSize); // cập nhật MobX store
+          },
+          showTotal: (total, range) => {
+            return (
+              <div>
+                {" "}
+                {range[0]}-{range[1]} trên {total} rows
+              </div>
+            );
+          },
+        }}
         scroll={{ x: true }}
         rowSelection={false}
         toolBarRender={(_action, _rows): any => {
@@ -211,17 +245,3 @@ const RolePage = observer(() => {
 });
 
 export default RolePage;
-// pagination={{
-//   current: 1,
-//   pageSize: 2,
-//   showSizeChanger: true,
-//   total: 10,
-//   showTotal: (total, range) => {
-//     return (
-//       <div>
-//         {" "}
-//         {range[0]}-{range[1]} trên {total} rows
-//       </div>
-//     );
-//   },
-// }}

@@ -17,6 +17,10 @@ import endpoints from "src/api/endpoints";
 import ModalPermission from "src/components/setting/permission/modal.permission";
 import ViewDetailPermission from "src/components/setting/permission/view.permission";
 import { set } from "mobx";
+import { ALL_PERMISSIONS } from "src/constants/permissions";
+import Access from "src/access/access";
+import { useStore } from "src/stores";
+import { observer } from "mobx-react-lite";
 // import { fetchPermission } from "@/redux/slice/permissionSlide";
 // import ViewDetailPermission from "@/components/admin/permission/view.permission";
 // import ModalPermission from "@/components/admin/permission/modal.permission";
@@ -24,7 +28,7 @@ import { set } from "mobx";
 // import Access from "@/components/share/access";
 // import { ALL_PERMISSIONS } from "@/config/permissions";
 
-const PermissionPage = () => {
+const PermissionPage = observer(() => {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [dataInit, setDataInit] = useState<IPermission | null>(null);
   const [openViewDetail, setOpenViewDetail] = useState<boolean>(false);
@@ -50,7 +54,9 @@ const PermissionPage = () => {
       }
     }
   };
-
+  const Store = useStore();
+  const roleStore = Store.settingObservable;
+  const meta = roleStore.meta;
   useEffect(() => {
     fetchPermissions();
   }, []);
@@ -190,6 +196,7 @@ const PermissionPage = () => {
   ];
 
   const buildQuery = (params: any, sort: any, filter: any) => {
+    console.log(params);
     const clone = { ...params };
     if (clone.name) clone.name = `/${clone.name}/i`;
     if (clone.apiPath) clone.apiPath = `/${clone.apiPath}/i`;
@@ -202,8 +209,8 @@ const PermissionPage = () => {
     if (sort && sort.name) {
       sortBy = sort.name === "ascend" ? "sort=name" : "sort=-name";
     }
-    if (sort && sort.apiPath) {
-      sortBy = sort.apiPath === "ascend" ? "sort=apiPath" : "sort=-apiPath";
+    if (sort && sort.path) {
+      sortBy = sort.path === "ascend" ? "sort=path" : "sort=-path";
     }
     if (sort && sort.method) {
       sortBy = sort.method === "ascend" ? "sort=method" : "sort=-method";
@@ -232,47 +239,55 @@ const PermissionPage = () => {
 
   return (
     <div>
-      <DataTable<IPermission>
-        actionRef={tableRef}
-        headerTitle="Danh sách Permissions (Quyền Hạn)"
-        rowKey="_id"
-        loading={loading}
-        columns={columns}
-        dataSource={permissions}
-        scroll={{ x: true }}
-        rowSelection={false}
-        // goi api
-        request={async (params, sort, filter): Promise<any> => {
-          const query = buildQuery(params, sort, filter);
-          console.log(query);
-        }}
-        // lấy data sau khi gọi api
-        pagination={{
-          current: 1,
-          pageSize: 10,
-          showSizeChanger: true,
-          total: 10,
-          showTotal: (total, range) => {
+      <Access permission={ALL_PERMISSIONS.PERMISSIONS.GET_PAGINATE}>
+        <DataTable<IPermission>
+          actionRef={tableRef}
+          headerTitle="Danh sách Permissions (Quyền Hạn)"
+          rowKey="_id"
+          loading={loading}
+          columns={columns}
+          dataSource={permissions}
+          scroll={{ x: true }}
+          rowSelection={false}
+          // goi api
+          // request={async (params, sort, filter): Promise<any> => {
+          //   const query = buildQuery(params, sort, filter);
+          //   console.log(params);
+          //   console.log(params.current, params.pageSize);
+          //   roleStore.setMeta(params.current, params.pageSize);
+          //   console.log(query);
+          // }}
+          pagination={{
+            current: meta.current,
+            pageSize: meta.pageSize,
+            showSizeChanger: true,
+            total: meta.total,
+            onChange: (page, pageSize) => {
+              roleStore.setMeta(page, pageSize); // cập nhật MobX store
+            },
+            showTotal: (total, range) => {
+              return (
+                <div>
+                  {" "}
+                  {range[0]}-{range[1]} trên {total} rows
+                </div>
+              );
+            },
+          }}
+          toolBarRender={(_action, _rows): any => {
             return (
-              <div>
-                {" "}
-                {range[0]}-{range[1]} trên {total} rows
-              </div>
+              <Button
+                icon={<PlusOutlined />}
+                type="primary"
+                onClick={() => setOpenModal(true)}
+              >
+                Thêm mới
+              </Button>
             );
-          },
-        }}
-        toolBarRender={(_action, _rows): any => {
-          return (
-            <Button
-              icon={<PlusOutlined />}
-              type="primary"
-              onClick={() => setOpenModal(true)}
-            >
-              Thêm mới
-            </Button>
-          );
-        }}
-      />
+          }}
+        />
+      </Access>
+
       <ModalPermission
         openModal={openModal}
         setOpenModal={setOpenModal}
@@ -291,6 +306,21 @@ const PermissionPage = () => {
       />
     </div>
   );
-};
+});
 
 export default PermissionPage;
+// lấy data sau khi gọi api
+// pagination={{
+//   current: 1,
+//   pageSize: 10,
+//   showSizeChanger: true,
+//   total: 10,
+//   showTotal: (total, range) => {
+//     return (
+//       <div>
+//         {" "}
+//         {range[0]}-{range[1]} trên {total} rows
+//       </div>
+//     );
+//   },
+// }}
