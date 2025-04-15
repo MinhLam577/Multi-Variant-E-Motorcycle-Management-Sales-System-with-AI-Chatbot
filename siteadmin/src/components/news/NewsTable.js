@@ -51,7 +51,7 @@ const getColumnsConfig = ({ hanleDeleteNews, handleUpdateNews }) => {
       },
       ellipsis: true,
       width: "100%",
-    },    
+    },
     {
       title: "Thao tác",
       dataIndex: "action",
@@ -96,6 +96,10 @@ const NewsTable = ({
 
   fetchData,
 }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+  const [totalItems, setTotalItems] = useState(0); // Lấy từ API
+
   // Use fake newsList data
   const [data, setData] = useState([]);
   const loading = false;
@@ -134,7 +138,7 @@ const NewsTable = ({
 
   return (
     <>
-      <h2>Tìm thấy kết quả </h2>
+      <h2>Tìm thấy {data.length} kết quả </h2>
       <TableComponent
         loading={loading}
         filtersInput="filters"
@@ -145,7 +149,18 @@ const NewsTable = ({
         handleViewNews={handleViewNews}
         hanleDeleteNews={handleDeleteNews}
         onChange={handleChange}
-        pagination={{ position: ["bottomCenter"], showSizeChanger: false }} // Đặt vị trí pagination ở giữa
+        pagination={{
+          position: ["bottomCenter"],
+          showSizeChanger: true, // Cho phép đổi số dòng/trang
+          current: currentPage, // Biến `currentPage` là số trang hiện tại
+          pageSize: pageSize, // Biến `pageSize` là số dòng mỗi trang
+          total: totalItems, // Tổng số bản ghi để tính tổng số trang
+          onChange: (page, size) => {
+            setCurrentPage(page);
+            setPageSize(size);
+            // load lại dữ liệu nếu cần
+          },
+        }}
         loadData={() => {}}
         showHeader={false} // Ẩn header
       />

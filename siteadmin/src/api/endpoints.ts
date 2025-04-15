@@ -97,7 +97,8 @@ const endpoints = {
     details: (id) => `/branch/${id}`,
     update: (id) => `/branch/${id}`,
     delete: (id) => `/branch/${id}`,
-    upload: "/upload",
+    upload: "/branch/upload",
+    create: "/branch"
   },
 
   // voucher
