@@ -221,7 +221,7 @@ const endpoints = {
   ward: {
     wardByName: (districtId) => `/ward?districtId=${districtId}`,
   },
-  // Blogs
+
 };
 
 export default endpoints;

@@ -24,12 +24,6 @@ const GroupActionButton = ({
       />
 
       <Button
-        icon={item.status ? <EyeOutlined /> : <EyeInvisibleOutlined />}
-        title={item.status ? "Hiển thị" : "Ẩn"}
-        onClick={() => handleStatusProducts(item, !item.status)}
-        style={{ minWidth: "30px" }}
-      />
-      <Button
         icon={<DeleteOutlined />}
         title="Xóa"
         onClick={() => hanleDelete(item.id)}
@@ -49,3 +43,9 @@ GroupActionButton.propTypes = {
 };
 
 export default GroupActionButton;
+// <Button
+//         icon={item.status ? <EyeOutlined /> : <EyeInvisibleOutlined />}
+//         title={item.status ? "Hiển thị" : "Ẩn"}
+//         onClick={() => handleStatusProducts(item, !item.status)}
+//         style={{ minWidth: "30px" }}
+//       />
