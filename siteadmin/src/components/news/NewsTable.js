@@ -12,31 +12,7 @@ import { Link, useParams } from "react-router";
 import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
 import apiClient from "../../api/apiClient";
 import endpoints from "../../api/endpoints";
-
-// Fake newsList data
-const newsList = [
-  {
-    id: 1,
-    title: "Tin Mẫu 1",
-    thumbnail:
-      "http://res.cloudinary.com/dk6yblsoj/image/upload/v1743245569/user/frlwijhfjqdknz2poit0.jpg",
-    description:
-      "Đây là tóm tắt cho tin mẫu 1  Đây là tóm tắt cho tin mẫu 1  Đây là tóm tắt cho tin mẫu 1 Đây là tóm tắt cho tin mẫu 1  Đây là tóm tắt cho tin mẫu 1  Đây là tóm tắt cho tin mẫu 1 Đây là tóm tắt cho tin mẫu 1  Đây là tóm tắt cho tin mẫu 1  Đây là tóm tắt cho tin mẫu 1 Đây là tóm tắt cho tin mẫu 1  Đây là tóm tắt cho tin mẫu 1  Đây là tóm tắt cho tin mẫu 1 ",
-    created_at: "2022-01-01T00:00:00Z",
-    status: Status.Active,
-  },
-  {
-    id: 2,
-    title: "Tin Mẫu 2",
-    thumbnail:
-      "http://res.cloudinary.com/dk6yblsoj/image/upload/v1743245569/user/frlwijhfjqdknz2poit0.jpg",
-    description:
-      "Đây là tóm tắt cho tin mẫu 2 Đây là tóm tắt cho tin mẫu 1 Đây là tóm tắt cho tin mẫu 1",
-    created_at: "2022-01-02T00:00:00Z",
-    status: Status.InActive,
-  },
-  // Add more news items as needed
-];
+import { useEffect, useState } from "react";
 
 const getColumnsConfig = ({ hanleDeleteNews, handleUpdateNews }) => {
   const { id } = useParams();
@@ -66,15 +42,16 @@ const getColumnsConfig = ({ hanleDeleteNews, handleUpdateNews }) => {
         return (
           <div>
             <div className="font-medium mb-2">{item.title}</div>
-            <div className="text-gray-500 text-sm truncate overflow-hidden whitespace-nowrap text-ellipsis ">
-              {item.description}
-            </div>
+            <div
+              className="text-gray-500 text-sm truncate overflow-hidden whitespace-nowrap text-ellipsis"
+              dangerouslySetInnerHTML={{ __html: item.content }}
+            />
           </div>
         );
       },
       ellipsis: true,
       width: "100%",
-    },
+    },    
     {
       title: "Thao tác",
       dataIndex: "action",
@@ -120,8 +97,24 @@ const NewsTable = ({
   fetchData,
 }) => {
   // Use fake newsList data
-  const data = { newsList };
+  const [data, setData] = useState([]);
   const loading = false;
+  const { id } = useParams();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await apiClient.get(
+          endpoints.blogcategories.details(id)
+        );
+        console.log(response.data.blogs);
+        setData(response.data.blogs); // nếu bạn muốn lưu vào state
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [id]); // nhớ thêm `id` vào dependency array
 
   const handleDeleteNews = async (id) => {
     try {
@@ -141,13 +134,13 @@ const NewsTable = ({
 
   return (
     <>
-      <h2>Tìm thấy {newsList.length} kết quả </h2>
+      <h2>Tìm thấy kết quả </h2>
       <TableComponent
         loading={loading}
         filtersInput="filters"
         getColumnsConfig={getColumnsConfig}
         filterValue={globalFilters}
-        data={data.newsList}
+        data={data}
         handleUpdateNews={handleUpdateNews}
         handleViewNews={handleViewNews}
         hanleDeleteNews={handleDeleteNews}
