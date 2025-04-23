@@ -92,6 +92,7 @@ const ProductsSearch: React.FC<IProductsSearchProps> = ({
                                 enterButton
                                 onSearch={onSearch}
                                 autoComplete="off"
+                                size="large"
                             />
                         </Tooltip>
                     </Form.Item>
@@ -117,6 +118,7 @@ const ProductsSearch: React.FC<IProductsSearchProps> = ({
                                     categoryID: value,
                                 });
                             }}
+                            size="large"
                         />
                     </Form.Item>
                 </Col>
@@ -136,6 +138,7 @@ const ProductsSearch: React.FC<IProductsSearchProps> = ({
                                     brandID: value,
                                 });
                             }}
+                            size="large"
                         />
                     </Form.Item>
                 </Col>
@@ -164,6 +167,7 @@ const ProductsSearch: React.FC<IProductsSearchProps> = ({
                                     status: value,
                                 });
                             }}
+                            size="large"
                         />
                     </Form.Item>
                 </Col>

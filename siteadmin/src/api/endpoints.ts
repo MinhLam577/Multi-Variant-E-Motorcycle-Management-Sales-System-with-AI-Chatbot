@@ -60,14 +60,15 @@ const endpoints = {
         list: (query: string) => `/brand?${query}`,
     },
 
-    // branch
-    branch: {
-        list: (page, size) => `/branch?pageSize=${page}&current=${size}`,
-        details: (id) => `/branch/${id}`,
-        update: (id) => `/branch/${id}`,
-        delete: (id) => `/branch/${id}`,
-        upload: "/upload",
-    },
+  // branch
+  branch: {
+    list: (page, size) => `/branch?pageSize=${page}&current=${size}`,
+    details: (id) => `/branch/${id}`,
+    update: (id) => `/branch/${id}`,
+    delete: (id) => `/branch/${id}`,
+    upload: "/branch/upload",
+    create: "/branch"
+  },
 
     // voucher
     vouchers: {
@@ -183,15 +184,15 @@ const endpoints = {
         list: `/province`,
     },
 
-    // district
-    district: {
-        districtByName: (provinceId) => `/district?provinceId=${provinceId}`,
-    },
-    // ward
-    ward: {
-        wardByName: (districtId) => `/ward?districtId=${districtId}`,
-    },
-    // Blogs
+  // district
+  district: {
+    districtByName: (provinceId) => `/district?provinceId=${provinceId}`,
+  },
+  // ward
+  ward: {
+    wardByName: (districtId) => `/ward?districtId=${districtId}`,
+  },
+
 };
 
 export default endpoints;

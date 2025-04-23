@@ -10,6 +10,7 @@ import {
     Table,
     TreeSelect,
     Upload,
+    UploadFile,
 } from "antd";
 import CustomizeModal from "../common/CustomizeModal";
 import "./ModalCreateProduct.css";
@@ -32,9 +33,8 @@ import {
 } from "@ant-design/icons";
 import { FormListFieldData } from "antd/lib";
 import { action, makeAutoObservable, observable, reaction, toJS } from "mobx";
-import { SkusDetailImportDto } from "src/stores/product.store";
 import { ColumnsType } from "antd/es/table";
-import { generateUUIDV4 } from "src/utils";
+import { generateUUIDV4, getBase64 } from "src/utils";
 import debounce from "lodash.debounce";
 import { AcceptImageTypes } from "src/constants";
 
@@ -50,6 +50,7 @@ type SelectType = {
 };
 
 const DEFAULT_MAX_VALUES_EACH_ROW = 1;
+const DEFAULT_MAX_IMAGE_UPLOAD_PRODUCT = 5;
 
 interface IModalCreateProductProps {
     isOpen: boolean;
@@ -101,7 +102,7 @@ interface SkuCustomInputData {
     }>;
 }
 
-interface IRowFormListProps {
+interface IFormListRowProps {
     rowField: FormListFieldData;
     removeRow: (index: number | number[]) => void;
     fieldValue: string;
@@ -109,9 +110,10 @@ interface IRowFormListProps {
     formItemLabel?: string;
     placeholderSelect?: string;
     maxFormListInputValue?: number;
+    showAddValue?: boolean;
 }
 
-interface IFormListSelectColProps {
+interface IFormListSelectProps {
     formListName: string | number | (string | number)[];
     fieldValue: string;
     initialOptions: SelectType[];
@@ -119,15 +121,25 @@ interface IFormListSelectColProps {
     placeholderSelect: string;
     renderComponent?: React.ComponentType<any>;
     maxFormListInputValue?: number;
+    showAddValue?: boolean;
 }
 
-interface IFormListInputRender {
+interface IFormListValueColProps {
+    rowField: FormListFieldData;
+    fieldValue: string;
+    maxFormListInputValue: number;
+    formItemLabel?: string;
+    showAddValue?: boolean;
+}
+
+interface IFormListValueColRenderProps {
+    rowField: FormListFieldData;
+    fieldValue: string;
     formListName?: string | number | (string | number)[];
     formItemName?: string;
-    fieldValue?: string;
     callback?: (...args: any[]) => void;
-    rowField?: FormListFieldData;
     component?: React.ComponentType<any>;
+    showAddValue?: boolean;
 }
 
 class SpinningStore {
@@ -158,6 +170,8 @@ class ModalCreateProductStore {
     form: FormInstance;
     skuCustomData: Map<string, Omit<ISkuCustomData, "name">> = new Map();
     skusNameSelected: string;
+    showSpecForm: boolean = false
+    showVariantForm: boolean = false
     constructor(form: FormInstance) {
         makeAutoObservable(this, {
             skuCustomData: observable,
@@ -216,6 +230,15 @@ class ModalCreateProductStore {
             return;
         }
         this.warehouse_selected = value;
+    }
+    setShowSpecForm(value: boolean) {
+      if(typeof value === "boolean")
+        this.showSpecForm = value
+    }
+    setShowVariantForm(value: boolean) {
+      if(typeof value === "boolean"){
+        this.showVariantForm = value
+      }
     }
     setWarehouse_selected_quantities(
         quantity_import: string = "0",
@@ -679,6 +702,102 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
         } catch (e) {}
     };
 
+    const initialOptionsBrand: SelectType[] = [
+        { label: "Nhãn hàng A", value: "BA" },
+        { label: "Nhãn hàng B", value: "BB" },
+        { label: "Nhãn hàng C", value: "BC" },
+    ];
+    const initialOptionsCategory: TreeSelectType[] = [
+        {
+            title: "Điện tử",
+            value: "electronics",
+            children: [
+                {
+                    title: "Điện thoại",
+                    value: "mobile-phones",
+                    children: [
+                        { title: "iPhone", value: "iphone", children: [] },
+                        { title: "Samsung", value: "samsung", children: [] },
+                        { title: "Xiaomi", value: "xiaomi", children: [] },
+                    ],
+                },
+                {
+                    title: "Laptop",
+                    value: "laptops",
+                    children: [
+                        { title: "MacBook", value: "macbook", children: [] },
+                        { title: "Dell", value: "dell", children: [] },
+                        { title: "HP", value: "hp", children: [] },
+                    ],
+                },
+            ],
+        },
+        {
+            title: "Thời trang",
+            value: "fashion",
+            children: [
+                {
+                    title: "Nam",
+                    value: "men",
+                    children: [
+                        { title: "Áo sơ mi", value: "shirt-men", children: [] },
+                        {
+                            title: "Quần jean",
+                            value: "jeans-men",
+                            children: [],
+                        },
+                    ],
+                },
+                {
+                    title: "Nữ",
+                    value: "women",
+                    children: [
+                        { title: "Váy", value: "dress-women", children: [] },
+                        {
+                            title: "Áo thun",
+                            value: "tshirt-women",
+                            children: [],
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            title: "Đồ gia dụng",
+            value: "home-appliances",
+            children: [
+                {
+                    title: "Nhà bếp",
+                    value: "kitchen",
+                    children: [
+                        {
+                            title: "Nồi chiên không dầu",
+                            value: "air-fryer",
+                            children: [],
+                        },
+                        {
+                            title: "Máy xay sinh tố",
+                            value: "blender",
+                            children: [],
+                        },
+                    ],
+                },
+                {
+                    title: "Phòng khách",
+                    value: "living-room",
+                    children: [
+                        {
+                            title: "Máy lọc không khí",
+                            value: "air-purifier",
+                            children: [],
+                        },
+                        { title: "Quạt điện", value: "fan", children: [] },
+                    ],
+                },
+            ],
+        },
+    ];
+
     const initialOptionsSpec: SelectType[] = [
         { label: "Màu sắc", value: "color" },
         { label: "Kích thước", value: "size" },
@@ -699,7 +818,34 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
     ];
 
     // Hàm render thông tin chung của sản phẩm
-    const GeneralInformation = () => {
+    const GeneralInformation = observer(() => {
+        const [formImageList, setFormImageList] = useState<UploadFile[]>([]);
+        const [previewVisible, setPreviewVisible] = useState<boolean>(false);
+        const [previewImage, setPreviewImage] = useState<string>("");
+
+        const handlePreview = useCallback(
+            async (file: UploadFile) => {
+                if (file.url) {
+                    setPreviewVisible(true);
+                    setPreviewImage(file.url);
+                } else if (file.originFileObj) {
+                    const base64Url = await getBase64(file.originFileObj);
+                    setPreviewImage(base64Url);
+                }
+                setPreviewVisible(true);
+            },
+            [form]
+        );
+
+        useEffect(() => {
+          const currentImages = form.getFieldValue("image") || [];
+          if (JSON.stringify(currentImages) !== JSON.stringify(formImageList)) {
+            form.setFieldsValue({
+              image: formImageList
+            })
+          }
+        }, [form, formImageList]);
+
         return (
             <div className="flex flex-col gap-4 bg-white rounded-md p-4">
                 <h2 className="text-base text-gray-900 font-semibold border-b border-b-gray-500 shadow-sm !m-0 pb-2">
@@ -709,12 +855,12 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                     <Form.Item
                         label="Tên sản phẩm"
                         name={"title"}
-                        // rules={[
-                        //     {
-                        //         required: true,
-                        //         message: "Vui lòng nhập tên sản phẩm",
-                        //     },
-                        // ]}
+                        rules={[
+                            {
+                                required: true,
+                                message: "Vui lòng nhập tên sản phẩm",
+                            },
+                        ]}
                     >
                         <Input
                             placeholder="Nhập tên sản phẩm"
@@ -728,19 +874,20 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                 label="Nhãn hàng"
                                 name={"brand_id"}
                                 className="w-full"
-                                // rules={[
-                                //     {
-                                //         required: true,
-                                //         message: "Vui lòng chọn nhãn hàng",
-                                //     },
-                                // ]}
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: "Vui lòng chọn nhãn hàng",
+                                    },
+                                ]}
                             >
                                 <Select
                                     placeholder="Chọn nhãn hàng"
                                     showSearch
                                     className="h-10"
-                                    options={brandSelectData}
+                                    options={initialOptionsBrand}
                                     defaultActiveFirstOption={true}
+                                    optionFilterProp="label"
                                 />
                             </Form.Item>
                         </Col>
@@ -749,18 +896,21 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                 label="Danh mục"
                                 name={"category_id"}
                                 className="w-full"
-                                // rules={[
-                                //     {
-                                //         required: true,
-                                //         message: "Vui lòng chọn danh mục",
-                                //     },
-                                // ]}
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: "Vui lòng chọn danh mục",
+                                    },
+                                ]}
                             >
                                 <TreeSelect
                                     placeholder="Chọn danh mục"
                                     showSearch
-                                    treeData={categorySelectData}
+                                    treeData={initialOptionsCategory}
                                     className="h-10"
+                                    treeDefaultExpandAll
+                                    allowClear
+                                    treeNodeFilterProp="title"
                                 />
                             </Form.Item>
                         </Col>
@@ -781,10 +931,133 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                             />
                         </div>
                     </Form.Item>
+
+                    <Form.Item
+                        label="Hình ảnh sản phẩm"
+                        tooltip={`Ảnh nhận định dạng ${AcceptImageTypes.map((image) => "." + image.split("/")[1]).join(", ")}, có tỷ lệ 1:1 (Ảnh vuông) và được chọn tối đa 5 hình ảnh`}
+                        valuePropName="image"
+                    >
+                        <div className="w-full h-32">
+                            <label
+                                htmlFor="uploadImageFile"
+                                className={`flex flex-col items-center justify-center w-full border border-dashed border-gray-300 rounded-md cursor-pointer hover:border-gray-400 transition-all duration-500 ease-in-out h-full
+                                ${formImageList.length === 0 ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-32"} origin-top`}
+                            >
+                                <UploadOutlined className={`text-2xl`} />
+                                <span className={`text-sm text-gray-500`}>
+                                    Tải lên hình ảnh
+                                </span>
+                            </label>
+                            <div className="flex items-center justify-start w-full h-full gap-2">
+                                <Upload
+                                    name="uploadImageFile"
+                                    id="uploadImageFile"
+                                    accept={AcceptImageTypes.join(",")}
+                                    listType="picture-card"
+                                    showUploadList={{
+                                        showPreviewIcon: true,
+                                        showRemoveIcon: true,
+                                    }}
+                                    maxCount={DEFAULT_MAX_IMAGE_UPLOAD_PRODUCT}
+                                    multiple
+                                    beforeUpload={(file, fileList) => {
+                                        const isValidType =
+                                            AcceptImageTypes.some(
+                                                (type) => file.type === type
+                                            );
+                                        if (!isValidType) {
+                                            productStore.setStatusMessage(
+                                                400,
+                                                `Vui lòng chọn ảnh có định dạng ${AcceptImageTypes.join(
+                                                    ", "
+                                                )}`,
+                                                "",
+                                                false
+                                            );
+                                            return false;
+                                        }
+                                        if (
+                                            formImageList.length +
+                                                fileList.length >
+                                                DEFAULT_MAX_IMAGE_UPLOAD_PRODUCT ||
+                                            fileList.length >
+                                                DEFAULT_MAX_IMAGE_UPLOAD_PRODUCT
+                                        ) {
+                                            productStore.setStatusMessage(
+                                                400,
+                                                `Chỉ được upload tối đa ${DEFAULT_MAX_IMAGE_UPLOAD_PRODUCT} ảnh!`,
+                                                ""
+                                            );
+                                            return false;
+                                        }
+                                        return true;
+                                    }}
+                                    onChange={(info) => {
+                                      setFormImageList([...info.fileList])
+                                    }}
+                                    fileList={formImageList.length ? formImageList : undefined}
+                                    customRequest={async ({
+                                        file,
+                                        onSuccess,
+                                        onError,
+                                    }) => {
+                                        try {
+                                          const base64Url = await getBase64(file as File);
+                                        //   const uploadedFiles = await BaseAPI.uploadImagesToServer(
+                                        //     files,
+                                        //     folder
+                                        // );
+                                          onSuccess?.({url: base64Url}, file);
+                                          productStore.setStatusMessage(200, "", "Tải ảnh thành công", true);
+                                        } catch (error) {
+                                          const errorrMsg = error instanceof Error ? error.message : "có lỗi xảy ra khi xử lí request ảnh"
+                                          productStore.setStatusMessage(500, errorrMsg, "", false);
+                                          onError?.(error as Error);
+                                        }
+                                    }}
+                                    onPreview={handlePreview}
+                                    onRemove={(file) => {
+                                        setFormImageList((prev) =>
+                                            prev.filter(
+                                                (item) => item.uid !== file.uid
+                                            )
+                                        );
+                                    }}
+                                    className={`product_image_upload w-full transition-opacity duration-1000 ease-in-out ${
+                                        formImageList.length !== 0
+                                            ? "opacity-100 scale-100 -translate-y-32"
+                                            : "opacity-0 scale-0 translate-y-0"
+                                    } origin-top-left`}
+                                >
+                                    <div
+                                        className={`flex flex-col items-center justify-center w-full h-full`}
+                                    >
+                                        <UploadOutlined className="text-2xl" />
+                                    </div>
+                                </Upload>
+                                {previewImage && (
+                                    <Image
+                                        src={previewImage}
+                                        alt="Preview"
+                                        width={100}
+                                        height={100}
+                                        className="object-cover rounded-md !hidden"
+                                        preview={{
+                                            visible: previewVisible,
+                                            onVisibleChange: (visible) =>
+                                                setPreviewVisible(visible),
+                                            afterOpenChange: (visible) =>
+                                                !visible && setPreviewImage(""),
+                                        }}
+                                    />
+                                )}
+                            </div>
+                        </div>
+                    </Form.Item>
                 </div>
             </div>
         );
-    };
+    });
 
     //#region Xử lý sự kiện thông số kỹ thuật
 
@@ -811,7 +1084,6 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
     };
 
     // Hàm xử lý sự kiện thêm thông số kỹ thuật
-    const [showSpecForm, setShowSpecForm] = useState<boolean>(false);
     // Hàm thêm giá trị thông số kỹ thuật vào ref
     const addSpecValueRefs = useRef<Map<number, (value?: any) => void>>(
         new Map()
@@ -883,9 +1155,8 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
         [form]
     );
 
-    const handleCheckSpec = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleCheckSpec =  useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.checked) {
-            setShowSpecForm(true);
             const defaultFirstSpec = initialOptionsSpec[0]?.value || "";
             const specifications = [
                 { name: defaultFirstSpec, values: [{ value: "" }] },
@@ -893,20 +1164,22 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
             form.setFieldsValue({
                 specifications: specifications,
             });
+            modalCreateProductStore.setShowSpecForm(true)
         } else {
-            setShowSpecForm(false);
+            modalCreateProductStore.setShowSpecForm(false)
             form.resetFields(["specifications"]);
         }
-    };
+    }, []);
 
     // Hàm render ra form list input
-    const FormListInputRender: React.FC<IFormListInputRender> = ({
+    const ValueColRender: React.FC<IFormListValueColRenderProps> = ({
         callback,
         formListName,
         formItemName,
         rowField,
         component,
         fieldValue,
+        showAddValue,
     }) => {
         const [isDuplicateCleared, setIsDuplicateCleared] = useState(false);
         const debouncedResetVariantValueFields: (
@@ -942,7 +1215,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
         return (
             <Form.List name={formListName}>
                 {(valueFields, { add: addValue, remove: removeValue }) => {
-                    if (callback && rowField) {
+                    if (callback && rowField && showAddValue) {
                         callback(rowField.name, addValue);
                     }
                     return (
@@ -1075,7 +1348,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
     };
 
     // Hàm render ra cột select của form list
-    const SelectFormListCol: React.FC<IRowFormListProps> = ({
+    const SelectCol: React.FC<IFormListRowProps> = ({
         rowField,
         removeRow,
         formItemLabel,
@@ -1124,34 +1397,37 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
         );
     };
 
-    // Hàm render ra cột giá trị select của form list
-    const SelectFormListValueCol: React.FC<{
-        rowField: FormListFieldData;
-        fieldValue: string;
-        maxFormListInputValue: number;
-        formItemLabel?: string;
-    }> = ({ rowField, fieldValue, maxFormListInputValue, formItemLabel }) => {
+    // Hàm render ra cột giá trị input của form list
+    const ValueCol: React.FC<IFormListValueColProps> = ({
+        rowField,
+        fieldValue,
+        maxFormListInputValue,
+        formItemLabel,
+        showAddValue = true,
+    }) => {
         return (
             <Col xs={13} md={13} lg={13} xl={13}>
                 <div className="flex flex-col items-center justify-between w-full relative">
-                    <Button
-                        type="primary"
-                        shape="circle"
-                        size="small"
-                        onClick={() =>
-                            handleAddFormListValue(
-                                rowField.name,
-                                fieldValue,
-                                maxFormListInputValue,
-                                formItemLabel
-                            )
-                        }
-                        className="absolute -top-1 left-14 border-none outline-none text-lg cursor-pointer flex items-center justify-center z-50"
-                    >
-                        <PlusOutlined className="text-[var(--primary-color)]" />
-                    </Button>
+                    {showAddValue && (
+                        <Button
+                            type="primary"
+                            shape="circle"
+                            size="small"
+                            onClick={() =>
+                                handleAddFormListValue(
+                                    rowField.name,
+                                    fieldValue,
+                                    maxFormListInputValue,
+                                    formItemLabel
+                                )
+                            }
+                            className="absolute -top-1 left-14 border-none outline-none text-lg cursor-pointer flex items-center justify-center z-50"
+                        >
+                            <PlusOutlined className="text-[var(--primary-color)]" />
+                        </Button>
+                    )}
                     <Form.Item label="Giá trị" className="w-full ">
-                        <FormListInputRender
+                        <ValueColRender
                             formListName={[rowField.name, "values"]}
                             formItemName={"value"}
                             callback={setAddSpecValueRef}
@@ -1166,6 +1442,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                 </button>
                             )}
                             fieldValue={fieldValue}
+                            showAddValue={showAddValue}
                         />
                     </Form.Item>
                 </div>
@@ -1174,7 +1451,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
     };
 
     // Hàm render ra một row trong form list
-    const RowFormList: React.FC<IRowFormListProps> = ({
+    const FormListRow: React.FC<IFormListRowProps> = ({
         rowField,
         removeRow,
         fieldValue,
@@ -1182,6 +1459,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
         formItemLabel,
         placeholderSelect,
         maxFormListInputValue,
+        showAddValue,
     }) => {
         return (
             <div
@@ -1191,7 +1469,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                 }}
             >
                 <Row gutter={24} justify="space-between">
-                    <SelectFormListCol
+                    <SelectCol
                         rowField={rowField}
                         removeRow={removeRow}
                         formItemLabel={formItemLabel}
@@ -1200,11 +1478,12 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                         initialOptions={initialOptions}
                     />
 
-                    <SelectFormListValueCol
+                    <ValueCol
                         rowField={rowField as FormListFieldData}
                         fieldValue={fieldValue}
                         maxFormListInputValue={maxFormListInputValue}
                         formItemLabel={formItemLabel}
+                        showAddValue={showAddValue}
                     />
                 </Row>
             </div>
@@ -1212,7 +1491,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
     };
 
     // Hàm render ra form list select và giá trị select
-    const FormList_Select_Values_Render: React.FC<IFormListSelectColProps> = ({
+    const FormListSelect: React.FC<IFormListSelectProps> = ({
         formListName,
         fieldValue,
         initialOptions,
@@ -1220,13 +1499,14 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
         placeholderSelect,
         renderComponent,
         maxFormListInputValue = DEFAULT_MAX_VALUES_EACH_ROW,
+        showAddValue,
     }) => {
         return (
             <Form.List name={formListName}>
                 {(rowFields, { add: addRow, remove: removeRow }) => (
                     <div className="flex flex-col">
                         {rowFields.map((rowField) => (
-                            <RowFormList
+                            <FormListRow
                                 key={rowField.key}
                                 rowField={rowField}
                                 removeRow={removeRow}
@@ -1235,6 +1515,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                 formItemLabel={formItemLabel}
                                 placeholderSelect={placeholderSelect}
                                 maxFormListInputValue={maxFormListInputValue}
+                                showAddValue={showAddValue}
                             />
                         ))}
                         {renderComponent &&
@@ -1252,7 +1533,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
         );
     };
 
-    const SpecificationsInformation = () => {
+    const SpecificationsInformation = observer(() => {
         return (
             <div className="flex flex-col gap-4 bg-white rounded-md p-4">
                 <h2
@@ -1266,10 +1547,10 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                 <div
                     className="flex justify-start items-center gap-2 w-full"
                     style={{
-                        borderBottom: showSpecForm
+                        borderBottom: modalCreateProductStore.showSpecForm
                             ? "1px solid #d9d9d9"
                             : "none",
-                        paddingBottom: showSpecForm ? "1rem" : "0",
+                        paddingBottom: modalCreateProductStore.showSpecForm ? "1rem" : "0",
                     }}
                 >
                     <input
@@ -1277,7 +1558,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                         onChange={(e) => {
                             handleCheckSpec(e);
                         }}
-                        checked={showSpecForm}
+                        checked={modalCreateProductStore.showSpecForm}
                         id="specCheck"
                     />
                     <label htmlFor="specCheck" className="text-sm">
@@ -1285,8 +1566,8 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                     </label>
                 </div>
                 <div className="flex flex-col gap-4">
-                    {showSpecForm && (
-                        <FormList_Select_Values_Render
+                    {modalCreateProductStore.showSpecForm && (
+                        <FormListSelect
                             formListName="specifications"
                             fieldValue="specifications"
                             initialOptions={initialOptionsSpec}
@@ -1304,12 +1585,34 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                     </div>
                                 </button>
                             )}
+                            showAddValue={false}
                         />
                     )}
+                    
+                    {/* <FormListSelect
+                        formListName="specifications"
+                        fieldValue="specifications"
+                        initialOptions={initialOptionsSpec}
+                        formItemLabel="Thông số kỹ thuật"
+                        placeholderSelect="Chọn thông số kỹ thuật"
+                        renderComponent={({ onClick }) => (
+                            <button
+                                onClick={onClick}
+                                className="w-full h-10 border-none outline-none cursor-pointer bg-transparent text-base pt-4"
+                                type="button"
+                            >
+                                <div className={"text-gray-700 text-base"}>
+                                    <PlusOutlined className="mr-1" />
+                                    <span>Thêm thông số kỹ thuật</span>
+                                </div>
+                            </button>
+                        )}
+                        showAddValue={false}
+                    /> */}
                 </div>
             </div>
         );
-    };
+    });
     //#endregion
 
     type UpdateProductType =
@@ -1360,20 +1663,22 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                             label="Giá bán"
                             name={"price_sold"}
                             tooltip="Số tiền khách hàng cần thanh toán"
-                            rules={[{
-                                validator: (_, value) => {
-                                    if (!modalCreateProductStore.hasSkus) {
-                                      if(!value){
-                                        return Promise.reject(
-                                          new Error(
-                                              "Vui lòng nhập giá bán"
-                                          )
-                                        )
-                                      }
-                                    }
-                                    return Promise.resolve();
-                                }
-                            }]}
+                            rules={[
+                                {
+                                    validator: (_, value) => {
+                                        if (!modalCreateProductStore.hasSkus) {
+                                            if (!value) {
+                                                return Promise.reject(
+                                                    new Error(
+                                                        "Vui lòng nhập giá bán"
+                                                    )
+                                                );
+                                            }
+                                        }
+                                        return Promise.resolve();
+                                    },
+                                },
+                            ]}
                         >
                             <Input
                                 placeholder="Nhập giá bán"
@@ -1398,20 +1703,22 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                             label="Giá so sánh"
                             name={"price_compare"}
                             tooltip="Số tiền chưa giảm giá, thể hiện giá trị giảm giá, ưu đãi cho khách hàng"
-                            rules={[{
-                                validator: (_, value) => {
-                                    if (!modalCreateProductStore.hasSkus) {
-                                      if(!value){
-                                        return Promise.reject(
-                                          new Error(
-                                              "Vui lòng nhập giá so sánh"
-                                          )
-                                        )
-                                      }
-                                    }
-                                    return Promise.resolve();
-                                }
-                            }]}
+                            rules={[
+                                {
+                                    validator: (_, value) => {
+                                        if (!modalCreateProductStore.hasSkus) {
+                                            if (!value) {
+                                                return Promise.reject(
+                                                    new Error(
+                                                        "Vui lòng nhập giá so sánh"
+                                                    )
+                                                );
+                                            }
+                                        }
+                                        return Promise.resolve();
+                                    },
+                                },
+                            ]}
                         >
                             <Input
                                 placeholder="Nhập giá so sánh"
@@ -1448,42 +1755,49 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
             [form]
         );
 
-        const handleDeSelectWarehouse = useCallback((value: string) => {
-            const currentWarehouses =
-                form.getFieldValue(["detail_import", "warehouse_id"]) || [];
-            if (
-                !currentWarehouses ||
-                !Array.isArray(currentWarehouses) ||
-                !value
-            )
-                return;
-            const newWarehouses = currentWarehouses.filter(
-                (item: any) => item.warehouse_id !== value
-            );
-            form.setFieldsValue({
-                detail_import: {
-                    warehouse_id: newWarehouses,
-                },
-            });
-
-            form.setFieldsValue({
-                detail_import: {
-                    [value]: {
-                        quantity_import: undefined,
+        const handleDeSelectWarehouse = useCallback(
+            (value: string) => {
+                const currentWarehouses =
+                    form.getFieldValue(["detail_import", "warehouse_id"]) || [];
+                if (
+                    !currentWarehouses ||
+                    !Array.isArray(currentWarehouses) ||
+                    !value
+                )
+                    return;
+                const newWarehouses = currentWarehouses.filter(
+                    (item: any) => item.warehouse_id !== value
+                );
+                form.setFieldsValue({
+                    detail_import: {
+                        warehouse_id: newWarehouses,
                     },
-                },
-            });
+                });
 
-            modalCreateProductStore.clearWarehouseSelectedAndQuantity(value);
-        }, [form]);
+                form.setFieldsValue({
+                    detail_import: {
+                        [value]: {
+                            quantity_import: undefined,
+                        },
+                    },
+                });
+
+                modalCreateProductStore.clearWarehouseSelectedAndQuantity(
+                    value
+                );
+            },
+            [form]
+        );
 
         const handleClearWarehouse = useCallback(() => {
             form.setFieldsValue({ detail_import: [] });
             modalCreateProductStore.clearWarehouseSelectedAndQuantity();
         }, [form]);
-        useEffect(()=>{
-          modalCreateProductStore.setWarehouseOptions(initialOptionsInventory)
-        }, [form, initialOptionsInventory])
+        useEffect(() => {
+            modalCreateProductStore.setWarehouseOptions(
+                initialOptionsInventory
+            );
+        }, [form, initialOptionsInventory]);
         useEffect(() => {
             const newOptions = modalCreateProductStore.WarehouseOptions;
             setAvailableInventoryOptions((prevOptions) =>
@@ -1505,20 +1819,22 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                             tooltip={{
                                 title: "Giá vốn - Giá nhập vào của sản phẩm",
                             }}
-                            rules={[{
-                                validator: (_, value) => {
-                                    if (!modalCreateProductStore.hasSkus) {
-                                      if(!value){
-                                        return Promise.reject(
-                                          new Error(
-                                              "Vui lòng nhập giá vốn"
-                                          )
-                                        )
-                                      }
-                                    }
-                                    return Promise.resolve();
-                                }
-                            }]}
+                            rules={[
+                                {
+                                    validator: (_, value) => {
+                                        if (!modalCreateProductStore.hasSkus) {
+                                            if (!value) {
+                                                return Promise.reject(
+                                                    new Error(
+                                                        "Vui lòng nhập giá vốn"
+                                                    )
+                                                );
+                                            }
+                                        }
+                                        return Promise.resolve();
+                                    },
+                                },
+                            ]}
                         >
                             <Input
                                 placeholder="Nhập giá vốn"
@@ -1572,20 +1888,22 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                             tooltip={
                                 "SKU - Mã sản phẩm cho mỗi sản phẩm nên là duy nhất, và bao gồm cả chữ và số"
                             }
-                            rules={[{
-                                validator: (_, value) => {
-                                    if (!modalCreateProductStore.hasSkus) {
-                                      if(!value){
-                                        return Promise.reject(
-                                          new Error(
-                                              "Vui lòng nhập mã sku"
-                                          )
-                                        )
-                                      }
-                                    }
-                                    return Promise.resolve();
-                                }
-                            }]}
+                            rules={[
+                                {
+                                    validator: (_, value) => {
+                                        if (!modalCreateProductStore.hasSkus) {
+                                            if (!value) {
+                                                return Promise.reject(
+                                                    new Error(
+                                                        "Vui lòng nhập mã sku"
+                                                    )
+                                                );
+                                            }
+                                        }
+                                        return Promise.resolve();
+                                    },
+                                },
+                            ]}
                         >
                             <Input
                                 placeholder="Nhập mã sku"
@@ -1605,20 +1923,22 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                             label="Barcode"
                             name={"barcode"}
                             tooltip="Barcode - Mã vạch thường được Nhà sản xuất tạo ra"
-                            rules={[{
-                                validator: (_, value) => {
-                                    if (!modalCreateProductStore.hasSkus) {
-                                      if(!value){
-                                        return Promise.reject(
-                                          new Error(
-                                              "Vui lòng nhập mã barcode"
-                                          )
-                                        )
-                                      }
-                                    }
-                                    return Promise.resolve();
-                                }
-                            }]}
+                            rules={[
+                                {
+                                    validator: (_, value) => {
+                                        if (!modalCreateProductStore.hasSkus) {
+                                            if (!value) {
+                                                return Promise.reject(
+                                                    new Error(
+                                                        "Vui lòng nhập mã barcode"
+                                                    )
+                                                );
+                                            }
+                                        }
+                                        return Promise.resolve();
+                                    },
+                                },
+                            ]}
                         >
                             <Input
                                 placeholder="Nhập mã barcode"
@@ -1643,20 +1963,22 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                             tooltip={
                                 "Các kho hàng có sẵn và đang trong quá trình hoạt động"
                             }
-                            rules={[{
-                                validator: (_, value) => {
-                                    if (!modalCreateProductStore.hasSkus) {
-                                      if(!value || value.length === 0){
-                                        return Promise.reject(
-                                          new Error(
-                                              "Vui lòng chọn kho hàng"
-                                          )
-                                        )
-                                      }
-                                    }
-                                    return Promise.resolve();
-                                }
-                            }]}
+                            rules={[
+                                {
+                                    validator: (_, value) => {
+                                        if (!modalCreateProductStore.hasSkus) {
+                                            if (!value || value.length === 0) {
+                                                return Promise.reject(
+                                                    new Error(
+                                                        "Vui lòng chọn kho hàng"
+                                                    )
+                                                );
+                                            }
+                                        }
+                                        return Promise.resolve();
+                                    },
+                                },
+                            ]}
                         >
                             <Select
                                 placeholder="Chọn kho lưu trữ hàng"
@@ -1708,21 +2030,27 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                                     item.value,
                                                     "quantity_import",
                                                 ]}
-
-                                                rules={[{
-                                                  validator: (_, value) => {
-                                                      if (!modalCreateProductStore.hasSkus) {
-                                                        if(!value){
-                                                          return Promise.reject(
-                                                            new Error(
-                                                                `Vui lòng nhập số lượng hàng`
-                                                            )
-                                                          )
-                                                        }
-                                                      }
-                                                      return Promise.resolve();
-                                                  }
-                                                }]}
+                                                rules={[
+                                                    {
+                                                        validator: (
+                                                            _,
+                                                            value
+                                                        ) => {
+                                                            if (
+                                                                !modalCreateProductStore.hasSkus
+                                                            ) {
+                                                                if (!value) {
+                                                                    return Promise.reject(
+                                                                        new Error(
+                                                                            `Vui lòng nhập số lượng hàng`
+                                                                        )
+                                                                    );
+                                                                }
+                                                            }
+                                                            return Promise.resolve();
+                                                        },
+                                                    },
+                                                ]}
                                             >
                                                 <Input
                                                     placeholder="Nhập số lượng"
@@ -1767,11 +2095,9 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
 
     // #region Hàm render quản lí biến thể
 
-    const [showVariantForm, setShowVariantForm] = useState<boolean>(false);
     const [subForm] = Form.useForm();
     const handleCheckVariant = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.checked) {
-            setShowVariantForm(true);
             const defaultVariant = initialOptionsVariant[0].value || "";
             const variants = [
                 { name: defaultVariant, values: [{ value: "" }] },
@@ -1779,8 +2105,9 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
             form.setFieldsValue({
                 variants: variants,
             });
+            modalCreateProductStore.setShowVariantForm(true)
         } else {
-            setShowVariantForm(false);
+            modalCreateProductStore.setShowVariantForm(false)
             form.resetFields(["variants"]);
             modalCreateProductStore.clearSkusCustomData();
             modalCreateProductStore.clearVariantCombination();
@@ -2089,10 +2416,10 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                     <div
                         className="flex justify-start items-center gap-2 w-full"
                         style={{
-                            borderBottom: showSpecForm
+                            borderBottom: modalCreateProductStore.showSpecForm
                                 ? "1px solid #d9d9d9"
                                 : "none",
-                            paddingBottom: showSpecForm ? "1rem" : "0",
+                            paddingBottom: modalCreateProductStore.showSpecForm ? "1rem" : "0",
                         }}
                     >
                         <input
@@ -2101,15 +2428,15 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                 handleCheckVariant(e);
                             }}
                             id="variantCheck"
-                            checked={showVariantForm}
+                            checked={modalCreateProductStore.showVariantForm}
                         />
                         <label htmlFor="variantCheck" className="text-sm">
                             Chọn để nhập các biến thể của sản phẩm
                         </label>
                     </div>
-                    {showVariantForm && (
+                    {modalCreateProductStore.showVariantForm && (
                         <div className="flex flex-col gap-4">
-                            <FormList_Select_Values_Render
+                            <FormListSelect
                                 formListName="variants"
                                 fieldValue="variants"
                                 initialOptions={initialOptionsVariant}
@@ -2621,11 +2948,14 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
         // Kiểm tra kho hàng
         if (
             modalCreateProductStore.warehouse_selected.length === 0 ||
-            modalCreateProductStore.warehouse_selected_quantities.length === 0 ||
+            modalCreateProductStore.warehouse_selected_quantities.length ===
+                0 ||
             modalCreateProductStore.warehouse_selected_quantities.length !==
                 modalCreateProductStore.warehouse_selected.length
         ) {
-            return showError("Vui lòng chọn kho hàng hoặc nhập đầy đủ số lượng kho cho biến thể mặc định");
+            return showError(
+                "Vui lòng chọn kho hàng hoặc nhập đầy đủ số lượng kho cho biến thể mặc định"
+            );
         }
 
         // Kiểm tra quantity_import
@@ -2689,9 +3019,8 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
         };
 
         console.log("values", form.getFieldsValue(true));
-        return defaultSkus; 
+        return defaultSkus;
     };
-    
 
     const handleSubmit = () => {
         const skusFormValue = form.getFieldValue("skus");
@@ -2708,20 +3037,20 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
             }
 
             const defaultSkus = {
-              name: `Default name ${form.getFieldValue("name")}`,
-              barcode: modalCreateProductStore.barcode,
-              masku: modalCreateProductStore.masku,
-              price_import: modalCreateProductStore.price_import,
-              price_sold: modalCreateProductStore.price_sold,
-              price_compare: modalCreateProductStore.price_compare,
-              image: null,
-              detail_import:
-                  modalCreateProductStore.warehouse_selected_quantities.map(
-                      ({ warehouse_id, quantity_import }) => ({
-                          warehouse_id,
-                          quantity_import,
-                      })
-                  ),
+                name: `Default name ${form.getFieldValue("name")}`,
+                barcode: modalCreateProductStore.barcode,
+                masku: modalCreateProductStore.masku,
+                price_import: modalCreateProductStore.price_import,
+                price_sold: modalCreateProductStore.price_sold,
+                price_compare: modalCreateProductStore.price_compare,
+                image: null,
+                detail_import:
+                    modalCreateProductStore.warehouse_selected_quantities.map(
+                        ({ warehouse_id, quantity_import }) => ({
+                            warehouse_id,
+                            quantity_import,
+                        })
+                    ),
             };
 
             console.log("values", form.getFieldsValue(true));
@@ -2741,22 +3070,23 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
             return;
         }
 
-        subForm
-            .validateFields(
-                validName.map((value) => ({
-                    skus: value,
-                }))
-            )
-            .catch((values: any) => {
-                const errorMessage =
-                    values?.errorFields
-                        ?.map((item: any) => item?.errors)
-                        ?.flat()
-                        ?.join(", ") ||
-                    "Có lỗi xảy ra lưu trong quá trình tạo mới sản phẩm ở biến thể";
-                productStore.setStatusMessage(400, errorMessage, "", false);
-                return;
-            });
+        // subForm
+        //     .validateFields(
+        //         validName.map((value) => ({
+        //             skus: value,
+        //         }))
+        //     )
+        //     .catch((values: any) => {
+        //         const errorMessage =
+        //             values?.errorFields
+        //                 ?.map((item: any) => item?.errors)
+        //                 ?.flat()
+        //                 ?.join(", ") ||
+        //             "Có lỗi xảy ra lưu trong quá trình tạo mới sản phẩm ở biến thể";
+        //         productStore.setStatusMessage(400, errorMessage, "", false);
+        //         return;
+        //     });
+      console.log("values", form.getFieldsValue(true));
     };
 
     const handleSubmitFailed = (errorInfo: any) => {

@@ -25,6 +25,14 @@ const getColumnsConfig = ({
       ellipsis: true,
     },
     {
+      title: "Slug",
+      dataIndex: "slug",
+      key: "slug",
+      render: (value) => <span>{value}</span>,
+
+      ellipsis: true,
+    },
+    {
       title: "Mô tả",
       dataIndex: "description",
       key: "description",
@@ -33,14 +41,7 @@ const getColumnsConfig = ({
       },
       ellipsis: true,
     },
-    {
-      title: "Thời gian tạo",
-      dataIndex: "deletedAt",
-      key: "deletedAt",
-      render: (deletedAt) => moment(deletedAt).format(DateTimeFormat.TimeStamp),
-      sorter: true,
-      ellipsis: true,
-    },
+
     {
       title: "Thao tác",
       dataIndex: "action",
@@ -93,3 +94,12 @@ CategoriesTable.propTypes = {
 };
 
 export default CategoriesTable;
+
+//  {
+//     title: "Thời gian tạo",
+//     dataIndex: "deletedAt",
+//     key: "deletedAt",
+//     render: (deletedAt) => moment(deletedAt).format(DateTimeFormat.TimeStamp),
+//     sorter: true,
+//     ellipsis: true,
+//   },

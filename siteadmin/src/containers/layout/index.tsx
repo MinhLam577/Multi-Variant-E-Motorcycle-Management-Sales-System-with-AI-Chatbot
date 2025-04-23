@@ -1,102 +1,102 @@
 import {
-    BarChartOutlined,
-    CalendarOutlined,
-    DashboardOutlined,
-    FileDoneOutlined,
-    GiftOutlined,
-    NotificationOutlined,
-    OrderedListOutlined,
-    ProductOutlined,
-    SettingOutlined,
-    ShopOutlined,
-    ShoppingOutlined,
-    TruckOutlined,
-    UserOutlined,
-} from "@ant-design/icons";
-import { Breadcrumb, ConfigProvider, Grid, Layout, Menu, theme } from "antd";
-import PropTypes from "prop-types";
-import { useContext, useState } from "react";
-import { useLocation, useNavigate } from "react-router";
-import Logo from "../../components/Logo";
-import { GlobalContext } from "../../contexts/global";
-import HeaderComponent from "./header";
-import "./index.css";
+  BarChartOutlined,
+  CalendarOutlined,
+  DashboardOutlined,
+  FileDoneOutlined,
+  GiftOutlined,
+  NotificationOutlined,
+  OrderedListOutlined,
+  ProductOutlined,
+  SettingOutlined,
+  ShopOutlined,
+  ShoppingOutlined,
+  TruckOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
+import { Breadcrumb, ConfigProvider, Grid, Layout, Menu, theme } from 'antd';
+import PropTypes from 'prop-types';
+import { useContext, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router';
+import Logo from '../../components/Logo';
+import { GlobalContext } from '../../contexts/global';
+import HeaderComponent from './header';
+import './index.css';
 
 const { Content, Footer, Sider } = Layout;
 const { useBreakpoint } = Grid;
 
 function getItem(label, key, icon, children, onClick = () => {}) {
-    return {
-        key,
-        icon,
-        children,
-        label,
-        onClick,
-    };
+  return {
+    key,
+    icon,
+    children,
+    label,
+    onClick,
+  };
 }
 
 const BreadcrumbLabel = {
-    dashboard: "Tổng quan",
-    profile: "Thông tin người dùng",
-    users: "Quản lý Người dùng",
-    cars: "Quản lý xe ô tô",
-    categories: "Danh mục sản phẩm",
-    categoriesnews: "Thông tin/tin tức",
-    orders: "Quản lý đơn hàng",
-    add: "Tạo",
-    edit: "Sửa",
-    vouchers: "Quản lý vouchers",
-    material: "Quản lý kho",
-    statistic: "Quản lý thống kê",
-    warehouse: "Kho",
-    "e-motorbike": "Xe máy điện",
-    customer: "Quản lý khách hàng",
-    setting: "Cấu hình",
-    role: "Role",
+  dashboard: 'Tổng quan',
+  profile: 'Thông tin người dùng',
+  users: 'Quản lý Người dùng',
+  cars: 'Quản lý xe ô tô',
+  categories: 'Danh mục sản phẩm',
+  categoriesnews: 'Thông tin/tin tức',
+  orders: 'Quản lý đơn hàng',
+  add: 'Tạo',
+  edit: 'Sửa',
+  vouchers: 'Quản lý vouchers',
+  material: 'Quản lý kho',
+  statistic: 'Quản lý thống kê',
+  warehouse: 'Kho',
+  'e-motorbike': 'Xe máy điện',
+  customer: 'Quản lý khách hàng',
+  setting: 'Cấu hình',
+  role: 'Role',
 };
 
 export const getBreadcrumbItems = (path: string) => {
-    if (typeof path !== "string") {
-        return [];
-    }
+  if (typeof path !== 'string') {
+    return [];
+  }
 
-    let arr = path
-        .split("/")
-        .map((value) => value.trim())
-        .filter((value) => value !== "");
-    let breadcrumbDataList = arr.map((value, index) => {
-        let routeArr = arr.slice(0, index + 1);
+  let arr = path
+    .split('/')
+    .map((value) => value.trim())
+    .filter((value) => value !== '');
+  let breadcrumbDataList = arr.map((value, index) => {
+    let routeArr = arr.slice(0, index + 1);
 
-        return {
-            key: index + 1,
-            href: "/" + routeArr.join("/"),
-            title: BreadcrumbLabel[value] ? BreadcrumbLabel[value] : name,
-        };
-    });
+    return {
+      key: index + 1,
+      href: '/' + routeArr.join('/'),
+      title: BreadcrumbLabel[value] ? BreadcrumbLabel[value] : name,
+    };
+  });
 
-    // set default to user page
-    breadcrumbDataList =
-        breadcrumbDataList.length === 0
-            ? [
-                  {
-                      key: 1,
-                      href: "/",
-                      title: BreadcrumbLabel["dashboard"],
-                  },
-              ]
-            : breadcrumbDataList;
+  // set default to user page
+  breadcrumbDataList =
+    breadcrumbDataList.length === 0
+      ? [
+          {
+            key: 1,
+            href: '/',
+            title: BreadcrumbLabel['dashboard'],
+          },
+        ]
+      : breadcrumbDataList;
 
-    return breadcrumbDataList;
+  return breadcrumbDataList;
 };
 
 const AppLayout = (props) => {
-    const location = useLocation();
-    const navigate = useNavigate();
-    const { children } = props;
-    const [collapsed, setCollapsed] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { children } = props;
+  const [collapsed, setCollapsed] = useState(false);
 
-    const { name } = useContext(GlobalContext) as { name: string };
-    const screens = useBreakpoint();
+  const { name } = useContext(GlobalContext) as { name: string };
+  const screens = useBreakpoint();
 
     //set user role
     const items = [
@@ -109,7 +109,7 @@ const AppLayout = (props) => {
         getItem("Chi nhánh", "3", <ShopOutlined />, null, () =>
             navigate("/stores")
         ),
-        getItem("Ô tô tải", "4", <ShoppingOutlined />, [
+        getItem("Sản phẩm", "4", <ShoppingOutlined />, [
             getItem("Ô tô tải", "5", <TruckOutlined />, null, () =>
                 navigate("/cars")
             ),
@@ -247,6 +247,6 @@ const AppLayout = (props) => {
 };
 
 AppLayout.propTypes = {
-    children: PropTypes.node,
+  children: PropTypes.node,
 };
 export default AppLayout;

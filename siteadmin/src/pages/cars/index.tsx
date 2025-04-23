@@ -118,17 +118,20 @@ const Cars = () => {
             () => ({
                 status: productStore.status,
                 showSuccessMsg: productStore.showSuccessMsg,
+                errorMsg: productStore.errorMsg,
+                successMsg: productStore.successMsg,
             }),
-            (current_status) => {
+            (current_status, pre_status) => {
                 if (!current_status) return;
-                const { status, showSuccessMsg } = current_status;
+                const { status: newStatus, showSuccessMsg: newShowSuccess } = current_status || {};
                 displayMessage(
                     messageApi,
-                    status,
+                    newStatus,
                     productStore,
-                    showSuccessMsg,
+                    newShowSuccess,
                     5
                 );
+
             }
         );
         return () => {

@@ -19,7 +19,7 @@ export const sleepFuntions = async (time) => {
     );
 };
 
-export const getBase64 = async (file: File) =>
+export const getBase64: (file: File) => Promise<string> = async (file: File) =>
     new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
@@ -97,11 +97,22 @@ export const displayMessage = (
     duration: number = 5
 ) => {
     const success_status = [200, 201, 204];
+    const messageKey = "upload-message"
     if (!success_status.includes(status) && store?.errorMsg) {
-        messageApi.error(store?.errorMsg, duration);
+      messageApi.open({
+        key: messageKey,
+        type: "error",
+        content: store?.errorMsg,
+        duration,
+    });
     } else {
         if (isDisplaySuccess && store?.successMsg) {
-            messageApi.success(store?.successMsg, duration);
+          messageApi.open({
+            key: messageKey,
+            type: "success",
+            content: store?.successMsg,
+            duration,
+        });
         }
     }
     store?.clearMessage();
