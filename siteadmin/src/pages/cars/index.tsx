@@ -164,23 +164,10 @@ const Cars = () => {
         useState(false);
     const handleSaveCreateProductModal = async () => {
         try {
-            const values = await createProductForm.validateFields();
-            const { brand_id, category_id, title, description } = values;
-            console.log("values", values);
+            createProductForm.submit();
         } catch (e) {
             const errorMessage =
-                e &&
-                typeof e === "object" &&
-                "errorFields" in e &&
-                Array.isArray(e.errorFields)
-                    ? e.errorFields
-                          .map((item) => item?.errors)
-                          ?.flat()
-                          ?.join(", ")
-                    : e instanceof Error
-                      ? e.message
-                      : "Có lỗi xảy ra lưu trong quá trình tạo mới sản phẩm";
-
+                e instanceof Error ? e.message : "Có lỗi xảy ra";
             productStore.setStatusMessage(400, errorMessage, "");
         }
     };

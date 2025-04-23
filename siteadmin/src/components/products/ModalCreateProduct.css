@@ -71,3 +71,10 @@
     border: none !important;
     border-bottom: 1px solid rgb(0, 0, 0, 0.3) !important;
 }
+
+.ant-select-multiple .ant-select-selection-overflow {
+    min-height: 40px !important;
+    display: flex !important;
+    justify-content: start !important;
+    align-content: center !important;
+}

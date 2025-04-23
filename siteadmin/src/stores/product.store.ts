@@ -59,18 +59,6 @@ export type CreateSkusDto = {
     detail_import: SkusDetailImportDto[];
 };
 
-export type CreateProductVariantDto = {
-    type: EnumProductStore;
-    slug_product: string;
-    title: string;
-    description?: string;
-    brand_id: string;
-    category_id: string;
-    specifications?: CreateProductSpecificationDto[];
-    images?: string[];
-    skus: CreateSkusDto[];
-};
-
 export type CreateProductDto = {
     type: EnumProductStore;
     slug_product: string;

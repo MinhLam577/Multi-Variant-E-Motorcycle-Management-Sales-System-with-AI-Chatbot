@@ -2,22 +2,30 @@ import ReactQuill, { Quill } from "react-quill";
 import QuillResizeImage from "quill-resize-image";
 import {
     forwardRef,
+    useEffect,
     useImperativeHandle,
     useMemo,
     useRef,
     useState,
 } from "react";
-import { resizeImage } from "src/utils";
+import { getBase64, resizeImage } from "src/utils";
 import BaseAPI from "src/api/base";
 import { AcceptImageTypes } from "src/constants";
 import { useStore } from "src/stores";
 import { observer } from "mobx-react-lite";
 import CustomizeModal from "./CustomizeModal";
-import { Button, Form, Input, Select, Image, Spin } from "antd";
-Quill.register("modules/resize", QuillResizeImage);
-const BlockEmbed = Quill.import("blots/block/embed");
+import { Button, Form, Input, Select, Image, Spin, FormInstance } from "antd";
+import Embed from "quill/blots/embed";
+import { url } from "inspector";
+import { spinning_store } from "../products/ModalCreateProduct";
+const Parchment = Quill.import("parchment");
 const maxWidth = 600;
 const maxHeight = 400;
+Quill.register("modules/resize", QuillResizeImage as any);
+
+const BlockEmbed = Quill.import(
+    "blots/block/embed"
+) as typeof Parchment.EmbedBlot;
 
 class ImageBlot extends BlockEmbed {
     static blotName = "image";
@@ -29,9 +37,9 @@ class ImageBlot extends BlockEmbed {
         width?: string;
         height?: string;
     }) {
-        const node = super.create();
+        const node = super.create() as HTMLElement;
         node.setAttribute("src", value.url);
-        node.setAttribute("alt", value.alt || "Image");
+        if (value.alt) node.setAttribute("alt", value.alt);
         if (value.width) node.setAttribute("width", value.width);
         if (value.height) node.setAttribute("height", value.height);
         return node;
@@ -53,7 +61,7 @@ class VideoBlot extends BlockEmbed {
     static tagName = "iframe";
 
     static create(value: { url: string; width?: string; height?: string }) {
-        const node = super.create();
+        const node = super.create() as HTMLElement;
         const embedUrl = this.convertToEmbedUrl(value.url);
         node.setAttribute("src", embedUrl);
         node.setAttribute("frameborder", "0");
@@ -97,53 +105,21 @@ class VideoBlot extends BlockEmbed {
 
     format(name: string, value: any) {
         if (name === "video" && value) {
-            this.domNode.setAttribute("src", value.url);
-            this.domNode.setAttribute("width", value.width || "100%");
-            this.domNode.setAttribute("height", value.height || "100%");
+            (this.domNode as HTMLElement).setAttribute("src", value.url);
+            (this.domNode as HTMLElement).setAttribute(
+                "width",
+                value.width || "100%"
+            );
+            (this.domNode as HTMLElement).setAttribute(
+                "height",
+                value.height || "100%"
+            );
         } else {
             super.format(name, value);
         }
     }
 }
 Quill.register(VideoBlot);
-
-// // Định nghĩa Fullscreen Module
-// class FullscreenModule {
-//     quill: any;
-//     options: any;
-
-//     constructor(quill: any, options: any = {}) {
-//         this.quill = quill;
-//         this.options = options;
-
-//         const toolbar = this.quill.getModule("toolbar");
-//         if (toolbar) {
-//             toolbar.addHandler("fullscreen", this.toggleFullscreen.bind(this));
-
-//             quill.container.addEventListener("click", (event: MouseEvent) => {
-//                 const target = event.target as HTMLElement;
-//                 if (target.closest(".ql-fullscreen")) {
-//                     this.toggleFullscreen();
-//                 }
-//             });
-//         }
-//     }
-
-//     toggleFullscreen() {
-//         const container = this.quill.container.parentElement;
-//         console.log("container", container);
-//         if (container.classList.contains("ql-fullscreenActive")) {
-//             container.classList.remove("ql-fullscreenActive");
-//             this.quill.container.focus();
-//         } else {
-//             container.classList.add("ql-fullscreenActive");
-//             this.quill.container.focus();
-//         }
-//     }
-// }
-
-// // Đăng ký module
-// Quill.register("modules/fullscreen", FullscreenModule);
 
 const Icon = Quill.import("ui/icons");
 Icon["video"] =
@@ -160,6 +136,7 @@ interface CustomizeEditorProps {
     folder?: string;
     store?: any;
     setSpins?: (spins: boolean) => void;
+    defaultForm: FormInstance;
     [key: string]: any;
 }
 const defaultToolbarOptions = [
@@ -196,10 +173,13 @@ const defaultFormats = [
     "clean",
     "fullscreen",
 ];
-const CustomizeEditor = forwardRef<ReactQuill, CustomizeEditorProps>(
+const CustomizeEditor: React.FC<CustomizeEditorProps> = forwardRef<
+    ReactQuill,
+    CustomizeEditorProps
+>(
     (
         {
-            value,
+            value: initialValue,
             onChange,
             modules,
             formats,
@@ -207,10 +187,12 @@ const CustomizeEditor = forwardRef<ReactQuill, CustomizeEditorProps>(
             folder,
             store,
             setSpins,
+            defaultForm,
             ...resProps
         },
         ref
     ) => {
+        const [editorValue, setEditorValue] = useState(initialValue);
         const [isOpenImageModal, setIsOpenImageModal] = useState(false);
         const [filesSelected, setFilesSelected] = useState<File[]>([]);
         const [fileSizeOptionSelected, setFileSizeOptionSelected] =
@@ -266,14 +248,18 @@ const CustomizeEditor = forwardRef<ReactQuill, CustomizeEditorProps>(
                 value: "1920x1080",
             },
         ];
+        useEffect(() => {
+            defaultForm.setFieldsValue({
+                size: "original",
+            });
+        }, []);
 
-        const [ImageForm] = Form.useForm();
         const default_store = store || useStore();
         const quillRef = useRef<ReactQuill>(null);
         useImperativeHandle(ref, () => quillRef.current as ReactQuill, []);
         const validateFiles = (files: File[]) => {
             if (files.length === 0 || !quillRef.current || !quillRef) {
-                throw new Error("No files to upload or editor not found");
+                throw new Error("Không tìm thấy file hay editor để tải lên");
             }
 
             if (files.length > 5) {
@@ -291,6 +277,10 @@ const CustomizeEditor = forwardRef<ReactQuill, CustomizeEditorProps>(
         };
         const onUploadImage = async (files: File[]) => {
             const quill = quillRef.current.getEditor();
+            const range = quill.getSelection(true);
+            if (!range) {
+                throw new Error("Vui lòng chọn editor để chèn hình ảnh");
+            }
             const uploadedFiles = await BaseAPI.uploadImagesToServer(
                 files,
                 folder
@@ -304,14 +294,20 @@ const CustomizeEditor = forwardRef<ReactQuill, CustomizeEditorProps>(
                     message || "Có lỗi xảy ra khi tải lên hình ảnh"
                 );
             }
-            for (const file of uploadedFiles) {
-                const range = quill.getSelection(true);
-                if (!range) return;
-                const { url } = file;
-                quill.insertEmbed(range.index, "image", {
-                    url,
-                    alt: "Uploaded image",
-                });
+
+            for (const file of uploadedFiles.map((file) => ({
+                url: file.url,
+                alt: file.public_id,
+            }))) {
+                quill.insertEmbed(
+                    range.index,
+                    "image",
+                    {
+                        url: file.url,
+                        alt: file.alt,
+                    },
+                    "user"
+                );
                 quill.setSelection(range.index + 1, 0, "silent");
             }
         };
@@ -320,10 +316,11 @@ const CustomizeEditor = forwardRef<ReactQuill, CustomizeEditorProps>(
         };
         const handleSaveImageModal = async () => {
             try {
-                if (setSpins) setSpins(true);
                 if (!filesSelected || filesSelected.length === 0) {
                     throw new Error("No files selected to upload");
                 }
+                if (setSpins) setSpins(true);
+
                 await onUploadImage(filesSelected);
                 handleCloseImageModal();
             } catch (e) {
@@ -338,7 +335,9 @@ const CustomizeEditor = forwardRef<ReactQuill, CustomizeEditorProps>(
         };
         const handleCloseImageModal = () => {
             setFilesSelected([]);
-            ImageForm.resetFields();
+            defaultForm.setFieldsValue({
+                size: "original",
+            });
             setIsOpenImageModal(false);
         };
 
@@ -359,7 +358,6 @@ const CustomizeEditor = forwardRef<ReactQuill, CustomizeEditorProps>(
                                 f.lastModified === file.lastModified
                         )
                 );
-
                 try {
                     validateFiles([...newFiles, ...filesSelected]);
                     const size = fileSizeOptionSelected;
@@ -477,95 +475,102 @@ const CustomizeEditor = forwardRef<ReactQuill, CustomizeEditorProps>(
 
         return (
             <>
-                <ReactQuill
-                    theme={theme || "snow"}
-                    placeholder="Nhập mô tả sản phẩm"
-                    value={value}
-                    modules={modules || defaultModules}
-                    formats={formats || defaultFormats}
-                    onChange={onChange}
-                    ref={quillRef}
-                    {...resProps}
+                <Spin
+                    spinning={spinning_store.spins}
+                    size="large"
+                    tip="Đang tải lên hình ảnh..."
+                    fullscreen={true}
                 />
+                <div>
+                    <ReactQuill
+                        theme={theme || "snow"}
+                        placeholder="Nhập mô tả sản phẩm"
+                        value={defaultForm.getFieldValue("description")}
+                        modules={modules || defaultModules}
+                        formats={formats || defaultFormats}
+                        onChange={onChange}
+                        ref={quillRef}
+                        {...resProps}
+                    />
 
-                <CustomizeModal
-                    title="Chọn hình ảnh"
-                    isOpen={isOpenImageModal}
-                    handleCloseModal={handleCloseImageModal}
-                    handleSaveModal={handleSaveImageModal}
-                    footer={false}
-                    cancelText="Hủy"
-                    okText="Lưu"
-                    width={600}
-                    centered={true}
-                >
-                    <FileListDiv />
-                    <Form
-                        form={ImageForm}
-                        layout="vertical"
-                        className="flex flex-col mt-4"
-                        preserve={false}
-                        autoComplete="off"
+                    <CustomizeModal
+                        title="Chọn hình ảnh"
+                        isOpen={isOpenImageModal}
+                        handleCloseModal={handleCloseImageModal}
+                        handleSaveModal={handleSaveImageModal}
+                        footer={false}
+                        cancelText="Hủy"
+                        okText="Lưu"
+                        width={600}
+                        centered={true}
                     >
-                        <Form.Item
-                            label="Kích thước hình ảnh"
-                            name={"size"}
-                            required
+                        <FileListDiv />
+                        <Form
+                            form={defaultForm}
+                            layout="vertical"
+                            className="flex flex-col mt-4"
+                            autoComplete="off"
                         >
-                            <Select
-                                className="h-10"
-                                showSearch
-                                optionFilterProp="label"
-                                defaultValue={fileSizeOptionSelected}
-                                options={ImageSizeOptions}
-                                onChange={(value) => {
-                                    if (!value) return;
-                                    setFileSizeOptionSelected(value);
-                                }}
+                            <Form.Item
+                                label="Kích thước hình ảnh"
+                                name={"size"}
+                                required
+                            >
+                                <Select
+                                    className="h-10"
+                                    showSearch
+                                    optionFilterProp="label"
+                                    defaultActiveFirstOption={true}
+                                    options={ImageSizeOptions}
+                                    onChange={(value) => {
+                                        if (!value) return;
+                                        setFileSizeOptionSelected(value);
+                                    }}
+                                />
+                            </Form.Item>
+                        </Form>
+                        <div className="flex justify-end gap-2 mt-4">
+                            <input
+                                id="file-input"
+                                type="file"
+                                accept="image/*"
+                                multiple
+                                style={{ display: "none" }}
+                                onChange={handleUploadImageChange}
                             />
-                        </Form.Item>
-                    </Form>
-                    <div className="flex justify-end gap-2 mt-4">
-                        <input
-                            id="file-input"
-                            type="file"
-                            accept="image/*"
-                            multiple
-                            style={{ display: "none" }}
-                            onChange={handleUploadImageChange}
-                        />
-                        <Button
-                            type="primary"
-                            onClick={() => {
-                                handleCloseImageModal();
-                                setFilesSelected([]);
-                            }}
-                        >
-                            Hủy
-                        </Button>
-                        <Button
-                            type="primary"
-                            onClick={() => {
-                                const fileInput = document.getElementById(
-                                    "file-input"
-                                ) as HTMLInputElement;
-                                if (fileInput) {
-                                    fileInput.click();
-                                }
-                            }}
-                        >
-                            Tải hình ảnh
-                        </Button>
-                        <Button
-                            type="primary"
-                            onClick={() => {
-                                handleSaveImageModal();
-                            }}
-                        >
-                            Chèn hình ảnh
-                        </Button>
-                    </div>
-                </CustomizeModal>
+                            <Button
+                                type="primary"
+                                onClick={() => {
+                                    handleCloseImageModal();
+                                    setFilesSelected([]);
+                                }}
+                            >
+                                Hủy
+                            </Button>
+                            <Button
+                                type="primary"
+                                onClick={() => {
+                                    const fileInput = document.getElementById(
+                                        "file-input"
+                                    ) as HTMLInputElement;
+                                    if (fileInput) {
+                                        fileInput.click();
+                                    }
+                                }}
+                            >
+                                Tải hình ảnh
+                            </Button>
+                            <Button
+                                type="primary"
+                                onClick={() => {
+                                    handleSaveImageModal();
+                                }}
+                            >
+                                Chèn hình ảnh
+                            </Button>
+                        </div>
+                    </CustomizeModal>
+                </div>
             </>
         );
     }

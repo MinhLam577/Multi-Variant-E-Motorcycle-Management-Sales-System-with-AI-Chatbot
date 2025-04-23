@@ -25,7 +25,11 @@ const ProductAPI: {
                     },
                 }
             );
-            return response?.data?.data;
+            return (
+                response?.data?.data ||
+                response?.data ||
+                ([] as ResponseImage[])
+            );
         } catch (error) {
             console.error("Error uploading images:", error);
             throw error;

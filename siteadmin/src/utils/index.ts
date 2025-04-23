@@ -3,7 +3,7 @@ import numbro from "numbro";
 import { DateTimeFormat } from "src/constants";
 import { MessageInstance } from "antd/es/message/interface";
 import { MessageStore } from "src/stores/base";
-
+import { v4 as uuidv4 } from "uuid";
 export const generateFileName = (fileName) => {
     const fileExtensions = fileName.split(".");
     const fileType = "." + fileExtensions[fileExtensions.length - 1];
@@ -19,7 +19,7 @@ export const sleepFuntions = async (time) => {
     );
 };
 
-export const getBase64 = (file) =>
+export const getBase64 = async (file: File) =>
     new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
@@ -176,4 +176,8 @@ export const resizeImage = (
             URL.revokeObjectURL(img.src);
         };
     });
+};
+
+export const generateUUIDV4 = () => {
+    return uuidv4();
 };
