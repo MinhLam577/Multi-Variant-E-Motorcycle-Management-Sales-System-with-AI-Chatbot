@@ -8,6 +8,7 @@ import "../public/scss/main.scss";
 import ScrollToTop from "./components/common/ScrollTop";
 import styled from "styled-components";
 import ThemeProvider from "@/app/layout/ThemeContext";
+import { StoreProvider } from "@/src/stores";
 
 if (typeof window !== "undefined") {
   import("bootstrap");
@@ -33,8 +34,10 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <ThemeProvider>
         <Body>
-          {children}
-          <ScrollToTop />
+          <StoreProvider>
+            {children}
+            <ScrollToTop />
+          </StoreProvider>
         </Body>
       </ThemeProvider>
     </html>

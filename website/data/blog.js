@@ -28,7 +28,6 @@ module.exports = [
     numComments: 12,
     date: "25 tháng 4, 2023",
     title: "Trải Nghiệm Xe Tải Nhẹ TERACO Tại Roadshow Đà Nẵng & Quảng Nam - Nhận Voucher 5 Triệu",
-
   },
   {
     id: 4,
@@ -84,6 +83,5 @@ module.exports = [
     numComments: 12,
     date: "25 tháng 4, 2023",
     title: "Trải Nghiệm Xe Tải Nhẹ TERACO Tại Roadshow Đà Nẵng & Quảng Nam - Nhận Voucher 5 Triệu",
-
   },
 ];

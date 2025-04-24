@@ -1,3 +1,4 @@
+"use client";
 import Footer from "@/app/components/common/Footer";
 import DefaultHeader from "../../components/common/DefaultHeader";
 import HeaderSidebar from "../../components/common/HeaderSidebar";
@@ -7,12 +8,19 @@ import LoginSignupModal from "@/app/components/common/login-signup";
 import CartItems from "@/app/components/shop/cart/CartItems";
 import Coupon from "@/app/components/shop/cart/Coupon";
 import CartTotal from "@/app/components/shop/cart/CartTotal";
+import { useStore } from "@/src/stores";
+import { useEffect } from "react";
+import { observer } from "mobx-react-lite";
 
-export const metadata = {
-  title: "Cart || hongson ",
-};
+// export const metadata = {
+//   title: "Cart || hongson ",
+// };
 
-const Cart = () => {
+const Cart = observer(() => {
+  const { cartObservable } = useStore();
+  useEffect(() => {
+    cartObservable.getListCart();
+  }, []);
   return (
     <div className="wrapper">
       <div
@@ -84,7 +92,7 @@ const Cart = () => {
                         {/* End thead */}
 
                         <tbody className="table_body">
-                          <CartItems />
+                          <CartItems cartList={cartObservable?.data} />
                         </tbody>
                         {/* End tbody */}
                       </table>
@@ -95,9 +103,7 @@ const Cart = () => {
                   <div className="shopping_cart_tabs">
                     <div className="shopping_cart_table">
                       <div className="checkout_form mt30">
-                        <div className="checkout_coupon">
-                          <Coupon />
-                        </div>
+                        <div className="checkout_coupon">// coupon</div>
                       </div>
                     </div>
                   </div>
@@ -106,7 +112,7 @@ const Cart = () => {
                 {/* End .col-lg-8 */}
 
                 <div className="col-md-6 col-lg-4 col-xl-3">
-                  <CartTotal />
+                  <CartTotal cartList={cartObservable?.data} />
                 </div>
                 {/* End .col-lg-6 */}
               </div>
@@ -139,6 +145,7 @@ const Cart = () => {
     </div>
     // End wrapper
   );
-};
+});
 
 export default Cart;
+// <Coupon />
