@@ -38,8 +38,8 @@ module.exports = [
     subMenu: [],
   },
   {
-    label: "Tin tức",
-    path: "/",
+    label: "Tin tức 2",
+    path: "/blog-list",
     subMenu: [],
   },
   {
