@@ -11,9 +11,18 @@ import {
     ShopOutlined,
     ShoppingOutlined,
     TruckOutlined,
+    UsergroupAddOutlined,
     UserOutlined,
 } from "@ant-design/icons";
-import { Breadcrumb, ConfigProvider, Grid, Layout, Menu, Spin, theme } from "antd";
+import {
+    Breadcrumb,
+    ConfigProvider,
+    Grid,
+    Layout,
+    Menu,
+    Spin,
+    theme,
+} from "antd";
 import PropTypes from "prop-types";
 import { use, useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
@@ -24,6 +33,7 @@ import "./index.css";
 import { makeAutoObservable, reaction } from "mobx";
 import { useStore } from "src/stores";
 import { observer } from "mobx-react-lite";
+import { Profile2User } from "iconsax-react";
 
 const { Content, Footer, Sider } = Layout;
 const { useBreakpoint } = Grid;
@@ -59,40 +69,45 @@ const BreadcrumbLabel = {
 };
 
 export const getBreadcrumbItems = (path: string) => {
-  if (typeof path !== "string") {
-      return [];
-  }
+    if (typeof path !== "string") {
+        return [];
+    }
 
-  // Loại bỏ dấu / ở đầu và cuối, tách thành mảng
-  const arr = path
-      .replace(/^\/|\/$/g, "")
-      .split("/")
-      .map((value) => value.trim())
-      .filter((value) => value !== "");
+    // Loại bỏ dấu / ở đầu và cuối, tách thành mảng
+    const arr = path
+        .replace(/^\/|\/$/g, "")
+        .split("/")
+        .map((value) => value.trim())
+        .filter((value) => value !== "");
 
-  // T pursed breadcrumb
-  let currentPath = "";
-  const breadcrumbDataList = arr.map((value, index) => {
-      currentPath += (currentPath ? "/" : "") + value;
-      return {
-          key: index + 1,
-          href: "/" + currentPath,
-          title: BreadcrumbLabel && BreadcrumbLabel[value] ? BreadcrumbLabel[value] : value || "Unknown",
-      };
-  });
+    // T pursed breadcrumb
+    let currentPath = "";
+    const breadcrumbDataList = arr.map((value, index) => {
+        currentPath += (currentPath ? "/" : "") + value;
+        return {
+            key: index + 1,
+            href: "/" + currentPath,
+            title:
+                BreadcrumbLabel && BreadcrumbLabel[value]
+                    ? BreadcrumbLabel[value]
+                    : value || "Unknown",
+        };
+    });
 
-  // Mặc định dashboard
-  return breadcrumbDataList.length === 0
-      ? [
-            {
-                key: 1,
-                href: "/",
-                title: BreadcrumbLabel && BreadcrumbLabel["dashboard"] ? BreadcrumbLabel["dashboard"] : "Dashboard",
-            },
-        ]
-      : breadcrumbDataList;
+    // Mặc định dashboard
+    return breadcrumbDataList.length === 0
+        ? [
+              {
+                  key: 1,
+                  href: "/",
+                  title:
+                      BreadcrumbLabel && BreadcrumbLabel["dashboard"]
+                          ? BreadcrumbLabel["dashboard"]
+                          : "Dashboard",
+              },
+          ]
+        : breadcrumbDataList;
 };
-
 
 const AppLayout = (props) => {
     const location = useLocation();
@@ -103,14 +118,17 @@ const AppLayout = (props) => {
 
     const { name } = useContext(GlobalContext) as { name: string };
     const screens = useBreakpoint();
-  
+
     //set user role
     const items = [
-        getItem("Tổng quan", "1", <ProductOutlined />, null, () =>
+        getItem("Tổng quan", "1", <BarChartOutlined />, null, () =>
             navigate("/")
         ),
         getItem("Nhân viên", "2", <UserOutlined />, null, () =>
             navigate("/users")
+        ),
+        getItem("Khách hàng", "19", <UsergroupAddOutlined />, null, () =>
+            navigate("/customer")
         ),
         getItem("Chi nhánh", "3", <ShopOutlined />, null, () =>
             navigate("/stores")
@@ -139,12 +157,6 @@ const AppLayout = (props) => {
         getItem("Kho", "17", <DashboardOutlined />, null, () =>
             navigate("/warehouse")
         ),
-        getItem("Thống kê", "18", <BarChartOutlined />, null, () =>
-            navigate("/statistic")
-        ),
-        getItem("Khách hàng", "19", <UserOutlined />, null, () =>
-            navigate("/customer")
-        ),
         getItem("Cấu hình", "20", <SettingOutlined />, null, () =>
             navigate("/setting")
         ),
@@ -169,7 +181,6 @@ const AppLayout = (props) => {
                 "/notifications": "15",
                 "/vouchers": "16",
                 "/warehouse": "17",
-                "/statistic": "18",
                 "/customer": "19",
                 "/role": "21",
             };
@@ -207,7 +218,7 @@ const AppLayout = (props) => {
                     minHeight: "100vh",
                 }}
             >
-                <Spin 
+                <Spin
                     spinning={store.loading}
                     size="large"
                     tip="Loading..."
@@ -256,4 +267,4 @@ const AppLayout = (props) => {
 AppLayout.propTypes = {
     children: PropTypes.node,
 };
-export default observer(AppLayout)
+export default observer(AppLayout);

@@ -77,6 +77,7 @@ export enum DateTimeFormat {
     TimeStamp = "DD/MM/YYYY HH:mm:ss",
     TimeStampExcludedSeconds = "DD/MM/YYYY HH:mm",
     Date = "DD/MM/YYYY",
+    DateJS = "YYYY-MM-DD",
     TIME_STAMP_POSTGRES = "YYYY-MM-DD HH:mm:ss",
     TIME_STAMP_ISO = "YYYY-MM-DDTHH:mm:ssZ",
     TIME_STAMP_POSTGRES_TZ = "YYYY-MM-DDTHH:mm:ss.SSSZ",

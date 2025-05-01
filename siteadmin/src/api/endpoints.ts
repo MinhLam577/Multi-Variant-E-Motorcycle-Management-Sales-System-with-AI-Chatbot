@@ -22,12 +22,12 @@ const endpoints = {
         changePassword: "/auth/admin/change-password",
     },
     user: {
-        details: (id) => `/users/${id}`,
-        update: (id) => `/users/${id}`,
-        setRole: (id) => `/users/${id}`,
-        changePassword: (id) => `/users/${id}`,
+        details: (id: string) => `/users/${id}`,
+        update: (id: string) => `/users/${id}`,
+        setRole: (id: string) => `/users/${id}`,
+        changePassword: (id: string) => `/users/${id}`,
         uploadAvatar: () => "/users/upload",
-        list: (page, limit) => `/users?current=${page}&pageSize=${limit}`,
+        list: (query: string) => `/users?${query}`,
         callBulkCreateUser: "/users/callBulkCreateUser",
         // tạo customer
         create: "/users",
