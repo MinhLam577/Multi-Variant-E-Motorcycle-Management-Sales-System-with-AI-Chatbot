@@ -48,7 +48,6 @@ export class AccountObservable {
       const jsonValue = JSON.parse(value);
 
       this.account = jsonValue;
-      console.log(jsonValue);
 
       return jsonValue;
     } catch (e) {

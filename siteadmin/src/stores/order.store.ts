@@ -1,11 +1,12 @@
 import { makeAutoObservable, toJS } from "mobx";
 import { convertDate } from "../utils";
 import { DateTimeFormat } from "../constants";
-import OrderAPI, { ExportOrder, ResponsePromise } from "../api/order";
-import {  RootStore } from "./base";
+import OrderAPI, { ExportOrder } from "../api/order.api";
+import { MessageStore, paginationData, RootStore } from "./base";
+import { ResponsePromise } from "src/api";
 
 export type OrderStatus = {
-  key?: string;
+    key?: string;
 };
 
 export type globalFiltersDataOrder = {
@@ -19,20 +20,15 @@ export type globalFiltersDataOrder = {
     created_to?: string;
 };
 
-export type paginationData = {
-  current: number;
-  pageSize: number;
-};
-
 export type orderData = {
-  orders: any[];
-  order_status: OrderStatus[];
-  order_status_selected?: string;
-  order_selected?: string;
-  order_detail?: any;
-  confirm_order_data?: ExportOrder;
+    orders: any[];
+    order_status: OrderStatus[];
+    order_status_selected?: string;
+    order_selected?: string;
+    order_detail?: any;
+    confirm_order_data?: ExportOrder;
 };
-export default class OrderObservable {
+export default class OrderObservable implements MessageStore {
     status: number | null = null;
     errorMsg: string | null = null;
     successMsg: string | null = null;
@@ -163,51 +159,51 @@ export default class OrderObservable {
         }
     }
 
-  *getOrderStatus() {
-    try {
-      const response: ResponsePromise = yield OrderAPI.getOrderStatus();
-      const { data, status, message } = response;
-      const success_status = [200, 201, 204];
-      if (success_status.includes(status)) {
-        this.data.order_status = [
-          {
-            key: "All",
-            value: null,
-          },
-          ...data,
-        ];
-        this.status = status;
-        this.successMsg = message;
-      } else {
-        this.status = status;
-        this.errorMsg = message;
-      }
-    } catch (e: any) {
-      console.error(e);
-      this.status = 500;
-      this.errorMsg = e?.message || "Lỗi không xác định";
+    *getOrderStatus() {
+        try {
+            const response: ResponsePromise = yield OrderAPI.getOrderStatus();
+            const { data, status, message } = response;
+            const success_status = [200, 201, 204];
+            if (success_status.includes(status)) {
+                this.data.order_status = [
+                    {
+                        key: "All",
+                        value: null,
+                    },
+                    ...data,
+                ];
+                this.status = status;
+                this.successMsg = message;
+            } else {
+                this.status = status;
+                this.errorMsg = message;
+            }
+        } catch (e: any) {
+            console.error(e);
+            this.status = 500;
+            this.errorMsg = e?.message || "Lỗi không xác định";
+        }
     }
-  }
 
-  *getOrderDetail(id: string) {
-    try {
-      const response: ResponsePromise = yield OrderAPI.getOrderDetail(id);
-      const { data, status, message } = response;
-      const success_status = [200, 201, 204];
-      if (success_status.includes(status)) {
-        this.data.order_detail = data;
-        this.status = status;
-        this.successMsg = message;
-      } else {
-        this.status = status;
-        this.errorMsg = message;
-      }
-    } catch (e: any) {
-      console.error(e);
-      this.status = 500;
-      this.errorMsg = e?.message || "Lỗi không xác định";
+    *getOrderDetail(id: string) {
+        try {
+            const response: ResponsePromise = yield OrderAPI.getOrderDetail(id);
+            const { data, status, message } = response;
+            const success_status = [200, 201, 204];
+            if (success_status.includes(status)) {
+                this.data.order_detail = data;
+                this.status = status;
+                this.successMsg = message;
+            } else {
+                this.status = status;
+                this.errorMsg = message;
+            }
+        } catch (e: any) {
+            console.error(e);
+            this.status = 500;
+            this.errorMsg = e?.message || "Lỗi không xác định";
+        }
     }
-  }
 
     *updateOrderStatus(id: string) {
         try {
@@ -319,55 +315,55 @@ export default class OrderObservable {
         }
     }
 
-  *confirmOrder(data: ExportOrder) {
-    try {
-      const response: ResponsePromise = yield OrderAPI.confirmOrder(data);
-      const { status, message } = response;
-      const success_status = [200, 201, 204];
-      if (success_status.includes(status)) {
-        yield this.getListOrder();
-        yield this.getOrderDetail(data.order_id);
-        this.status = status;
-        this.successMsg = message;
-        this.showSuccessMsg = true;
-      } else {
-        this.status = status;
-        this.errorMsg = message;
+    *confirmOrder(data: ExportOrder) {
+        try {
+            const response: ResponsePromise = yield OrderAPI.confirmOrder(data);
+            const { status, message } = response;
+            const success_status = [200, 201, 204];
+            if (success_status.includes(status)) {
+                yield this.getListOrder();
+                yield this.getOrderDetail(data.order_id);
+                this.status = status;
+                this.successMsg = message;
+                this.showSuccessMsg = true;
+            } else {
+                this.status = status;
+                this.errorMsg = message;
+                this.showSuccessMsg = false;
+            }
+        } catch (e: any) {
+            console.error(e);
+            this.status = 500;
+            this.errorMsg = e?.message || "Lỗi không xác định";
+        }
+    }
+
+    clearMessage() {
         this.showSuccessMsg = false;
-      }
-    } catch (e: any) {
-      console.error(e);
-      this.status = 500;
-      this.errorMsg = e?.message || "Lỗi không xác định";
+        this.status = null;
+        this.errorMsg = null;
+        this.successMsg = null;
     }
-  }
 
-  clearMessage() {
-    this.showSuccessMsg = false;
-    this.status = null;
-    this.errorMsg = null;
-    this.successMsg = null;
-  }
-
-  setStatusMessage(
-    status?: number,
-    errorMsg?: string,
-    successMsg?: string,
-    showSuccessMsg?: boolean
-  ) {
-    if (showSuccessMsg) {
-      this.showSuccessMsg = showSuccessMsg;
+    setStatusMessage(
+        status?: number,
+        errorMsg?: string,
+        successMsg?: string,
+        showSuccessMsg?: boolean
+    ) {
+        if (showSuccessMsg) {
+            this.showSuccessMsg = showSuccessMsg;
+        }
+        if (status) {
+            this.status = status;
+        }
+        if (errorMsg) {
+            this.errorMsg = errorMsg;
+        }
+        if (successMsg) {
+            this.successMsg = successMsg;
+        }
     }
-    if (status) {
-      this.status = status;
-    }
-    if (errorMsg) {
-      this.errorMsg = errorMsg;
-    }
-    if (successMsg) {
-      this.successMsg = successMsg;
-    }
-  }
 
     setGlobalFilters(filters: globalFiltersDataOrder) {
         this.globalFilters = {
@@ -376,29 +372,29 @@ export default class OrderObservable {
         };
     }
 
-  setPagination(page: number, pageSize: number) {
-    if (page < 1 || pageSize < 1) return;
+    setPagination(page: number, pageSize: number) {
+        if (page < 1 || pageSize < 1) return;
 
-    this.pagination = {
-      ...this.pagination,
-      current: page,
-      pageSize: pageSize,
-    };
-  }
+        this.pagination = {
+            ...this.pagination,
+            current: page,
+            pageSize: pageSize,
+        };
+    }
 
-  setOrderDetail(orderDetail) {
-    this.data.order_detail = orderDetail;
-  }
+    setOrderDetail(orderDetail) {
+        this.data.order_detail = orderDetail;
+    }
 
-  setOpenDetail(isOpen: boolean) {
-    this.isOpenDetail = isOpen;
-  }
+    setOpenDetail(isOpen: boolean) {
+        this.isOpenDetail = isOpen;
+    }
 
-  setOrderSelected(order_selected: string) {
-    this.data.order_selected = order_selected;
-  }
+    setOrderSelected(order_selected: string) {
+        this.data.order_selected = order_selected;
+    }
 
-  setOrderStatusSelected(order_status_selected: string) {
-    this.data.order_status_selected = order_status_selected;
-  }
+    setOrderStatusSelected(order_status_selected: string) {
+        this.data.order_status_selected = order_status_selected;
+    }
 }
