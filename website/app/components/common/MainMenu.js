@@ -13,7 +13,7 @@ const MainMenu = () => {
         <li className="dropitem" key={index}>
           <a
             className={isParentActive(menuItem.subMenu, path) ? "active" : ""}
-            href="#"
+            href={menuItem.path}
           >
             <span className="title">{menuItem.label}</span>
             {menuItem.subMenu?.length > 0 && <span className="arrow" />}
@@ -27,7 +27,7 @@ const MainMenu = () => {
                       className={
                         isParentActive(subItem.subMenu, path) ? "active" : ""
                       }
-                      href="#"
+                      href={path}
                     >
                       {subItem.label}
                     </a>
@@ -60,6 +60,8 @@ const MainMenu = () => {
           </ul>
         </li>
       ))}
+      {/* Menu bên phải */}
+      
     </>
   );
 };

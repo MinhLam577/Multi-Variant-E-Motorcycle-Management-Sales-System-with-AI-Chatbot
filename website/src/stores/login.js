@@ -1,0 +1,76 @@
+import { makeAutoObservable } from "mobx";
+import apiClient from "../api/apiClient";
+import endpoints from "../api/endpoints.ts";
+import { RootStore } from "./base";
+import { handleErrorMessage } from "../api/handleErrorMessage";
+
+export class LoginObservable {
+  errorMsg = "";
+  successMsg = "";
+  status = "initial";
+  code = "";
+  rootStore = RootStore;
+  constructor(rootStore) {
+    makeAutoObservable(this);
+    this.rootStore = rootStore;
+  }
+  // call api login
+  *login(email, password) {
+    this.status = "submitting";
+    try {
+      const { data, status, message } = yield apiClient.post(
+        endpoints.auth.login,
+        {
+          email,
+          password,
+        }
+      );
+
+      if (status !== 200 && !data?.userId) {
+        this.status = "loginFailed";
+        this.errorMsg = message;
+        if (
+          message ==
+          "Tài khoản chưa được kích hoạt. Vui lòng kiểm tra email để kích hoạt tài khoản nha"
+        )
+          this.code = 2;
+        return;
+      }
+      console.log(data.userId);
+      yield this.rootStore.accountObservable.setAccount(data);
+      yield this.rootStore.userObservable.getMe(data.userId);
+      this.status = "loginSuccess";
+      this.successMsg = message;
+    } catch (error) {
+      this.status = "loginFailed";
+      this.errorMsg = error?.message;
+    }
+  }
+  //forgot password
+  *forgotPassword(email) {
+    try {
+      const { data, status } = yield apiClient.post(
+        endpoints.auth.forgotPassword,
+        {
+          email,
+        }
+      );
+      console.log("data", data);
+      if (status !== 200) {
+        this.status = "forgotPasswordFailed";
+        this.errorMsg = "Email không tồn tại!";
+        return;
+      }
+      this.status = "forgotPasswordSuccess";
+    } catch (error) {
+      this.status = "forgotPasswordFailed";
+      this.errorMsg = handleErrorMessage(error);
+    }
+  }
+
+  *logout() {
+    yield this.rootStore.accountObservable.clearAccount();
+  }
+}
+
+export default LoginObservable;

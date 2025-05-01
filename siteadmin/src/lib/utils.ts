@@ -67,3 +67,19 @@ export const formatDate = (isoString: string): string => {
     const minutes = String(date.getMinutes()).padStart(2, "0");
     return `${day}.${month}.${year} ${hours}:${minutes}`;
 };
+
+export const convertFieldPathToString = (
+    fieldPath: string | (string | number)[]
+): string => {
+    const pathArray = Array.isArray(fieldPath) ? fieldPath : [fieldPath];
+
+    return pathArray
+        .map((key) => {
+            if (typeof key === "number") {
+                return `[${key}]`;
+            }
+            return `.${key}`;
+        })
+        .join("")
+        .replace(/^\./, "");
+};

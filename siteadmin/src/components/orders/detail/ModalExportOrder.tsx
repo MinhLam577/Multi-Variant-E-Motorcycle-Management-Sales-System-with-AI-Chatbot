@@ -6,7 +6,7 @@ import { formatVNDMoney } from "../../../utils";
 import React, { useEffect, useState } from "react";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { useStore } from "src/stores";
-import { CreateDetailExport } from "src/api/order";
+import { CreateDetailExport } from "src/api/order.api";
 import ModalConfirmReason from "./ModalConfirmReason";
 
 interface ModalExportOrderProps {

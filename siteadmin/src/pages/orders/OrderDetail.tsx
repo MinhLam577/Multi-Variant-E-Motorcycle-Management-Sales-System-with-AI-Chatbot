@@ -17,9 +17,9 @@ import OrderDescription from "../../components/orders/detail/OrderDescription";
 import CustomerDescription from "../../components/orders/detail/CustomerDescription";
 import ModalConfirmReason from "src/components/orders/detail/ModalConfirmReason";
 import ModalExportOrder from "src/components/orders/detail/ModalExportOrder";
-import OrderObservable from "../../stores/order";
+import OrderObservable from "../../stores/order.store";
 import SkusObservable from "../../stores/skus";
-import { CreateDetailExport, ExportOrder } from "src/api/order";
+import { CreateDetailExport, ExportOrder } from "src/api/order.api";
 export const OrderDetailMode = {
     View: 1,
     Edit: 2,
@@ -176,6 +176,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
                 e?.message || "Lỗi khi cập nhật trạng thái đơn hàng",
                 ""
             );
+            
         }
     };
 

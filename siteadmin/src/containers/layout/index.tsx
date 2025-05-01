@@ -13,14 +13,17 @@ import {
     TruckOutlined,
     UserOutlined,
 } from "@ant-design/icons";
-import { Breadcrumb, ConfigProvider, Grid, Layout, Menu, theme } from "antd";
+import { Breadcrumb, ConfigProvider, Grid, Layout, Menu, Spin, theme } from "antd";
 import PropTypes from "prop-types";
-import { useContext, useState } from "react";
+import { use, useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import Logo from "../../components/Logo";
 import { GlobalContext } from "../../contexts/global";
 import HeaderComponent from "./header";
 import "./index.css";
+import { makeAutoObservable, reaction } from "mobx";
+import { useStore } from "src/stores";
+import { observer } from "mobx-react-lite";
 
 const { Content, Footer, Sider } = Layout;
 const { useBreakpoint } = Grid;
@@ -39,10 +42,10 @@ const BreadcrumbLabel = {
     dashboard: "Tổng quan",
     profile: "Thông tin người dùng",
     users: "Quản lý Người dùng",
-    products: "Quản lý Sản phẩm",
+    products: "Quản lý sản phẩm",
     categories: "Danh mục sản phẩm",
     categoriesnews: "Thông tin/tin tức",
-    orders: "Quản lý Đơn hàng",
+    orders: "Quản lý đơn hàng",
     add: "Tạo",
     edit: "Sửa",
     vouchers: "Quản lý vouchers",
@@ -52,51 +55,55 @@ const BreadcrumbLabel = {
     "e-motorbike": "Xe máy điện",
     customer: "Quản lý khách hàng",
     setting: "Cấu hình",
+    role: "Role",
 };
 
 export const getBreadcrumbItems = (path: string) => {
-    if (typeof path !== "string") {
-        return [];
-    }
+  if (typeof path !== "string") {
+      return [];
+  }
 
-    let arr = path
-        .split("/")
-        .map((value) => value.trim())
-        .filter((value) => value !== "");
-    let breadcrumbDataList = arr.map((value, index) => {
-        let routeArr = arr.slice(0, index + 1);
+  // Loại bỏ dấu / ở đầu và cuối, tách thành mảng
+  const arr = path
+      .replace(/^\/|\/$/g, "")
+      .split("/")
+      .map((value) => value.trim())
+      .filter((value) => value !== "");
 
-        return {
-            key: index + 1,
-            href: "/" + routeArr.join("/"),
-            title: BreadcrumbLabel[value] ? BreadcrumbLabel[value] : name,
-        };
-    });
+  // T pursed breadcrumb
+  let currentPath = "";
+  const breadcrumbDataList = arr.map((value, index) => {
+      currentPath += (currentPath ? "/" : "") + value;
+      return {
+          key: index + 1,
+          href: "/" + currentPath,
+          title: BreadcrumbLabel && BreadcrumbLabel[value] ? BreadcrumbLabel[value] : value || "Unknown",
+      };
+  });
 
-    // set default to user page
-    breadcrumbDataList =
-        breadcrumbDataList.length === 0
-            ? [
-                  {
-                      key: 1,
-                      href: "/",
-                      title: BreadcrumbLabel["dashboard"],
-                  },
-              ]
-            : breadcrumbDataList;
-
-    return breadcrumbDataList;
+  // Mặc định dashboard
+  return breadcrumbDataList.length === 0
+      ? [
+            {
+                key: 1,
+                href: "/",
+                title: BreadcrumbLabel && BreadcrumbLabel["dashboard"] ? BreadcrumbLabel["dashboard"] : "Dashboard",
+            },
+        ]
+      : breadcrumbDataList;
 };
+
 
 const AppLayout = (props) => {
     const location = useLocation();
     const navigate = useNavigate();
     const { children } = props;
     const [collapsed, setCollapsed] = useState(false);
+    const store = useStore();
 
     const { name } = useContext(GlobalContext) as { name: string };
     const screens = useBreakpoint();
-
+  
     //set user role
     const items = [
         getItem("Tổng quan", "1", <ProductOutlined />, null, () =>
@@ -108,14 +115,12 @@ const AppLayout = (props) => {
         getItem("Chi nhánh", "3", <ShopOutlined />, null, () =>
             navigate("/stores")
         ),
-        getItem("Sản phẩm", "4", <ShoppingOutlined />, [
-            getItem("Ô tô tải", "5", <TruckOutlined />, null, () =>
-                navigate("/products")
-            ),
-            getItem("Xe máy điện", "6", <TruckOutlined />, null, () =>
-                navigate("/e-motorbike")
-            ),
-        ]),
+        getItem("Sản phẩm", "4", <ShoppingOutlined />, null, () =>
+            navigate("/products")
+        ),
+        getItem("Biến thể", "5", <TruckOutlined />, null, () =>
+            navigate("/combo_product")
+        ),
         getItem("Danh mục", "7", <FileDoneOutlined />, null, () =>
             navigate("/categories")
         ),
@@ -145,40 +150,6 @@ const AppLayout = (props) => {
         ),
     ];
 
-    const getBreadcrumbItems = (path) => {
-        if (typeof path !== "string") {
-            return [];
-        }
-
-        let arr = path
-            .split("/")
-            .map((value) => value.trim())
-            .filter((value) => value !== "");
-        let breadcrumbDataList = arr.map((value, index) => {
-            let routeArr = arr.slice(0, index + 1);
-
-            return {
-                key: index + 1,
-                href: "/" + routeArr.join("/"),
-                title: BreadcrumbLabel[value] ? BreadcrumbLabel[value] : name,
-            };
-        });
-
-        // set default to user page
-        breadcrumbDataList =
-            breadcrumbDataList.length === 0
-                ? [
-                      {
-                          key: 1,
-                          href: "/",
-                          title: BreadcrumbLabel["dashboard"],
-                      },
-                  ]
-                : breadcrumbDataList;
-
-        return breadcrumbDataList;
-    };
-
     const getSideMenuSelectedKeys = () => {
         const path = location.pathname;
         const search = location.search;
@@ -192,8 +163,7 @@ const AppLayout = (props) => {
                 "/stores": "3",
                 "/categories": "7",
                 "/categorynews": "8",
-                "/products": "5",
-                "/e-motorbike": "6",
+                "/products": "4",
                 "/combo_product": "7",
                 "/orders": "9",
                 "/notifications": "15",
@@ -201,6 +171,7 @@ const AppLayout = (props) => {
                 "/warehouse": "17",
                 "/statistic": "18",
                 "/customer": "19",
+                "/role": "21",
             };
             for (let key of Object.keys(menuKeys)) {
                 if (path.startsWith(key)) {
@@ -236,12 +207,20 @@ const AppLayout = (props) => {
                     minHeight: "100vh",
                 }}
             >
+                <Spin 
+                    spinning={store.loading}
+                    size="large"
+                    tip="Loading..."
+                    fullscreen
+                />
                 <Sider
                     collapsible
                     collapsed={collapsed}
                     onCollapse={(value) => setCollapsed(value)}
-                    width={screens.md ? 256 : 256}
+                    width={256}
                     className={collapsed ? "sider-collapsed" : "sider-expanded"}
+                    breakpoint="lg"
+                    collapsedWidth={80}
                 >
                     <div className="w-full h-16 flex justify-center flex-col items-center cursor-pointer bg-[var(--sideBar-logo-background-color)]">
                         <Logo
@@ -258,8 +237,8 @@ const AppLayout = (props) => {
                 </Sider>
                 <Layout>
                     <HeaderComponent />
-                    <Content style={{ margin: "0 1rem" }}>
-                        <div style={{ paddingRight: "16px" }}>{children}</div>
+                    <Content className="mx-6 !bg-[#f3f4f6]">
+                        <div>{children}</div>
                     </Content>
                     <Footer
                         style={{
@@ -277,4 +256,4 @@ const AppLayout = (props) => {
 AppLayout.propTypes = {
     children: PropTypes.node,
 };
-export default AppLayout;
+export default observer(AppLayout)

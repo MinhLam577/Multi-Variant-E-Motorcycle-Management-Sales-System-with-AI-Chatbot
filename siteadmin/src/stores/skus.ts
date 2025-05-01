@@ -1,8 +1,8 @@
 import { makeAutoObservable } from "mobx";
 import { RootStore } from "./base";
 import SkusAPI from "../api/skus";
-import { ResponsePromise } from "src/api/order";
 import { SUCCESS_STATUSES } from "src/constants";
+import { ResponsePromise } from "src/api";
 export default class SkusObservable {
     status: number = null;
     errorMsg: string = "";

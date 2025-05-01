@@ -1,12 +1,22 @@
 import {
   CloseOutlined,
   EditOutlined,
+  LoadingOutlined,
   PlusOutlined,
   SaveOutlined,
 } from "@ant-design/icons";
-import { Button, Card, Divider, Form, Input } from "antd";
+import {
+  Button,
+  Card,
+  Divider,
+  Form,
+  Input,
+  message,
+  Modal,
+  Upload,
+} from "antd";
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import {
   ProcessModalName,
@@ -16,7 +26,10 @@ import RichTextEditor from "../../containers/RichTextEditor";
 import UploadSinglePictureGetUrl, {
   UploadSinglePictureGetUrlRemoteMode,
 } from "../../containers/UploadSinglePictureGetUrl";
-
+import apiClient from "../../api/apiClient";
+import endpoints from "../../api/endpoints";
+import UploadPictureApi from "../../api/uploadFile";
+import { v4 as uuidv4 } from "uuid";
 export const NewsDetailMode = {
   View: 1,
   Add: 2,
@@ -33,10 +46,65 @@ const formItemLayout = {
 };
 
 const NewsDetail = ({ mode }) => {
-  const { id } = useParams();
+  const { id: idblogcategory } = useParams();
   const { idblog } = useParams();
+
+  const [loading, setLoading] = useState(false);
+  const [loadingSlider, setLoadingSlider] = useState(false);
+
+  const [imageUrl, setImageUrl] = useState("");
+
+  const [dataThumbnail, setDataThumbnail] = useState([]);
+  const [dataSlider, setDataSlider] = useState([]);
+
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState("");
+  const [previewTitle, setPreviewTitle] = useState("");
+
+  const [initForm, setInitForm] = useState("");
+
+  const fetchBlogDetail = async () => {
+    try {
+      const response = await apiClient.get(endpoints.blogs.details(idblog));
+      console.log("Blog detail:", response.data);
+      if (response.data) {
+        const arrThumbnail = [
+          {
+            uid: "s",
+            name: response.data.thumbnail,
+            status: "done",
+            url: response.data.thumbnail,
+            thumbUrl: response.data.thumbnail,
+          },
+        ];
+        const init = {
+          id: response.data.id,
+          title: response.data.title,
+          slug: response.data.slug,
+          content: response.data.content,
+          thumbnail: { fileList: arrThumbnail },
+        };
+        setInitForm(init);
+        setDataThumbnail(arrThumbnail);
+        form.setFieldsValue(init);
+      }
+      return () => {
+        form.resetFields();
+      };
+    } catch (error) {
+      console.error("Lỗi khi lấy chi tiết blog:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchBlogDetail();
+  }, [idblog]);
+
+  useEffect(() => {
+    console.log("tại sao null", initForm?.thumbnail?.fileList ?? []);
+  }, [initForm]);
+
   const navigate = useNavigate();
-  const [fileList, setFileList] = useState([]);
 
   const [form] = Form.useForm();
 
@@ -137,33 +205,153 @@ const NewsDetail = ({ mode }) => {
 
   const handleCancel = () => {
     if (mode === NewsDetailMode.Edit) {
-      console.log(id);
+      console.log(idblogcategory);
       console.log(idblog);
       processWithModals(ProcessModalName.ConfirmCancelEditing)(() => {
-        navigate(`/categorynews/${id}/news`);
+        navigate(`/categorynews/${idblogcategory}/news`);
       });
     } else {
-      navigate(`/categorynews/${id}/news`);
+      navigate(`/categorynews/${idblogcategory}/news`);
     }
   };
 
   const handleEdit = () => {
     if (mode === NewsDetailMode.View) {
-      navigate(`/categorynews/${id}/news/${idblog}/edit`, { replace: true });
+      navigate(`/categorynews/${idblogcategory}/news/${idblog}/edit`, {
+        replace: true,
+      });
     }
   };
 
   const handleFormFinish = (values) => {
+    console.log(">>> check values: ", values);
+    console.log(">>> check data thumbnail: ", dataThumbnail);
+    const { thumbnail, id, ...data } = values;
+    data.thumbnail = dataThumbnail[0]?.name || "";
+    data.blogCategoryId = idblogcategory;
+    console.log(data);
     const dto = {
-      ...values,
+      ...data,
     };
+
     if (mode === NewsDetailMode.Add) {
-      processWithModals(ProcessModalName.ConfirmCreateNews)(() => {});
+      processWithModals(ProcessModalName.ConfirmCreateNews)(async () => {
+        try {
+          const response = await apiClient.post(endpoints.blogs.create(), dto);
+          console.log(response);
+          if (response) {
+            message.success("Tạo bài viết thành công!");
+            form.resetFields();
+            setDataSlider([]);
+            setDataThumbnail([]);
+            setInitForm(null);
+            navigate(`/categorynews/${idblogcategory}/news`, {
+              replace: true,
+            });
+          }
+          // điều hướng hoặc reset form tùy mục đích
+        } catch (error) {
+          message.error("Tạo bài viết thất bại!");
+        }
+      });
     } else if (mode === NewsDetailMode.Edit) {
-      processWithModals(ProcessModalName.ConfirmUpdateNews)(() => {});
+      processWithModals(ProcessModalName.ConfirmUpdateNews)(async () => {
+        console.log(dto);
+        try {
+          console.log("DTO gửi đi:", dto);
+          const response = await apiClient.put(endpoints.blogs.update(id), dto);
+          console.log(response);
+
+          message.success("Cập nhật bài viết thành công!");
+          navigate(`/categorynews/${idblogcategory}/news`, {
+            replace: true,
+          });
+        } catch (error) {
+          message.error("Cập nhật bài viết thất bại!");
+        }
+      });
     }
   };
 
+  const getBase64 = (img, callback) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => callback(reader.result));
+    reader.readAsDataURL(img);
+  };
+
+  const beforeUpload = (file) => {
+    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
+    if (!isJpgOrPng) {
+      message.error("You can only upload JPG/PNG file!");
+    }
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      message.error("Image must smaller than 2MB!");
+    }
+    return isJpgOrPng && isLt2M;
+  };
+
+  const handleChange = (info, type) => {
+    console.log(info);
+    if (info.file.status === "uploading") {
+      type ? setLoadingSlider(true) : setLoading(true);
+      return;
+    }
+    if (info.file.status === "done") {
+      // Get this url from response in real world.
+      getBase64(info.file.originFileObj, (url) => {
+        type ? setLoadingSlider(false) : setLoading(false);
+        console.log(url);
+        setImageUrl(url);
+      });
+    }
+  };
+
+  const handleUploadFileThumbnail = async ({ file, onSuccess, onError }) => {
+    console.log(file);
+    const res = await UploadPictureApi.create(file);
+    console.log(res);
+    if (res && res.data) {
+      setDataThumbnail([
+        {
+          name: res.data.url,
+          uid: file.uid,
+          // status: "done",
+          // url: res.data.url,
+        },
+      ]);
+      onSuccess("done");
+    } else {
+      onError("Đã có lỗi khi upload file");
+    }
+  };
+  const handleRemoveFile = (file, type) => {
+    if (type === "thumbnail") {
+      setDataThumbnail([]);
+    }
+    if (type === "slider") {
+      const newSlider = dataSlider.filter((x) => x.uid !== file.uid);
+      setDataSlider(newSlider);
+    }
+  };
+
+  const handlePreview = async (file) => {
+    if (file.url && !file.originFileObj) {
+      setPreviewImage(file.url);
+      setPreviewOpen(true);
+      // setPreviewTitle(
+      //   file.name || file.url.substring(file.url.lastIndexOf("/") + 1)
+      // );
+      return;
+    }
+    getBase64(file.originFileObj, (url) => {
+      setPreviewImage(url);
+      setPreviewOpen(true);
+      setPreviewTitle(
+        file.name || file.url.substring(file.url.lastIndexOf("/") + 1)
+      );
+    });
+  };
   return (
     <>
       <Card title={getCardTitle()}>
@@ -174,22 +362,66 @@ const NewsDetail = ({ mode }) => {
           autoComplete="off"
           onFinish={handleFormFinish}
         >
-          <Form.Item name="newsId" hidden>
+          <Form.Item name="id" hidden>
             <Input />
           </Form.Item>
+
           <Form.Item
-            className="flex justify-center"
+            labelCol={{ span: 24 }}
+            label="Ảnh Thumbnail"
             name="thumbnail"
-            rules={[{ required: true, message: "Hãy chọn ảnh bìa!" }]}
           >
-            <UploadSinglePictureGetUrl
-              remoteMode={UploadSinglePictureGetUrlRemoteMode.Private}
-              disabled={isReadOnly()}
-              maxCount={1}
-              fileList={fileList}
-              setFileList={setFileList}
-            />
+            {initForm && mode == NewsDetailMode.View && (
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <Upload
+                  name="thumbnail"
+                  listType="picture-card"
+                  className="avatar-uploader"
+                  maxCount={1}
+                  multiple={false}
+                  customRequest={handleUploadFileThumbnail}
+                  beforeUpload={beforeUpload}
+                  onChange={handleChange}
+                  onRemove={(file) => handleRemoveFile(file, "thumbnail")}
+                  onPreview={handlePreview}
+                  defaultFileList={initForm?.thumbnail?.fileList ?? []}
+                  showUploadList={{ showRemoveIcon: !isReadOnly() }}
+                >
+                  {!isReadOnly() && (
+                    <div>
+                      {loading ? <LoadingOutlined /> : <PlusOutlined />}
+                      <div style={{ marginTop: 8 }}>Upload</div>
+                    </div>
+                  )}
+                </Upload>
+              </div>
+            )}
+
+            {mode == NewsDetailMode.Add ||
+              (mode == NewsDetailMode.Edit && (
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                  <Upload
+                    name="thumbnail"
+                    listType="picture-card"
+                    className="avatar-uploader"
+                    maxCount={1}
+                    multiple={false}
+                    customRequest={handleUploadFileThumbnail}
+                    beforeUpload={beforeUpload}
+                    onChange={handleChange}
+                    onRemove={(file) => handleRemoveFile(file, "thumbnail")}
+                    onPreview={handlePreview}
+                    defaultFileList={initForm?.thumbnail?.fileList ?? []}
+                  >
+                    <div>
+                      {loading ? <LoadingOutlined /> : <PlusOutlined />}
+                      <div style={{ marginTop: 8 }}>Upload</div>
+                    </div>
+                  </Upload>
+                </div>
+              ))}
           </Form.Item>
+
           <Form.Item
             label="Tiêu đề"
             name="title"
@@ -234,6 +466,15 @@ const NewsDetail = ({ mode }) => {
             )}
           </>
         </Form>
+
+        <Modal
+          open={previewOpen}
+          title={previewTitle}
+          footer={null}
+          onCancel={() => setPreviewOpen(false)}
+        >
+          <img alt="example" style={{ width: "100%" }} src={previewImage} />
+        </Modal>
       </Card>
     </>
   );

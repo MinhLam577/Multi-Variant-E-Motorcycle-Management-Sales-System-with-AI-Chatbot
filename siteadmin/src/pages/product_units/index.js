@@ -23,6 +23,8 @@ const ProductUnits = () => {
     });
   };
 
+  
+
   const handleViewProducts = (productsData) => {
     console.log(productsData);
     globalDispatch({

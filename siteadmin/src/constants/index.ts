@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { OrderStatus } from "src/stores/order";
+import { OrderStatus } from "src/stores/order.store";
 export const Language = {
     english: "en",
     vietnamese: "vi",
@@ -26,6 +26,12 @@ export const Status = {
     New: "new",
     InActive: "inactive",
     Active: "active",
+};
+
+export const StatusColor = {
+    New: "#f56a00",
+    InActive: "#7265e6",
+    Active: "#00a2ae",
 };
 
 export const EventType = {
@@ -127,7 +133,6 @@ export const EnumOrderSteps = {
     SHIPPING: "GIAO HÀNG",
 };
 
-// order-status.ts
 export enum EnumOrderStatusesValue {
     All = null as any,
     PENDING = 0,
@@ -142,12 +147,12 @@ export enum EnumOrderStatusesValue {
 }
 
 export const EnumOrderColorStatuses = {
-    PENDING: "rgb(2 132 199)",
+    PENDING: "rgb(2,132,199)",
     CONFIRMED: "#003eb3",
     EXPORTED: "#389e0d",
     DELIVERING: "#876800",
     SHIPPING: "#006d75",
-    DELIVERED: "rgb(5 150 105)",
+    DELIVERED: "rgb(5,150,105)",
     CANCELED: "#9e1068",
     RETURNED: "#531dab",
     FAILED_DELIVERY: "#f5222d",
@@ -186,15 +191,16 @@ export const UserType = {
 };
 
 export const CustomerType = {
-  user: "Khách hàng",
-  hr: "Tuyển dụng",
-  sales: "Sales",
+    user: "Khách hàng",
+    hr: "Tuyển dụng",
+    sales: "Sales",
 };
 export const GenderType = {
     male: "name",
     female: "female",
     other: "khác",
 };
+
 export const WareHouseDetailMode = {
     View: 1,
     Add: 2,
@@ -207,3 +213,5 @@ export const AUTH_STORAGE_KEYS = {
 };
 
 export const SUCCESS_STATUSES = [200, 201, 204];
+
+export const AcceptImageTypes = ["image/jpeg", "image/png", "image/jpg"];
