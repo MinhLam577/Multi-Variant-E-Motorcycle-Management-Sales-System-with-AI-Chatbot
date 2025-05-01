@@ -1,3 +1,4 @@
+
 import Footer from "@/app/components/common/Footer";
 import DefaultHeader from "../../components/common/DefaultHeader";
 import HeaderSidebar from "../../components/common/HeaderSidebar";
@@ -7,12 +8,12 @@ import LoginSignupModal from "@/app/components/common/login-signup";
 import Pagination from "@/app/components/blog/Pagination";
 import Sidebar from "@/app/components/blog/Sidebar";
 import BlogList from "@/app/components/blog/BlogList";
-
 export const metadata = {
   title: "Blog List || hongson ",
 };
 
 const Blog = () => {
+ 
   return (
     <div className="wrapper">
       <div

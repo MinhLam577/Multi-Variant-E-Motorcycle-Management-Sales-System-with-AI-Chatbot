@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import moment from "moment";
-// import { OrderStatus } from "src/stores/order";
+
 export const Language = {
   english: "en",
   vietnamese: "vi",
@@ -77,28 +77,6 @@ export enum DateTimeFormat {
   TIME_STAMP_POSTGRES_TZ = "YYYY-MM-DDTHH:mm:ss.SSSZ",
 }
 
-export const RegExps = {
-  ImageType: /^image\//,
-  IdentityNo: /^([0-9]{9}|[0-9]{12})$/,
-  PhoneNumber:
-    /^(0|84)((3[2-9])|(5[2689])|(7[06789])|(8[12345689])|(9[012346789]))\d{7}$/,
-  Email:
-    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-};
-
-export const AntdTableSelectionType = {
-  All: "all",
-  Single: "single",
-};
-
-export const AntdTableLocale = {
-  emptyText: "Không có dữ liệu",
-  sortTitle: "Sắp xếp",
-  triggerAsc: "Sắp xếp tăng dần",
-  triggerDesc: "Sắp xếp giảm dần",
-  cancelSort: "Hủy sắp xếp",
-};
-
 export const convertDate = (
   date: string | null,
   dateFormatCheck: DateTimeFormat = DateTimeFormat.Date,
@@ -120,6 +98,28 @@ export const convertDate = (
     console.log(e);
     return null;
   }
+};
+
+export const RegExps = {
+  ImageType: /^image\//,
+  IdentityNo: /^([0-9]{9}|[0-9]{12})$/,
+  PhoneNumber:
+    /^(0|84)((3[2-9])|(5[2689])|(7[06789])|(8[12345689])|(9[012346789]))\d{7}$/,
+  Email:
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+};
+
+export const AntdTableSelectionType = {
+  All: "all",
+  Single: "single",
+};
+
+export const AntdTableLocale = {
+  emptyText: "Không có dữ liệu",
+  sortTitle: "Sắp xếp",
+  triggerAsc: "Sắp xếp tăng dần",
+  triggerDesc: "Sắp xếp giảm dần",
+  cancelSort: "Hủy sắp xếp",
 };
 
 export const AntdTablePagingLocale = {

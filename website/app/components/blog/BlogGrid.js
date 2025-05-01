@@ -1,11 +1,23 @@
+"use client";
 import blogPosts from "@/data/blog";
+import { useStore } from "@/src/stores";
+import { observer } from "mobx-react-lite";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect } from "react";
 
-const BlogGrid = () => {
+const BlogGrid = observer(() => {
+  const store = useStore();
+  const storeBlog = store.blogsObservable;
+  useEffect(() => {
+    fetchBlogList();
+  }, []);
+  const fetchBlogList = () => {
+    storeBlog.getListBlog();
+  };
   return (
     <>
-      {blogPosts.map((post) => (
+      {storeBlog?.data?.map((post) => (
         <div
           key={post.id}
           className="col-md-6 col-xl-4"
@@ -14,13 +26,12 @@ const BlogGrid = () => {
         >
           <div className="for_blog">
             <div className="thumb">
-              <div className="tag">{post.tag}</div>
               <Image
                 width={394}
                 height={254}
                 style={{ objectFit: "cover" }}
                 className="img-whp"
-                src={post.imgSrc}
+                src={post.thumbnail}
                 alt={post.title}
               />
             </div>
@@ -64,6 +75,7 @@ const BlogGrid = () => {
       ))}
     </>
   );
-};
+});
 
 export default BlogGrid;
+// <div className="tag">{post.tag}</div>
