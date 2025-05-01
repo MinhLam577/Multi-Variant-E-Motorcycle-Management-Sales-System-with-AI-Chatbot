@@ -147,12 +147,12 @@ export enum EnumOrderStatusesValue {
 }
 
 export const EnumOrderColorStatuses = {
-    PENDING: "rgb(2 132 199)",
+    PENDING: "rgb(2,132,199)",
     CONFIRMED: "#003eb3",
     EXPORTED: "#389e0d",
     DELIVERING: "#876800",
     SHIPPING: "#006d75",
-    DELIVERED: "rgb(5 150 105)",
+    DELIVERED: "rgb(5,150,105)",
     CANCELED: "#9e1068",
     RETURNED: "#531dab",
     FAILED_DELIVERY: "#f5222d",

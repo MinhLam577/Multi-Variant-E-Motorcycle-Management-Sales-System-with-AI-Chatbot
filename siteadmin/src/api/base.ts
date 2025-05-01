@@ -1,4 +1,4 @@
-import { HeaderContentType, ResponseImage } from ".";
+import { HeaderContentType, ResponseFailure, ResponseImage } from ".";
 import apiClient from "./apiClient";
 import endpoints from "./endpoints";
 
@@ -7,7 +7,7 @@ const BaseAPI: {
     uploadImagesToServer: (
         files: File[],
         folder?: string
-    ) => Promise<ResponseImage[]>;
+    ) => Promise<ResponseImage[] | ResponseFailure>;
 } = {
     login: (username, password) => {
         return apiClient
@@ -40,9 +40,8 @@ const BaseAPI: {
                     },
                 }
             );
-            return response?.data?.data || response?.data || response;
+            return response?.data as ResponseImage[] || response as unknown as ResponseFailure;
         } catch (error) {
-            console.error("Error uploading images:", error);
             throw error;
         }
     },

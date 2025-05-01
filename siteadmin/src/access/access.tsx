@@ -15,7 +15,6 @@ const Access = observer((props: IProps) => {
   // hideChildren = true => ko render children, ví dụ hide button (button này check quyền)
   const { permission, hideChildren = false } = props;
   const [allow, setAllow] = useState<boolean>(true);
-  console.log("oki");
   //   const permissions = useAppSelector((state) => state.account.user.permissions);
   const Store = useStore();
   const AccountStore = Store.accountObservable;

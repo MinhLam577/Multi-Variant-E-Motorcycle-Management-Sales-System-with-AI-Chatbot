@@ -1,9 +1,14 @@
-import { Button, Tag } from "antd";
-import PropTypes from "prop-types";
-import { useState } from "react";
+import { Button } from "antd";
+import React, { useState } from "react";
 import { EnumOrderStatuses } from "../../constants";
-const OrderStatusSearch = ({ order_status, order_store }) => {
-    const button_extra_style = {
+import { OrderStatus } from "src/stores/order.store";
+import { ButtonProps } from "antd/lib";
+interface IOrderStatusSearchProps { 
+  order_status: OrderStatus[],
+  order_store: any;
+}
+const OrderStatusSearch: React.FC<IOrderStatusSearchProps> = ({ order_status, order_store }) => {
+    const button_extra_style: Partial<ButtonProps> = {
         color: "default",
         variant: "solid",
     };
@@ -11,7 +16,7 @@ const OrderStatusSearch = ({ order_status, order_store }) => {
     const [status_selected, set_status_selected] = useState("All");
 
     return (
-        <div className="flex flex-wrap justify-between items-center gap-y-4 ">
+        <div className="flex flex-wrap justify-between items-center gap-y-4 mt-6">
             {order_status?.map((status) => {
                 const isSelected = status_selected === status.key;
                 return (
@@ -42,11 +47,6 @@ const OrderStatusSearch = ({ order_status, order_store }) => {
             })}
         </div>
     );
-};
-
-OrderStatusSearch.propTypes = {
-    order_status: PropTypes.array,
-    order_store: PropTypes.object,
 };
 
 export default OrderStatusSearch;

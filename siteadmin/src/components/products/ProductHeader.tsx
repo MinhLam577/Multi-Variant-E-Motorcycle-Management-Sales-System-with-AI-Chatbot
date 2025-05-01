@@ -1,19 +1,19 @@
 import { PlusCircleOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button } from "antd";
+import { Button } from "antd";
 import { getBreadcrumbItems } from "src/containers/layout";
+import AdminBreadCrumb from "../common/AdminBreadCrumb";
 
 interface ProductHeaderProps {
     onCreateNew: (event: React.MouseEvent<HTMLElement>) => void;
+    className?: string;
 }
 
-const ProductHeader: React.FC<ProductHeaderProps> = ({ onCreateNew }) => {
+const ProductHeader: React.FC<ProductHeaderProps> = ({ onCreateNew, className }) => {
     return (
-        <div className="flex justify-between items-center mb-4">
-            <Breadcrumb
-                style={{
-                    margin: "0.25rem 0 1rem 0",
-                }}
-                items={[...getBreadcrumbItems(location.pathname)]}
+        <div className={`flex justify-between items-center mb-4 ${className ? className : ""}`}>
+            <AdminBreadCrumb
+                description="Thông tin chi tiết về danh sách sản phẩm"
+                items={getBreadcrumbItems(location.pathname)}
             />
             <div className="flex gap-2">
                 <Button

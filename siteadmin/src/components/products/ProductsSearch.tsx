@@ -15,6 +15,7 @@ import {
 import React from "react";
 import { useStore } from "src/stores";
 import debounce from "lodash/debounce";
+import { EnumProductStore, EnumProductType } from "src/stores/product.store";
 const { Search } = Input;
 
 type TreeSelectType = {
@@ -23,7 +24,7 @@ type TreeSelectType = {
     children?: TreeSelectType[];
 };
 
-type BrandSelectType = {
+type SelectType = {
     label: string;
     value: string;
 };
@@ -31,7 +32,7 @@ type BrandSelectType = {
 type IProductsSearchProps = {
     form: FormInstance;
     categorySelectData: TreeSelectType[];
-    brandSelectData: BrandSelectType[];
+    brandSelectData: SelectType[];
 };
 
 type SearchProps = GetProps<typeof Input.Search>;
@@ -50,6 +51,12 @@ const ProductsSearch: React.FC<IProductsSearchProps> = ({
             search: value,
         });
     }, 500);
+    const productTypeOption: SelectType[] = Object.keys(EnumProductType).map(
+        (key) => ({
+            label: EnumProductType[key as keyof typeof EnumProductType],
+            value: EnumProductStore[key as keyof typeof EnumProductStore],
+        })
+    );
 
     return (
         <Form
@@ -61,7 +68,7 @@ const ProductsSearch: React.FC<IProductsSearchProps> = ({
             className="flex flex-col gap-2"
         >
             <Row gutter={16}>
-                <Col xl={8} lg={24} md={24} xs={12}>
+                <Col xl={5} lg={24} md={24} xs={24}>
                     <Form.Item
                         label={<span className="font-bold">Search</span>}
                         name="search"
@@ -92,12 +99,32 @@ const ProductsSearch: React.FC<IProductsSearchProps> = ({
                                 enterButton
                                 onSearch={onSearch}
                                 autoComplete="off"
-                                size="large"
+                                size="middle"
                             />
                         </Tooltip>
                     </Form.Item>
                 </Col>
-                <Col xl={6} lg={8} md={8} xs={12}>
+                <Col xl={5} lg={12} md={12} xs={12}>
+                    <Form.Item
+                        label={<span className="font-bold">Loại xe</span>}
+                        name="type"
+                    >
+                        <Select
+                            placeholder="Chọn loại xe"
+                            showSearch
+                            options={productTypeOption}
+                            optionFilterProp="label"
+                            allowClear
+                            size="middle"
+                            onChange={(value)=> {
+                                productStore.setGlobalFilter({
+                                    type: value,
+                                });
+                            }}
+                        />
+                    </Form.Item>
+                </Col>
+                <Col xl={5} lg={12} md={12} xs={12}>
                     <Form.Item
                         label={<span className="font-bold">Danh mục</span>}
                         name="categoryName"
@@ -118,11 +145,11 @@ const ProductsSearch: React.FC<IProductsSearchProps> = ({
                                     categoryID: value,
                                 });
                             }}
-                            size="large"
+                            size="middle"
                         />
                     </Form.Item>
                 </Col>
-                <Col xl={6} lg={8} md={8} xs={12}>
+                <Col xl={5} lg={12} md={12} xs={12}>
                     <Form.Item
                         label={<span className="font-bold">Nhãn hàng</span>}
                         name="brand"
@@ -138,11 +165,11 @@ const ProductsSearch: React.FC<IProductsSearchProps> = ({
                                     brandID: value,
                                 });
                             }}
-                            size="large"
+                            size="middle"
                         />
                     </Form.Item>
                 </Col>
-                <Col xl={4} lg={8} md={8} xs={12}>
+                <Col xl={4} lg={12} md={12} xs={12}>
                     <Form.Item
                         label={<span className="font-bold">Trạng thái</span>}
                         name="status"
@@ -155,11 +182,11 @@ const ProductsSearch: React.FC<IProductsSearchProps> = ({
                             options={[
                                 {
                                     label: "Hiển thị",
-                                    value: true,
+                                    value: false,
                                 },
                                 {
                                     label: "Ẩn",
-                                    value: false,
+                                    value: true,
                                 },
                             ]}
                             onChange={(value) => {
@@ -167,7 +194,7 @@ const ProductsSearch: React.FC<IProductsSearchProps> = ({
                                     status: value,
                                 });
                             }}
-                            size="large"
+                            size="middle"
                         />
                     </Form.Item>
                 </Col>

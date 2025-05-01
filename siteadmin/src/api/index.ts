@@ -12,6 +12,13 @@ export type ResponseImage = {
     url: string;
 };
 
+export type ResponseFailure = {
+  status: number;
+  message: string[] | string;
+  path: string;
+  success: boolean;  
+}
+
 export type ResponseImageUpload = {
     status: number;
     message: string;

@@ -4,7 +4,15 @@ const endpoints = {
     },
     product: {
         getListProduct: (query: string) => "/products?" + query,
+        detail: (id: string) => `/products/${id}`,
+        create: "/products",
+        update: (id: string) => `/products/${id}`,
         uploadImagesToServer: "/products/upload/multipleImage",
+        softDelete: (id: string) => `/products/${id}/soft`,
+        restoreDelete: (id: string) => `/products/${id}/restore`,
+    },
+    options: {
+        list: () => "/option",
     },
     auth: {
         login: "/auth/admin/login",
@@ -60,15 +68,15 @@ const endpoints = {
         list: (query: string) => `/brand?${query}`,
     },
 
-  // branch
-  branch: {
-    list: (page, size) => `/branch?pageSize=${page}&current=${size}`,
-    details: (id) => `/branch/${id}`,
-    update: (id) => `/branch/${id}`,
-    delete: (id) => `/branch/${id}`,
-    upload: "/branch/upload",
-    create: "/branch"
-  },
+    // branch
+    branch: {
+        list: (page, size) => `/branch?pageSize=${page}&current=${size}`,
+        details: (id) => `/branch/${id}`,
+        update: (id) => `/branch/${id}`,
+        delete: (id) => `/branch/${id}`,
+        upload: "/branch/upload",
+        create: "/branch",
+    },
 
     // voucher
     vouchers: {
@@ -184,15 +192,14 @@ const endpoints = {
         list: `/province`,
     },
 
-  // district
-  district: {
-    districtByName: (provinceId) => `/district?provinceId=${provinceId}`,
-  },
-  // ward
-  ward: {
-    wardByName: (districtId) => `/ward?districtId=${districtId}`,
-  },
-
+    // district
+    district: {
+        districtByName: (provinceId) => `/district?provinceId=${provinceId}`,
+    },
+    // ward
+    ward: {
+        wardByName: (districtId) => `/ward?districtId=${districtId}`,
+    },
 };
 
 export default endpoints;

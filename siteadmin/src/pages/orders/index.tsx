@@ -1,4 +1,4 @@
-import { Drawer, message } from "antd";
+import { Breadcrumb, Button, Drawer, message } from "antd";
 import { useEffect, useState } from "react";
 
 import OrderSearch from "../../components/orders/OrderSearch";
@@ -9,7 +9,8 @@ import { observer } from "mobx-react-lite";
 import OrderStatusSearch from "../../components/orders/OrderStatusSearch";
 import { convertDate, displayMessage } from "../../utils";
 import { reaction } from "mobx";
-
+import AdminBreadCrumb from "src/components/common/AdminBreadCrumb";
+import { getBreadcrumbItems } from "src/containers/layout";
 const Orders = () => {
     const [messageApi, contextHolder] = message.useMessage();
     const store = useStore();
@@ -29,7 +30,7 @@ const Orders = () => {
                 paymentMethodStore.getMethods(),
             ]);
             setFilterData(orderStore.data?.orders);
-        } catch (e) {
+        } catch (e: any) {
             console.log(e);
             orderStore.setStatusMessage(
                 500,
@@ -66,16 +67,16 @@ const Orders = () => {
         };
     }, []);
 
-    const loadData = async (query) => {
-        await fetchData(query);
+    const loadData = async () => {
+        await fetchData();
     };
 
-    const handleViewOrders = async (id) => {
+    const handleViewOrders = async (id: string) => {
         try {
             orderStore.setOrderSelected(id);
             await orderStore.getOrderDetail(id);
             orderStore.setOpenDetail(true);
-        } catch (e) {
+        } catch (e: any) {
             orderStore.setStatusMessage(
                 500,
                 e?.message || "Có lỗi xảy ra khi view order.",
@@ -147,10 +148,10 @@ const Orders = () => {
         orderStore.globalFilters,
     ]);
 
-    const handleUpdateOrderStatus = async (id) => {
+    const handleUpdateOrderStatus = async (id: string) => {
         try {
             await orderStore.updateOrderStatus(id);
-        } catch (e) {
+        } catch (e: any) {
             console.log(e);
             orderStore.setStatusMessage(
                 500,
@@ -160,10 +161,10 @@ const Orders = () => {
         }
     };
 
-    const handleCancelOrderStatus = async (id, reason) => {
+    const handleCancelOrderStatus = async (id: string, reason?: string) => {
         try {
             await orderStore.cancelOrder(id, reason);
-        } catch (e) {
+        } catch (e: any) {
             console.log(e);
             orderStore.setStatusMessage(
                 500,
@@ -173,10 +174,10 @@ const Orders = () => {
         }
     };
 
-    const handleFailedDelivery = async (id, reason) => {
+    const handleFailedDelivery = async (id: string, reason?: string) => {
         try {
             await orderStore.failedDelivery(id, reason);
-        } catch (e) {
+        } catch (e: any) {
             console.log(e);
             orderStore.setStatusMessage(
                 500,
@@ -186,10 +187,10 @@ const Orders = () => {
         }
     };
 
-    const handleReturnOrder = async (id, reason) => {
+    const handleReturnOrder = async (id: string, reason?: string) => {
         try {
             await orderStore.returnOrder(id, reason);
-        } catch (e) {
+        } catch (e: any) {
             console.log(e);
             orderStore.setStatusMessage(
                 500,
@@ -200,20 +201,34 @@ const Orders = () => {
     };
 
     return (
-        <div className="flex flex-col gap-4">
+        <section className="w-full flex flex-col">
             {contextHolder}
-            <OrderStatusSearch
-                order_status={orderStore?.data?.order_status}
-                order_store={orderStore}
-            />
-            <div className="flex flex-col gap-4 p-4 border border-gray-200 rounded-lg bg-white shadow-sm">
+            <div className="w-full flex flex-col animate-slideDown">
+                <div className="flex justify-between items-center">
+                    <AdminBreadCrumb
+                        description="Thông tin chi tiết về danh sách đơn hàng"
+                        items={[...getBreadcrumbItems(location.pathname)]}
+                    />
+                    <Button
+                        type="primary"
+                        size="large"
+                        className="!rounded-none"
+                    >
+                        Xuất excel
+                    </Button>
+                </div>
+                <OrderStatusSearch
+                    order_status={orderStore?.data?.order_status}
+                    order_store={orderStore}
+                />
+            </div>
+            <div className="w-full my-6 flex flex-col gap-4 p-4 border border-gray-200 rounded-lg bg-white shadow-sm animate-slideUp">
                 <OrderSearch
                     globalFilters={orderStore.globalFilters}
                     setGlobalFilters={orderStore.setGlobalFilters}
                     order_status={orderStore.data.order_status}
                     payment_status={paymentMethodStore.data.payment_status}
                     payment_method={paymentMethodStore.data.payment_method}
-                    loading={orderStore.loading}
                     order_store={orderStore}
                     load_data={loadData}
                 />
@@ -258,11 +273,9 @@ const Orders = () => {
                         data: filterData,
                     }}
                     handleViewOrders={handleViewOrders}
-                    order_store={orderStore}
-                    loadData={() => {}}
                 />
             </div>
-        </div>
+        </section>
     );
 };
 

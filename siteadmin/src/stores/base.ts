@@ -16,6 +16,9 @@ export type paginationData = {
 };
 import VoucherObservable from "./voucher";
 import SettingObservable from "./setting";
+import WarehouseObservable from "./warehouse.store";
+import { action, makeObservable, observable } from "mobx";
+import OptionObservable from "./options.store";
 export interface MessageStore {
     status?: number;
     errorMsg?: string;
@@ -29,11 +32,13 @@ export interface MessageStore {
     ) => void;
 }
 export class RootStore implements MessageStore {
-    status: number = null;
-    errorMsg: string = null;
-    successMsg: string = null;
-    showSuccessMsg: boolean = false;
+    @observable status: number = null;
+    @observable errorMsg: string = null;
+    @observable successMsg: string = null;
+    @observable showSuccessMsg: boolean = false;
+    @observable loading: boolean = false;
 
+    optionObservable: OptionObservable;
     paymentMethodObservable: PaymentMethodObservable;
     orderObservable: OrderObservable;
     accountObservable: AccountObservable;
@@ -47,7 +52,11 @@ export class RootStore implements MessageStore {
     voucherObservable: VoucherObservable;
     settingObservable: SettingObservable;
     categoriesObservable: CategoriesObservable;
+    warehouseObservable: WarehouseObservable;
     constructor() {
+        makeObservable(this); 
+        this.optionObservable = new OptionObservable(this);
+        this.warehouseObservable = new WarehouseObservable(this);
         this.categoriesObservable = new CategoriesObservable(this);
         this.paymentMethodObservable = new PaymentMethodObservable(this);
         this.skusObservable = new SkusObservable(this);
@@ -62,12 +71,16 @@ export class RootStore implements MessageStore {
         this.voucherObservable = new VoucherObservable(this);
         this.settingObservable = new SettingObservable(this);
     }
+
+    @action
     clearMessage() {
         this.status = null;
         this.errorMsg = null;
         this.successMsg = null;
         this.showSuccessMsg = false;
     }
+
+    @action
     setStatusMessage(
         status: number,
         errorMsg: string,
@@ -78,5 +91,10 @@ export class RootStore implements MessageStore {
         if (errorMsg) this.errorMsg = errorMsg;
         if (successMsg) this.successMsg = successMsg;
         this.showSuccessMsg = showSuccessMsg;
+    }
+
+    @action
+    setLoading(loading: boolean) {
+        this.loading = loading;
     }
 }

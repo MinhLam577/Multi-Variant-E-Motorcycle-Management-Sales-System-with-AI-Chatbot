@@ -144,7 +144,7 @@ const OrdersTable = ({ globalFilters, handleViewOrders, data }) => {
     const navigate = useNavigate();
     const store = useStore();
     const order_store = store.orderObservable;
-    const handleViewUser = (id) => {
+    const handleViewUser = (id: string) => {
         navigate(`/users/${id}`, { replace: true });
     };
 

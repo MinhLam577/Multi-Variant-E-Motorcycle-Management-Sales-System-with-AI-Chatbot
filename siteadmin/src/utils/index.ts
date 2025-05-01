@@ -97,22 +97,22 @@ export const displayMessage = (
     duration: number = 5
 ) => {
     const success_status = [200, 201, 204];
-    const messageKey = "upload-message"
+    const messageKey = "upload-message";
     if (!success_status.includes(status) && store?.errorMsg) {
-      messageApi.open({
-        key: messageKey,
-        type: "error",
-        content: store?.errorMsg,
-        duration,
-    });
-    } else {
-        if (isDisplaySuccess && store?.successMsg) {
-          messageApi.open({
+        messageApi.open({
             key: messageKey,
-            type: "success",
-            content: store?.successMsg,
+            type: "error",
+            content: store?.errorMsg,
             duration,
         });
+    } else {
+        if (isDisplaySuccess && store?.successMsg) {
+            messageApi.open({
+                key: messageKey,
+                type: "success",
+                content: store?.successMsg,
+                duration,
+            });
         }
     }
     store?.clearMessage();
@@ -191,4 +191,69 @@ export const resizeImage = (
 
 export const generateUUIDV4 = () => {
     return uuidv4();
+};
+
+export const filterEmptyFields = <T extends Record<string, any>>(obj: T): T => {
+    const cleanedObj = Object.fromEntries(
+        Object.entries(obj).filter(
+            ([, value]) => value !== undefined && value !== null && value !== ""
+        )
+    );
+    return cleanedObj as T;
+};
+
+export const convertBase64ToFile = async (
+    base64String: string,
+    fileName: string
+) => {
+    try {
+        const response = await fetch(base64String);
+        const blob = await response.blob();
+        return new File([blob], fileName, { type: blob.type });
+    } catch (error) {
+        console.error("Error converting base64 to file:", error);
+        const errorMessage =
+            error instanceof Error
+                ? error.message
+                : "Có lỗi xảy ra trong quá trình chuyển đổi base64 thành file";
+        throw new Error(errorMessage);
+    }
+};
+
+export const urlToBase64 = async (url: string) => {
+    try {
+        const response = await fetch(url, { mode: "cors" });
+        if (!response.ok) {
+            console.log(`Phản hồi lỗi: ${await response.text()}`);
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        // Kiểm tra MIME type
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.startsWith("image/")) {
+            console.log(`Phản hồi không phải ảnh: ${contentType}`);
+            throw new Error(`Phản hồi không phải ảnh: ${contentType}`);
+        }
+
+        // Chuyển dữ liệu ảnh thành blob
+        const blob = await response.blob();
+
+        // Tạo promise để đọc blob thành base64
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                // Trả về chuỗi base64 (bao gồm data URI)
+                resolve(reader.result);
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+        });
+    } catch (error: any) {
+        console.error("Error converting URL to base64:", error);
+        const errorMessage =
+            error instanceof Error
+                ? error.message
+                : "Có lỗi xảy ra trong quá trình chuyển đổi URL thành base64";
+        throw new Error(errorMessage);
+    }
 };

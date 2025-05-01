@@ -8,16 +8,13 @@ import {
     useRef,
     useState,
 } from "react";
-import { getBase64, resizeImage } from "src/utils";
+import { resizeImage } from "src/utils";
 import BaseAPI from "src/api/base";
 import { AcceptImageTypes } from "src/constants";
 import { useStore } from "src/stores";
 import { observer } from "mobx-react-lite";
 import CustomizeModal from "./CustomizeModal";
-import { Button, Form, Input, Select, Image, Spin, FormInstance } from "antd";
-import Embed from "quill/blots/embed";
-import { url } from "inspector";
-import { spinning_store } from "../products/ModalCreateProduct";
+import { Button, Form, Select, Image, FormInstance } from "antd";
 const Parchment = Quill.import("parchment");
 const maxWidth = 600;
 const maxHeight = 400;
@@ -149,7 +146,7 @@ const defaultToolbarOptions = [
     [{ align: [] }],
     [{ list: "ordered" }, { list: "bullet" }],
     [{ color: [] }, { background: [] }],
-    ["link", "image", "video"],
+    ["link", "image"],
     ["blockquote"],
     ["fullscreen"],
     ["clean"],
@@ -157,7 +154,6 @@ const defaultToolbarOptions = [
 const defaultFormats = [
     "header",
     "align",
-    "video",
     "bold",
     "italic",
     "underline",
@@ -192,7 +188,6 @@ const CustomizeEditor: React.FC<CustomizeEditorProps> = forwardRef<
         },
         ref
     ) => {
-        const [editorValue, setEditorValue] = useState(initialValue);
         const [isOpenImageModal, setIsOpenImageModal] = useState(false);
         const [filesSelected, setFilesSelected] = useState<File[]>([]);
         const [fileSizeOptionSelected, setFileSizeOptionSelected] =
@@ -285,14 +280,11 @@ const CustomizeEditor: React.FC<CustomizeEditorProps> = forwardRef<
                 files,
                 folder
             );
-            if (!uploadedFiles) {
-                throw new Error("Không có hình ảnh nào được tải lên");
-            }
-            if (!Array.isArray(uploadedFiles)) {
+            
+            if ("path" in uploadedFiles) {
                 const { message } = uploadedFiles;
-                throw new Error(
-                    message || "Có lỗi xảy ra khi tải lên hình ảnh"
-                );
+                const errorMessage = Array.isArray(message) ? message.join(", ") : message;
+                throw new Error(errorMessage);
             }
 
             for (const file of uploadedFiles.map((file) => ({
@@ -465,7 +457,6 @@ const CustomizeEditor: React.FC<CustomizeEditorProps> = forwardRef<
                     container: defaultToolbarOptions,
                     handlers: {
                         image: handleImageEditorClicked,
-                        video: handleVideoEditorClicked,
                         fullscreen: handleFullScreenClicked,
                     },
                 },
@@ -475,12 +466,6 @@ const CustomizeEditor: React.FC<CustomizeEditorProps> = forwardRef<
 
         return (
             <>
-                <Spin
-                    spinning={spinning_store.spins}
-                    size="large"
-                    tip="Đang tải lên hình ảnh..."
-                    fullscreen={true}
-                />
                 <div>
                     <ReactQuill
                         theme={theme || "snow"}

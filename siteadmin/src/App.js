@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router";
+import "./reset.css";
 import "./App.css";
 import { WareHouseDetailMode } from "./constants";
 import Loading from "./containers/Loading";
@@ -14,7 +15,6 @@ import CategoriesDetail, {
     CategoriesDetailMode,
 } from "./pages/categories/CategoriesDetail";
 import Customer from "./pages/customers";
-import Dashboard from "./pages/dashboard";
 import EMotorbike from "./pages/e_motorbike";
 import EMotorbikeDetail from "./pages/e_motorbike/detail";
 import Login from "./pages/login";
@@ -45,7 +45,8 @@ import CategoriesNews from "./pages/categoriesNews";
 import CategoriesNewsDetail from "./pages/categoriesNews/CategoriesNewsDetail";
 
 import Setting from "./pages/setting/index";
-import Cars from "./pages/cars";
+import Products from "./pages/products";
+import Overview from "./pages/adminOverview/Overview";
 function App() {
     return (
         <StoreProvider>
@@ -64,7 +65,7 @@ function App() {
                                     path="/"
                                     element={
                                         <ProtectedRoute>
-                                            <Dashboard />
+                                            <Overview/>
                                         </ProtectedRoute>
                                     }
                                 />
@@ -72,7 +73,7 @@ function App() {
                                     path="/statistic"
                                     element={
                                         <ProtectedRoute>
-                                            <Statistic />
+                                            <Overview/>
                                         </ProtectedRoute>
                                     }
                                 />
@@ -310,10 +311,10 @@ function App() {
                                     }
                                 />
                                 <Route
-                                    path="/cars"
+                                    path="/products"
                                     element={
                                         <ProtectedRoute>
-                                            <Cars />
+                                            <Products />
                                         </ProtectedRoute>
                                     }
                                 />

@@ -7,21 +7,31 @@ import { useStore } from "src/stores";
 import { toJS } from "mobx";
 import { Status, StatusColor } from "src/constants";
 import { observer } from "mobx-react-lite";
+import { Breakpoint } from "antd/lib";
+import { productTableFilterDataType } from "src/pages/products";
 const { useBreakpoint } = Grid;
+
+interface IGetColumnsConfigProps {
+    handleEditProducts: (item: any) => void;
+    handleViewProducts: (item: any) => void;
+    handleRestoreProducts: (item: any) => void;
+    handleDeleteProducts: (item: any) => void;
+    screens: Partial<Record<Breakpoint, boolean>>;
+}
+
 const getColumnsConfig = ({
     handleEditProducts,
     handleViewProducts,
-    handleStatusProducts,
+    handleRestoreProducts,
     handleDeleteProducts,
     screens,
-}) => {
+}: IGetColumnsConfigProps): Array<any> => {
     return [
-        // Product name
         {
             title: "Sản phẩm",
             dataIndex: "title",
             key: "title",
-            render: (value: string, item) => {
+            render: (value: string, item: productTableFilterDataType) => {
                 return !screens.lg ? (
                     <Tooltip
                         placement="topLeft"
@@ -29,11 +39,14 @@ const getColumnsConfig = ({
                             <div className="flex items-center gap-2 justify-start">
                                 <div className="w-14 h-14 shrink-0 flex justify-center items-center">
                                     <Image
-                                        className="w-full h-full object-cover rounded-[50%]"
+                                        className="w-full h-full object-cover rounded-md"
                                         src={
-                                            "https://www.characterparties.com.au/wp-content/uploads/2017/05/CARS-ROUND-EI.jpg"
+                                            item.images &&
+                                            item.images.length > 0
+                                                ? item.images[0]
+                                                : ""
                                         }
-                                        fallback="https://www.characterparties.com.au/wp-content/uploads/2017/05/CARS-ROUND-EI.jpg"
+                                        fallback="/images/default_product_image.jpg"
                                     />
                                 </div>
                                 <div className="">
@@ -61,19 +74,12 @@ const getColumnsConfig = ({
                                 <Image
                                     className="w-full h-full object-cover rounded-[50%]"
                                     src={
-                                        "https://www.characterparties.com.au/wp-content/uploads/2017/05/CARS-ROUND-EI.jpg"
+                                        item.images && item.images.length > 0
+                                            ? item.images[0]
+                                            : ""
                                     }
-                                    fallback="https://www.characterparties.com.au/wp-content/uploads/2017/05/CARS-ROUND-EI.jpg"
+                                    fallback="/images/default_product_image.jpg"
                                 />
-                            </div>
-                            <div>
-                                <Button
-                                    type="link"
-                                    className="items-center justify-start p-0"
-                                    onClick={() => handleViewProducts(item)}
-                                >
-                                    {value}
-                                </Button>
                             </div>
                         </div>
                     </Tooltip>
@@ -83,11 +89,13 @@ const getColumnsConfig = ({
                             className={`w-14 h-14 shrink-0 flex justify-center items-center ${screens.lg ? "" : "hidden"}`}
                         >
                             <Image
-                                className="w-full h-full object-cover rounded-[50%]"
+                                className="w-full h-full object-cover rounded-md"
                                 src={
-                                    "https://www.characterparties.com.au/wp-content/uploads/2017/05/CARS-ROUND-EI.jpg"
+                                    item.images && item.images.length > 0
+                                        ? item.images[0]
+                                        : ""
                                 }
-                                fallback="https://www.characterparties.com.au/wp-content/uploads/2017/05/CARS-ROUND-EI.jpg"
+                                fallback="/images/default_product_image.jpg"
                             />
                         </div>
                         <div>
@@ -146,7 +154,7 @@ const getColumnsConfig = ({
             title: "Trạng thái",
             dataIndex: "status",
             key: "status",
-            render: (status) => {
+            render: (status, record) => {
                 const statusText = status === true ? "Active" : "InActive";
                 const statusColor = StatusColor[statusText];
                 const statusLabel = Status[statusText];
@@ -169,9 +177,8 @@ const getColumnsConfig = ({
             render: (_value, item) => {
                 return (
                     <GroupActionButton
-                        handleEditProducts={handleEditProducts}
-                        handleStatusProducts={handleStatusProducts}
-                        handleDeleteProducts={handleDeleteProducts}
+                        handleDelete={handleDeleteProducts}
+                        handleRestore={handleRestoreProducts}
                         item={item}
                     />
                 );
@@ -181,24 +188,39 @@ const getColumnsConfig = ({
 };
 
 interface IProductsTableProps {
-    data: any[];
+    data: productTableFilterDataType[];
+    handleDeleteProducts: (id: string) => void;
+    handleRestoreProducts: (id: string) => void;
+    handleViewOrUpdateProduct: (item: productTableFilterDataType) => void;
 }
 
-const ProductsTable: React.FC<IProductsTableProps> = ({ data }) => {
+const ProductsTable: React.FC<IProductsTableProps> = ({
+    data,
+    handleDeleteProducts,
+    handleRestoreProducts,
+    handleViewOrUpdateProduct
+}) => {
     const screens = useBreakpoint();
-
     const store = useStore();
     const productStore = store.productObservable;
     return (
         <TableComponent
-            getColumnsConfig={getColumnsConfig}
+            getColumnsConfig={() =>
+                getColumnsConfig({
+                    handleEditProducts: handleViewOrUpdateProduct,
+                    handleViewProducts: handleViewOrUpdateProduct,
+                    handleRestoreProducts: handleRestoreProducts,
+                    handleDeleteProducts: handleDeleteProducts,
+                    screens: screens,
+                })
+            }
             data={data}
             size="large"
             loading={productStore.loading}
             observableName={productStore.constructor.name}
             filterValue={productStore.data.globalFilter}
             screens={screens}
-            rowKey={(item) => item?.products?.id || item?.id}
+            rowKey={(item: productTableFilterDataType) => item.id}
         />
     );
 };
