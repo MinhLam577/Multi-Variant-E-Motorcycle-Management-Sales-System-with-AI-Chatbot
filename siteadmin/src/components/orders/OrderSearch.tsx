@@ -1,25 +1,6 @@
-import { useContext, useEffect, useState } from "react";
-
-import { SearchOutlined } from "@ant-design/icons";
-import {
-    Button,
-    Col,
-    DatePicker,
-    Form,
-    Input,
-    Row,
-    Select,
-    Tooltip,
-} from "antd";
-import moment from "moment";
+import { Col, DatePicker, Form, Input, Row, Select, Tooltip } from "antd";
 import PropTypes from "prop-types";
-import {
-    DateTimeFormat,
-    EnumOrderStatuses,
-    PaymentStatus,
-    UserRoleConstant,
-} from "../../constants";
-import { GlobalContext } from "../../contexts/global";
+import { PaymentStatus } from "../../constants";
 import { observer } from "mobx-react-lite";
 import { makeAutoObservable } from "mobx";
 
@@ -180,35 +161,6 @@ const OrderSearch = ({
                         </Form.Item>
                     </Col>
                 </Row>
-                {/* <div className="flex justify-between w-full items-center">
-                    <div className="flex gap-2 items-center">
-                        <Button
-                            type="primary"
-                            danger
-                            htmlType="reset"
-                            onClick={() => {
-                                setGlobalFilters({
-                                    search: "",
-                                    order_status: null,
-                                    payment_status: null,
-                                    payment_method: null,
-                                    startDate: null,
-                                    endDate: null,
-                                });
-                                form.resetFields();
-                            }}
-                        >
-                            Hủy
-                        </Button>
-                        <Button
-                            type="primary"
-                            htmlType="submit"
-                            icon={<SearchOutlined />}
-                        >
-                            Tìm kiếm
-                        </Button>
-                    </div>
-                </div> */}
             </Form>
         </>
     );

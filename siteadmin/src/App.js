@@ -24,7 +24,6 @@ import Notification from "./pages/notifications";
 import Orders from "./pages/orders";
 import OrderDetail, { OrderDetailMode } from "./pages/orders/OrderDetail";
 import { ProductUnitsDetailMode } from "./pages/product_units/ProductUnitsDetail";
-import Statistic from "./pages/statistic";
 import Stores from "./pages/stores";
 import StoresDetail, { StoresDetailMode } from "./pages/stores/StoresDetail";
 import User from "./pages/users";
@@ -65,7 +64,7 @@ function App() {
                                     path="/"
                                     element={
                                         <ProtectedRoute>
-                                            <Overview/>
+                                            <Overview />
                                         </ProtectedRoute>
                                     }
                                 />
@@ -73,7 +72,7 @@ function App() {
                                     path="/statistic"
                                     element={
                                         <ProtectedRoute>
-                                            <Overview/>
+                                            <Overview />
                                         </ProtectedRoute>
                                     }
                                 />

@@ -59,24 +59,8 @@ export default class OrderObservable implements MessageStore {
     loading: boolean = false;
     isOpenDetail: boolean = false;
     constructor(rootStore: RootStore) {
-        makeAutoObservable(this);
+        makeAutoObservable(this, {}, { autoBind: true });
         this.rootStore = rootStore;
-        this.setGlobalFilters = this.setGlobalFilters.bind(this);
-        this.setPagination = this.setPagination.bind(this);
-        this.getListOrder = this.getListOrder.bind(this);
-        this.getOrderDetail = this.getOrderDetail.bind(this);
-        this.getOrderStatus = this.getOrderStatus.bind(this);
-        this.clearMessage = this.clearMessage.bind(this);
-        this.setOrderDetail = this.setOrderDetail.bind(this);
-        this.setOpenDetail = this.setOpenDetail.bind(this);
-        this.setOrderStatusSelected = this.setOrderStatusSelected.bind(this);
-        this.setOrderSelected = this.setOrderSelected.bind(this);
-        this.updateOrderStatus = this.updateOrderStatus.bind(this);
-        this.cancelOrder = this.cancelOrder.bind(this);
-        this.failedDelivery = this.failedDelivery.bind(this);
-        this.returnOrder = this.returnOrder.bind(this);
-        this.setStatusMessage = this.setStatusMessage.bind(this);
-        this.confirmOrder = this.confirmOrder.bind(this);
     }
 
     private validateQuery(query?: string | object): string {
