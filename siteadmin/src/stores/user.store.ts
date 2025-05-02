@@ -4,36 +4,41 @@ import { paginationData } from "./voucher";
 import { convertDate, filterEmptyFields } from "src/utils";
 import { DateTimeFormat } from "src/constants";
 import UserAPI from "src/api/user.api";
+import { UserType } from "src/constants";
 
-const mockUser = {
-    id: "b71f1d04-f8ad-439f-bfa0-b1935b415ac1",
-    username: "Ngô Đình ",
-    email: "ngodinhphuoc1050@gmail.com",
-    age: 22,
-    address: "Gia ninh quảng ninh ",
-    avatarUrl:
-        "https://res.cloudinary.com/diwacy6yr/image/upload/v1728441530/User/default.png",
-    phoneNumber: "0865448896",
-    birthday: "2000-12-31",
-    gender: "male",
-    joinedAt: "2025-03-31T02:41:09.013Z",
-    isActive: true,
-    roles: ["admin"],
+export type PermissionType = {
+    id: string;
+    name: string;
+    path: string;
+    method: string;
+    module: string;
 };
-export enum GenderType {
+export type RoleType = {
+    id: string;
+    name: UserType;
+    permissions: PermissionType[];
+};
+
+export enum GenderEnum {
     MALE = "male",
     FEMALE = "female",
+    OTHER = "other",
 }
-export enum RoleEnum {
-    STAFF = "staff", // Nhân viên
-    STORE_MANAGER = "manager", // Quản lý cửa hàng
-    ACCOUNTANT = "sale", // Kế toán
-    USER = "user", // Customer
-    CUSTOMER = "customer", // Khách hàng
-    ADMIN = "admin", // Admin
-    WAREHOUSE_MANGER = "warehouseManager", // Quản lý kho
-    SALES = "sales", // Nhân viên bán hàng
+
+export class UpdateUserDto {
+    username?: string;
+    email?: string;
+    age?: number;
+    address?: string;
+    phoneNumber?: string;
+    gender?: GenderEnum;
+    avatarUrl?: string;
+    Roles?: keyof typeof UserType;
+    birthday?: string | null;
 }
+
+export type UpdateUserStaffType = {};
+
 export type UserStaffResponseType = {
     id: string;
     username: string;
@@ -43,10 +48,10 @@ export type UserStaffResponseType = {
     avatarUrl: string;
     phoneNumber: string | null;
     birthday: string | null;
-    gender: GenderType;
+    gender: GenderEnum;
     joinedAt: string;
     isActive: boolean;
-    roles: RoleEnum[];
+    roles: RoleType[];
 };
 
 export type globalFiltersDataUserStaff = {
@@ -57,13 +62,21 @@ export type globalFiltersDataUserStaff = {
     status?: boolean;
 };
 
+export type userStoreData = {
+    listData: UserStaffResponseType[];
+    detail: UserStaffResponseType | null;
+};
+
 class UserStaffObservable {
     rootStore: RootStore;
     pagination: paginationData = {
         current: 1,
         pageSize: 10,
     };
-    data: UserStaffResponseType[] = [];
+    data: userStoreData = {
+        listData: [],
+        detail: null,
+    };
     loading: boolean = false;
     globalFilter: globalFiltersDataUserStaff = {
         search: undefined,
@@ -86,7 +99,6 @@ class UserStaffObservable {
             current: Number(this.pagination.current),
             pageSize: Number(this.pagination.pageSize),
         };
-        console.log("parsedQuery", toJS(parsedQuery));
 
         // Gộp filters và xử lý dữ liệu
         const filters: paginationData & globalFiltersDataUserStaff =
@@ -134,10 +146,39 @@ class UserStaffObservable {
             const newUrl = `${window.location.pathname}?${queryString}`;
             window.history.pushState({ path: newUrl }, "", newUrl);
             if (success_status.includes(status)) {
-                this.data = resData;
+                this.data.listData = resData;
+                this.rootStore.status = status;
+                this.rootStore.successMsg = message;
+                this.rootStore.showSuccessMsg = false;
+            } else {
+                this.data.listData = [];
+                this.rootStore.status = status;
+                this.rootStore.showSuccessMsg = false;
+                this.rootStore.errorMsg = Array.isArray(message)
+                    ? message[0]
+                    : message;
+            }
+        } catch (e: any) {
+            console.error(e);
+            this.rootStore.status = e?.response?.status || 500;
+            this.rootStore.errorMsg = e?.response?.data?.message || e.message;
+        } finally {
+            this.loading = false;
+        }
+    }
+
+    *getUserById(id: string) {
+        try {
+            this.loading = true;
+            const response = yield UserAPI.getUserDetails(id);
+            const { data, status, message } = response;
+            const success_status = [200, 201, 204];
+            if (success_status.includes(status)) {
+                this.data.detail = data;
                 this.rootStore.status = status;
                 this.rootStore.successMsg = message;
             } else {
+                this.data.detail = null;
                 this.rootStore.status = status;
                 this.rootStore.errorMsg = Array.isArray(message)
                     ? message[0]
@@ -147,6 +188,34 @@ class UserStaffObservable {
             console.error(e);
             this.rootStore.status = e?.response?.status || 500;
             this.rootStore.errorMsg = e?.response?.data?.message || e.message;
+        } finally {
+            this.loading = false;
+        }
+    }
+
+    *updateUserById(id: string, data: UpdateUserDto) {
+        try {
+            this.loading = true;
+            const response = yield UserAPI.update(id, data);
+            const { status, message } = response;
+            const success_status = [200, 201, 204];
+            if (success_status.includes(status)) {
+                this.rootStore.status = status;
+                this.rootStore.successMsg = message;
+                this.rootStore.showSuccessMsg = true;
+                return true;
+            } else {
+                this.rootStore.status = status;
+                this.rootStore.errorMsg = Array.isArray(message)
+                    ? message[0]
+                    : message;
+                return false;
+            }
+        } catch (e: any) {
+            console.error(e);
+            this.rootStore.status = e?.response?.status || 500;
+            this.rootStore.errorMsg = e?.response?.data?.message || e.message;
+            return false;
         } finally {
             this.loading = false;
         }

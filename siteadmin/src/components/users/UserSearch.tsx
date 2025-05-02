@@ -1,6 +1,6 @@
 import { Col, DatePicker, Form, Input, Row, Select } from "antd";
 import PropTypes from "prop-types";
-import { UserRoleConstant } from "../../constants";
+import { UserRoleConstant, UserType } from "../../constants";
 import { debounce } from "lodash";
 import { useCallback } from "react";
 const { RangePicker } = DatePicker;
@@ -50,11 +50,11 @@ const UserSearch = ({ setFilters }) => {
                                     allowClear
                                     showSearch
                                     optionFilterProp="label"
-                                    options={Object.keys(UserRoleConstant).map(
+                                    options={Object.keys(UserType).map(
                                         (item) => {
                                             return {
-                                                label: item,
-                                                value: UserRoleConstant[item],
+                                                label: UserType[item],
+                                                value: item,
                                             };
                                         }
                                     )}
