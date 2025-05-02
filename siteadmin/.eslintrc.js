@@ -54,5 +54,6 @@ module.exports = {
         "react/prop-types": "off",
         "no-useless-catch": "off",
         "no-useless-escape": "off",
+        "@typescript-eslint/no-empty-object-type": "off",
     },
 };

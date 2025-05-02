@@ -165,19 +165,4 @@ const OrderSearch = ({
         </>
     );
 };
-
-OrderSearch.propTypes = {
-    showStatus: PropTypes.bool,
-    order_status: PropTypes.array,
-    globalFilters: PropTypes.object,
-    setGlobalFilters: PropTypes.func,
-    set_order_status: PropTypes.func,
-    payment_status: PropTypes.array,
-    set_payment_status: PropTypes.func,
-    payment_method: PropTypes.array,
-    set_payment_method: PropTypes.func,
-    order_store: PropTypes.object,
-    load_data: PropTypes.func,
-};
-
 export default observer(OrderSearch);

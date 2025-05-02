@@ -20,6 +20,7 @@ import {
     Grid,
     Layout,
     Menu,
+    message,
     Spin,
     theme,
 } from "antd";
@@ -34,6 +35,7 @@ import { makeAutoObservable, reaction } from "mobx";
 import { useStore } from "src/stores";
 import { observer } from "mobx-react-lite";
 import { Profile2User } from "iconsax-react";
+import { displayMessage } from "src/utils";
 
 const { Content, Footer, Sider } = Layout;
 const { useBreakpoint } = Grid;
@@ -115,6 +117,7 @@ const AppLayout = (props) => {
     const { children } = props;
     const [collapsed, setCollapsed] = useState(false);
     const store = useStore();
+    const [messageApi, contextHolder] = message.useMessage();
 
     const { name } = useContext(GlobalContext) as { name: string };
     const screens = useBreakpoint();
@@ -201,7 +204,25 @@ const AppLayout = (props) => {
             return ["1"];
         }
     };
-
+    useEffect(() => {
+        const messageReaction = reaction(
+            () => ({
+                status: store.status,
+                showSuccessMsg: store.showSuccessMsg,
+                errorMsg: store.errorMsg,
+                successMsg: store.successMsg,
+            }),
+            (current_status) => {
+                if (!current_status) return;
+                const { status: newStatus, showSuccessMsg: newShowSuccess } =
+                    current_status || {};
+                displayMessage(messageApi, newStatus, store, newShowSuccess, 5);
+            }
+        );
+        return () => {
+            messageReaction();
+        };
+    }, []);
     return (
         <ConfigProvider
             theme={{
@@ -213,6 +234,7 @@ const AppLayout = (props) => {
                 },
             }}
         >
+            {contextHolder}
             <Layout
                 style={{
                     minHeight: "100vh",
@@ -264,7 +286,4 @@ const AppLayout = (props) => {
     );
 };
 
-AppLayout.propTypes = {
-    children: PropTypes.node,
-};
 export default observer(AppLayout);

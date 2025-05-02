@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import UserTable from "src/components/users/UserTable";
 import { GlobalContext } from "../../contexts/global";
 import UserSearch from "../../components/users/UserSearch";
-import { Button } from "antd";
+import { Button, message } from "antd";
 import {
     CloudUploadOutlined,
     ExportOutlined,
@@ -29,7 +29,6 @@ const User = () => {
     const [globalFilters, setGlobalFilters] =
         useState<globalFiltersDataUserStaff>(userStore.globalFilter);
     const { globalDispatch } = useContext<any>(GlobalContext);
-    const [filteredUsers, setFilteredUsers] = useState([]); // Dữ liệu đã lọc
     const [dataFile, setDataFile] = useState([]);
     const [openModalCreate, setOpenModalCreate] = useState(false);
     const [openModalImport, setOpenModalImport] = useState(false); // import user
@@ -38,7 +37,7 @@ const User = () => {
             type: "breadcrum",
             data: usersData.username,
         });
-        navigate(`/users/${usersData.id}/edit`, { replace: true });
+        navigate(`/users/${usersData.id}/edit`);
     };
     // Gọi API danh sách người dùng khi component mount
     useEffect(() => {
@@ -54,18 +53,23 @@ const User = () => {
             await userStore.getListUser(query);
         } catch (error) {
             console.error("Lỗi khi lấy danh sách người dùng:", error);
+            store.setStatusMessage(
+                500,
+                "Có lỗi xảy ra khi lấy danh sách người dùng. Vui long thử lại sau.",
+                "",
+                false
+            );
         }
     };
     // Lọc danh sách người dùng khi globalFilters thay đổi
     useEffect(() => {
         if (!globalFilters) return;
-        console.log("globalFilters", globalFilters);
         fetchUsers({
             ...userStore.pagination,
             ...globalFilters,
         });
     }, [globalFilters]);
-    const handleViewUser = (usersData) => {
+    const handleViewUser = (usersData: UserStaffResponseType) => {
         globalDispatch({
             type: "breadcrum",
             data: usersData.username,
@@ -75,19 +79,19 @@ const User = () => {
 
     // xử lý get Data với CSVLink
     const getUsers = (event, done) => {
-        const ListUser = filteredUsers.map((item) => ({
+        const ListUser = userStore.data.listData.map((item) => ({
             id: item.id,
             username: item.username,
             email: item.email,
-            age: item.age, // Chuyển số về string để tránh lỗi
+            age: item.age,
             address: item.address,
-            phoneNumber: item.phoneNumber || "", // Đảm bảo là string
+            phoneNumber: item.phoneNumber || "",
             avatarUrl: item.avatarUrl,
             birthday: item.birthday
                 ? dayjs(item.birthday).format("MM/DD/YYYY")
                 : "", // Định dạng ngày
-            isActive: item.isActive ? "TRUE" : "FALSE", // Chuyển boolean về string
-            role: item?.Roles?.[0]?.name || "N/A", // Tránh lỗi undefined
+            isActive: item.isActive ? "TRUE" : "FALSE",
+            role: item?.roles?.[0]?.name || "N/A",
         }));
 
         setDataFile(ListUser);
@@ -153,7 +157,7 @@ const User = () => {
             <div className="w-full my-6 flex flex-col gap-4 p-4 border border-gray-200 rounded-lg bg-white shadow-sm animate-slideUp">
                 <UserSearch setFilters={setGlobalFilters} />
                 <UserTable
-                    data={userStore.data || []}
+                    data={userStore.data.listData || []}
                     handleUpdateUser={handleEditUser}
                     handleViewUser={handleViewUser}
                 />
@@ -171,6 +175,5 @@ const User = () => {
         </>
     );
 };
-//setFilters : search toàn cục
 
 export default observer(User);

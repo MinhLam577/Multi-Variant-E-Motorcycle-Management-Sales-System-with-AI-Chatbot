@@ -183,13 +183,13 @@ export const NewsStatusLabel = {
     [NewsStatus.Active]: "Hiển thị",
 };
 
-export const UserType = {
-    user: "Khách hàng",
-    hr: "Tuyển dụng",
-    staff: "Nhân viên",
-    sales: "Sales",
-    admin: "admin",
-};
+export enum UserType {
+    user = "Khách hàng",
+    hr = "Tuyển dụng",
+    staff = "Nhân viên",
+    sales = "Sales",
+    admin = "admin",
+}
 
 export const CustomerType = {
     user: "Khách hàng",

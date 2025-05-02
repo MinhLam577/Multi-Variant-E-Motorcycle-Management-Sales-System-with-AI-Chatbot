@@ -6,7 +6,7 @@ import {
     processWithModals,
 } from "../../containers/processWithModals";
 import TableComponent from "../../containers/TableComponent";
-import { UserStaffResponseType } from "src/stores/user.store";
+import { RoleType, UserStaffResponseType } from "src/stores/user.store";
 import React from "react";
 import { useStore } from "src/stores";
 import { observer } from "mobx-react-lite";
@@ -63,10 +63,10 @@ const getColumnsConfig = ({ handleViewUser }: IColumnsConfig) => {
             key: "roles",
             width: "200px",
             ellipsis: true,
-            render: (Roles) => {
+            render: (Roles: RoleType[]) => {
                 if (!Roles || Roles.length === 0) return "Chưa có vai trò";
 
-                return Roles.map((role) => role).join(", "); // Hiển thị danh sách tên vai trò, cách nhau bởi dấu phẩy
+                return Roles.map((role) => role?.name).join(", "); // Hiển thị danh sách tên vai trò, cách nhau bởi dấu phẩy
             },
         },
     ];

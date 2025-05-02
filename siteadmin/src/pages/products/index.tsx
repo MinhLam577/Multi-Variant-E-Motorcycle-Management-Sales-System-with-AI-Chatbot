@@ -92,8 +92,6 @@ export const generateRandomString = (length: number): string => {
 };
 
 const Products = () => {
-    const [messageApi, contextHolder] = message.useMessage();
-    const navigate = useNavigate();
     const store = useStore();
     const productStore = store.productObservable;
     const categoriesStore = store.categoriesObservable;
@@ -171,27 +169,6 @@ const Products = () => {
                 ? getCategoriesTreeSelect(item.children)
                 : [],
         }));
-
-    // Bắt sự kiện khi status thay đổi để hiện thông báo
-    useEffect(() => {
-        const productStatusReaction = reaction(
-            () => ({
-                status: store.status,
-                showSuccessMsg: store.showSuccessMsg,
-                errorMsg: store.errorMsg,
-                successMsg: store.successMsg,
-            }),
-            (current_status) => {
-                if (!current_status) return;
-                const { status: newStatus, showSuccessMsg: newShowSuccess } =
-                    current_status || {};
-                displayMessage(messageApi, newStatus, store, newShowSuccess, 5);
-            }
-        );
-        return () => {
-            productStatusReaction();
-        };
-    }, []);
 
     // Bắt sự kiện khi có sự thay đổi trong globalFilter
     useEffect(() => {
@@ -537,7 +514,6 @@ const Products = () => {
     };
     return (
         <section className="w-full">
-            {contextHolder}
             <ProductHeader
                 onCreateNew={handleCreateNewProduct}
                 className="animate-slideDown"
