@@ -15,11 +15,11 @@ const endpoints = {
         list: () => "/option",
     },
     auth: {
-        login: "/auth/admin/login",
-        logout: "/auth/admin/logout",
-        refreshToken: "/auth/admin/refresh",
-        forgotPassword: "/auth/admin/forgot-password",
-        changePassword: "/auth/admin/change-password",
+        login: "/auth/login",
+        logout: "/auth/logout",
+        refreshToken: "/auth/refresh",
+        forgotPassword: "/auth/forgot-password",
+        changePassword: "/auth/change-password",
     },
     user: {
         details: (id: string) => `/users/${id}`,
@@ -192,14 +192,24 @@ const endpoints = {
         list: `/province`,
     },
 
-    // district
-    district: {
-        districtByName: (provinceId) => `/district?provinceId=${provinceId}`,
-    },
-    // ward
-    ward: {
-        wardByName: (districtId) => `/ward?districtId=${districtId}`,
-    },
+  // district
+  district: {
+    districtByName: (provinceId) => `/district?provinceId=${provinceId}`,
+  },
+  // ward
+  ward: {
+    wardByName: (districtId) => `/ward?districtId=${districtId}`,
+  },
+  // cart 
+  cart: {
+    list: () => `/cart`,
+    details: (id) => `/cart/${id}`,
+    update: (id) => `/cart/${id}`,
+    delete: (id) => `/cart/${id}`,
+    create: () => `/cart`,
+    upload: "/cart/upload-image",
+    uploads: "/cart/upload-images",
+  },
 };
 
 export default endpoints;

@@ -27,4 +27,14 @@ yarn-error.log*
 /src/generated
 
 */node_modules
+<<<<<<< HEAD
+
+.next/
+next-env.d.ts
+tsconfig.tsbuildinfo
+package-lock.json
+yarn.lock
+
+=======
 /.next
+>>>>>>> 5a89b1d563a8f342c5d034a075c2955e40431f66

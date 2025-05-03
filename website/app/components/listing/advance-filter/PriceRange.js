@@ -9,6 +9,7 @@ const PriceRange = () => {
 
   // price range handler
   const handleOnChange = (value) => {
+    console.log(price)
     setPrice({ value });
   };
 

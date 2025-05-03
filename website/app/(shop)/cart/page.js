@@ -9,7 +9,7 @@ import CartItems from "@/app/components/shop/cart/CartItems";
 import Coupon from "@/app/components/shop/cart/Coupon";
 import CartTotal from "@/app/components/shop/cart/CartTotal";
 import { useStore } from "@/src/stores";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 
 // export const metadata = {
@@ -17,10 +17,29 @@ import { observer } from "mobx-react-lite";
 // };
 
 const Cart = observer(() => {
+  const [selectedAllItems, setSelectedAllItems] = useState(false); // Thêm state để lưu các sản phẩm đã chọn
   const { cartObservable } = useStore();
+  const [selectedItems, setSelectedItems] = useState([]); // Thêm state để lưu các sản phẩm đã chọn
   useEffect(() => {
     cartObservable.getListCart();
   }, []);
+
+  const handleCheckedAll = () => {
+    if (selectedAllItems) {
+      // Đang chọn hết => Bỏ chọn hết
+      setSelectedItems([]);
+      setSelectedAllItems(false);
+    } else {
+      // Đang chưa chọn hết => Chọn tất cả
+      const allIds = cartObservable?.data?.map((item) => item.id) || [];
+      setSelectedItems(allIds);
+      setSelectedAllItems(true);
+    }
+  };
+  if (!cartObservable?.data) {
+    return null; // Hoặc <div>Loading...</div> nếu bạn thích
+  }
+
   return (
     <div className="wrapper">
       <div
@@ -52,7 +71,7 @@ const Cart = observer(() => {
             <div className="col-xl-12">
               <div className="breadcrumb_content style2">
                 <h2 className="breadcrumb_title">Shop Cart</h2>
-                <p className="subtitle">Cart</p>
+
                 <ol className="breadcrumb">
                   <li className="breadcrumb-item">
                     <a href="#">Home</a>
@@ -77,22 +96,34 @@ const Cart = observer(() => {
                 <div className="col-lg-8 col-xl-9">
                   <div className="shopping_cart_tabs ovyh">
                     <div className="shopping_cart_table">
-                      <table className="table table-responsive table-borderless">
-                        <thead className="thead-dark">
+                      <table className="table table-responsive">
+                        <thead className="">
                           <tr>
-                            <th className="pl30" colSpan={1} scope="row">
+                            <th scope="col" className="text-center">
+                              <input
+                                type="checkbox"
+                                checked={selectedAllItems}
+                                onChange={() => handleCheckedAll()}
+                              />
+                            </th>
+                            <th scope="col" className="text-left">
                               Product
                             </th>
                             <th scope="col">Price</th>
                             <th scope="col">Quantity</th>
                             <th scope="col">Subtotal</th>
-                            <th scope="col" />
+                            <th scope="col"></th>
                           </tr>
                         </thead>
                         {/* End thead */}
 
                         <tbody className="table_body">
-                          <CartItems cartList={cartObservable?.data} />
+                          <CartItems
+                            cartList={cartObservable?.data}
+                            selectedItems={selectedItems}
+                            setSelectedItems={setSelectedItems}
+                            setSelectedAllItems={setSelectedAllItems}
+                          />
                         </tbody>
                         {/* End tbody */}
                       </table>
@@ -103,7 +134,7 @@ const Cart = observer(() => {
                   <div className="shopping_cart_tabs">
                     <div className="shopping_cart_table">
                       <div className="checkout_form mt30">
-                        <div className="checkout_coupon">// coupon</div>
+                        <div className="checkout_coupon"></div>
                       </div>
                     </div>
                   </div>
@@ -148,4 +179,3 @@ const Cart = observer(() => {
 });
 
 export default Cart;
-// <Coupon />

@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useContext } from "react";
 export const HeaderWithActions = () => {
-  const { onChangeTheme,theme } = useContext(ThemeContext);
+  const { onChangeTheme, theme } = useContext(ThemeContext);
 
   const handleLeftClick = () => {
     onChangeTheme("primary-car");
@@ -17,10 +17,13 @@ export const HeaderWithActions = () => {
     <div className="header_action dn-992">
       {/* <!-- Left Content --> */}
       <Link href="/" passHref legacyBehavior>
-        <div 
-        style={{backgroundColor:theme==="primary-car"?`var(--${theme})`:null}}
-         className="left-content" 
-         onClick={handleLeftClick}>
+        <div
+          style={{
+            backgroundColor: theme === "primary-car" ? `var(--${theme})` : null,
+          }}
+          className="left-content"
+          onClick={handleLeftClick}
+        >
           <Image
             alt="oto"
             src={"/images/icon/car.png"}
@@ -33,30 +36,32 @@ export const HeaderWithActions = () => {
       </Link>
 
       {/* <!-- Center Logo --> */}
-      <div className="center" 
-      >
+      <div className="flex justify-center items-center">
         <Link href="/">
-          <Image
+          <img
             src="/images/logo.png"
             alt="header-logo"
-            style={{ objectFit: "cover" }}
-            className="img"
-            width={120}
-            height={40}
+            className="object-cover w-[120px] h-[40px]"
           />
         </Link>
       </div>
 
       {/* <!-- Right Content --> */}
       <Link href="/home-motorbike" passHref legacyBehavior>
-        <div className="right-content" onClick={handleRightClick} style={{backgroundColor:theme==="primary-bike"?`var(--${theme})`:null}}>
+        <div
+          className="right-content"
+          onClick={handleRightClick}
+          style={{
+            backgroundColor:
+              theme === "primary-bike" ? `var(--${theme})` : null,
+          }}
+        >
           <Image
             alt="motor"
             src={"/images/icon/scooter.png"}
             width={30}
             height={30}
             className="me-2"
-
           />
           <a>XE MÁY ĐIỆN</a>
         </div>

@@ -1,33 +1,72 @@
 "use client";
 import listingsData from "@/data/listingCar";
+import { getAllCategory } from "@/src/api/categories";
+import { useStore } from "@/src/stores";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-const filterOptions = [
-  { value: "*", name: "Tất cả" },
-  { value: "new", name: "Xe van" },
-  { value: "car", name: "Xe khách" },
-  { value: "car", name: "Xe ben" },
-  { value: "car-specialized", name: "Xe chuyên dụng" },
-];
+import { useEffect, useState } from "react";
+// const filterOptions = [
+//   { value: "*", name: "Tất cả" },
+//   { value: "new", name: "Xe van" },
+//   { value: "car", name: "Xe khách" },
+//   { value: "car", name: "Xe ben" },
+//   { value: "car-specialized", name: "Xe chuyên dụng" },
+// ];
 
-const VehicleTypeList = ({ data = filterOptions }) => {
+const VehicleTypeList = () => {
+  const store = useStore();
+  const ProductStore = store.productObservable;
   const [filter, setFilter] = useState("*");
+  const [dataDataCategory, setDataCategory] = useState([]);
+  const [filteredItems, setFilteredData] = useState([]);
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-  const filteredItems =
-    filter === "*"
-      ? listingsData.slice(0, 8)
-      : listingsData.slice(0, 8).filter((item) => item.tags.includes(filter));
+  useEffect(() => {
+    if (filter === "*" || !filter) {
+      fetchDataProduct();
+    } else {
+      fetchDataProduct(filter);
+      console.log(filter);
+    }
+  }, [filter, dataDataCategory]);
+
+  const fetchData = async () => {
+    const data = await getAllCategory();
+    console.log(data);
+    setDataCategory(data.data);
+  };
+  const fetchDataProduct = async (categoryID = undefined) => {
+    const query = {
+      current: 1,
+      pageSize: 4,
+    };
+
+    if (categoryID) {
+      query.categoryID = categoryID;
+    }
+    await ProductStore.getListProductHome(query);
+    setFilteredData(ProductStore?.data?.cars_motobikes?.data);
+  };
 
   return (
     <div className="popular_listing_sliders">
       {/* Nav tabs */}
       <div className="nav nav-tabs justify-content-center">
-        {data.map((type) => (
+        <button
+          key={""}
+          className={filter === "*" ? "active nav-link" : "nav-link"}
+          onClick={() => setFilter("*")}
+        >
+          {"ALL"}
+        </button>
+
+        {dataDataCategory?.map((type) => (
           <button
             key={type}
-            className={filter === type.value ? "active nav-link" : "nav-link"}
-            onClick={() => setFilter(type)}
+            className={filter === type.id ? "active nav-link" : "nav-link"}
+            onClick={() => setFilter(type.id)}
           >
             {type.name}
           </button>
@@ -58,8 +97,8 @@ const VehicleTypeList = ({ data = filterOptions }) => {
                     objectFit: "cover",
                   }}
                   priority
-                  src={listing.image}
-                  alt={listing.title}
+                  src={listing?.products?.images[0]}
+                  alt={listing.products.title}
                 />
                 <div className="thmb_cntnt2">
                   <ul className="mb0">
@@ -96,7 +135,9 @@ const VehicleTypeList = ({ data = filterOptions }) => {
                 <div className="wrapper">
                   <h5 className="price">Liên hệ</h5>
                   <h6 className="title">
-                    <Link href="/listing-single-v1">{listing.title}</Link>
+                    <Link href={`/listing-single-v1/${listing.products.id}`}>
+                      {listing.products.title}
+                    </Link>
                   </h6>
                 </div>{" "}
                 <div className="listing_footer">

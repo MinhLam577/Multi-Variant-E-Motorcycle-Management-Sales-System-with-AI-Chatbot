@@ -39,16 +39,18 @@ const News = () => {
         navigate(`/categorynews/${id}/news/add`, { replace: true });
     };
 
-    const handleEditNews = (newsData) => {
-        console.log(newsData);
-        globalDispatch({
-            type: "breadcrum",
-            data: newsData.title,
-        });
-        navigate(`/categorynews/${id}/news/${newsData.id}/edit`, {
-            replace: true,
-        });
-    };
+  const handleEditNews = (newsData) => {
+    console.log(newsData);
+    globalDispatch({
+      type: "breadcrum",
+      data: newsData.title,
+    });
+
+    navigate(`/categorynews/${id}/news/${newsData.id}/edit`, {
+      replace: true,
+    });
+    
+  };
 
     const handleViewNews = (newsData) => {
         globalDispatch({

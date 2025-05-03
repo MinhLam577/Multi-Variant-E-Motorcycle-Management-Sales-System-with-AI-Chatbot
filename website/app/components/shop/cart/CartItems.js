@@ -5,7 +5,13 @@ import Link from "next/link";
 import { Button, message, Popconfirm } from "antd";
 import { debounce } from "lodash";
 import { useCallback, useEffect } from "react";
-const CartItems = ({ cartList }) => {
+import { Empty } from "antd";
+const CartItems = ({
+  cartList,
+  selectedItems,
+  setSelectedItems,
+  setSelectedAllItems,
+}) => {
   const [cartItems, setCartItems] = useState([]);
 
   const handleDeleteItem = (itemId) => {
@@ -36,15 +42,43 @@ const CartItems = ({ cartList }) => {
     []
   );
 
+  const handleCheckboxChange = (itemId) => {
+    setSelectedItems((prevSelected) => {
+      let newSelected;
+      if (prevSelected.includes(itemId)) {
+        newSelected = prevSelected.filter((id) => id !== itemId); // Bỏ chọn
+      } else {
+        newSelected = [...prevSelected, itemId]; // Thêm chọn
+      }
+
+      // Sau khi cập nhật xong selectedItems, kiểm tra luôn
+      setSelectedAllItems(newSelected.length === cartList.length);
+
+      return newSelected;
+    });
+  };
+
   if (!cartList || cartList.length === 0) {
-    return <div className="p-5 h4">No items available</div>;
+    return (
+      <div className="p-5 h4">
+        <Empty />
+      </div>
+    );
   }
   const cancel = () => {};
-
+  console.log(selectedItems);
   return (
     <>
       {cartItems?.map((item) => (
         <tr key={item.id}>
+          {/* THÊM checkbox vào đây */}
+          <td className="text-center">
+            <input
+              type="checkbox"
+              checked={selectedItems.includes(item.id)}
+              onChange={() => handleCheckboxChange(item.id)}
+            />
+          </td>
           <th className="pl30" scope="row">
             <ul className="cart_list mt20">
               <li className="list-inline-item">
@@ -53,8 +87,8 @@ const CartItems = ({ cartList }) => {
                     width={70}
                     height={70}
                     quality={30}
-                    src={item.imageSrc}
-                    alt={`${item.id}`}
+                    src="https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m0r1nxglujkfeb@resize_w48_nl.webp"
+                    alt="https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m0r1nxglujkfeb@resize_w48_nl.webp"
                   />
                 </Link>
               </li>

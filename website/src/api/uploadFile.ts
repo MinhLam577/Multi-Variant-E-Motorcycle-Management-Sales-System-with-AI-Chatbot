@@ -12,5 +12,19 @@ const UploadPictureApi = {
     });
     return Response;
   },
+  createImageCustomer: async (image: any) => {
+    const formData = new FormData();
+    formData.append("file", image);
+    const Response = await apiClient.post(
+      endpoints.customers.uploadAvatar,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return Response;
+  },
 };
 export default UploadPictureApi;

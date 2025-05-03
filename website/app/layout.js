@@ -9,7 +9,7 @@ import ScrollToTop from "./components/common/ScrollTop";
 import styled from "styled-components";
 import ThemeProvider from "@/app/layout/ThemeContext";
 import { StoreProvider } from "@/src/stores";
-
+import "./globals.css";
 if (typeof window !== "undefined") {
   import("bootstrap");
 }
