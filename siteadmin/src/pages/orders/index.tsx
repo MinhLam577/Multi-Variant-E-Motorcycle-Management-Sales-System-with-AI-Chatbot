@@ -10,6 +10,7 @@ import OrderStatusSearch from "../../components/orders/OrderStatusSearch";
 import { convertDate } from "../../utils";
 import AdminBreadCrumb from "src/components/common/AdminBreadCrumb";
 import { getBreadcrumbItems } from "src/containers/layout";
+import CustomizeTab from "src/components/common/CustomizeTab";
 const Orders = () => {
     const store = useStore();
     const orderStore = store.orderObservable;
@@ -196,57 +197,96 @@ const Orders = () => {
                     order_store={orderStore}
                 />
             </div>
-            <div className="w-full my-6 flex flex-col gap-4 p-4 border border-gray-200 rounded-lg bg-white shadow-sm animate-slideUp">
-                <OrderSearch
-                    globalFilters={orderStore.globalFilters}
-                    setGlobalFilters={orderStore.setGlobalFilters}
-                    order_status={orderStore.data.order_status}
-                    payment_status={paymentMethodStore.data.payment_status}
-                    payment_method={paymentMethodStore.data.payment_method}
-                    order_store={orderStore}
-                    load_data={loadData}
-                />
-                <Drawer
-                    loading={orderStore.loading}
-                    title={
-                        <div
-                            className="flex flex-col gap-1 p-4 shadow-sm"
-                            style={{
-                                borderBottom: "1px solid var(--border-gray)",
-                            }}
-                        >
-                            <span className="text-base font-semibold">
-                                #{orderStore.data.order_selected || ""}
-                            </span>
-                            <span className="text-sm font-normal text-gray-700">
-                                Chi tiết đơn hàng
-                            </span>
-                        </div>
-                    }
-                    placement="right"
-                    closable={false}
-                    onClose={() => orderStore.setOpenDetail(false)}
-                    open={orderStore.isOpenDetail}
-                    width={600}
-                    key="right"
-                >
-                    <OrderDetail
-                        orderDetail={orderStore.data.order_detail}
-                        order_store={orderStore}
-                        skus_store={skusStore}
-                        orderNo={orderStore.data.order_selected}
-                        handleUpdateOrderStatus={handleUpdateOrderStatus}
-                        handleCancelOrderStatus={handleCancelOrderStatus}
-                        handleFailedDelivery={handleFailedDelivery}
-                        handleReturnOrder={handleReturnOrder}
-                    />
-                </Drawer>
-                <OrdersTable
-                    globalFilters={orderStore.globalFilters}
-                    data={{
-                        data: filterData,
-                    }}
-                    handleViewOrders={handleViewOrders}
+            <div className="w-full mt-4 mb-6 flex flex-col gap-4 px-4 pb-4 border border-gray-200 rounded-lg bg-white shadow-sm animate-slideUp">
+                <CustomizeTab
+                    items={[
+                        {
+                            key: "1",
+                            label: "Tất cả đơn hàng",
+                            children: (
+                                <div className="w-full">
+                                    <OrderSearch
+                                        globalFilters={orderStore.globalFilters}
+                                        setGlobalFilters={
+                                            orderStore.setGlobalFilters
+                                        }
+                                        order_status={
+                                            orderStore.data.order_status
+                                        }
+                                        payment_status={
+                                            paymentMethodStore.data
+                                                .payment_status
+                                        }
+                                        payment_method={
+                                            paymentMethodStore.data
+                                                .payment_method
+                                        }
+                                        order_store={orderStore}
+                                        load_data={loadData}
+                                    />
+                                    <Drawer
+                                        loading={orderStore.loading}
+                                        title={
+                                            <div
+                                                className="flex flex-col gap-1 p-4 shadow-sm"
+                                                style={{
+                                                    borderBottom:
+                                                        "1px solid var(--border-gray)",
+                                                }}
+                                            >
+                                                <span className="text-base font-semibold">
+                                                    #
+                                                    {orderStore.data
+                                                        .order_selected || ""}
+                                                </span>
+                                                <span className="text-sm font-normal text-gray-700">
+                                                    Chi tiết đơn hàng
+                                                </span>
+                                            </div>
+                                        }
+                                        placement="right"
+                                        closable={false}
+                                        onClose={() =>
+                                            orderStore.setOpenDetail(false)
+                                        }
+                                        open={orderStore.isOpenDetail}
+                                        width={600}
+                                        key="right"
+                                    >
+                                        <OrderDetail
+                                            orderDetail={
+                                                orderStore.data.order_detail
+                                            }
+                                            order_store={orderStore}
+                                            skus_store={skusStore}
+                                            orderNo={
+                                                orderStore.data.order_selected
+                                            }
+                                            handleUpdateOrderStatus={
+                                                handleUpdateOrderStatus
+                                            }
+                                            handleCancelOrderStatus={
+                                                handleCancelOrderStatus
+                                            }
+                                            handleFailedDelivery={
+                                                handleFailedDelivery
+                                            }
+                                            handleReturnOrder={
+                                                handleReturnOrder
+                                            }
+                                        />
+                                    </Drawer>
+                                    <OrdersTable
+                                        globalFilters={orderStore.globalFilters}
+                                        data={{
+                                            data: filterData,
+                                        }}
+                                        handleViewOrders={handleViewOrders}
+                                    />
+                                </div>
+                            ),
+                        },
+                    ]}
                 />
             </div>
         </section>

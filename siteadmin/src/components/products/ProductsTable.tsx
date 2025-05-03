@@ -198,7 +198,7 @@ const ProductsTable: React.FC<IProductsTableProps> = ({
     data,
     handleDeleteProducts,
     handleRestoreProducts,
-    handleViewOrUpdateProduct
+    handleViewOrUpdateProduct,
 }) => {
     const screens = useBreakpoint();
     const store = useStore();
@@ -221,6 +221,7 @@ const ProductsTable: React.FC<IProductsTableProps> = ({
             filterValue={productStore.data.globalFilter}
             screens={screens}
             rowKey={(item: productTableFilterDataType) => item.id}
+            scroll={{ y: "200px" }}
         />
     );
 };

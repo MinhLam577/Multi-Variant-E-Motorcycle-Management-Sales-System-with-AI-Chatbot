@@ -960,6 +960,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                 store={productStore}
                                 className="w-full h-full"
                                 defaultForm={form}
+                                fieldFormName="description"
                             />
                         </div>
                     </Form.Item>

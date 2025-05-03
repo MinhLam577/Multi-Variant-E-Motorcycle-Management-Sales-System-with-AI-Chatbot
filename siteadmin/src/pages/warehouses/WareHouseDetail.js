@@ -24,6 +24,8 @@ import {
 } from "../../containers/processWithModals";
 import apiClient from "../../api/apiClient";
 import endpoints from "../../api/endpoints.ts";
+import AdminBreadCrumb from "../../components/common/AdminBreadCrumb.tsx";
+import { getBreadcrumbItems } from "../../containers/layout/index.tsx";
 
 export const CategoriesDetailMode = {
     View: 1,
@@ -201,8 +203,18 @@ const WareHouseDetail = ({ mode }) => {
     };
 
     return (
-        <>
-            <Card loading={loading} title={getCardTitle()}>
+        <section key={`${id} - ${mode}`}>
+            <div className="flex justify-between items-center animate-slideDown">
+                <AdminBreadCrumb
+                    description="Thông tin chi tiết kho"
+                    items={[...getBreadcrumbItems(location.pathname)]}
+                />
+            </div>
+            <Card
+                loading={loading}
+                title={getCardTitle()}
+                className="mt-6 animate-slideUp"
+            >
                 <Form
                     form={form}
                     {...formItemLayout}
@@ -264,7 +276,7 @@ const WareHouseDetail = ({ mode }) => {
                         </Col>
                     </Row>
 
-                    <>
+                    <div className="flex justify-end">
                         <Button onClick={handleCancel}>
                             {getButtonCancelText()}
                         </Button>
@@ -283,10 +295,10 @@ const WareHouseDetail = ({ mode }) => {
                                 </Button>
                             </>
                         )}
-                    </>
+                    </div>
                 </Form>
             </Card>
-        </>
+        </section>
     );
 };
 
@@ -295,72 +307,3 @@ WareHouseDetail.propTypes = {
 };
 
 export default WareHouseDetail;
-
-// <Col span={24}>
-//               <Form.Item
-//                 label="Email"
-//                 name="email"
-//                 rules={[{ required: true, message: "Hãy nhập tên kho!" }]}
-//               >
-//                 <Input readOnly={isReadOnly()} placeholder="Nhập tên kho" />
-//               </Form.Item>
-//             </Col>
-
-// <Col span={12}>
-//   <Form.Item
-//     label="Phường/Xã"
-//     name="wareHouseAddress"
-//     rules={[{ required: true, message: "Hãy nhập địa chỉ!" }]}
-//   >
-//     <Select placeholder="Chọn phường/xã" disabled={isReadOnly()}>
-//       <Select.Option value="Ward1">Phường 1</Select.Option>
-//       <Select.Option value="Ward2">Phường 2</Select.Option>
-//       <Select.Option value="Ward3">Phường 3</Select.Option>
-//     </Select>
-//   </Form.Item>
-// </Col>
-// <Col span={24}>
-//               <Form.Item
-//                 label="Quốc gia"
-//                 name="wareHouseCountry"
-//                 rules={[{ required: true, message: "Hãy chọn quốc gia!" }]}
-//               >
-//                 <Select placeholder="Chọn quốc gia" disabled={isReadOnly()}>
-//                   <Select.Option value="Vietnam">Việt Nam</Select.Option>
-//                   <Select.Option value="USA">Mỹ</Select.Option>
-//                   <Select.Option value="Japan">Nhật Bản</Select.Option>
-//                 </Select>
-//               </Form.Item>
-//             </Col>
-// <Col span={12}>
-//             //   <Form.Item
-//             //     label="Tỉnh/Thành Phố"
-//             //     name="wareHouseProvince"
-//             //     rules={[
-//             //       { required: true, message: "Hãy chọn tỉnh/thành phố!" },
-//             //     ]}
-//             //   >
-//             //     <Select
-//             //       placeholder="Chọn tỉnh/thành phố"
-//             //       disabled={isReadOnly()}
-//             //     >
-//             //       <Select.Option value="Hanoi">Hà Nội</Select.Option>
-//             //       <Select.Option value="HoChiMinh">Hồ Chí Minh</Select.Option>
-//             //       <Select.Option value="DaNang">Đà Nẵng</Select.Option>
-//             //     </Select>
-//             //   </Form.Item>
-//             // </Col>
-
-// <Col span={12}>
-//   <Form.Item
-//     label="Quận/Huyện"
-//     name="wareHouseDistrict"
-//     rules={[{ required: true, message: "Hãy chọn quận/huyện!" }]}
-//   >
-//     <Select placeholder="Chọn quận/huyện" disabled={isReadOnly()}>
-//       <Select.Option value="District1">Quận 1</Select.Option>
-//       <Select.Option value="District2">Quận 2</Select.Option>
-//       <Select.Option value="District3">Quận 3</Select.Option>
-//     </Select>
-//   </Form.Item>
-// </Col>;

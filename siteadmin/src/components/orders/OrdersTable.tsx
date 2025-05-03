@@ -158,7 +158,7 @@ const OrdersTable = ({ globalFilters, handleViewOrders, data }) => {
                 getColumnsConfig={getColumnsConfig}
                 handleViewOrders={handleViewOrders}
                 handleViewUser={handleViewUser}
-                scroll={{ y: "350px" }}
+                scroll={{ y: "180px" }}
             />
         </>
     );
