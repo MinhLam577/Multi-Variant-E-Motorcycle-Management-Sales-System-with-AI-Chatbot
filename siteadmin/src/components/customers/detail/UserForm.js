@@ -1,22 +1,22 @@
 import {
-  Button,
-  Col,
-  DatePicker,
-  Form,
-  Input,
-  Select,
-  Row,
-  message,
-  InputNumber,
-  notification,
+    Button,
+    Col,
+    DatePicker,
+    Form,
+    Input,
+    Select,
+    Row,
+    message,
+    InputNumber,
+    notification,
 } from "antd";
 import PropTypes from "prop-types";
 import { useEffect } from "react";
 import {
-  CustomerType,
-  GenderType,
-  RegExps,
-  UserType,
+    CustomerType,
+    GenderType,
+    RegExps,
+    UserType,
 } from "../../../constants";
 import UploadAvatarGetUrlWithImgCrop, {
   UploadAvatarGetUrlWithImgCropRemoteMode,
@@ -39,35 +39,37 @@ const UserForm = ({ userBasicInfo, refetch }) => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
 
-  const handleFormFinish = async (values) => {
-    console.log(values);
-    const updateInfo = {
-      username: values.username || userBasicInfo.username,
-      phoneNumber: values.phoneNumber || userBasicInfo.phoneNumber,
-      gender: values.gender || userBasicInfo.gender,
-      // BE đang thiếu 2 trường này
-      Roles: values.Roles, // Đổi key 'roles' thành 'Roles'
-      birthday: values.birthday ? values.birthday.format("YYYY-MM-DD") : null, // Chỉ lấy ngày, tránh lỗi múi giờ
+    const handleFormFinish = async (values) => {
+        console.log(values);
+        const updateInfo = {
+            username: values.username || userBasicInfo.username,
+            phoneNumber: values.phoneNumber || userBasicInfo.phoneNumber,
+            gender: values.gender || userBasicInfo.gender,
+            // BE đang thiếu 2 trường này
+            Roles: values.Roles, // Đổi key 'roles' thành 'Roles'
+            birthday: values.birthday
+                ? values.birthday.format("YYYY-MM-DD")
+                : null, // Chỉ lấy ngày, tránh lỗi múi giờ
+        };
+        const ignoredKeys = ["__typename", "parent", "created_at", "userCode"];
+        ignoredKeys.forEach((key) => delete updateInfo[key]);
+        try {
+            const data = await apiClient.patch(
+                endpoints.customers.update(values.id),
+                updateInfo
+            );
+            console.log(data);
+            if (data.status == 200) {
+                message.success(data.message);
+                navigate("/customer");
+            } else {
+                message.error(data?.message[0] || data?.message);
+            }
+        } catch (error) {
+            message.error(error);
+            throw new Error("Lỗi cập nhật");
+        }
     };
-    const ignoredKeys = ["__typename", "parent", "created_at", "userCode"];
-    ignoredKeys.forEach((key) => delete updateInfo[key]);
-    try {
-      const data = await apiClient.patch(
-        endpoints.customers.update(values.id),
-        updateInfo
-      );
-      console.log(data);
-      if (data.status == 200) {
-        message.success(data.message);
-        navigate("/customer");
-      } else {
-        message.error(data?.message[0] || data?.message);
-      }
-    } catch (error) {
-      message.error(error);
-      throw new Error("Lỗi cập nhật");
-    }
-  };
 
   useEffect(() => {
     if (userBasicInfo && Object.keys(userBasicInfo).length > 0) {
@@ -146,20 +148,20 @@ const UserForm = ({ userBasicInfo, refetch }) => {
           </Form.Item>
         </Col>
 
-        <Col span={12}>
-          <Form.Item label="Ngày sinh" name="birthday">
-            <DatePicker
-              placeholder="Chọn ngày sinh"
-              format="YYYY-MM-DD"
-              style={{ width: "100%" }}
-            />
-          </Form.Item>
-        </Col>
-        <Col span={12}>
-          <Form.Item label="Email" name="email">
-            <Input placeholder="Email" disabled="true" />
-          </Form.Item>
-        </Col>
+                <Col span={12}>
+                    <Form.Item label="Ngày sinh" name="birthday">
+                        <DatePicker
+                            placeholder="Chọn ngày sinh"
+                            format="YYYY-MM-DD"
+                            style={{ width: "100%" }}
+                        />
+                    </Form.Item>
+                </Col>
+                <Col span={12}>
+                    <Form.Item label="Email" name="email">
+                        <Input placeholder="Email" disabled="true" />
+                    </Form.Item>
+                </Col>
 
         <Col span={12}>
           <Form.Item label="Giới tính" name="gender">
@@ -175,29 +177,29 @@ const UserForm = ({ userBasicInfo, refetch }) => {
           </Form.Item>
         </Col>
 
-        <Col span={12}>
-          <Form.Item label="Loại người dùng" name="Roles">
-            <Select
-              allowClear
-              optionFilterProp="label"
-              options={Object.keys(CustomerType).map((item) => ({
-                value: item,
-                label: CustomerType[item],
-              }))}
-              placeholder="Chọn loại người dùng customer "
-            />
-          </Form.Item>
-        </Col>
-      </Row>
-
-      {/* Nút cập nhật */}
-      <Form.Item>
-        <Button type="primary" htmlType="submit">
-          Cập nhật
-        </Button>
-      </Form.Item>
-    </Form>
-  );
+                <Col span={12}>
+                    <Form.Item label="Loại người dùng" name="Roles">
+                        <Select
+                            allowClear
+                            optionFilterProp="label"
+                            options={Object.keys(CustomerType).map((item) => ({
+                                value: item,
+                                label: CustomerType[item],
+                            }))}
+                            placeholder="Chọn loại người dùng customer "
+                        />
+                    </Form.Item>
+                </Col>
+                <Col push={12} span={12} className="flex justify-end">
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit">
+                            Cập nhật
+                        </Button>
+                    </Form.Item>
+                </Col>
+            </Row>
+        </Form>
+    );
 };
 
 UserForm.propTypes = {

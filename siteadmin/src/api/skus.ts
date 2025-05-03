@@ -1,6 +1,6 @@
 import endpoints from "./endpoints";
 import apiClient from "./apiClient";
-import { ResponsePromise } from "./order";
+import { ResponsePromise } from ".";
 const skusEndpoints = endpoints.sku;
 
 const SkusAPI: {

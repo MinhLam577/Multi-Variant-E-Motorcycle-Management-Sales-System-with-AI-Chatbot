@@ -2,7 +2,7 @@ import { Button, message } from "antd";
 import * as moment from "moment";
 import PropTypes from "prop-types";
 import GroupActionButton from "../../components/GroupActionButton";
-import { DateTimeFormat, Status } from "../../constants";
+import { DateTimeFormat } from "../../constants";
 import {
     ProcessModalName,
     processWithModals,
@@ -10,7 +10,6 @@ import {
 import TableComponent from "../../containers/TableComponent";
 import apiClient from "../../api/apiClient";
 import endpoints from "../../api/endpoints.ts";
-import { useNavigate } from "react-router";
 
 const getColumnsConfig = ({
     handleUpdateNews,
@@ -131,6 +130,7 @@ const NewsTable = ({
                 loadData={() => {
                     data;
                 }}
+                scroll={{ y: "200px" }}
             />
         </>
     );
