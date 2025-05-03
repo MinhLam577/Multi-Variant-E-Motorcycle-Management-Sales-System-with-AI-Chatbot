@@ -1,4 +1,4 @@
-const Overview = () => {
+const Overview = ({ specifications }) => {
   const carData = [
     { label: "Hãng sản xuất", value: "Volvo" },
     { label: "Mẫu xe", value: "XC 90" },
@@ -17,13 +17,13 @@ const Overview = () => {
 
   return (
     <ul className="list-group">
-      {carData.map((item, index) => (
+      {specifications?.map((item, index) => (
         <li
           className="list-group-item d-flex justify-content-between align-items-start"
           key={index}
         >
           <div className="me-auto">
-            <div className="day">{item.label}</div>
+            <div className="day">{item.name}</div>
           </div>
           <span className="schedule">{item.value}</span>
         </li>

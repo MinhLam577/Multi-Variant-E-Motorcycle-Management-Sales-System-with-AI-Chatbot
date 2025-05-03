@@ -15,6 +15,7 @@ export type paginationData = {
 import VoucherObservable from "./voucher";
 import SettingObservable from "./setting";
 import CartObservable from "./cart";
+import CategoryObservable from "./categories";
 export class RootStore {
   paymentMethodObservable: PaymentMethodObservable;
   orderObservable: OrderObservable;
@@ -30,6 +31,7 @@ export class RootStore {
   settingObservable: SettingObservable;
   blogsObservable: BlogsObservable;
   cartObservable: CartObservable;
+  categoryObservable: CategoryObservable
   constructor() {
     this.paymentMethodObservable = new PaymentMethodObservable(this);
     this.skusObservable = new SkusObservable(this);
@@ -45,5 +47,6 @@ export class RootStore {
     this.settingObservable = new SettingObservable(this);
     this.blogsObservable = new BlogsObservable(this);
     this.cartObservable = new CartObservable(this);
+    this.categoryObservable = new CategoryObservable(this);
   }
 }

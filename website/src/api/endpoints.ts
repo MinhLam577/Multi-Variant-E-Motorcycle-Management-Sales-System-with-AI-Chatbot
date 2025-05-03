@@ -3,6 +3,7 @@ import { register } from "module";
 const endpoints = {
   product: {
     getListProduct: (query: string) => "/products?" + query,
+    getDetailProduct: (id: string) => `/products/${id}`,
   },
   auth: {
     login: "/auth/login",
@@ -13,8 +14,8 @@ const endpoints = {
     check_code: "/auth/check-code",
     changePassword: "/auth/change-password",
     retry_active: "/auth/retry-active",
-    retry_password :"auth/retryPassword",
-    change_password:"auth/change-password"
+    retry_password: "auth/retryPassword",
+    change_password: "auth/change-password",
   },
 
   customers: {
@@ -37,7 +38,7 @@ const endpoints = {
     update: (id) => `/products/${id}`,
     delete: (id) => `/products/${id}`,
 
-    //setting
+    //category
     categories: () => `/category`,
     color: () => `/color`,
     brand: () => `/brand`,
@@ -169,7 +170,11 @@ const endpoints = {
   // received - address
   receive_address: {
     list: () => `/receive-address`,
+    listAddressCustomer: (customerId) =>
+      `/receive-address/customer/${customerId}`,
     details: (id) => `/receive-address/${id}`,
+    setAddressDefault: (idAddress) => `/receive-address/${idAddress}/default`,
+    getAddressDefault: (id) => `/receive-address/customer/${id}/default`,
     update: (id) => `/receive-address/${id}`,
     delete: (id) => `/receive-address/${id}`,
     create: () => `/receive-address`,

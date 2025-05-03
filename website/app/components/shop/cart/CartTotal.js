@@ -1,4 +1,8 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 const CartTotal = ({ cartList }) => {
+  const router = useRouter();
   // Tính tổng tạm thời (subtotal)
   const subtotal = cartList?.reduce(
     (sum, item) => sum + item.skus.price_sold * item.quantity,
@@ -22,7 +26,11 @@ const CartTotal = ({ cartList }) => {
         </li>
       </ul>
       <div className="ui_kit_button payment_widget_btn">
-        <button type="button" className="btn btn-thm btn-block">
+        <button
+          type="button"
+          className="btn btn-thm btn-block"
+          onClick={() => router.push("/checkout")}
+        >
           Proceed to Checkout
         </button>
       </div>

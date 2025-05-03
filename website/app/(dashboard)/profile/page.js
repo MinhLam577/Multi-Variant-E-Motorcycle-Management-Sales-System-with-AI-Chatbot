@@ -5,7 +5,7 @@ import DashboardSidebarMobileMenu from "@/app/components/common/DashboardSidebar
 import HeaderSidebar from "@/app/components/common/HeaderSidebar";
 import MobileMenu from "@/app/components/common/MobileMenu";
 import LoginSignupModal from "@/app/components/common/login-signup";
-import AccountDetails from "@/app/components/dashboard/profile/AccountDetails";
+import Account from "@/app/components/dashboard/profile/Account";
 import ChangePassword from "@/app/components/dashboard/profile/ChangePassword";
 import Gallery from "@/app/components/dashboard/profile/Gallery";
 import SocialNetwork from "@/app/components/dashboard/profile/SocialNetwork";
@@ -62,21 +62,14 @@ const Profile = () => {
               </div>
               {/* End mobilemenu */}
 
-              <div className="row">
-                <div className="col-xl-8">
-                  <div className="breadcrumb_content mb50">
-                    <h2 className="breadcrumb_title">Profile</h2>
-                    <p>Ready to jump back in!</p>
-                  </div>
-                </div>
-              </div>
+        
               {/* End .row */}
 
               <div className="row">
                 <div className="col-lg-12">
                   <div className="new_property_form mb30">
                     <h4 className="title mb30">Account Details</h4>
-                    <AccountDetails />
+                    <Account />
                   </div>
                 </div>
                 {/* End account details */}
@@ -168,3 +161,4 @@ const Profile = () => {
 };
 
 export default Profile;
+// <AccountDetails />

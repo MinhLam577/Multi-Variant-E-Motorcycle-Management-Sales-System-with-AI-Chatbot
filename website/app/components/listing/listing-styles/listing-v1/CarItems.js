@@ -3,10 +3,11 @@ import { toCurrency } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
 
-const CarItems = () => {
+const CarItems = ({ data }) => {
+  console.log(data);
   return (
     <>
-      {listingCar.map((listing) => (
+      {data.map((listing) => (
         <div className="col-sm-6 col-lg-4 col-xl-3" key={listing.id}>
           <div className="car-listing">
             <div className="thumb">
@@ -28,7 +29,7 @@ const CarItems = () => {
                   objectFit: "cover",
                 }}
                 priority
-                src={listing.image}
+                src={listing.products.images[0]}
                 alt={listing.title}
               />
               <div className="thmb_cntnt2">
@@ -64,11 +65,12 @@ const CarItems = () => {
             </div>
             <div className="details">
               <div className="wrapper">
-                <h5 className="price">{toCurrency(listing.price)}</h5>
+                <h5 className="price">{toCurrency(listing.products.price)}</h5>
                 <h6 className="title">
-                  <Link href="/listing-single-v1">{listing.title}</Link>
+                  <Link href="/listing-single-v1">
+                    {listing.products.title}
+                  </Link>
                 </h6>
-              
               </div>
               {/* End wrapper */}
 

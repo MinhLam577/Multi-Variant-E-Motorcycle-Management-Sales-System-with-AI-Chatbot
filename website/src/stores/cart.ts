@@ -52,7 +52,7 @@ export default class CartObservable {
   successMsg: string | null = null;
   showSuccessMsg: boolean = false;
   rootStore: RootStore;
-  data = null;
+  data = [];
   dataById = null;
   typeVoucher: TypeVoucher[] = [];
   dataDetail: Voucher[] = [];

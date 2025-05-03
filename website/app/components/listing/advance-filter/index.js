@@ -3,18 +3,21 @@ import CheckBoxFilter from "./CheckBoxFilter";
 import MainFilter from "./MainFilter";
 import PriceRange from "./PriceRange";
 
-const AdvanceFilter = () => {
+const AdvanceFilter = ({ handleFilterChange, handleClearAllFilters }) => {
+  const handleDeleteAll = () => {
+    handleClearAllFilters();
+  };
   return (
     <>
       <div className="row">
-        <MainFilter />
+        <MainFilter handleFilterChange={handleFilterChange} />
 
         <div className="col col-sm-4 col-lg-2">
           <div className="advance_search_style">
             <a
               className="advance_dd_btn d-inline-flex"
               href="#collapseAdvanceSearch"
-              data-bs-toggle="collapse"
+              data-bs-toggle="mycollapse"
               role="button"
               aria-expanded={false}
               aria-controls="collapseAdvanceSearch"
@@ -25,21 +28,24 @@ const AdvanceFilter = () => {
         </div>
         {/* End .col */}
 
+        {/*search */}
         <div className="col col-sm-4 col-lg-2">
           <div className="advance_search_style">
-            <a className="btn search_btn btn-thm" href="">
-              <span className="flaticon-magnifiying-glass" /> Tìm kiếm
-            </a>
+            <button
+              className="btn search_btn btn-thm"
+              onClick={() => handleDeleteAll()}
+            >
+              Xóa tất cả
+            </button>
           </div>
         </div>
         {/* End .col */}
       </div>
       {/* End .row */}
 
-      <div className="collapse" id="collapseAdvanceSearch">
-        <div className="row bgc-thm2">
-          <AdvanceMainFilter />
-        </div>
+      <div className="mycollapse" id="collapseAdvanceSearch">
+        {}
+
         {/* End .row */}
 
         <div className="row">
@@ -51,13 +57,16 @@ const AdvanceFilter = () => {
               </div>
             </div>
           </div>
-          {/* End .col */}
+          {/* End .col 
+            
+            
+            */}
 
           <div className="col-sm-6 col-md-4 col-lg-6 ">
             <h6 className="font-600 ass_price_title text-white text-start mb-3">
-              Chức năng
+              {/*Chức năng*/}
             </h6>
-            <CheckBoxFilter />
+            {/* <CheckBoxFilter /> */}
           </div>
           {/* End .col */}
         </div>
@@ -67,3 +76,13 @@ const AdvanceFilter = () => {
 };
 
 export default AdvanceFilter;
+// <div className="row bgc-thm2">
+// <AdvanceMainFilter />
+// </div>
+// <div className="col col-sm-4 col-lg-2">
+// <div className="advance_search_style">
+//   <a className="btn search_btn btn-thm" href="">
+//     <span className="flaticon-magnifiying-glass" /> Xóa tất cả
+//   </a>
+// </div>
+// </div>
