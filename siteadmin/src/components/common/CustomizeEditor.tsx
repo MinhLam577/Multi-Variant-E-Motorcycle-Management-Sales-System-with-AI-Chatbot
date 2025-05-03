@@ -15,6 +15,8 @@ import { useStore } from "src/stores";
 import { observer } from "mobx-react-lite";
 import CustomizeModal from "./CustomizeModal";
 import { Button, Form, Select, Image, FormInstance } from "antd";
+import ReactDOM from "react-dom";
+import { makeAutoObservable } from "mobx";
 const Parchment = Quill.import("parchment");
 const maxWidth = 600;
 const maxHeight = 400;
@@ -124,8 +126,22 @@ Icon["video"] =
 Icon["fullscreen"] =
     `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M9 22h6c5 0 7-2 7-7V9c0-5-2-7-7-7H9C4 2 2 4 2 9v6c0 5 2 7 7 7ZM18 6 6 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M18 10V6h-4M6 14v4h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>`;
 
+class EditorStore {
+    isOpenImageModal: boolean = false;
+
+    constructor() {
+        makeAutoObservable(this, {}, { autoBind: true });
+    }
+    setIsOpenImageModal(isOpen: boolean) {
+        this.isOpenImageModal = isOpen;
+    }
+}
+
+export const editorStore = new EditorStore();
+
 interface CustomizeEditorProps {
     value: string;
+    fieldFormName: string;
     onChange: (content: string, delta, source, editor) => void;
     modules?: any;
     formats?: any;
@@ -176,6 +192,7 @@ const CustomizeEditor: React.FC<CustomizeEditorProps> = forwardRef<
     (
         {
             value: initialValue,
+            fieldFormName,
             onChange,
             modules,
             formats,
@@ -188,7 +205,6 @@ const CustomizeEditor: React.FC<CustomizeEditorProps> = forwardRef<
         },
         ref
     ) => {
-        const [isOpenImageModal, setIsOpenImageModal] = useState(false);
         const [filesSelected, setFilesSelected] = useState<File[]>([]);
         const [fileSizeOptionSelected, setFileSizeOptionSelected] =
             useState<string>("original");
@@ -243,11 +259,10 @@ const CustomizeEditor: React.FC<CustomizeEditorProps> = forwardRef<
                 value: "1920x1080",
             },
         ];
-        useEffect(() => {
-            defaultForm.setFieldsValue({
-                size: "original",
-            });
-        }, []);
+        const [cursorPosition, setCursorPosition] = useState<number | null>(
+            null
+        );
+        const [modalForm] = Form.useForm();
 
         const default_store = store || useStore();
         const quillRef = useRef<ReactQuill>(null);
@@ -270,76 +285,10 @@ const CustomizeEditor: React.FC<CustomizeEditorProps> = forwardRef<
                 );
             }
         };
-        const onUploadImage = async (files: File[]) => {
-            const quill = quillRef.current.getEditor();
-            const range = quill.getSelection(true);
-            if (!range) {
-                throw new Error("Vui lòng chọn editor để chèn hình ảnh");
-            }
-            const uploadedFiles = await BaseAPI.uploadImagesToServer(
-                files,
-                folder
-            );
-            
-            if ("path" in uploadedFiles) {
-                const { message } = uploadedFiles;
-                const errorMessage = Array.isArray(message) ? message.join(", ") : message;
-                throw new Error(errorMessage);
-            }
-
-            for (const file of uploadedFiles.map((file) => ({
-                url: file.url,
-                alt: file.public_id,
-            }))) {
-                quill.insertEmbed(
-                    range.index,
-                    "image",
-                    {
-                        url: file.url,
-                        alt: file.alt,
-                    },
-                    "user"
-                );
-                quill.setSelection(range.index + 1, 0, "silent");
-            }
-        };
-        const handleImageEditorClicked = async () => {
-            setIsOpenImageModal(true);
-        };
-        const handleSaveImageModal = async () => {
-            try {
-                if (!filesSelected || filesSelected.length === 0) {
-                    throw new Error("No files selected to upload");
-                }
-                if (setSpins) setSpins(true);
-
-                await onUploadImage(filesSelected);
-                handleCloseImageModal();
-            } catch (e) {
-                console.error(e);
-                const errorMessage =
-                    (e instanceof Error && e.message) ||
-                    "Có lỗi xảy ra khi chèn ảnh";
-                default_store?.setStatusMessage(500, errorMessage, "");
-            } finally {
-                if (setSpins) setSpins(false);
-            }
-        };
-        const handleCloseImageModal = () => {
-            setFilesSelected([]);
-            defaultForm.setFieldsValue({
-                size: "original",
-            });
-            setIsOpenImageModal(false);
-        };
-
-        const handleRemoveFile = (file: File) => {
-            setFilesSelected((prev) => prev.filter((f) => f !== file));
-        };
-
         const handleUploadImageChange = async (
             e: React.ChangeEvent<HTMLInputElement>
         ) => {
+            e.stopPropagation();
             const files = e.target.files;
             if (files) {
                 let newFiles = Array.from(files).filter(
@@ -379,6 +328,84 @@ const CustomizeEditor: React.FC<CustomizeEditorProps> = forwardRef<
                     default_store?.setStatusMessage(500, errorMessage, "");
                 }
             }
+        };
+        const onUploadImage = async (files: File[]) => {
+            const quill = quillRef.current.getEditor();
+            const range = quill.getSelection(true);
+            if (!range) {
+                throw new Error("Vui lòng chọn editor để chèn hình ảnh");
+            }
+            const uploadedFiles = await BaseAPI.uploadImagesToServer(
+                files,
+                folder
+            );
+
+            if ("path" in uploadedFiles) {
+                const { message } = uploadedFiles;
+                const errorMessage = Array.isArray(message)
+                    ? message.join(", ")
+                    : message;
+                throw new Error(errorMessage);
+            }
+
+            for (const file of uploadedFiles.map((file) => ({
+                url: file.url,
+                alt: file.public_id,
+            }))) {
+                quill.insertEmbed(
+                    range.index,
+                    "image",
+                    {
+                        url: file.url,
+                        alt: file.alt,
+                    },
+                    "user"
+                );
+                quill.setSelection(range.index + 1, 0, "silent");
+            }
+        };
+        const handleImageEditorClicked = async () => {
+            if (quillRef.current) {
+                const quill = quillRef.current.getEditor();
+                const range = quill.getSelection();
+                if (range) {
+                    setCursorPosition(range.index);
+                }
+            }
+            editorStore.setIsOpenImageModal(true);
+        };
+        const handleSaveImageModal = async () => {
+            try {
+                if (!filesSelected || filesSelected.length === 0) {
+                    throw new Error("No files selected to upload");
+                }
+                if (setSpins) setSpins(true);
+
+                await onUploadImage(filesSelected);
+                handleCloseImageModal();
+            } catch (e) {
+                console.error(e);
+                const errorMessage =
+                    (e instanceof Error && e.message) ||
+                    "Có lỗi xảy ra khi chèn ảnh";
+                default_store?.setStatusMessage(500, errorMessage, "");
+            } finally {
+                if (setSpins) setSpins(false);
+            }
+        };
+        const handleCloseImageModal = () => {
+            // setFilesSelected([]);
+            // modalForm.resetFields();
+            if (quillRef.current && cursorPosition !== null) {
+                const quill = quillRef.current.getEditor();
+                quill.setSelection(cursorPosition, 0, "silent");
+                quillRef.current.focus();
+            }
+            editorStore.setIsOpenImageModal(false);
+        };
+
+        const handleRemoveFile = (file: File) => {
+            setFilesSelected((prev) => prev.filter((f) => f !== file));
         };
 
         const handleVideoEditorClicked = async () => {
@@ -463,99 +490,102 @@ const CustomizeEditor: React.FC<CustomizeEditorProps> = forwardRef<
                 resize: {},
             };
         }, []);
-
         return (
             <>
-                <div>
-                    <ReactQuill
-                        theme={theme || "snow"}
-                        placeholder="Nhập mô tả sản phẩm"
-                        value={defaultForm.getFieldValue("description")}
-                        modules={modules || defaultModules}
-                        formats={formats || defaultFormats}
-                        onChange={onChange}
-                        ref={quillRef}
-                        {...resProps}
-                    />
+                <ReactQuill
+                    theme={theme || "snow"}
+                    placeholder="Nhập mô tả"
+                    value={
+                        defaultForm.getFieldValue(fieldFormName)
+                            ? defaultForm.getFieldValue(fieldFormName)
+                            : ""
+                    }
+                    modules={modules || defaultModules}
+                    formats={formats || defaultFormats}
+                    onChange={onChange}
+                    ref={quillRef}
+                    {...resProps}
+                />
 
-                    <CustomizeModal
-                        title="Chọn hình ảnh"
-                        isOpen={isOpenImageModal}
-                        handleCloseModal={handleCloseImageModal}
-                        handleSaveModal={handleSaveImageModal}
-                        footer={false}
-                        cancelText="Hủy"
-                        okText="Lưu"
-                        width={600}
-                        centered={true}
-                    >
-                        <FileListDiv />
-                        <Form
-                            form={defaultForm}
-                            layout="vertical"
-                            className="flex flex-col mt-4"
-                            autoComplete="off"
-                        >
-                            <Form.Item
-                                label="Kích thước hình ảnh"
-                                name={"size"}
-                                required
-                            >
-                                <Select
-                                    className="h-10"
-                                    showSearch
-                                    optionFilterProp="label"
-                                    defaultActiveFirstOption={true}
-                                    options={ImageSizeOptions}
-                                    onChange={(value) => {
-                                        if (!value) return;
-                                        setFileSizeOptionSelected(value);
-                                    }}
-                                />
-                            </Form.Item>
-                        </Form>
-                        <div className="flex justify-end gap-2 mt-4">
-                            <input
-                                id="file-input"
-                                type="file"
-                                accept="image/*"
-                                multiple
-                                style={{ display: "none" }}
-                                onChange={handleUploadImageChange}
-                            />
-                            <Button
-                                type="primary"
-                                onClick={() => {
-                                    handleCloseImageModal();
-                                    setFilesSelected([]);
-                                }}
-                            >
-                                Hủy
-                            </Button>
-                            <Button
-                                type="primary"
-                                onClick={() => {
-                                    const fileInput = document.getElementById(
-                                        "file-input"
-                                    ) as HTMLInputElement;
-                                    if (fileInput) {
-                                        fileInput.click();
-                                    }
-                                }}
-                            >
-                                Tải hình ảnh
-                            </Button>
-                            <Button
-                                type="primary"
-                                onClick={() => {
-                                    handleSaveImageModal();
-                                }}
-                            >
-                                Chèn hình ảnh
-                            </Button>
-                        </div>
-                    </CustomizeModal>
+                <div id="file-input-container">
+                    <input
+                        id="file-input"
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        style={{ display: "none" }}
+                        onChange={handleUploadImageChange}
+                    />
                 </div>
+
+                <CustomizeModal
+                    title="Chọn hình ảnh"
+                    isOpen={editorStore.isOpenImageModal}
+                    handleCloseModal={handleCloseImageModal}
+                    handleSaveModal={handleSaveImageModal}
+                    footer={false}
+                    cancelText="Hủy"
+                    okText="Lưu"
+                    width={600}
+                    centered={true}
+                >
+                    <FileListDiv />
+                    <Form
+                        form={modalForm}
+                        layout="vertical"
+                        className="flex flex-col mt-4"
+                        autoComplete="off"
+                    >
+                        <Form.Item
+                            label="Kích thước hình ảnh"
+                            name={"size"}
+                            required
+                            initialValue={fileSizeOptionSelected}
+                        >
+                            <Select
+                                className="h-10"
+                                showSearch
+                                optionFilterProp="label"
+                                options={ImageSizeOptions}
+                                onChange={(value) => {
+                                    if (!value) return;
+                                    setFileSizeOptionSelected(value);
+                                }}
+                            />
+                        </Form.Item>
+                    </Form>
+                    <div className="flex justify-end gap-2 mt-4">
+                        <Button
+                            type="primary"
+                            onClick={() => {
+                                handleCloseImageModal();
+                            }}
+                        >
+                            Hủy
+                        </Button>
+                        <Button
+                            type="primary"
+                            onClick={() => {
+                                const fileInput = document.getElementById(
+                                    "file-input"
+                                ) as HTMLInputElement;
+                                if (fileInput) {
+                                    fileInput.click();
+                                }
+                            }}
+                        >
+                            Tải hình ảnh
+                        </Button>
+                        <Button
+                            type="primary"
+                            onClick={() => {
+                                handleSaveImageModal();
+                            }}
+                        >
+                            Chèn hình ảnh
+                        </Button>
+                    </div>
+                </CustomizeModal>
             </>
         );
     }

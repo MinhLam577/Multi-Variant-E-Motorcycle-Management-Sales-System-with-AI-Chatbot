@@ -220,6 +220,18 @@ class UserStaffObservable {
             this.loading = false;
         }
     }
+
+    setPagination(pagination: paginationData) {
+        this.pagination = {
+            ...this.pagination,
+            ...pagination,
+        };
+        console.log("pagination", toJS(this.pagination));
+        this.getListUser({
+            ...this.globalFilter,
+            ...this.pagination,
+        });
+    }
 }
 
 export default UserStaffObservable;

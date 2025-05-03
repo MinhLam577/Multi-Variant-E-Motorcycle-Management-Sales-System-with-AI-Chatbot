@@ -4,7 +4,12 @@ import { debounce } from "lodash";
 import { useCallback } from "react";
 const { RangePicker } = DatePicker;
 
-const UserSearch = ({ setFilters }) => {
+export enum VoucherEnum {
+    true = "Giảm giá theo phần trăm",
+    false = "Giảm giá theo số tiền",
+}
+
+const VoucherSearch = ({ setFilters }) => {
     const debounceInputChange: (value: string) => void = useCallback(
         debounce((value: string) => {
             setFilters((prev) => ({
@@ -34,25 +39,27 @@ const UserSearch = ({ setFilters }) => {
                     <Col xs={24} sm={12} md={8} lg={6} xl={6}>
                         <Form.Item
                             label={
-                                <div className="font-bold">Loại người dùng</div>
+                                <div className="font-bold">Loại voucher</div>
                             }
-                            name="role"
+                            name="fixed"
                         >
                             <Select
                                 allowClear
                                 showSearch
                                 optionFilterProp="label"
-                                options={Object.keys(UserType).map((item) => {
-                                    return {
-                                        label: UserType[item],
-                                        value: item,
-                                    };
-                                })}
-                                placeholder="Chọn loại người dùng"
+                                options={Object.keys(VoucherEnum).map(
+                                    (item) => {
+                                        return {
+                                            label: VoucherEnum[item],
+                                            value: item,
+                                        };
+                                    }
+                                )}
+                                placeholder="Chọn loại voucher"
                                 onChange={(value) => {
                                     setFilters((prev) => ({
                                         ...prev,
-                                        role: value,
+                                        fixed: value,
                                     }));
                                 }}
                             />
@@ -65,7 +72,7 @@ const UserSearch = ({ setFilters }) => {
                                     Trạng thái hoạt động
                                 </div>
                             }
-                            name="isActive"
+                            name="status"
                         >
                             <Select
                                 allowClear
@@ -74,11 +81,11 @@ const UserSearch = ({ setFilters }) => {
                                 options={[
                                     {
                                         label: "Hoạt động",
-                                        value: true,
+                                        value: "active",
                                     },
                                     {
                                         label: "Ngừng hoạt động",
-                                        value: false,
+                                        value: "inactive",
                                     },
                                 ]}
                                 onChange={(value) => {
@@ -103,11 +110,19 @@ const UserSearch = ({ setFilters }) => {
                             <RangePicker
                                 format={"DD/MM/YYYY"}
                                 placeholder={["Start Day", "End Day"]}
-                                onChange={(_, dateString) => {
+                                onChange={(date) => {
+                                    const formattedDate = date?.map((item) => {
+                                        if (item) {
+                                            return item.format("YYYY-MM-DD");
+                                        } else {
+                                            return undefined;
+                                        }
+                                    });
+
                                     setFilters((prev) => ({
                                         ...prev,
-                                        created_from: dateString[0],
-                                        created_to: dateString[1],
+                                        start_date: formattedDate?.[0],
+                                        end_date: formattedDate?.[1],
                                     }));
                                 }}
                             />
@@ -118,4 +133,4 @@ const UserSearch = ({ setFilters }) => {
         </Form>
     );
 };
-export default UserSearch;
+export default VoucherSearch;

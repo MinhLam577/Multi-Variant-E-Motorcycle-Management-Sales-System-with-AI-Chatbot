@@ -223,14 +223,14 @@ const UserForm: React.FC<UserFormProps> = ({ userBasicInfo }) => {
                         />
                     </Form.Item>
                 </Col>
+                <Col push={12} span={12} className="flex justify-end">
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit">
+                            Cập nhật
+                        </Button>
+                    </Form.Item>
+                </Col>
             </Row>
-
-            {/* Nút cập nhật */}
-            <Form.Item>
-                <Button type="primary" htmlType="submit">
-                    Cập nhật
-                </Button>
-            </Form.Item>
         </Form>
     );
 };

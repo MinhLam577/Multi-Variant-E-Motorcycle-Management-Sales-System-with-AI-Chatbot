@@ -1,12 +1,8 @@
 import { makeAutoObservable, toJS } from "mobx";
-import OrderAPI, { ExportOrder } from "src/api/order.api";
+import { ExportOrder } from "src/api/order.api";
 import { ResponsePromise } from "src/api";
-import { RootStore } from "./base";
+import { MessageStore, RootStore } from "./base";
 import voucherApi from "src/api/voucher";
-
-export type OrderStatus = {
-    key?: string;
-};
 
 export type globalFiltersData = {
     search?: string;
@@ -18,6 +14,7 @@ export type globalFiltersData = {
     created_from?: string;
     created_to?: string;
 };
+
 export type TypeVoucher = {
     id: string;
     name_type_voucher: string;
@@ -28,14 +25,6 @@ export type paginationData = {
     pageSize: number;
 };
 
-export type orderData = {
-    orders: any[];
-    order_status: OrderStatus[];
-    order_status_selected?: string;
-    order_selected?: string;
-    order_detail?: any;
-    confirm_order_data?: ExportOrder;
-};
 interface Voucher {
     id: string;
     createdAt: string;
@@ -54,11 +43,11 @@ interface Voucher {
     end_date: string;
     count_user_get: number;
 }
-export default class VoucherObservable {
-    status: number | null = null;
-    errorMsg: string | null = null;
-    successMsg: string | null = null;
-    showSuccessMsg: boolean = false;
+export default class VoucherObservable implements MessageStore {
+    status?: number;
+    successMsg?: string;
+    errorMsg?: string;
+    showSuccessMsg?: boolean;
     rootStore: RootStore;
     data: Voucher[] = null;
     dataUser = null;
@@ -66,17 +55,6 @@ export default class VoucherObservable {
     dataDetail: Voucher[] = [];
     dataListCustomer_no_voucher = [];
     idVoucher: string = "";
-
-    globalFilters: globalFiltersData = {
-        search: null,
-        sortOrder: null,
-        sortBy: null,
-        order_status: null,
-        payment_status: null,
-        payment_method: null,
-        created_from: null,
-        created_to: null,
-    };
     pagination: paginationData = {
         current: 1,
         pageSize: 100,
@@ -84,25 +62,14 @@ export default class VoucherObservable {
     loading: boolean = false;
     isOpenDetail: boolean = false;
     constructor(rootStore: RootStore) {
-        makeAutoObservable(this);
-
+        makeAutoObservable(this, {}, { autoBind: true });
         this.rootStore = rootStore;
-        this.setGlobalFilters = this.setGlobalFilters.bind(this);
-        this.setPagination = this.setPagination.bind(this);
-        this.getListVoucher = this.getListVoucher.bind(this);
-        this.getVoucherDetail = this.getVoucherDetail.bind(this);
-        this.getListCustomer_no_voucher =
-            this.getListCustomer_no_voucher.bind(this);
-        this.deleteVoucherByID = this.deleteVoucherByID.bind(this);
-        this.getListTypeVoucher = this.getListTypeVoucher.bind(this);
-        this.createVoucher = this.createVoucher.bind(this);
     }
 
     *getListVoucher() {
         try {
             this.loading = true;
             const response = yield voucherApi.getList();
-
             const { data, status, message } = response;
             const success_status = [200, 201, 204];
             if (success_status.includes(status)) {
@@ -148,12 +115,11 @@ export default class VoucherObservable {
         }
     }
     // cập nhật id
-    *setID_ListCustomer_no_voucher(id) {
+    *setID_ListCustomer_no_voucher(id: string) {
         try {
             this.idVoucher = id;
             // lấy ra danh sách customer no voucher theo id voucher
             const response = yield voucherApi.getListCustomer_no_Voucher(id);
-            console.log(response);
             const { data, status, message } = response;
             const success_status = [200, 201, 204];
             if (success_status.includes(status)) {
@@ -176,7 +142,6 @@ export default class VoucherObservable {
         try {
             this.idVoucher = id;
             const response: ResponsePromise = yield voucherApi.getById(id);
-            console.log(response);
             const { data, status, message } = response;
             const success_status = [200, 201, 204];
             if (success_status.includes(status)) {
@@ -198,7 +163,6 @@ export default class VoucherObservable {
         try {
             this.loading = true;
             const response = yield voucherApi.getListTypeVoucher();
-            console.log(response);
             const { data, status, message } = response;
             const success_status = [200, 201, 204];
             if (success_status.includes(status)) {
@@ -223,7 +187,6 @@ export default class VoucherObservable {
             // gọi một hàm bất đồng bộ (API)
             const response: ResponsePromise = yield voucherApi.delete(id);
             const { data, status, message } = response;
-            console.log(response);
             const success_status = [200, 201, 204];
             if (success_status.includes(status)) {
                 // ✅ Gọi lại API để refresh data
@@ -246,16 +209,17 @@ export default class VoucherObservable {
             // gọi một hàm bất đồng bộ (API)
             const response: ResponsePromise = yield voucherApi.create(body);
             const { data, status, message } = response;
-            console.log(response);
             const success_status = [200, 201, 204];
             if (success_status.includes(status)) {
                 // ✅ Gọi lại API để refresh data
                 yield this.getListVoucher();
                 this.status = status;
                 this.successMsg = message;
+                return true;
             } else {
                 this.status = status;
                 this.errorMsg = message;
+                return false;
             }
         } catch (e: any) {
             console.error(e);
@@ -270,7 +234,6 @@ export default class VoucherObservable {
             const response: ResponsePromise =
                 yield voucherApi.give_customer_voucher(id, body);
             const { status, message } = response;
-            console.log(response);
             const success_status = [200, 201, 204];
             if (success_status.includes(status)) {
                 yield this.setID_ListCustomer_no_voucher(id);
@@ -291,56 +254,23 @@ export default class VoucherObservable {
             // gọi một hàm bất đồng bộ (API)
             const response = yield voucherApi.update(id, body);
             const { status, message } = response;
-            console.log(response);
             const success_status = [200, 201, 204];
             if (success_status.includes(status)) {
                 // ✅ Gọi lại API để refresh data
                 yield this.getListVoucher();
                 this.status = status;
                 this.successMsg = message;
+                return true;
             } else {
                 this.status = status;
                 this.errorMsg = message;
+                return false;
             }
         } catch (e: any) {
             console.error(e);
             this.status = 500;
             this.errorMsg = e?.message || "Lỗi không xác định";
         }
-    }
-
-    clearMessage() {
-        this.showSuccessMsg = false;
-        this.status = null;
-        this.errorMsg = null;
-        this.successMsg = null;
-    }
-
-    setStatusMessage(
-        status?: number,
-        errorMsg?: string,
-        successMsg?: string,
-        showSuccessMsg?: boolean
-    ) {
-        if (showSuccessMsg) {
-            this.showSuccessMsg = showSuccessMsg;
-        }
-        if (status) {
-            this.status = status;
-        }
-        if (errorMsg) {
-            this.errorMsg = errorMsg;
-        }
-        if (successMsg) {
-            this.successMsg = successMsg;
-        }
-    }
-
-    setGlobalFilters(filters: globalFiltersData) {
-        this.globalFilters = {
-            ...this.globalFilters,
-            ...filters,
-        };
     }
 
     setPagination(page: number, pageSize: number) {
@@ -351,5 +281,16 @@ export default class VoucherObservable {
             current: page,
             pageSize: pageSize,
         };
+    }
+    clearMessage() {
+        this.status = undefined;
+        this.successMsg = undefined;
+        this.errorMsg = undefined;
+    }
+
+    setStatusMessage(status: number, errorMsg: string, successMsg: string) {
+        this.status = status;
+        this.errorMsg = errorMsg;
+        this.successMsg = successMsg;
     }
 }

@@ -1,4 +1,5 @@
 import { Modal } from "antd";
+import { observer } from "mobx-react-lite";
 import React from "react";
 import { n } from "react-router/dist/development/fog-of-war-BaM-ohjc";
 interface CustomizeModalProps {
@@ -35,4 +36,4 @@ const CustomizeModal: React.FC<CustomizeModalProps> = ({
     );
 };
 
-export default CustomizeModal;
+export default observer(CustomizeModal);

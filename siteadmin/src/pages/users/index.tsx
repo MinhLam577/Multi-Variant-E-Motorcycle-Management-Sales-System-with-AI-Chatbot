@@ -22,6 +22,7 @@ import {
 } from "src/stores/user.store";
 import { useStore } from "src/stores";
 import { observer } from "mobx-react-lite";
+import CustomizeTab from "src/components/common/CustomizeTab";
 const User = () => {
     const navigate = useNavigate();
     const store = useStore();
@@ -154,22 +155,34 @@ const User = () => {
                     </Button>
                 </div>
             </div>
-            <div className="w-full my-6 flex flex-col gap-4 p-4 border border-gray-200 rounded-lg bg-white shadow-sm animate-slideUp">
-                <UserSearch setFilters={setGlobalFilters} />
-                <UserTable
-                    data={userStore.data.listData || []}
-                    handleUpdateUser={handleEditUser}
-                    handleViewUser={handleViewUser}
-                />
-                <UserImport
-                    openModalImport={openModalImport}
-                    setOpenModalImport={setOpenModalImport}
-                    fetchUser={fetchUsers}
-                />
-                <UserModalCreate
-                    openModalCreate={openModalCreate}
-                    setOpenModalCreate={setOpenModalCreate}
-                    fetchUser={fetchUsers}
+            <div className="w-full my-6 flex flex-col gap-4 px-4 pb-4 border border-gray-200 rounded-lg bg-white shadow-sm animate-slideUp">
+                <CustomizeTab
+                    items={[
+                        {
+                            key: "1",
+                            label: "Tất cả người dùng",
+                            children: (
+                                <div className="w-full mt-2">
+                                    <UserSearch setFilters={setGlobalFilters} />
+                                    <UserTable
+                                        data={userStore.data.listData || []}
+                                        handleUpdateUser={handleEditUser}
+                                        handleViewUser={handleViewUser}
+                                    />
+                                    <UserImport
+                                        openModalImport={openModalImport}
+                                        setOpenModalImport={setOpenModalImport}
+                                        fetchUser={fetchUsers}
+                                    />
+                                    <UserModalCreate
+                                        openModalCreate={openModalCreate}
+                                        setOpenModalCreate={setOpenModalCreate}
+                                        fetchUser={fetchUsers}
+                                    />
+                                </div>
+                            ),
+                        },
+                    ]}
                 />
             </div>
         </>

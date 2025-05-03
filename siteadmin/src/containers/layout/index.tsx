@@ -55,19 +55,20 @@ const BreadcrumbLabel = {
     profile: "Thông tin người dùng",
     users: "Quản lý Người dùng",
     products: "Quản lý sản phẩm",
-    categories: "Danh mục sản phẩm",
-    categoriesnews: "Thông tin/tin tức",
+    categories: "Quản lí danh mục sản phẩm",
+    categorynews: "Danh mục tin tức",
     orders: "Quản lý đơn hàng",
     add: "Tạo",
     edit: "Sửa",
     vouchers: "Quản lý vouchers",
     material: "Quản lý kho",
     statistic: "Quản lý thống kê",
-    warehouse: "Kho",
+    warehouse: "Quản lí kho",
     "e-motorbike": "Xe máy điện",
     customer: "Quản lý khách hàng",
     setting: "Cấu hình",
     role: "Role",
+    notifications: "Quản lí thông báo",
 };
 
 export const getBreadcrumbItems = (path: string) => {
@@ -118,8 +119,6 @@ const AppLayout = (props) => {
     const [collapsed, setCollapsed] = useState(false);
     const store = useStore();
     const [messageApi, contextHolder] = message.useMessage();
-
-    const { name } = useContext(GlobalContext) as { name: string };
     const screens = useBreakpoint();
 
     //set user role
@@ -133,15 +132,15 @@ const AppLayout = (props) => {
         getItem("Khách hàng", "19", <UsergroupAddOutlined />, null, () =>
             navigate("/customer")
         ),
-        getItem("Chi nhánh", "3", <ShopOutlined />, null, () =>
-            navigate("/stores")
-        ),
+        // getItem("Chi nhánh", "3", <ShopOutlined />, null, () =>
+        //     navigate("/stores")
+        // ),
         getItem("Sản phẩm", "4", <ShoppingOutlined />, null, () =>
             navigate("/products")
         ),
-        getItem("Biến thể", "5", <TruckOutlined />, null, () =>
-            navigate("/combo_product")
-        ),
+        // getItem("Biến thể", "5", <TruckOutlined />, null, () =>
+        //     navigate("/combo_product")
+        // ),
         getItem("Danh mục", "7", <FileDoneOutlined />, null, () =>
             navigate("/categories")
         ),
@@ -185,6 +184,7 @@ const AppLayout = (props) => {
                 "/vouchers": "16",
                 "/warehouse": "17",
                 "/customer": "19",
+                "/setting": "20",
                 "/role": "21",
             };
             for (let key of Object.keys(menuKeys)) {
@@ -273,13 +273,13 @@ const AppLayout = (props) => {
                     <Content className="mx-6 !bg-[#f3f4f6]">
                         <div>{children}</div>
                     </Content>
-                    <Footer
+                    {/* <Footer
                         style={{
                             textAlign: "center",
                         }}
                     >
                         Ô tô hồng sơn ©2024 Created by Openserce
-                    </Footer>
+                    </Footer> */}
                 </Layout>
             </Layout>
         </ConfigProvider>

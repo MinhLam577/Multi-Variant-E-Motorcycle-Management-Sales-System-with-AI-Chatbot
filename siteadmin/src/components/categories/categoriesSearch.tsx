@@ -2,9 +2,11 @@ import { Col, DatePicker, Form, Input, Row, Select } from "antd";
 import { UserType } from "../../constants";
 import { debounce } from "lodash";
 import { useCallback } from "react";
+import { EnumProductStore, EnumProductType } from "src/stores/product.store";
+import { SelectType } from "../products/detail/ModalCreateProduct/ModalCreateProduct";
 const { RangePicker } = DatePicker;
 
-const UserSearch = ({ setFilters }) => {
+const CategoriesSearch = ({ setFilters }) => {
     const debounceInputChange: (value: string) => void = useCallback(
         debounce((value: string) => {
             setFilters((prev) => ({
@@ -13,6 +15,12 @@ const UserSearch = ({ setFilters }) => {
             }));
         }, 400),
         []
+    );
+    const productTypeOption: SelectType[] = Object.keys(EnumProductType).map(
+        (key) => ({
+            label: EnumProductType[key as keyof typeof EnumProductType],
+            value: EnumProductStore[key as keyof typeof EnumProductStore],
+        })
     );
     return (
         <Form labelWrap labelCol={{ flex: "30%" }} layout="vertical">
@@ -33,28 +41,17 @@ const UserSearch = ({ setFilters }) => {
                     </Col>
                     <Col xs={24} sm={12} md={8} lg={6} xl={6}>
                         <Form.Item
-                            label={
-                                <div className="font-bold">Loại người dùng</div>
-                            }
-                            name="role"
+                            label={<span className="font-bold">Loại xe</span>}
+                            name="type"
                         >
                             <Select
-                                allowClear
+                                placeholder="Chọn loại xe"
                                 showSearch
+                                options={productTypeOption}
                                 optionFilterProp="label"
-                                options={Object.keys(UserType).map((item) => {
-                                    return {
-                                        label: UserType[item],
-                                        value: item,
-                                    };
-                                })}
-                                placeholder="Chọn loại người dùng"
-                                onChange={(value) => {
-                                    setFilters((prev) => ({
-                                        ...prev,
-                                        role: value,
-                                    }));
-                                }}
+                                allowClear
+                                size="middle"
+                                onChange={(value) => {}}
                             />
                         </Form.Item>
                     </Col>
@@ -65,7 +62,7 @@ const UserSearch = ({ setFilters }) => {
                                     Trạng thái hoạt động
                                 </div>
                             }
-                            name="isActive"
+                            name="status"
                         >
                             <Select
                                 allowClear
@@ -73,11 +70,11 @@ const UserSearch = ({ setFilters }) => {
                                 optionFilterProp="label"
                                 options={[
                                     {
-                                        label: "Hoạt động",
+                                        label: "Hiện",
                                         value: true,
                                     },
                                     {
-                                        label: "Ngừng hoạt động",
+                                        label: "Ẩn",
                                         value: false,
                                     },
                                 ]}
@@ -118,4 +115,4 @@ const UserSearch = ({ setFilters }) => {
         </Form>
     );
 };
-export default UserSearch;
+export default CategoriesSearch;

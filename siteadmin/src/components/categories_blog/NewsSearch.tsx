@@ -1,10 +1,9 @@
-import { Col, DatePicker, Form, Input, Row, Select } from "antd";
-import { UserType } from "../../constants";
-import { debounce } from "lodash";
+import { Col, DatePicker, Form, Input, Row, Select, TreeSelect } from "antd";
+import PropTypes from "prop-types";
 import { useCallback } from "react";
+import { debounce } from "lodash";
 const { RangePicker } = DatePicker;
-
-const UserSearch = ({ setFilters }) => {
+const NewsSearch = ({ setFilters }) => {
     const debounceInputChange: (value: string) => void = useCallback(
         debounce((value: string) => {
             setFilters((prev) => ({
@@ -14,6 +13,7 @@ const UserSearch = ({ setFilters }) => {
         }, 400),
         []
     );
+
     return (
         <Form labelWrap labelCol={{ flex: "30%" }} layout="vertical">
             <div className="w-full">
@@ -34,38 +34,11 @@ const UserSearch = ({ setFilters }) => {
                     <Col xs={24} sm={12} md={8} lg={6} xl={6}>
                         <Form.Item
                             label={
-                                <div className="font-bold">Loại người dùng</div>
-                            }
-                            name="role"
-                        >
-                            <Select
-                                allowClear
-                                showSearch
-                                optionFilterProp="label"
-                                options={Object.keys(UserType).map((item) => {
-                                    return {
-                                        label: UserType[item],
-                                        value: item,
-                                    };
-                                })}
-                                placeholder="Chọn loại người dùng"
-                                onChange={(value) => {
-                                    setFilters((prev) => ({
-                                        ...prev,
-                                        role: value,
-                                    }));
-                                }}
-                            />
-                        </Form.Item>
-                    </Col>
-                    <Col xs={24} sm={12} md={8} lg={6} xl={6}>
-                        <Form.Item
-                            label={
                                 <div className="font-bold">
                                     Trạng thái hoạt động
                                 </div>
                             }
-                            name="isActive"
+                            name="status"
                         >
                             <Select
                                 allowClear
@@ -88,6 +61,45 @@ const UserSearch = ({ setFilters }) => {
                                     }));
                                 }}
                                 placeholder="Chọn trạng thái"
+                            />
+                        </Form.Item>
+                    </Col>
+                    <Col xl={5} lg={12} md={12} xs={12}>
+                        <Form.Item
+                            label={<span className="font-bold">Danh mục</span>}
+                            name="blogId"
+                        >
+                            <TreeSelect
+                                allowClear
+                                showSearch
+                                placeholder="Chọn danh mục"
+                                treeDefaultExpandAll
+                                dropdownStyle={{
+                                    maxHeight: 400,
+                                    overflow: "auto",
+                                }}
+                                treeData={[
+                                    {
+                                        title: "Danh mục 1",
+                                        value: "category1",
+                                        key: "category1",
+                                        children: [
+                                            {
+                                                title: "Danh mục 1.1",
+                                                value: "category1.1",
+                                                key: "category1.1",
+                                            },
+                                            {
+                                                title: "Danh mục 1.2",
+                                                value: "category1.2",
+                                                key: "category1.2",
+                                            },
+                                        ],
+                                    },
+                                ]}
+                                treeNodeFilterProp="title"
+                                onChange={(value, label, extra) => {}}
+                                size="middle"
                             />
                         </Form.Item>
                     </Col>
@@ -118,4 +130,9 @@ const UserSearch = ({ setFilters }) => {
         </Form>
     );
 };
-export default UserSearch;
+
+NewsSearch.propTypes = {
+    setFilters: PropTypes.func,
+};
+
+export default NewsSearch;

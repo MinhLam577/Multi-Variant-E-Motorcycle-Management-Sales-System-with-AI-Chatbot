@@ -124,6 +124,8 @@ const UserTable: React.FC<IUserTableProps> = ({
                 handleViewUser={handleViewUser}
                 hanleActivateUser={hanleActivateUser}
                 hanleAddressUser={hanleAddressUser}
+                scroll={{ y: "200px" }}
+                observableName={userStore.constructor.name}
             />
         </>
     );

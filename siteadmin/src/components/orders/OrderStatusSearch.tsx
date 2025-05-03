@@ -3,11 +3,14 @@ import React, { useState } from "react";
 import { EnumOrderStatuses } from "../../constants";
 import { OrderStatus } from "src/stores/order.store";
 import { ButtonProps } from "antd/lib";
-interface IOrderStatusSearchProps { 
-  order_status: OrderStatus[],
-  order_store: any;
+interface IOrderStatusSearchProps {
+    order_status: OrderStatus[];
+    order_store: any;
 }
-const OrderStatusSearch: React.FC<IOrderStatusSearchProps> = ({ order_status, order_store }) => {
+const OrderStatusSearch: React.FC<IOrderStatusSearchProps> = ({
+    order_status,
+    order_store,
+}) => {
     const button_extra_style: Partial<ButtonProps> = {
         color: "default",
         variant: "solid",
@@ -16,7 +19,7 @@ const OrderStatusSearch: React.FC<IOrderStatusSearchProps> = ({ order_status, or
     const [status_selected, set_status_selected] = useState("All");
 
     return (
-        <div className="flex flex-wrap justify-between items-center gap-y-4 mt-6">
+        <div className="flex flex-wrap justify-between items-center gap-y-4 mt-2">
             {order_status?.map((status) => {
                 const isSelected = status_selected === status.key;
                 return (

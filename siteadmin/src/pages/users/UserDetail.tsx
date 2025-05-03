@@ -35,11 +35,6 @@ const UserDetail = () => {
                 </div>
             ),
         },
-        {
-            key: "2",
-            label: "Quản lý địa chỉ",
-            children: <AddressUserTable />,
-        },
     ];
     return (
         <div>
@@ -50,7 +45,7 @@ const UserDetail = () => {
                         items={[...getBreadcrumbItems(location.pathname)]}
                     />
                 </div>
-                <div className="w-full my-6 flex flex-col gap-4 p-4 border border-gray-200 rounded-lg bg-white shadow-sm animate-slideUp">
+                <div className="w-full my-6 flex flex-col px-4 border border-gray-200 rounded-lg bg-white shadow-sm animate-slideUp">
                     <Tabs defaultActiveKey="1" items={items} />
                 </div>
             </Spin>
