@@ -45,9 +45,11 @@ const News = () => {
       type: "breadcrum",
       data: newsData.title,
     });
+
     navigate(`/categorynews/${id}/news/${newsData.id}/edit`, {
       replace: true,
     });
+    
   };
 
   const handleViewNews = (newsData) => {

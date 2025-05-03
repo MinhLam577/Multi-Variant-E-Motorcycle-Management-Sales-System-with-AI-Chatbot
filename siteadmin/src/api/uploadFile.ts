@@ -12,5 +12,16 @@ const UploadPictureApi = {
     });
     return Response;
   },
+  // tạo ảnh cho customer
+  createImageCustomer: async (image: any) => {
+    const formData = new FormData();
+    formData.append("image", image);
+    const Response = await apiClient.post(endpoints.blogs.upload, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return Response;
+  },
 };
 export default UploadPictureApi;

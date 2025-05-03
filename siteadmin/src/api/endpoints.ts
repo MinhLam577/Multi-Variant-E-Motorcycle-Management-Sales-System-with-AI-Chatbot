@@ -3,11 +3,11 @@ const endpoints = {
     getListProduct: (query: string) => "/products?" + query,
   },
   auth: {
-    login: "/auth/admin/login",
-    logout: "/auth/admin/logout",
-    refreshToken: "/auth/admin/refresh",
-    forgotPassword: "/auth/admin/forgot-password",
-    changePassword: "/auth/admin/change-password",
+    login: "/auth/login",
+    logout: "/auth/logout",
+    refreshToken: "/auth/refresh",
+    forgotPassword: "/auth/forgot-password",
+    changePassword: "/auth/change-password",
   },
   user: {
     details: (id) => `/users/${id}`,
@@ -44,7 +44,7 @@ const endpoints = {
     brand: "/brand",
   },
   cars: {
-    list: (page, size) => `/products?current=${page}&pageSize=${size}`,
+    list: `/products`,
     details: (id) => `/cars/${id}`,
     create: "/products",
     update: (id) => `/products/${id}`,
@@ -98,7 +98,7 @@ const endpoints = {
     update: (id) => `/branch/${id}`,
     delete: (id) => `/branch/${id}`,
     upload: "/branch/upload",
-    create: "/branch"
+    create: "/branch",
   },
 
   // voucher
@@ -222,7 +222,16 @@ const endpoints = {
   ward: {
     wardByName: (districtId) => `/ward?districtId=${districtId}`,
   },
-
+  // cart 
+  cart: {
+    list: () => `/cart`,
+    details: (id) => `/cart/${id}`,
+    update: (id) => `/cart/${id}`,
+    delete: (id) => `/cart/${id}`,
+    create: () => `/cart`,
+    upload: "/cart/upload-image",
+    uploads: "/cart/upload-images",
+  },
 };
 
 export default endpoints;
