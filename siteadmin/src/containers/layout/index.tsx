@@ -4,6 +4,7 @@ import {
     DashboardOutlined,
     FileDoneOutlined,
     GiftOutlined,
+    ImportOutlined,
     NotificationOutlined,
     OrderedListOutlined,
     ProductOutlined,
@@ -11,9 +12,19 @@ import {
     ShopOutlined,
     ShoppingOutlined,
     TruckOutlined,
+    UsergroupAddOutlined,
     UserOutlined,
 } from "@ant-design/icons";
-import { Breadcrumb, ConfigProvider, Grid, Layout, Menu, Spin, theme } from "antd";
+import {
+    Breadcrumb,
+    ConfigProvider,
+    Grid,
+    Layout,
+    Menu,
+    message,
+    Spin,
+    theme,
+} from "antd";
 import PropTypes from "prop-types";
 import { use, useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
@@ -24,6 +35,8 @@ import "./index.css";
 import { makeAutoObservable, reaction } from "mobx";
 import { useStore } from "src/stores";
 import { observer } from "mobx-react-lite";
+import { Profile2User } from "iconsax-react";
+import { displayMessage } from "src/utils";
 
 const { Content, Footer, Sider } = Layout;
 const { useBreakpoint } = Grid;
@@ -43,56 +56,64 @@ const BreadcrumbLabel = {
     profile: "Thông tin người dùng",
     users: "Quản lý Người dùng",
     products: "Quản lý sản phẩm",
-    categories: "Danh mục sản phẩm",
-    categoriesnews: "Thông tin/tin tức",
+    categories: "Quản lí danh mục sản phẩm",
+    categorynews: "Danh mục tin tức",
     orders: "Quản lý đơn hàng",
     add: "Tạo",
     edit: "Sửa",
     vouchers: "Quản lý vouchers",
     material: "Quản lý kho",
     statistic: "Quản lý thống kê",
-    warehouse: "Kho",
+    warehouse: "Quản lí kho",
     "e-motorbike": "Xe máy điện",
     customer: "Quản lý khách hàng",
     setting: "Cấu hình",
     role: "Role",
+    notifications: "Quản lí thông báo",
+    import: "Quản lí nhập kho",
+    export: "Quản lí xuất kho",
 };
 
 export const getBreadcrumbItems = (path: string) => {
-  if (typeof path !== "string") {
-      return [];
-  }
+    if (typeof path !== "string") {
+        return [];
+    }
 
-  // Loại bỏ dấu / ở đầu và cuối, tách thành mảng
-  const arr = path
-      .replace(/^\/|\/$/g, "")
-      .split("/")
-      .map((value) => value.trim())
-      .filter((value) => value !== "");
+    // Loại bỏ dấu / ở đầu và cuối, tách thành mảng
+    const arr = path
+        .replace(/^\/|\/$/g, "")
+        .split("/")
+        .map((value) => value.trim())
+        .filter((value) => value !== "");
 
-  // T pursed breadcrumb
-  let currentPath = "";
-  const breadcrumbDataList = arr.map((value, index) => {
-      currentPath += (currentPath ? "/" : "") + value;
-      return {
-          key: index + 1,
-          href: "/" + currentPath,
-          title: BreadcrumbLabel && BreadcrumbLabel[value] ? BreadcrumbLabel[value] : value || "Unknown",
-      };
-  });
+    // T pursed breadcrumb
+    let currentPath = "";
+    const breadcrumbDataList = arr.map((value, index) => {
+        currentPath += (currentPath ? "/" : "") + value;
+        return {
+            key: index + 1,
+            href: "/" + currentPath,
+            title:
+                BreadcrumbLabel && BreadcrumbLabel[value]
+                    ? BreadcrumbLabel[value]
+                    : value || "Unknown",
+        };
+    });
 
-  // Mặc định dashboard
-  return breadcrumbDataList.length === 0
-      ? [
-            {
-                key: 1,
-                href: "/",
-                title: BreadcrumbLabel && BreadcrumbLabel["dashboard"] ? BreadcrumbLabel["dashboard"] : "Dashboard",
-            },
-        ]
-      : breadcrumbDataList;
+    // Mặc định dashboard
+    return breadcrumbDataList.length === 0
+        ? [
+              {
+                  key: 1,
+                  href: "/",
+                  title:
+                      BreadcrumbLabel && BreadcrumbLabel["dashboard"]
+                          ? BreadcrumbLabel["dashboard"]
+                          : "Dashboard",
+              },
+          ]
+        : breadcrumbDataList;
 };
-
 
 const AppLayout = (props) => {
     const location = useLocation();
@@ -100,26 +121,22 @@ const AppLayout = (props) => {
     const { children } = props;
     const [collapsed, setCollapsed] = useState(false);
     const store = useStore();
-
-    const { name } = useContext(GlobalContext) as { name: string };
+    const [messageApi, contextHolder] = message.useMessage();
     const screens = useBreakpoint();
-  
+
     //set user role
     const items = [
-        getItem("Tổng quan", "1", <ProductOutlined />, null, () =>
+        getItem("Tổng quan", "1", <BarChartOutlined />, null, () =>
             navigate("/")
         ),
         getItem("Nhân viên", "2", <UserOutlined />, null, () =>
             navigate("/users")
         ),
-        getItem("Chi nhánh", "3", <ShopOutlined />, null, () =>
-            navigate("/stores")
+        getItem("Khách hàng", "19", <UsergroupAddOutlined />, null, () =>
+            navigate("/customer")
         ),
         getItem("Sản phẩm", "4", <ShoppingOutlined />, null, () =>
             navigate("/products")
-        ),
-        getItem("Biến thể", "5", <TruckOutlined />, null, () =>
-            navigate("/combo_product")
         ),
         getItem("Danh mục", "7", <FileDoneOutlined />, null, () =>
             navigate("/categories")
@@ -136,14 +153,15 @@ const AppLayout = (props) => {
         getItem("Voucher", "16", <GiftOutlined />, null, () =>
             navigate("/vouchers")
         ),
+        getItem("Nhập kho", "22", <ImportOutlined />, null, () => {
+            navigate("/import");
+        }),
+
+        getItem("Xuất kho", "23", <TruckOutlined />, null, () => {
+            navigate("/export");
+        }),
         getItem("Kho", "17", <DashboardOutlined />, null, () =>
             navigate("/warehouse")
-        ),
-        getItem("Thống kê", "18", <BarChartOutlined />, null, () =>
-            navigate("/statistic")
-        ),
-        getItem("Khách hàng", "19", <UserOutlined />, null, () =>
-            navigate("/customer")
         ),
         getItem("Cấu hình", "20", <SettingOutlined />, null, () =>
             navigate("/setting")
@@ -169,9 +187,11 @@ const AppLayout = (props) => {
                 "/notifications": "15",
                 "/vouchers": "16",
                 "/warehouse": "17",
-                "/statistic": "18",
                 "/customer": "19",
+                "/setting": "20",
                 "/role": "21",
+                "/import": "22",
+                "/export": "23",
             };
             for (let key of Object.keys(menuKeys)) {
                 if (path.startsWith(key)) {
@@ -190,7 +210,25 @@ const AppLayout = (props) => {
             return ["1"];
         }
     };
-
+    useEffect(() => {
+        const messageReaction = reaction(
+            () => ({
+                status: store.status,
+                showSuccessMsg: store.showSuccessMsg,
+                errorMsg: store.errorMsg,
+                successMsg: store.successMsg,
+            }),
+            (current_status) => {
+                if (!current_status) return;
+                const { status: newStatus, showSuccessMsg: newShowSuccess } =
+                    current_status || {};
+                displayMessage(messageApi, newStatus, store, newShowSuccess, 5);
+            }
+        );
+        return () => {
+            messageReaction();
+        };
+    }, []);
     return (
         <ConfigProvider
             theme={{
@@ -202,12 +240,13 @@ const AppLayout = (props) => {
                 },
             }}
         >
+            {contextHolder}
             <Layout
                 style={{
                     minHeight: "100vh",
                 }}
             >
-                <Spin 
+                <Spin
                     spinning={store.loading}
                     size="large"
                     tip="Loading..."
@@ -240,20 +279,10 @@ const AppLayout = (props) => {
                     <Content className="mx-6 !bg-[#f3f4f6]">
                         <div>{children}</div>
                     </Content>
-                    <Footer
-                        style={{
-                            textAlign: "center",
-                        }}
-                    >
-                        Ô tô hồng sơn ©2024 Created by Openserce
-                    </Footer>
                 </Layout>
             </Layout>
         </ConfigProvider>
     );
 };
 
-AppLayout.propTypes = {
-    children: PropTypes.node,
-};
-export default observer(AppLayout)
+export default observer(AppLayout);

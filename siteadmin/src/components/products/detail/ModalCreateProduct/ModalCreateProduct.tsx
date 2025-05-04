@@ -52,6 +52,7 @@ import {
 } from "src/stores/product.store";
 import { ResponseImage } from "src/api";
 import FormListSelectOrInput from "../FormListSelectOrInput";
+import dayjs from "dayjs";
 
 export type TreeSelectType = {
     title: string;
@@ -105,6 +106,7 @@ export interface IFormSkuCustomData {
     barcode?: string;
     masku?: string;
     image?: string;
+    lot_name?: string;
     variant_combinations?: VariantCombinationDto[];
     detail_import?: Array<{
         warehouse_id: string;
@@ -119,6 +121,7 @@ export interface ISkuCustomInputData {
     barcode?: string;
     masku?: string;
     image?: string;
+    lot_name?: string;
     variant_combinations?: VariantCombinationDto[];
     detail_import?: Array<{
         warehouse_id: string;
@@ -322,6 +325,10 @@ export class ModalCreateProductStore {
             }
         }
 
+        if (data.lot_name !== undefined) {
+            validData.lot_name = data.lot_name;
+        }
+
         if (data.price_import !== undefined) {
             const numberValue = Number(data.price_import);
             if (!isNaN(numberValue) && numberValue >= 0) {
@@ -427,7 +434,7 @@ export class ModalCreateProductStore {
                       ? `${this.masku}-${index + 1}`
                       : "",
                 image: existing?.image || undefined,
-
+                lot_name: existing?.lot_name || undefined,
                 detail_import: this.warehouse_selected.map((wh) => ({
                     warehouse_id: wh.value,
                     quantity_import: String(
@@ -507,6 +514,11 @@ export class ModalCreateProductStore {
     updateSkusPriceSold(value: string) {
         if (!this.skusNameSelected) return;
         this.setSkuCustomData(this.skusNameSelected, { price_sold: value });
+    }
+
+    updateSkusLotName(value: string) {
+        if (!this.skusNameSelected) return;
+        this.setSkuCustomData(this.skusNameSelected, { lot_name: value });
     }
 
     updateSkusPriceCompare(value: string) {
@@ -960,6 +972,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                 store={productStore}
                                 className="w-full h-full"
                                 defaultForm={form}
+                                fieldFormName="description"
                             />
                         </div>
                     </Form.Item>
@@ -1803,6 +1816,8 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                             modalCreateProductStore.updateSkusBarcode(value);
                         } else if (field === "masku") {
                             modalCreateProductStore.updateSkusMasku(value);
+                        } else if (field === "lot_name") {
+                            modalCreateProductStore.updateSkusLotName(value);
                         }
                     },
                     0
@@ -2140,6 +2155,30 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                                 handleUpdateVariantValue(
                                                     "price_import",
                                                     String(value || "0")
+                                                );
+                                            }}
+                                            disabled={
+                                                !modalCreateProductStore.skusNameSelected
+                                            }
+                                        />
+                                    </Form.Item>
+                                </Col>
+                                <Col flex={"50%"}>
+                                    <Form.Item
+                                        label="Tên lô"
+                                        name={getDefaultNamePathVariantFormItem(
+                                            "lot_name"
+                                        )}
+                                        className="w-full"
+                                    >
+                                        <Input
+                                            className="w-full h-10"
+                                            autoComplete="off"
+                                            placeholder="Nhập tên lô"
+                                            onChange={(e) => {
+                                                handleUpdateVariantValue(
+                                                    "lot_name",
+                                                    String(e.target.value)
                                                 );
                                             }}
                                             disabled={
@@ -2554,6 +2593,9 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                 barcode: form.getFieldValue("barcode"),
                 masku: form.getFieldValue("masku"),
                 image: imageUrl?.length ? imageUrl[0] : "",
+                lot_name: `Lô ${form.getFieldValue("title")} - ${dayjs(
+                    Date.now()
+                ).format("DD/MM/YYYY HH:mm:ss")}`,
             });
             return [defaultSkus];
         } else {
@@ -2590,13 +2632,19 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
             }
             const skusData: CreateSkusDto[] = fileResults.map(
                 ({ name, item }, index) => {
+                    const newDetailImport = detailImport.map((di) => ({
+                        ...di,
+                        ...(item.lot_name && {
+                            lot_name: item.lot_name,
+                        }),
+                    }));
                     return filterEmptyFields({
                         name,
                         barcode: item.barcode,
                         masku: item.masku,
                         price_sold: Number(item.price_sold),
                         price_compare: Number(item.price_compare),
-                        detail_import: detailImport,
+                        detail_import: newDetailImport,
                         image: uploadImage[index],
                         variant_combinations:
                             modalCreateProductStore.skuCustomData

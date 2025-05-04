@@ -28,11 +28,7 @@ export type orderData = {
     order_detail?: any;
     confirm_order_data?: ExportOrder;
 };
-export default class OrderObservable implements MessageStore {
-    status: number | null = null;
-    errorMsg: string | null = null;
-    successMsg: string | null = null;
-    showSuccessMsg: boolean = false;
+export default class OrderObservable {
     rootStore: RootStore;
     data: orderData = {
         orders: [],
@@ -59,24 +55,8 @@ export default class OrderObservable implements MessageStore {
     loading: boolean = false;
     isOpenDetail: boolean = false;
     constructor(rootStore: RootStore) {
-        makeAutoObservable(this);
+        makeAutoObservable(this, {}, { autoBind: true });
         this.rootStore = rootStore;
-        this.setGlobalFilters = this.setGlobalFilters.bind(this);
-        this.setPagination = this.setPagination.bind(this);
-        this.getListOrder = this.getListOrder.bind(this);
-        this.getOrderDetail = this.getOrderDetail.bind(this);
-        this.getOrderStatus = this.getOrderStatus.bind(this);
-        this.clearMessage = this.clearMessage.bind(this);
-        this.setOrderDetail = this.setOrderDetail.bind(this);
-        this.setOpenDetail = this.setOpenDetail.bind(this);
-        this.setOrderStatusSelected = this.setOrderStatusSelected.bind(this);
-        this.setOrderSelected = this.setOrderSelected.bind(this);
-        this.updateOrderStatus = this.updateOrderStatus.bind(this);
-        this.cancelOrder = this.cancelOrder.bind(this);
-        this.failedDelivery = this.failedDelivery.bind(this);
-        this.returnOrder = this.returnOrder.bind(this);
-        this.setStatusMessage = this.setStatusMessage.bind(this);
-        this.confirmOrder = this.confirmOrder.bind(this);
     }
 
     private validateQuery(query?: string | object): string {
@@ -142,18 +122,18 @@ export default class OrderObservable implements MessageStore {
             const success_status = [200, 201, 204];
             if (success_status.includes(status)) {
                 this.data.orders = data.orders;
-                this.status = status;
-                this.successMsg = message;
+                this.rootStore.status = status;
+                this.rootStore.successMsg = message;
             } else {
-                this.status = status;
-                this.errorMsg = Array.isArray(message)
-                    ? message.join(", ")
+                this.rootStore.status = status;
+                this.rootStore.errorMsg = Array.isArray(message)
+                    ? message[0]
                     : message;
             }
         } catch (e: any) {
             console.error(e);
-            this.status = 500;
-            this.errorMsg = e?.message || "Lỗi không xác định";
+            this.rootStore.status = 500;
+            this.rootStore.errorMsg = e?.message || "Lỗi không xác định";
         } finally {
             this.loading = false;
         }
@@ -172,16 +152,16 @@ export default class OrderObservable implements MessageStore {
                     },
                     ...data,
                 ];
-                this.status = status;
-                this.successMsg = message;
+                this.rootStore.status = status;
+                this.rootStore.successMsg = message;
             } else {
-                this.status = status;
-                this.errorMsg = message;
+                this.rootStore.status = status;
+                this.rootStore.errorMsg = message;
             }
         } catch (e: any) {
             console.error(e);
-            this.status = 500;
-            this.errorMsg = e?.message || "Lỗi không xác định";
+            this.rootStore.status = 500;
+            this.rootStore.errorMsg = e?.message || "Lỗi không xác định";
         }
     }
 
@@ -192,16 +172,16 @@ export default class OrderObservable implements MessageStore {
             const success_status = [200, 201, 204];
             if (success_status.includes(status)) {
                 this.data.order_detail = data;
-                this.status = status;
-                this.successMsg = message;
+                this.rootStore.status = status;
+                this.rootStore.successMsg = message;
             } else {
-                this.status = status;
-                this.errorMsg = message;
+                this.rootStore.status = status;
+                this.rootStore.errorMsg = message;
             }
         } catch (e: any) {
             console.error(e);
-            this.status = 500;
-            this.errorMsg = e?.message || "Lỗi không xác định";
+            this.rootStore.status = 500;
+            this.rootStore.errorMsg = e?.message || "Lỗi không xác định";
         }
     }
 
@@ -215,17 +195,17 @@ export default class OrderObservable implements MessageStore {
             if (success_status.includes(status)) {
                 yield this.getListOrder();
                 yield this.getOrderDetail(id);
-                this.status = status;
-                this.successMsg = message;
-                this.showSuccessMsg = true;
+                this.rootStore.status = status;
+                this.rootStore.successMsg = message;
+                this.rootStore.showSuccessMsg = true;
             } else {
-                this.status = status;
-                this.errorMsg = message;
+                this.rootStore.status = status;
+                this.rootStore.errorMsg = message;
             }
         } catch (e: any) {
             console.error(e);
-            this.status = 500;
-            this.errorMsg = e?.message || "Lỗi không xác định";
+            this.rootStore.status = 500;
+            this.rootStore.errorMsg = e?.message || "Lỗi không xác định";
         } finally {
             this.loading = false;
         }
@@ -243,17 +223,17 @@ export default class OrderObservable implements MessageStore {
             if (success_status.includes(status)) {
                 yield this.getListOrder();
                 yield this.getOrderDetail(id);
-                this.status = status;
-                this.successMsg = message;
-                this.showSuccessMsg = true;
+                this.rootStore.status = status;
+                this.rootStore.successMsg = message;
+                this.rootStore.showSuccessMsg = true;
             } else {
-                this.status = status;
-                this.errorMsg = message;
+                this.rootStore.status = status;
+                this.rootStore.errorMsg = message;
             }
         } catch (e: any) {
             console.error(e);
-            this.status = 500;
-            this.errorMsg = e?.message || "Lỗi không xác định";
+            this.rootStore.status = 500;
+            this.rootStore.errorMsg = e?.message || "Lỗi không xác định";
         } finally {
             this.loading = false;
         }
@@ -271,17 +251,17 @@ export default class OrderObservable implements MessageStore {
             if (success_status.includes(status)) {
                 yield this.getListOrder();
                 yield this.getOrderDetail(id);
-                this.status = status;
-                this.successMsg = message;
-                this.showSuccessMsg = true;
+                this.rootStore.status = status;
+                this.rootStore.successMsg = message;
+                this.rootStore.showSuccessMsg = true;
             } else {
-                this.status = status;
-                this.errorMsg = message;
+                this.rootStore.status = status;
+                this.rootStore.errorMsg = message;
             }
         } catch (e: any) {
             console.error(e);
-            this.status = 500;
-            this.errorMsg = e?.message || "Lỗi không xác định";
+            this.rootStore.status = 500;
+            this.rootStore.errorMsg = e?.message || "Lỗi không xác định";
         } finally {
             this.loading = false;
         }
@@ -299,17 +279,17 @@ export default class OrderObservable implements MessageStore {
             if (success_status.includes(status)) {
                 yield this.getListOrder();
                 yield this.getOrderDetail(id);
-                this.status = status;
-                this.successMsg = message;
-                this.showSuccessMsg = true;
+                this.rootStore.status = status;
+                this.rootStore.successMsg = message;
+                this.rootStore.showSuccessMsg = true;
             } else {
-                this.status = status;
-                this.errorMsg = message;
+                this.rootStore.status = status;
+                this.rootStore.errorMsg = message;
             }
         } catch (e: any) {
             console.error(e);
-            this.status = 500;
-            this.errorMsg = e?.message || "Lỗi không xác định";
+            this.rootStore.status = 500;
+            this.rootStore.errorMsg = e?.message || "Lỗi không xác định";
         } finally {
             this.loading = false;
         }
@@ -323,45 +303,21 @@ export default class OrderObservable implements MessageStore {
             if (success_status.includes(status)) {
                 yield this.getListOrder();
                 yield this.getOrderDetail(data.order_id);
-                this.status = status;
-                this.successMsg = message;
-                this.showSuccessMsg = true;
+                this.rootStore.status = status;
+                this.rootStore.successMsg = message;
+                this.rootStore.showSuccessMsg = true;
+                return true;
             } else {
-                this.status = status;
-                this.errorMsg = message;
-                this.showSuccessMsg = false;
+                this.rootStore.status = status;
+                this.rootStore.errorMsg = message;
+                this.rootStore.showSuccessMsg = false;
+                return false;
             }
         } catch (e: any) {
             console.error(e);
-            this.status = 500;
-            this.errorMsg = e?.message || "Lỗi không xác định";
-        }
-    }
-
-    clearMessage() {
-        this.showSuccessMsg = false;
-        this.status = null;
-        this.errorMsg = null;
-        this.successMsg = null;
-    }
-
-    setStatusMessage(
-        status?: number,
-        errorMsg?: string,
-        successMsg?: string,
-        showSuccessMsg?: boolean
-    ) {
-        if (showSuccessMsg) {
-            this.showSuccessMsg = showSuccessMsg;
-        }
-        if (status) {
-            this.status = status;
-        }
-        if (errorMsg) {
-            this.errorMsg = errorMsg;
-        }
-        if (successMsg) {
-            this.successMsg = successMsg;
+            this.rootStore.status = 500;
+            this.rootStore.errorMsg = e?.message || "Lỗi không xác định";
+            return false;
         }
     }
 

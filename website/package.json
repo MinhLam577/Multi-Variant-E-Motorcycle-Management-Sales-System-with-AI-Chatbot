@@ -1,4 +1,74 @@
 {
+<<<<<<< HEAD
+  "name": "autohongson",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "generate:api": "npx orval --config ./orval.config.ts",
+    "generate:abi": "",
+    "generate": "npm run generate:api && npm run generate:abi",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^8.0.2",
+    "@hookform/resolvers": "^5.0.1",
+    "@popperjs/core": "^2.11.7",
+    "antd": "^5.24.7",
+    "aos": "^2.3.4",
+    "autohongson": "file:",
+    "axios": "^1.8.3",
+    "bootstrap": "^5.2.3",
+    "chart.js": "^4.3.0",
+    "dayjs": "^1.11.13",
+    "dotenv": "^16.4.7",
+    "eslint": "8.41.0",
+    "eslint-config-next": "^14.1.0",
+    "js-base64": "^3.7.7",
+    "lodash": "^4.17.21",
+    "mobx": "^6.13.7",
+    "mobx-react-lite": "^4.1.0",
+    "moment": "^2.30.1",
+    "next": "^14.1.0",
+    "photoswipe": "^5.3.7",
+    "prop-types": "^15.8.1",
+    "react": "^18.2.0",
+    "react-chartjs-2": "^5.2.0",
+    "react-countup": "^6.4.2",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.56.1",
+    "react-input-range": "^1.3.0",
+    "react-intersection-observer": "^9.4.3",
+    "react-modal-video": "^2.0.0",
+    "react-photoswipe-gallery": "^2.2.7",
+    "react-pro-sidebar": "^1.1.0",
+    "react-router-dom": "^7.5.3",
+    "react-secure-storage": "^1.3.2",
+    "react-tabs": "^6.0.1",
+    "sass": "^1.62.1",
+    "styled-components": "^6.0.0-rc.1",
+    "swiper": "^9.2.4",
+    "tailwind-merge": "^3.0.2",
+    "yup": "^1.6.1"
+  },
+  "devDependencies": {
+    "@babel/core": "7.0.0",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "autoprefixer": "^10.4.21",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.16",
+    "eslint-plugin-jsx-a11y": "6.5.1",
+    "eslint-plugin-react": "7.28.0",
+    "eslint-plugin-react-hooks": "4.3.0",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5"
+  }
+=======
     "name": "autohongson",
     "version": "1.0.0",
     "private": true,
@@ -53,4 +123,5 @@
         "tailwindcss": "^3.4.1",
         "typescript": "^5"
     }
+>>>>>>> 5a89b1d563a8f342c5d034a075c2955e40431f66
 }

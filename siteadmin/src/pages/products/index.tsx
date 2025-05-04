@@ -92,8 +92,6 @@ export const generateRandomString = (length: number): string => {
 };
 
 const Products = () => {
-    const [messageApi, contextHolder] = message.useMessage();
-    const navigate = useNavigate();
     const store = useStore();
     const productStore = store.productObservable;
     const categoriesStore = store.categoriesObservable;
@@ -171,27 +169,6 @@ const Products = () => {
                 ? getCategoriesTreeSelect(item.children)
                 : [],
         }));
-
-    // Bắt sự kiện khi status thay đổi để hiện thông báo
-    useEffect(() => {
-        const productStatusReaction = reaction(
-            () => ({
-                status: store.status,
-                showSuccessMsg: store.showSuccessMsg,
-                errorMsg: store.errorMsg,
-                successMsg: store.successMsg,
-            }),
-            (current_status) => {
-                if (!current_status) return;
-                const { status: newStatus, showSuccessMsg: newShowSuccess } =
-                    current_status || {};
-                displayMessage(messageApi, newStatus, store, newShowSuccess, 5);
-            }
-        );
-        return () => {
-            productStatusReaction();
-        };
-    }, []);
 
     // Bắt sự kiện khi có sự thay đổi trong globalFilter
     useEffect(() => {
@@ -537,79 +514,102 @@ const Products = () => {
     };
     return (
         <section className="w-full">
-            {contextHolder}
             <ProductHeader
                 onCreateNew={handleCreateNewProduct}
                 className="animate-slideDown"
             />
-            <div className="w-full flex flex-col gap-4 bg-[var(--content-table-background-color)] rounded-md px-4 my-6 animate-slideUp">
+            <div className="w-full flex flex-col gap-4 bg-[var(--content-table-background-color)] rounded-md px-4 pb-4 my-6 animate-slideUp">
                 <CustomizeTab
                     items={[
                         {
                             key: "1",
                             label: "Tất cả sản phẩm",
+                            children: (
+                                <>
+                                    <div className="w-full mt-2">
+                                        <ProductsSearch
+                                            form={productSearchForm}
+                                            categorySelectData={getCategoriesTreeSelect(
+                                                categoriesStore.data
+                                            )}
+                                            brandSelectData={getSelectOption(
+                                                brandStore.data
+                                            )}
+                                        />
+                                    </div>
+                                    <ModalCreateProduct
+                                        key={"modal-create-product"}
+                                        isOpen={isOpenCreateProductModal}
+                                        onClose={handleCloseCreateProductModal}
+                                        onSave={handleSaveCreateProductModal}
+                                        loadingData={fetchOnlyProducts}
+                                        okText="Tạo mới"
+                                        cancelText="Hủy"
+                                        form={createProductForm}
+                                        subForm={subCreateProductForm}
+                                        categorySelectData={getCategoriesTreeSelect(
+                                            categoriesStore.data
+                                        )}
+                                        brandSelectData={getSelectOption(
+                                            brandStore.data
+                                        )}
+                                        warehouseSelectData={getSelectOption(
+                                            warehouseStore.data
+                                        )}
+                                        optionSelectData={getSelectOption(
+                                            optionStore.data
+                                        )}
+                                        formInitialValues={{
+                                            price_import: 0,
+                                            price_sold: 0,
+                                            price_compare: 0,
+                                        }}
+                                        messageWhenSave="Tạo mới sản phẩm thành công"
+                                    />
+
+                                    <ModalUpdateProduct
+                                        key={"modal-update-product"}
+                                        isOpen={isOpenUpdateProductModal}
+                                        onClose={handleCloseUpdateProductModal}
+                                        onSave={handleSaveUpdateProductModal}
+                                        loadingData={fetchOnlyProducts}
+                                        okText="Cập nhật"
+                                        cancelText="Hủy"
+                                        form={updateProductForm}
+                                        subForm={subUpdateProductForm}
+                                        categorySelectData={getCategoriesTreeSelect(
+                                            categoriesStore.data
+                                        )}
+                                        brandSelectData={getSelectOption(
+                                            brandStore.data
+                                        )}
+                                        warehouseSelectData={getSelectOption(
+                                            warehouseStore.data
+                                        )}
+                                        optionSelectData={getSelectOption(
+                                            optionStore.data
+                                        )}
+                                        productId={productId}
+                                        initialData={initialData}
+                                        messageWhenSave="Cập nhật sản phẩm thành công"
+                                    />
+
+                                    <ProductsTable
+                                        data={filterData}
+                                        handleDeleteProducts={
+                                            handleDeleteProducts
+                                        }
+                                        handleRestoreProducts={
+                                            handleRestoreProducts
+                                        }
+                                        handleViewOrUpdateProduct={
+                                            handleViewOrUpdateProduct
+                                        }
+                                    />
+                                </>
+                            ),
                         },
                     ]}
-                />
-                <div className="w-full">
-                    <ProductsSearch
-                        form={productSearchForm}
-                        categorySelectData={getCategoriesTreeSelect(
-                            categoriesStore.data
-                        )}
-                        brandSelectData={getSelectOption(brandStore.data)}
-                    />
-                </div>
-                <ModalCreateProduct
-                    key={"modal-create-product"}
-                    isOpen={isOpenCreateProductModal}
-                    onClose={handleCloseCreateProductModal}
-                    onSave={handleSaveCreateProductModal}
-                    loadingData={fetchOnlyProducts}
-                    okText="Tạo mới"
-                    cancelText="Hủy"
-                    form={createProductForm}
-                    subForm={subCreateProductForm}
-                    categorySelectData={getCategoriesTreeSelect(
-                        categoriesStore.data
-                    )}
-                    brandSelectData={getSelectOption(brandStore.data)}
-                    warehouseSelectData={getSelectOption(warehouseStore.data)}
-                    optionSelectData={getSelectOption(optionStore.data)}
-                    formInitialValues={{
-                        price_import: 0,
-                        price_sold: 0,
-                        price_compare: 0,
-                    }}
-                    messageWhenSave="Tạo mới sản phẩm thành công"
-                />
-
-                <ModalUpdateProduct
-                    key={"modal-update-product"}
-                    isOpen={isOpenUpdateProductModal}
-                    onClose={handleCloseUpdateProductModal}
-                    onSave={handleSaveUpdateProductModal}
-                    loadingData={fetchOnlyProducts}
-                    okText="Cập nhật"
-                    cancelText="Hủy"
-                    form={updateProductForm}
-                    subForm={subUpdateProductForm}
-                    categorySelectData={getCategoriesTreeSelect(
-                        categoriesStore.data
-                    )}
-                    brandSelectData={getSelectOption(brandStore.data)}
-                    warehouseSelectData={getSelectOption(warehouseStore.data)}
-                    optionSelectData={getSelectOption(optionStore.data)}
-                    productId={productId}
-                    initialData={initialData}
-                    messageWhenSave="Cập nhật sản phẩm thành công"
-                />
-
-                <ProductsTable
-                    data={filterData}
-                    handleDeleteProducts={handleDeleteProducts}
-                    handleRestoreProducts={handleRestoreProducts}
-                    handleViewOrUpdateProduct={handleViewOrUpdateProduct}
                 />
             </div>
         </section>

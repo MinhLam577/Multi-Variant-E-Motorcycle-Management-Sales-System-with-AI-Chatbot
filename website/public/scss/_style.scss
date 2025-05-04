@@ -21153,11 +21153,11 @@ canvas {
 }
 .shopping_cart_table table.table {
   border-radius: 8px;
-  overflow: hidden;
+  // overflow: hidden;
 }
 .shopping_cart_table thead.thead-dark {
-  background-color: #0a2357;
-  color: #fff;
+   background-color: #0a2357;
+  // color: #fff;
 }
 .shopping_cart_table thead tr {
   border-radius: 8px;
@@ -21178,7 +21178,7 @@ canvas {
   height: 160px;
 }
 .shopping_cart_table .table tbody.table_body tr {
-  background-color: #fff;
+ // background-color: #fff;
   border: 1px solid #eaeaea;
   border-radius: 8px;
 }

@@ -1,9 +1,10 @@
 import {
-  CloseOutlined,
-  EditOutlined,
-  EyeOutlined,
-  PlusOutlined,
-  SaveOutlined,
+    CloseOutlined,
+    EditOutlined,
+    EyeOutlined,
+    PlusCircleOutlined,
+    PlusOutlined,
+    SaveOutlined,
 } from "@ant-design/icons";
 import { Button, Card, Divider, Form, Input, message } from "antd";
 import PropTypes from "prop-types";
@@ -13,12 +14,10 @@ import {
     ProcessModalName,
     processWithModals,
 } from "../../containers/processWithModals";
-import RichTextEditor from "../../containers/RichTextEditor";
-import UploadSinglePictureGetUrl, {
-    UploadSinglePictureGetUrlRemoteMode,
-} from "../../containers/UploadSinglePictureGetUrl";
 import apiClient from "../../api/apiClient";
 import endpoints from "../../api/endpoints.ts";
+import AdminBreadCrumb from "../../components/common/AdminBreadCrumb.tsx";
+import { getBreadcrumbItems } from "../../containers/layout/index.tsx";
 
 export const NewsDetailMode = {
     View: 1,
@@ -38,7 +37,6 @@ const formItemLayout = {
 const CategoriesNewsDetail = ({ mode }) => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const [fileList, setFileList] = useState([]);
 
     const [form] = Form.useForm();
 
@@ -105,27 +103,27 @@ const CategoriesNewsDetail = ({ mode }) => {
         }
     };
 
-  const getButtonEditText = () => {
-    if (mode === NewsDetailMode.View) {
-      return (
-        <>
-          <EditOutlined />
-          &nbsp;Sửa
-        </>
-      );
-    }
-  };
+    const getButtonEditText = () => {
+        if (mode === NewsDetailMode.View) {
+            return (
+                <>
+                    <EditOutlined />
+                    &nbsp;Sửa
+                </>
+            );
+        }
+    };
 
-  const getButtonViewBlogText = () => {
-    if (mode === NewsDetailMode.View) {
-      return (
-        <>
-          <EyeOutlined />
-          &nbsp;Xem bài viết
-        </>
-      );
-    }
-  };
+    const getButtonViewBlogText = () => {
+        if (mode === NewsDetailMode.View) {
+            return (
+                <>
+                    <EyeOutlined />
+                    &nbsp;Xem bài viết
+                </>
+            );
+        }
+    };
 
     const prepareForm = (loadedData) => {
         if (mode === NewsDetailMode.View) {
@@ -170,15 +168,15 @@ const CategoriesNewsDetail = ({ mode }) => {
         }
     };
 
-  const handleEdit = () => {
-    if (mode === NewsDetailMode.View) {
-      navigate(`/categorynews/${id}/edit`, { replace: true });
-    }
-  };
+    const handleEdit = () => {
+        if (mode === NewsDetailMode.View) {
+            navigate(`/categorynews/${id}/edit`, { replace: true });
+        }
+    };
 
-  const handleViewBlog = () => {
-    navigate(`/categorynews/${id}/news`, { replace: true });
-  };
+    const handleViewBlog = () => {
+        navigate(`/categorynews/${id}/news`, { replace: true });
+    };
 
     const handleFormFinish = (values) => {
         const { id, ...createCategoriesBlog } = values;
@@ -233,91 +231,103 @@ const CategoriesNewsDetail = ({ mode }) => {
     };
 
     return (
-        <>
-            <Card title={getCardTitle()}>
-                <Form
-                    form={form}
-                    {...formItemLayout}
-                    layout={"vertical"}
-                    autoComplete="off"
-                    onFinish={handleFormFinish}
-                >
-                    <Form.Item name="id" hidden>
-                        <Input />
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Tên danh mục"
-                        name="name"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Hãy nhập tiêu đề tin tức!",
-                            },
-                        ]}
+        <section key={`${id} - ${mode}`}>
+            <div
+                className={`flex justify-between items-center animate-slideDown mb-6`}
+            >
+                <AdminBreadCrumb
+                    description="Thông tin chi tiết danh mục tin tức"
+                    items={getBreadcrumbItems(location.pathname)}
+                />
+            </div>
+            <div className="w-full animate-slideUp">
+                <Card title={getCardTitle()}>
+                    <Form
+                        form={form}
+                        {...formItemLayout}
+                        layout={"vertical"}
+                        autoComplete="off"
+                        onFinish={handleFormFinish}
                     >
-                        <Input
-                            readOnly={isReadOnly()}
-                            placeholder="Nhập Tiêu đề tin tức"
-                        />
-                    </Form.Item>
-
-                    <Form.Item
-                        label="slug"
-                        name="slug"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Hãy nhập slug của danh mục tin tức!",
-                            },
-                        ]}
-                    >
-                        <Input
-                            readOnly={isReadOnly()}
-                            placeholder="Nhập slug của danh mục  tin tức"
-                        />
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Tóm tắt"
-                        name="description"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Hãy nhập tóm tắt tin tức!",
-                            },
-                        ]}
-                    >
-                        <Input
-                            maxLength={255}
-                            readOnly={isReadOnly()}
-                            placeholder="Nhập Tóm tắt tin tức"
-                        />
-                    </Form.Item>
-
-          <>
-            <Button onClick={handleCancel}>{getButtonCancelText()}</Button>
-            {isReadOnly() ? (
-              <>
-                <Divider type="vertical" />
-                <Button onClick={handleEdit}>{getButtonEditText()}</Button>
-
-                <Divider type="vertical" />
-                <Button onClick={handleViewBlog}>
-                  {getButtonViewBlogText()}
-                </Button>
-              </>
-            ) : (
-              <>
-                <Divider type="vertical" />
-                <Button onClick={handleOk}>{getButtonOkText()}</Button>
-              </>
-            )}
-          </>
-        </Form>
-      </Card>
-    </>
-  );
+                        <Form.Item name="id" hidden>
+                            <Input />
+                        </Form.Item>
+                        <Form.Item
+                            label="Tên danh mục"
+                            name="name"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Hãy nhập tiêu đề tin tức!",
+                                },
+                            ]}
+                        >
+                            <Input
+                                readOnly={isReadOnly()}
+                                placeholder="Nhập Tiêu đề tin tức"
+                            />
+                        </Form.Item>
+                        <Form.Item
+                            label="slug"
+                            name="slug"
+                            rules={[
+                                {
+                                    required: true,
+                                    message:
+                                        "Hãy nhập slug của danh mục tin tức!",
+                                },
+                            ]}
+                        >
+                            <Input
+                                readOnly={isReadOnly()}
+                                placeholder="Nhập slug của danh mục  tin tức"
+                            />
+                        </Form.Item>
+                        <Form.Item
+                            label="Tóm tắt"
+                            name="description"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Hãy nhập tóm tắt tin tức!",
+                                },
+                            ]}
+                        >
+                            <Input
+                                maxLength={255}
+                                readOnly={isReadOnly()}
+                                placeholder="Nhập Tóm tắt tin tức"
+                            />
+                        </Form.Item>
+                        <div className="flex justify-end">
+                            <Button onClick={handleCancel}>
+                                {getButtonCancelText()}
+                            </Button>
+                            {isReadOnly() ? (
+                                <>
+                                    <Divider type="vertical" />
+                                    <Button onClick={handleEdit}>
+                                        {getButtonEditText()}
+                                    </Button>
+                                    <Divider type="vertical" />
+                                    <Button onClick={handleViewBlog}>
+                                        {getButtonViewBlogText()}
+                                    </Button>
+                                </>
+                            ) : (
+                                <>
+                                    <Divider type="vertical" />
+                                    <Button onClick={handleOk}>
+                                        {getButtonOkText()}
+                                    </Button>
+                                </>
+                            )}
+                        </div>
+                    </Form>
+                </Card>
+            </div>
+        </section>
+    );
 };
 
 CategoriesNewsDetail.propTypes = {

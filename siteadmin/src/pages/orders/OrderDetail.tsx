@@ -20,6 +20,7 @@ import ModalExportOrder from "src/components/orders/detail/ModalExportOrder";
 import OrderObservable from "../../stores/order.store";
 import SkusObservable from "../../stores/skus";
 import { CreateDetailExport, ExportOrder } from "src/api/order.api";
+import { useStore } from "src/stores";
 export const OrderDetailMode = {
     View: 1,
     Edit: 2,
@@ -47,7 +48,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
     handleReturnOrder,
 }) => {
     const elementPrintOrder = useRef<HTMLDivElement | null>(null);
-
+    const store = useStore();
     //  In bill
     const onPrint = useReactToPrint({
         content: () => elementPrintOrder.current,
@@ -171,12 +172,11 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
             console.error(e);
             set_current_status(EnumOrderStatusesValue.PENDING);
             setIsError(true);
-            order_store.setStatusMessage(
+            store.setStatusMessage(
                 500,
                 e?.message || "Lỗi khi cập nhật trạng thái đơn hàng",
                 ""
             );
-            
         }
     };
 
@@ -231,20 +231,18 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
     const handleSaveExportOrderModal = async (
         orderExport: CreateDetailExport[],
         note: string
-    ): Promise<boolean> => {
+    ) => {
         try {
             const data: ExportOrder = {
                 order_id: orderDetail.id,
                 detail_export: orderExport,
                 note: note,
             };
-            await order_store.confirmOrder(data);
-            const status = order_store.status;
-            const success_status = [200, 201, 204];
-            return success_status.includes(status);
+            const res = await order_store.confirmOrder(data);
+            return res;
         } catch (e: any) {
             console.error(e);
-            order_store.setStatusMessage(
+            store.setStatusMessage(
                 500,
                 e?.message || "Lỗi khi xác nhận và lưu xuất đơn hàng",
                 ""
@@ -303,7 +301,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
                                     ) {
                                         set_open_export_order(true);
                                     } else {
-                                        order_store.setStatusMessage(
+                                        store.setStatusMessage(
                                             400,
                                             "Chỉ có thể xác nhận khi đơn hàng đang ở trạng thái chờ xử lí",
                                             ""

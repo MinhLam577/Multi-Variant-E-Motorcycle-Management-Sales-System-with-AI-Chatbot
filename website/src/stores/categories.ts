@@ -1,15 +1,15 @@
 import { makeAutoObservable, toJS } from "mobx";
-
+import { convertDate } from "../constants";
 import { DateTimeFormat } from "../constants";
 import OrderAPI, { ExportOrder, ResponsePromise } from "../api/order";
 import { RootStore } from "./base";
-import voucherApi from "../api/voucher";
+import { getAllCategory } from "../api/categories";
 
 export type OrderStatus = {
   key?: string;
 };
 
-export type globalFiltersData = {
+export type globalFiltersDataOrder = {
   search?: string;
   sortOrder?: string;
   sortBy?: string;
@@ -18,10 +18,6 @@ export type globalFiltersData = {
   payment_method?: string;
   created_from?: string;
   created_to?: string;
-};
-export type TypeVoucher = {
-  id: string;
-  name_type_voucher: string;
 };
 
 export type paginationData = {
@@ -36,39 +32,24 @@ export type orderData = {
   order_selected?: string;
   order_detail?: any;
   confirm_order_data?: ExportOrder;
+  categories: [];
 };
-interface Voucher {
-  id: string;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-  voucher_code: string;
-  voucher_name: string;
-  description: string;
-  uses: number;
-  limit: number;
-  max_uses_user: number;
-  discount_amount: string;
-  fixed: boolean;
-  status: string;
-  start_date: string;
-  end_date: string;
-  count_user_get: number;
-}
-export default class VoucherObservable {
+export default class CategoryObservable {
   status: number | null = null;
   errorMsg: string | null = null;
   successMsg: string | null = null;
   showSuccessMsg: boolean = false;
   rootStore: RootStore;
-  data: Voucher[] = null;
-  dataUser = null;
-  typeVoucher: TypeVoucher[] = [];
-  dataDetail: Voucher[] = [];
-  dataListCustomer_no_voucher = [];
-  idVoucher: string = "";
-
-  globalFilters: globalFiltersData = {
+  data: orderData = {
+    orders: [],
+    categories: [],
+    order_status: [],
+    order_status_selected: null,
+    order_selected: null,
+    order_detail: null,
+    confirm_order_data: null,
+  };
+  globalFilters: globalFiltersDataOrder = {
     search: null,
     sortOrder: null,
     sortBy: null,
@@ -86,28 +67,84 @@ export default class VoucherObservable {
   isOpenDetail: boolean = false;
   constructor(rootStore: RootStore) {
     makeAutoObservable(this);
-
     this.rootStore = rootStore;
     this.setGlobalFilters = this.setGlobalFilters.bind(this);
     this.setPagination = this.setPagination.bind(this);
-    this.getListVoucher = this.getListVoucher.bind(this);
-    this.getVoucherDetail = this.getVoucherDetail.bind(this);
-    this.getListCustomer_no_voucher =
-      this.getListCustomer_no_voucher.bind(this);
-    this.deleteVoucherByID = this.deleteVoucherByID.bind(this);
-    this.getListTypeVoucher = this.getListTypeVoucher.bind(this);
-    this.createVoucher = this.createVoucher.bind(this);
+    this.getListOrder = this.getListOrder.bind(this);
+    this.getOrderDetail = this.getOrderDetail.bind(this);
+    this.getOrderStatus = this.getOrderStatus.bind(this);
+    this.clearMessage = this.clearMessage.bind(this);
+    this.setOrderDetail = this.setOrderDetail.bind(this);
+    this.setOpenDetail = this.setOpenDetail.bind(this);
+    this.setOrderStatusSelected = this.setOrderStatusSelected.bind(this);
+    this.setOrderSelected = this.setOrderSelected.bind(this);
+    this.updateOrderStatus = this.updateOrderStatus.bind(this);
+    this.cancelOrder = this.cancelOrder.bind(this);
+    this.failedDelivery = this.failedDelivery.bind(this);
+    this.returnOrder = this.returnOrder.bind(this);
+    this.setStatusMessage = this.setStatusMessage.bind(this);
+    this.confirmOrder = this.confirmOrder.bind(this);
   }
 
-  *getListVoucher() {
+  private validateQuery(query?: string | object): string {
+    // Xử lý chuyển đổi query string thành object
+    let parsedQuery: globalFiltersDataOrder & paginationData = {
+      ...(typeof query === "string"
+        ? Object.fromEntries(new URLSearchParams(query.trim()))
+        : query),
+      current: Number(this.pagination.current),
+      pageSize: Number(this.pagination.pageSize),
+    };
+
+    // Gộp filters và xử lý dữ liệu
+    const filters: paginationData & globalFiltersDataOrder = {
+      ...this.globalFilters,
+      ...this.pagination,
+      ...parsedQuery,
+      created_from: parsedQuery?.created_from
+        ? convertDate(
+            parsedQuery.created_from,
+            DateTimeFormat.TIME_STAMP_POSTGRES
+          )
+        : undefined,
+      created_to: parsedQuery?.created_to
+        ? convertDate(
+            parsedQuery.created_to,
+            DateTimeFormat.TIME_STAMP_POSTGRES
+          )
+        : undefined,
+      search: parsedQuery?.search?.trim(),
+    };
+
+    // Xóa các key có giá trị null, undefined hoặc ""
+    Object.keys(filters).forEach((key) => {
+      if (
+        filters[key] === null ||
+        filters[key] === undefined ||
+        filters[key] === ""
+      )
+        delete filters[key];
+    });
+
+    // Tạo query string
+    const queryString = new URLSearchParams(
+      Object.fromEntries(
+        Object.entries(filters).map(([key, value]) => [key, String(value)])
+      )
+    ).toString();
+    return queryString;
+  }
+
+  *getListOrder() {
     try {
       this.loading = true;
-      const response = yield voucherApi.getList();
 
+      const response: ResponsePromise = yield getAllCategory();
+      console.log(response);
       const { data, status, message } = response;
       const success_status = [200, 201, 204];
       if (success_status.includes(status)) {
-        this.data = data;
+        this.data.categories = data;
         this.status = status;
         this.successMsg = message;
       } else {
@@ -123,104 +160,19 @@ export default class VoucherObservable {
     }
   }
 
-  *getListCustomer_no_voucher() {
+  *getOrderStatus() {
     try {
-      this.loading = true;
-      const response = yield voucherApi.getListCustomer_no_Voucher(
-        this.idVoucher
-      );
+      const response: ResponsePromise = yield OrderAPI.getOrderStatus();
       const { data, status, message } = response;
       const success_status = [200, 201, 204];
       if (success_status.includes(status)) {
-        this.dataListCustomer_no_voucher = data;
-      } else {
-        this.errorMsg = Array.isArray(message) ? message.join(", ") : message;
-      }
-    } catch (e: any) {
-      console.error(e);
-      this.status = 500;
-      this.errorMsg = e?.message || "Lỗi không xác định";
-    } finally {
-      this.loading = false;
-    }
-  }
-  // cập nhật id
-  *setID_ListCustomer_no_voucher(id) {
-    try {
-      this.idVoucher = id;
-      // lấy ra danh sách customer no voucher theo id voucher
-      const response = yield voucherApi.getListCustomer_no_Voucher(id);
-      console.log(response);
-      const { data, status, message } = response;
-      const success_status = [200, 201, 204];
-      if (success_status.includes(status)) {
-        this.dataListCustomer_no_voucher = data;
-      } else {
-        this.errorMsg = Array.isArray(message) ? message.join(", ") : message;
-      }
-    } catch (e: any) {
-      console.error(e);
-      this.status = 500;
-      this.errorMsg = e?.message || "Lỗi không xác định";
-    } finally {
-      this.loading = false;
-    }
-  }
-
-  *getVoucherDetail(id: string) {
-    try {
-      this.idVoucher = id;
-      const response: ResponsePromise = yield voucherApi.getById(id);
-      console.log(response);
-      const { data, status, message } = response;
-      const success_status = [200, 201, 204];
-      if (success_status.includes(status)) {
-        this.dataDetail = data;
-      } else {
-        this.status = status;
-        this.errorMsg = message;
-      }
-    } catch (e: any) {
-      console.error(e);
-      this.status = 500;
-      this.errorMsg = e?.message || "Lỗi không xác định";
-    }
-  }
-
-  // danh sách voucher
-
-  *getListTypeVoucher() {
-    try {
-      this.loading = true;
-      const response = yield voucherApi.getListTypeVoucher();
-      console.log(response);
-      const { data, status, message } = response;
-      const success_status = [200, 201, 204];
-      if (success_status.includes(status)) {
-        this.typeVoucher = data;
-      } else {
-        this.status = status;
-        this.errorMsg = Array.isArray(message) ? message.join(", ") : message;
-      }
-    } catch (e: any) {
-      console.error(e);
-      this.status = 500;
-      this.errorMsg = e?.message || "Lỗi không xác định";
-    } finally {
-      this.loading = false;
-    }
-  }
-  // * : generator function
-  *deleteVoucherByID(id: string) {
-    try {
-      // gọi một hàm bất đồng bộ (API)
-      const response: ResponsePromise = yield voucherApi.delete(id);
-      const { data, status, message } = response;
-      console.log(response);
-      const success_status = [200, 201, 204];
-      if (success_status.includes(status)) {
-        // ✅ Gọi lại API để refresh data
-        yield this.getListVoucher();
+        this.data.order_status = [
+          {
+            key: "All",
+            value: null,
+          },
+          ...data,
+        ];
         this.status = status;
         this.successMsg = message;
       } else {
@@ -234,16 +186,13 @@ export default class VoucherObservable {
     }
   }
 
-  *createVoucher(body: any) {
+  *getOrderDetail(id: string) {
     try {
-      // gọi một hàm bất đồng bộ (API)
-      const response: ResponsePromise = yield voucherApi.create(body);
+      const response: ResponsePromise = yield OrderAPI.getOrderDetail(id);
       const { data, status, message } = response;
-      console.log(response);
       const success_status = [200, 201, 204];
       if (success_status.includes(status)) {
-        // ✅ Gọi lại API để refresh data
-        yield this.getListVoucher();
+        this.data.order_detail = data;
         this.status = status;
         this.successMsg = message;
       } else {
@@ -257,20 +206,18 @@ export default class VoucherObservable {
     }
   }
 
-  *createVoucher_give_Customer(id: string, body: any) {
+  *updateOrderStatus(id: string) {
     try {
-      // gọi một hàm bất đồng bộ (API)
-      const response: ResponsePromise = yield voucherApi.give_customer_voucher(
-        id,
-        body
-      );
+      this.loading = true;
+      const response: ResponsePromise = yield OrderAPI.updateOrderStatus(id);
       const { status, message } = response;
-      console.log(response);
       const success_status = [200, 201, 204];
       if (success_status.includes(status)) {
-        yield this.setID_ListCustomer_no_voucher(id);
+        yield this.getListOrder();
+        yield this.getOrderDetail(id);
         this.status = status;
         this.successMsg = message;
+        this.showSuccessMsg = true;
       } else {
         this.status = status;
         this.errorMsg = message;
@@ -279,23 +226,101 @@ export default class VoucherObservable {
       console.error(e);
       this.status = 500;
       this.errorMsg = e?.message || "Lỗi không xác định";
+    } finally {
+      this.loading = false;
     }
   }
-  *editVoucher(id: string, body: any) {
+
+  *cancelOrder(id: string, reason?: string) {
     try {
-      // gọi một hàm bất đồng bộ (API)
-      const response = yield voucherApi.update(id, body);
+      this.loading = true;
+      let response: ResponsePromise = yield OrderAPI.cancelOrder(id, reason);
       const { status, message } = response;
-      console.log(response);
       const success_status = [200, 201, 204];
       if (success_status.includes(status)) {
-        // ✅ Gọi lại API để refresh data
-        yield this.getListVoucher();
+        yield this.getListOrder();
+        yield this.getOrderDetail(id);
         this.status = status;
         this.successMsg = message;
+        this.showSuccessMsg = true;
       } else {
         this.status = status;
         this.errorMsg = message;
+      }
+    } catch (e: any) {
+      console.error(e);
+      this.status = 500;
+      this.errorMsg = e?.message || "Lỗi không xác định";
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  *failedDelivery(id: string, reason?: string) {
+    try {
+      this.loading = true;
+      let response: ResponsePromise = yield OrderAPI.failedDelivery(id, reason);
+      const { status, message } = response;
+      const success_status = [200, 201, 204];
+      if (success_status.includes(status)) {
+        yield this.getListOrder();
+        yield this.getOrderDetail(id);
+        this.status = status;
+        this.successMsg = message;
+        this.showSuccessMsg = true;
+      } else {
+        this.status = status;
+        this.errorMsg = message;
+      }
+    } catch (e: any) {
+      console.error(e);
+      this.status = 500;
+      this.errorMsg = e?.message || "Lỗi không xác định";
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  *returnOrder(id: string, reason?: string) {
+    try {
+      this.loading = true;
+      let response: ResponsePromise = yield OrderAPI.returnOrder(id, reason);
+      const { status, message } = response;
+      const success_status = [200, 201, 204];
+      if (success_status.includes(status)) {
+        yield this.getListOrder();
+        yield this.getOrderDetail(id);
+        this.status = status;
+        this.successMsg = message;
+        this.showSuccessMsg = true;
+      } else {
+        this.status = status;
+        this.errorMsg = message;
+      }
+    } catch (e: any) {
+      console.error(e);
+      this.status = 500;
+      this.errorMsg = e?.message || "Lỗi không xác định";
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  *confirmOrder(data: ExportOrder) {
+    try {
+      const response: ResponsePromise = yield OrderAPI.confirmOrder(data);
+      const { status, message } = response;
+      const success_status = [200, 201, 204];
+      if (success_status.includes(status)) {
+        yield this.getListOrder();
+        yield this.getOrderDetail(data.order_id);
+        this.status = status;
+        this.successMsg = message;
+        this.showSuccessMsg = true;
+      } else {
+        this.status = status;
+        this.errorMsg = message;
+        this.showSuccessMsg = false;
       }
     } catch (e: any) {
       console.error(e);
@@ -331,7 +356,7 @@ export default class VoucherObservable {
     }
   }
 
-  setGlobalFilters(filters: globalFiltersData) {
+  setGlobalFilters(filters: globalFiltersDataOrder) {
     this.globalFilters = {
       ...this.globalFilters,
       ...filters,
@@ -346,5 +371,21 @@ export default class VoucherObservable {
       current: page,
       pageSize: pageSize,
     };
+  }
+
+  setOrderDetail(orderDetail) {
+    this.data.order_detail = orderDetail;
+  }
+
+  setOpenDetail(isOpen: boolean) {
+    this.isOpenDetail = isOpen;
+  }
+
+  setOrderSelected(order_selected: string) {
+    this.data.order_selected = order_selected;
+  }
+
+  setOrderStatusSelected(order_status_selected: string) {
+    this.data.order_status_selected = order_status_selected;
   }
 }

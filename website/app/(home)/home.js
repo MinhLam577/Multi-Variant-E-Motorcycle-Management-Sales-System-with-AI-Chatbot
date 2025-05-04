@@ -82,7 +82,7 @@ const Home_1 = () => {
       {/* End Featured Product  */}
 
       {/* Our Partners */}
-      <section className="our-partner pt0 pb100">
+      <section className="our-partner pt0 pb0 ">
         <div className="container">
           <div className="row">
             <div className="col-lg-6 offset-lg-3">
@@ -183,7 +183,7 @@ const Home_1 = () => {
           <div className="row">
             <div className="col-lg-6 offset-lg-3">
               <div className="main-title text-center">
-                <h2>Tin tức  2</h2>
+                <h2>Tin tức 2</h2>
               </div>
             </div>
           </div>

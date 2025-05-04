@@ -19,6 +19,8 @@ import SettingObservable from "./setting";
 import WarehouseObservable from "./warehouse.store";
 import { action, makeObservable, observable } from "mobx";
 import OptionObservable from "./options.store";
+import UserStaffObservable from "./user.store";
+import ImportObservable from "./imports.store";
 export interface MessageStore {
     status?: number;
     errorMsg?: string;
@@ -38,6 +40,8 @@ export class RootStore implements MessageStore {
     @observable showSuccessMsg: boolean = false;
     @observable loading: boolean = false;
 
+    importObservable: ImportObservable;
+    userStaffObservable: UserStaffObservable;
     optionObservable: OptionObservable;
     paymentMethodObservable: PaymentMethodObservable;
     orderObservable: OrderObservable;
@@ -54,7 +58,9 @@ export class RootStore implements MessageStore {
     categoriesObservable: CategoriesObservable;
     warehouseObservable: WarehouseObservable;
     constructor() {
-        makeObservable(this); 
+        makeObservable(this);
+        this.importObservable = new ImportObservable(this);
+        this.userStaffObservable = new UserStaffObservable(this);
         this.optionObservable = new OptionObservable(this);
         this.warehouseObservable = new WarehouseObservable(this);
         this.categoriesObservable = new CategoriesObservable(this);

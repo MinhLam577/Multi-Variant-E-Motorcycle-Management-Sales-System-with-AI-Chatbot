@@ -46,6 +46,7 @@ export type SkusDetailImportDto = {
     warehouse_id: string;
     quantity_import: number;
     price_import: number;
+    lot_name?: string;
 };
 
 export type CreateSkusDto = {

@@ -1,5 +1,8 @@
+"use client";
+import { getAllCategory } from "@/src/api/categories";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const categories = [
   {
@@ -25,6 +28,15 @@ const categories = [
 ];
 
 const Category = () => {
+  const [categories, setCategories] = useState([]);
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const data = await getAllCategory();
+      console.log(data.data);
+      setCategories(data.data);
+    };
+    fetchCategories();
+  }, []);
   return (
     <>
       {categories.map((category, index) => (
@@ -34,19 +46,24 @@ const Category = () => {
           data-aos="fade-up"
           data-aos-delay={category.delay}
         >
-          <div className="category_item">
-            <div className="thumb">
+          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden p-4 text-center hover:shadow-lg hover:-translate-y-1 transition-all cursor-pointer">
+            <div className="flex justify-center items-center h-24 mb-3">
               <Image
                 width={180}
                 height={80}
                 style={{ objectFit: "contain" }}
-                src={category.imgSrc}
+                src={"/images/category-item/1.png"}
                 alt={`${index + 1}.png`}
               />
             </div>
-            <div className="details">
-              <p className="title">
-                <Link href="/listing-v1">{category.title}</Link>
+            <div>
+              <p className="text-lg font-semibold text-gray-800">
+                <Link
+                  href={`/listing-v1/?categoryID=${category.id}`}
+                  className="hover:text-blue-500 transition"
+                >
+                  {category.name}
+                </Link>
               </p>
             </div>
           </div>

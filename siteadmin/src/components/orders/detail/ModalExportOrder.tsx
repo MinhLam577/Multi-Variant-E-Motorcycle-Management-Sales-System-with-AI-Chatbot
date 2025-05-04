@@ -16,7 +16,7 @@ interface ModalExportOrderProps {
     handleSave: (
         orderExport: CreateDetailExport[],
         note: string
-    ) => Promise<boolean>;
+    ) => Promise<any>;
     map_skus_detail_import: Map<string, any>;
 }
 
@@ -73,11 +73,7 @@ const getColumnsConfig = () => {
                             alt={
                                 order_details?.name ? order_details.name : "N/A"
                             }
-                            onError={(e) => {
-                                (e.target as HTMLImageElement).onerror = null; // prevents looping
-                                (e.target as HTMLImageElement).src =
-                                    "https://static.tapchitaichinh.vn/w640/images/upload/08122020/honda-crv-7-1312-1597115159_860x0_5b796724.jpg";
-                            }}
+                            fallback="/images/default_product_image.png"
                             width={48}
                             height={48}
                             preview={false}
@@ -251,7 +247,6 @@ const ModalExportOrder: React.FC<ModalExportOrderProps> = ({
     }>({});
 
     const store = useStore();
-    const orderStore = store.orderObservable;
 
     // Dữ liệu bảng sản phẩm trong đơn hàng
     const orderProductTableData = orderDetail?.order_details?.map(
@@ -407,7 +402,7 @@ const ModalExportOrder: React.FC<ModalExportOrderProps> = ({
         try {
             const isEmpty = Object.keys(detailImportTableData).length === 0;
             if (isEmpty) {
-                orderStore.setStatusMessage(
+                store.setStatusMessage(
                     400,
                     "Vui lòng nhập thông tin xuất hàng",
                     ""
@@ -423,7 +418,7 @@ const ModalExportOrder: React.FC<ModalExportOrderProps> = ({
                 );
 
             if (isMissingSkus.length > 0) {
-                orderStore.setStatusMessage(
+                store.setStatusMessage(
                     400,
                     `Vui lòng nhập thông tin xuất hàng cho mã đơn hàng có skus: \n ${isMissingSkus.join(
                         ", "
@@ -441,7 +436,7 @@ const ModalExportOrder: React.FC<ModalExportOrderProps> = ({
             );
 
             if (hasDuplicateLot) {
-                orderStore.setStatusMessage(400, "Có lô hàng bị trùng", "");
+                store.setStatusMessage(400, "Có lô hàng bị trùng", "");
                 return false;
             }
 
@@ -452,7 +447,7 @@ const ModalExportOrder: React.FC<ModalExportOrderProps> = ({
             );
 
             if (!isValidStockNumber) {
-                orderStore.setStatusMessage(
+                store.setStatusMessage(
                     400,
                     "Tồn tại số lượng xuất hàng không hợp lệ hoặc chưa nhập",
                     ""
@@ -470,14 +465,14 @@ const ModalExportOrder: React.FC<ModalExportOrderProps> = ({
             );
 
             if (!isValidLotName) {
-                orderStore.setStatusMessage(400, "Vui lòng chọn lô hàng", "");
+                store.setStatusMessage(400, "Vui lòng chọn lô hàng", "");
                 return false;
             }
 
             return true;
         } catch (e: any) {
             console.error(e);
-            orderStore.setStatusMessage(400, "Có lỗi xảy ra", "");
+            store.setStatusMessage(400, "Có lỗi xảy ra", "");
             return false;
         }
     };
@@ -514,7 +509,7 @@ const ModalExportOrder: React.FC<ModalExportOrderProps> = ({
     const [noteForm] = Form.useForm();
     const handleSaveNote = async () => {
         if (!note || note.trim() === "") {
-            orderStore.setStatusMessage(400, "Vui lòng nhập ghi chú", "");
+            store.setStatusMessage(400, "Vui lòng nhập ghi chú", "");
             return;
         }
         const result = await handleSave(tempData, note);

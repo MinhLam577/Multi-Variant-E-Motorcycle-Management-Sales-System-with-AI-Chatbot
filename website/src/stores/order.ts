@@ -140,6 +140,7 @@ export default class OrderObservable {
       const response: ResponsePromise = yield OrderAPI.getOrderList(
         queryString
       );
+      console.log(response);
       const { data, status, message } = response;
       const success_status = [200, 201, 204];
       if (success_status.includes(status)) {

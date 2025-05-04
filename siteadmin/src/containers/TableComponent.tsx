@@ -3,6 +3,7 @@ import { AntdTableLocale, AntdTablePagingLocale } from "../constants";
 import { convertSortFromAntToServer } from "../utils";
 import React, { useEffect, useState } from "react";
 import { useStore } from "../stores";
+import { observer } from "mobx-react-lite";
 const pageSizeOptions = [5, 10, 20, 30, 40, 50, 100];
 
 interface ITableComponentProps {
@@ -28,7 +29,7 @@ const TableComponent: React.FC<ITableComponentProps> = ({
 }) => {
     const store = useStore();
     const storeKeys = Object.entries(store);
-    const pageSize = store[observableName]?.pagination?.pageSize || 100;
+    const pageSize = store[observableName]?.pagination?.pageSize || 10;
     const [filters, setFilters] = useState({
         filters: {
             ...filterValue,
@@ -121,4 +122,4 @@ const TableComponent: React.FC<ITableComponentProps> = ({
     );
 };
 
-export default TableComponent;
+export default observer(TableComponent);

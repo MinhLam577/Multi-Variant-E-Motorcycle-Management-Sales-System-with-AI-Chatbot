@@ -2,6 +2,11 @@ const endpoints = {
     base: {
         uploadImagesToServer: "/products/upload/multipleImage",
     },
+    import: {
+        list: (query: string) => `/import?${query}`,
+        create: () => `/detail-import`,
+        update: (id: string) => `/detail-import/${id}`,
+    },
     product: {
         getListProduct: (query: string) => "/products?" + query,
         detail: (id: string) => `/products/${id}`,
@@ -15,19 +20,19 @@ const endpoints = {
         list: () => "/option",
     },
     auth: {
-        login: "/auth/admin/login",
-        logout: "/auth/admin/logout",
-        refreshToken: "/auth/admin/refresh",
-        forgotPassword: "/auth/admin/forgot-password",
-        changePassword: "/auth/admin/change-password",
+        login: "/auth/login",
+        logout: "/auth/logout",
+        refreshToken: "/auth/refresh",
+        forgotPassword: "/auth/forgot-password",
+        changePassword: "/auth/change-password",
     },
     user: {
-        details: (id) => `/users/${id}`,
-        update: (id) => `/users/${id}`,
-        setRole: (id) => `/users/${id}`,
-        changePassword: (id) => `/users/${id}`,
+        details: (id: string) => `/users/${id}`,
+        update: (id: string) => `/users/${id}`,
+        setRole: (id: string) => `/users/${id}`,
+        changePassword: (id: string) => `/users/${id}`,
         uploadAvatar: () => "/users/upload",
-        list: (page, limit) => `/users?current=${page}&pageSize=${limit}`,
+        list: (query: string) => `/users?${query}`,
         callBulkCreateUser: "/users/callBulkCreateUser",
         // tạo customer
         create: "/users",
@@ -199,6 +204,16 @@ const endpoints = {
     // ward
     ward: {
         wardByName: (districtId) => `/ward?districtId=${districtId}`,
+    },
+    // cart
+    cart: {
+        list: () => `/cart`,
+        details: (id) => `/cart/${id}`,
+        update: (id) => `/cart/${id}`,
+        delete: (id) => `/cart/${id}`,
+        create: () => `/cart`,
+        upload: "/cart/upload-image",
+        uploads: "/cart/upload-images",
     },
 };
 

@@ -24,7 +24,6 @@ import Notification from "./pages/notifications";
 import Orders from "./pages/orders";
 import OrderDetail, { OrderDetailMode } from "./pages/orders/OrderDetail";
 import { ProductUnitsDetailMode } from "./pages/product_units/ProductUnitsDetail";
-import Statistic from "./pages/statistic";
 import Stores from "./pages/stores";
 import StoresDetail, { StoresDetailMode } from "./pages/stores/StoresDetail";
 import User from "./pages/users";
@@ -47,6 +46,7 @@ import CategoriesNewsDetail from "./pages/categoriesNews/CategoriesNewsDetail";
 import Setting from "./pages/setting/index";
 import Products from "./pages/products";
 import Overview from "./pages/adminOverview/Overview";
+import ImportPage from "./pages/imports";
 function App() {
     return (
         <StoreProvider>
@@ -65,7 +65,7 @@ function App() {
                                     path="/"
                                     element={
                                         <ProtectedRoute>
-                                            <Overview/>
+                                            <Overview />
                                         </ProtectedRoute>
                                     }
                                 />
@@ -73,7 +73,7 @@ function App() {
                                     path="/statistic"
                                     element={
                                         <ProtectedRoute>
-                                            <Overview/>
+                                            <Overview />
                                         </ProtectedRoute>
                                     }
                                 />
@@ -544,6 +544,14 @@ function App() {
                                     }
                                 />
 
+                                <Route
+                                    path="/import"
+                                    element={
+                                        <ProtectedRoute>
+                                            <ImportPage />
+                                        </ProtectedRoute>
+                                    }
+                                />
                                 <Route path="/:404" element={<Page404 />} />
                             </Routes>
                         </Suspense>
