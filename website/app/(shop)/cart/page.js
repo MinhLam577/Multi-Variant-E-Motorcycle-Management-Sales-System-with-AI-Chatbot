@@ -11,7 +11,7 @@ import CartTotal from "@/app/components/shop/cart/CartTotal";
 import { useStore } from "@/src/stores";
 import { useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
-
+import { Empty } from "antd";
 // export const metadata = {
 //   title: "Cart || hongson ",
 // };
@@ -19,7 +19,8 @@ import { observer } from "mobx-react-lite";
 const Cart = observer(() => {
   const [selectedAllItems, setSelectedAllItems] = useState(false); // Thêm state để lưu các sản phẩm đã chọn
   const { cartObservable } = useStore();
-  const [selectedItems, setSelectedItems] = useState([]); // Thêm state để lưu các sản phẩm đã chọn
+  // selectedItems
+  //const [selectedItems, setSelectedItems] = useState([]); // Thêm state để lưu các sản phẩm đã chọn
   useEffect(() => {
     cartObservable.getListCart();
   }, []);
@@ -27,12 +28,12 @@ const Cart = observer(() => {
   const handleCheckedAll = () => {
     if (selectedAllItems) {
       // Đang chọn hết => Bỏ chọn hết
-      setSelectedItems([]);
+      cartObservable.setSelectedItems([]);
       setSelectedAllItems(false);
     } else {
       // Đang chưa chọn hết => Chọn tất cả
       const allIds = cartObservable?.data?.map((item) => item.id) || [];
-      setSelectedItems(allIds);
+      cartObservable.setSelectedItems(allIds);
       setSelectedAllItems(true);
     }
   };
@@ -96,37 +97,41 @@ const Cart = observer(() => {
                 <div className="col-lg-8 col-xl-9">
                   <div className="shopping_cart_tabs ovyh">
                     <div className="shopping_cart_table">
-                      <table className="table table-responsive">
-                        <thead className="">
-                          <tr>
-                            <th scope="col" className="text-center">
-                              <input
-                                type="checkbox"
-                                checked={selectedAllItems}
-                                onChange={() => handleCheckedAll()}
-                              />
-                            </th>
-                            <th scope="col" className="text-left">
-                              Product
-                            </th>
-                            <th scope="col">Price</th>
-                            <th scope="col">Quantity</th>
-                            <th scope="col">Subtotal</th>
-                            <th scope="col"></th>
-                          </tr>
-                        </thead>
-                        {/* End thead */}
+                      {cartObservable?.data.length > 0 ? (
+                        <table className="table table-responsive w-full">
+                          <thead>
+                            <tr>
+                              <th scope="col" className="text-center">
+                                <input
+                                  type="checkbox"
+                                  checked={selectedAllItems}
+                                  onChange={() => handleCheckedAll()}
+                                />
+                              </th>
+                              <th scope="col" className="text-left">
+                                Product
+                              </th>
+                              <th scope="col">Price</th>
+                              <th scope="col">Quantity</th>
+                              <th scope="col">Subtotal</th>
+                              <th scope="col"></th>
+                            </tr>
+                          </thead>
 
-                        <tbody className="table_body">
-                          <CartItems
-                            cartList={cartObservable?.data}
-                            selectedItems={selectedItems}
-                            setSelectedItems={setSelectedItems}
-                            setSelectedAllItems={setSelectedAllItems}
-                          />
-                        </tbody>
-                        {/* End tbody */}
-                      </table>
+                          <tbody className="table_body">
+                            <CartItems
+                              cartListObserver={cartObservable?.data}
+                              selectedItems={cartObservable?.selectedItems}
+                              setSelectedAllItems={setSelectedAllItems}
+                              cartObservable={cartObservable}
+                            />
+                          </tbody>
+                        </table>
+                      ) : (
+                        <div className="w-full flex justify-center py-10">
+                          <Empty />
+                        </div>
+                      )}
                     </div>
                   </div>
                   {/* End .shopping_cart_table */}
@@ -143,8 +148,12 @@ const Cart = observer(() => {
                 {/* End .col-lg-8 */}
 
                 <div className="col-md-6 col-lg-4 col-xl-3">
-                  <CartTotal cartList={cartObservable?.data} />
+                  <CartTotal
+                    cartList={cartObservable?.data}
+                    cartObservable={cartObservable}
+                  />
                 </div>
+
                 {/* End .col-lg-6 */}
               </div>
               {/* End .row */}

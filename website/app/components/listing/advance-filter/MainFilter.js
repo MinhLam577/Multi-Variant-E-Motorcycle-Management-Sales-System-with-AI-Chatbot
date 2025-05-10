@@ -5,6 +5,7 @@ import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
 import { TreeSelect } from "antd";
 import { getAllCategory } from "@/src/api/categories";
+
 const MainFilter = observer(({ handleFilterChange }) => {
   const store = useStore();
   const StoreBrand = store.brandObservable;
@@ -24,10 +25,7 @@ const MainFilter = observer(({ handleFilterChange }) => {
     handleFilterChange({ brandID: value });
   };
 
-  
-  const handleDeleteAll = () => {
-    
-  };
+  const handleDeleteAll = () => {};
   const conditionValues = [
     "Mới nhất",
     "Gần đây",
@@ -113,7 +111,7 @@ const MainFilter = observer(({ handleFilterChange }) => {
         <div className="relative">
           <TreeSelect
             showSearch
-            style={{ width: "100%", height: 48 }} // tăng chiều cao tại đây
+            style={{ width: "100%", height: 48, color: "black" }} // color cho văn bản
             value={value}
             dropdownStyle={{ maxHeight: 700, overflow: "auto" }}
             placeholder="Danh mục"

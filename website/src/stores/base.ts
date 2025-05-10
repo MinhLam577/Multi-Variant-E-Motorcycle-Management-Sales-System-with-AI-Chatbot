@@ -16,6 +16,8 @@ import VoucherObservable from "./voucher.store";
 import SettingObservable from "./setting";
 import CartObservable from "./cart";
 import CategoryObservable from "./categories";
+import AddressObservable from "./address";
+import DeliveryObservable from "./delivery";
 export class RootStore {
   paymentMethodObservable: PaymentMethodObservable;
   orderObservable: OrderObservable;
@@ -32,6 +34,8 @@ export class RootStore {
   blogsObservable: BlogsObservable;
   cartObservable: CartObservable;
   categoryObservable: CategoryObservable;
+  addressObservable: AddressObservable;
+  deliveryObservable: DeliveryObservable;
   constructor() {
     this.paymentMethodObservable = new PaymentMethodObservable(this);
     this.skusObservable = new SkusObservable(this);
@@ -48,5 +52,7 @@ export class RootStore {
     this.blogsObservable = new BlogsObservable(this);
     this.cartObservable = new CartObservable(this);
     this.categoryObservable = new CategoryObservable(this);
+    this.addressObservable = new AddressObservable(this);
+    this.deliveryObservable = new DeliveryObservable(this);
   }
 }

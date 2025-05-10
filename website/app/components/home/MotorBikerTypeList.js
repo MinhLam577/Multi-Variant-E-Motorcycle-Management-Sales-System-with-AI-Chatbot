@@ -1,45 +1,54 @@
 "use client";
 import listingsData from "@/data/listingMotor";
+import { useStore } from "@/src/stores";
 import { toCurrency } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-const filterOptions = [
-  { value: "*", name: "Tất cả" },
-  { value: "new", name: "Xe điện Vinfast" },
-  { value: "car", name: "Xe YADEKA" },
-  { value: "car", name: "Xe YAKA" },
-  { value: "car", name: "Xe EVGO" },
-  { value: "car", name: "Xe điện thời trang" },
-  { value: "car-specialized", name: "Xe điện học sinh" },
-];
+import { useEffect, useState } from "react";
+import { observer } from "mobx-react-lite";
+// const filterOptions = [
+//   { value: "*", name: "Tất cả" },
+//   { value: "new", name: "Xe điện Vinfast" },
+//   { value: "car", name: "Xe YADEKA" },
+//   { value: "car", name: "Xe YAKA" },
+//   { value: "car", name: "Xe EVGO" },
+//   { value: "car", name: "Xe điện thời trang" },
+//   { value: "car-specialized", name: "Xe điện học sinh" },
+// ];
+const EnumProductType = {
+  CARS: "car",
+  MOTOBIKES: "motorbike",
+};
 
-const MotorBikeTypeList = () => {
-  const [filter, setFilter] = useState("*");
+const EnumProductType1 = {
+  CARS: "Xe hơi",
+  MOTOBIKES: "Xe máy điện",
+};
 
-  const filteredItems =
-    filter === "*"
-      ? listingsData.slice(0, 8)
-      : listingsData.slice(0, 8).filter((item) => item.tags.includes(filter));
+const MotorBikeTypeList = observer(() => {
+  // const [filter, setFilter] = useState("*");
+
+  // const filteredItems =
+  //   filter === "*"
+  //     ? listingsData.slice(0, 8)
+  //     : listingsData.slice(0, 8).filter((item) => item.tags.includes(filter));
+  const { productObservable } = useStore();
+  useEffect(() => {
+    const fetch = async () => {
+      await productObservable.getListProductBuyMany(
+        { type: EnumProductType.MOTOBIKES },
+        EnumProductType1.MOTOBIKES
+      );
+      console.log(productObservable?.data?.motobikes?.data);
+    };
+    fetch();
+  }, []);
 
   return (
     <div className="popular_listing_sliders">
-      {/* Nav tabs */}
-      <div className="nav nav-tabs justify-content-center">
-        {filterOptions.map((type) => (
-          <button
-            key={type}
-            className={filter === type.value ? "active nav-link" : "nav-link"}
-            onClick={() => setFilter(type)}
-          >
-            {type.name}
-          </button>
-        ))}
-      </div>
-      {/* Tab panes */}
       <div className="row">
-        {filteredItems.map((listing) => (
-          <div className="col-sm-6 col-xl-3" key={listing.id}>
+        {productObservable?.data?.motobikes?.data.slice(0, 3).map((listing) => (
+          <div className="col-sm-6 col-xl-3" key={listing.products.id}>
             <div className="car-listing">
               <div className="thumb">
                 <Image
@@ -51,7 +60,7 @@ const MotorBikeTypeList = () => {
                     objectFit: "cover",
                   }}
                   priority
-                  src={listing.image}
+                  src={listing.products.images[0]}
                   alt={listing.title}
                 />
                 <div className="thmb_cntnt2">
@@ -85,11 +94,15 @@ const MotorBikeTypeList = () => {
                   </ul>
                 </div>
               </div>
-              <div className="details">
-                <div className="wrapper">
-                  <h5 className="price">{toCurrency(listing.price)}</h5>
-                  <h6 className="title">
-                    <Link href="/listing-single-v2">{listing.title}</Link>
+              <div className="details p-4 bg-white rounded-xl shadow-md">
+                <div className="wrapper space-y-2">
+                  <h5 className="price text-xl font-semibold text-green-600">
+                    {toCurrency(listing.price)}
+                  </h5>
+                  <h6 className="title text-base font-medium text-gray-800 hover:text-blue-600 transition">
+                    <Link href={`/listing-single-v2/${listing.products.id}`}>
+                      {listing.products.title}
+                    </Link>
                   </h6>
                 </div>
               </div>
@@ -99,6 +112,24 @@ const MotorBikeTypeList = () => {
       </div>
     </div>
   );
-};
+});
 
 export default MotorBikeTypeList;
+
+{
+  /* Nav tabs */
+}
+// <div className="nav nav-tabs justify-content-center">
+//   {filterOptions.map((type) => (
+//     <button
+//       key={type}
+//       className={filter === type.value ? "active nav-link" : "nav-link"}
+//       onClick={() => setFilter(type)}
+//     >
+//       {type.name}
+//     </button>
+//   ))}
+// </div>
+{
+  /* Tab panes */
+}

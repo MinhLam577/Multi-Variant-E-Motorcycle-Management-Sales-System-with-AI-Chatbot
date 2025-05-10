@@ -41,6 +41,7 @@ const VehicleTypeList = () => {
     const query = {
       current: 1,
       pageSize: 4,
+      type: "car",
     };
 
     if (categoryID) {

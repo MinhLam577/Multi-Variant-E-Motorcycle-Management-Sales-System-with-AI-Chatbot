@@ -3,83 +3,88 @@ import apiClient from "../api/apiClient";
 import endpoints from "../api/endpoints";
 
 export default class PaymentMethodObservable {
-    status: number = null;
-    errorMsg: string = "";
-    successMsg: string = "";
-    rootStore;
-    data = {
-        payments: [],
-        payment_status: [],
-        payment_method: [],
-    };
+  status: number = null;
+  errorMsg: string = "";
+  successMsg: string = "";
+  rootStore;
+  data = {
+    selectedPayment: "",
+    payments: [],
+    payment_status: [],
+    payment_method: [],
+  };
 
-    constructor(rootStore) {
-        makeAutoObservable(this);
-        this.rootStore = rootStore;
-    }
+  constructor(rootStore) {
+    makeAutoObservable(this);
+    this.rootStore = rootStore;
+    this.getListPaymentMethod = this.getListPaymentMethod.bind(this);
+    this.setSelectedPayment = this.setSelectedPayment.bind(this);
+  }
 
-    *getListPaymentMethod() {
-        try {
-            const response = yield apiClient.get(
-                endpoints.paymentMethod.list()
-            );
-            const { data, status, message } = response;
-            const success_status = [200, 201, 204];
-            if (success_status.includes(status)) {
-                this.data.payments = data;
-                this.status = status;
-                this.successMsg = message;
-            } else {
-                this.status = status;
-                this.errorMsg = message;
-            }
-        } catch (e: any) {
-            console.error(e);
-            this.status = 500;
-            this.errorMsg = e?.message || "Lỗi không xác định";
-        }
+  *setSelectedPayment(id) {
+    this.data.selectedPayment = id;
+  }
+  *getListPaymentMethod() {
+    try {
+      const response = yield apiClient.get(endpoints.paymentMethod.list());
+      const { data, status, message } = response;
+      console.log(data);
+      const success_status = [200, 201, 204];
+      if (success_status.includes(status)) {
+        this.data.payments = data;
+        this.status = status;
+        this.successMsg = message;
+      } else {
+        this.status = status;
+        this.errorMsg = message;
+      }
+    } catch (e: any) {
+      console.error(e);
+      this.status = 500;
+      this.errorMsg = e?.message || "Lỗi không xác định";
     }
-    *getMethods() {
-        try {
-            const response = yield apiClient.get(
-                endpoints.paymentMethod.getPaymentName()
-            );
-            const { data, status, message } = response;
-            const success_status = [200, 201, 204];
-            if (success_status.includes(status)) {
-                this.data.payment_method = data;
-                this.status = status;
-                this.successMsg = message;
-            } else {
-                this.status = status;
-                this.errorMsg = message;
-            }
-        } catch (e: any) {
-            console.error(e);
-            this.status = 500;
-            this.errorMsg = e?.message || "Lỗi không xác định";
-        }
+  }
+  *getMethods() {
+    try {
+      const response = yield apiClient.get(
+        endpoints.paymentMethod.getPaymentName()
+      );
+      const { data, status, message } = response;
+      const success_status = [200, 201, 204];
+      if (success_status.includes(status)) {
+        this.data.payment_method = data;
+        this.status = status;
+        this.successMsg = message;
+      } else {
+        this.status = status;
+        this.errorMsg = message;
+      }
+    } catch (e: any) {
+      console.error(e);
+      this.status = 500;
+      this.errorMsg = e?.message || "Lỗi không xác định";
     }
+  }
 
-    *getPaymentStatus() {
-        try {
-            const response = yield apiClient.get(
-                endpoints.paymentMethod.getPaymentStatus()
-            );
-            const { data, status, message } = response;
-            const success_status = [200, 201, 204];
-            if (success_status.includes(status)) {
-                this.status = status;
-                this.successMsg = message;
-                this.data.payment_status = data;
-            } else {
-                this.status = status;
-                this.errorMsg = message;
-            }
-        } catch (e: any) {
-            console.error(e);
-            this.status = 500;
-            this.errorMsg = e?.message || "Lỗi không xác định";
-        }
+  *getPaymentStatus() {
+    try {
+      const response = yield apiClient.get(
+        endpoints.paymentMethod.getPaymentStatus()
+      );
+      const { data, status, message } = response;
+      const success_status = [200, 201, 204];
+      if (success_status.includes(status)) {
+        this.status = status;
+        this.successMsg = message;
+        this.data.payment_status = data;
+      } else {
+        this.status = status;
+        this.errorMsg = message;
+      }
+    } catch (e: any) {
+      console.error(e);
+      this.status = 500;
+      this.errorMsg = e?.message || "Lỗi không xác định";
     }
+  }
 }
