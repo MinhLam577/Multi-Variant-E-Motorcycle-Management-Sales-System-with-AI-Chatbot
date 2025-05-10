@@ -4,10 +4,11 @@ import ModalVideo from "react-modal-video";
 import "react-modal-video/scss/modal-video.scss";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper-bundle.css";
-
+import { observer } from "mobx-react-lite";
 // import required modules
 import Image from "next/image";
 import { FreeMode, Navigation, Thumbs } from "swiper";
+import { useStore } from "@/src/stores";
 
 const slides = [
   {
@@ -32,16 +33,20 @@ const slides = [
   },
 ];
 
-export default function ProductGallery() {
+const ProductGallery = observer(() => {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const [isOpen, setOpen] = useState(false);
   const [videoId, setVideoId] = useState("");
+
+    const store = useStore();
+    const storeProduct = store.productObservable;
 
   const openModal = (id) => {
     setVideoId(id);
     setOpen(true);
   };
-
+  const optionValuesImage =
+    storeProduct?.data?.resultOption_OptionValue?.[0]?.option_values || [];
   return (
     <>
       <div className="row">
@@ -60,7 +65,7 @@ export default function ProductGallery() {
             modules={[FreeMode, Navigation, Thumbs]}
             className="mySwiper2 sps_content single_product_grid user_profile "
           >
-            {slides.map((slide, index) => (
+            {optionValuesImage.map((slide, index) => (
               <SwiperSlide key={index}>
                 <div className="item">
                   <Image
@@ -69,7 +74,7 @@ export default function ProductGallery() {
                     priority
                     style={{ width: "100%", objectFit: "cover" }}
                     className="w-100 h-100"
-                    src={slide.imageSrc}
+                    src={slide.image}
                     alt="large car"
                   />
 
@@ -96,14 +101,14 @@ export default function ProductGallery() {
             modules={[FreeMode, Navigation, Thumbs]}
             className="mySwiper mt-2 thumb-gallery-opacity"
           >
-            {slides.map((slide, index) => (
+            {optionValuesImage.map((slide, index) => (
               <SwiperSlide key={index}>
                 <Image
                   width={163}
                   height={106}
                   priority
                   style={{ objectFit: "cover" }}
-                  src={slide.imageSrc}
+                  src={slide.image}
                   alt="thum car"
                 />
               </SwiperSlide>
@@ -120,4 +125,5 @@ export default function ProductGallery() {
       />
     </>
   );
-}
+});
+export default ProductGallery;

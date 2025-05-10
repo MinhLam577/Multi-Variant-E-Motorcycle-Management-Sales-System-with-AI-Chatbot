@@ -3,8 +3,8 @@ import endpoints from "./endpoints";
 const receive_address = endpoints.receive_address;
 
 export const AddressApi = {
-  getListAddress: async (query: string) => {
-    return await apiClient.get(receive_address.list())
+  getListAddress: async () => {
+    return await apiClient.get(receive_address.list());
   },
 
   getDetailAddress: async (id: string) => {
@@ -27,13 +27,8 @@ export const AddressApi = {
     return await apiClient.delete(receive_address.delete(id));
   },
 
-  setAddressDefault: async (customerId: string, addressId: string) => {
-    return await apiClient.patch(
-      receive_address.setAddressDefault(customerId),
-      {
-        addressId,
-      }
-    );
+  setAddressDefault: async (addressId: string) => {
+    return await apiClient.patch(receive_address.setAddressDefault(addressId));
   },
 
   getAddressDefault: async (customerId: string) => {

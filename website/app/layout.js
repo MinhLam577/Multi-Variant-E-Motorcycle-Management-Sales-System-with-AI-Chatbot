@@ -10,6 +10,7 @@ import styled from "styled-components";
 import ThemeProvider from "@/app/layout/ThemeContext";
 import { StoreProvider } from "@/src/stores";
 import "./globals.css";
+import Chatbox from "./(pages)/chatbot/page";
 if (typeof window !== "undefined") {
   import("bootstrap");
 }
@@ -37,6 +38,7 @@ export default function RootLayout({ children }) {
           <StoreProvider>
             {children}
             <ScrollToTop />
+            <Chatbox />
           </StoreProvider>
         </Body>
       </ThemeProvider>

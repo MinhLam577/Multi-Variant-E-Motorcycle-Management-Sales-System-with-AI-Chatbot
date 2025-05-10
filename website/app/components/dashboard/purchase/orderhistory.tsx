@@ -1,6 +1,6 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
-import { Space, Tabs } from "antd";
+import { notification, Space, Tabs } from "antd";
 
 // import { Link, Navigate } from "react-router-dom";
 import { Empty } from "antd";
@@ -22,10 +22,12 @@ import { AccountObservable } from "@/src/stores/account";
 // import { Helmet } from "react-helmet-async";
 // import useQueryParams from "../../../../hook/useSearchParam";
 // import paymentAPI from "../../../../Api/user/payment.js";
-
+import { useRouter } from "next/navigation";
 const OrderHistory = observer(() => {
+  const router = useRouter();
   const store = useStore();
   const StoreOrder = store.orderObservable;
+  const StoreCart = store.cartObservable;
   // lấy ra account
   const AccountStore = store.accountObservable;
 
@@ -50,8 +52,6 @@ const OrderHistory = observer(() => {
     { name: "Đã giao", status: "DELIVERED" },
     // hủy ở giai đoạn
     { name: "Đã hủy", status: "CANCELED" },
-    // hủy ở giai đoạn
-    { name: "Trả hàng", status: "RETURNED" },
   ];
 
   //   const { data } = useQuery({
@@ -100,77 +100,50 @@ const OrderHistory = observer(() => {
   console.log(dataAll);
   const handleBuyAgain = async (order_detail) => {
     let arrayIdCart = []; // Declare the array before the loop
-    // console.log(order_detail)
-    // Loop through the order details and trigger the mutation for each product
-    for (const element of order_detail) {
-      //  console.log(element)
-      try {
-        // const data = await mutateAddProductCart.mutateAsync({
-        //   product_id: element.product_id,
-        //   cart_quantity: element.order_quantity,
-        // });
-        // Handle success for each product added to the cart
-        //  arrayIdCart.push(data.data.data.cart_id); // Track which products were added
-        // console.log('Products added to cart:', arrayIdCart)
-        // Invalidate the queries after each successful mutation
-        // queryClient.invalidateQueries({ queryKey: ["getCart"] });
-      } catch (error) {
-        // Handle error in case the mutation fails
-        console.error("Failed to add product to cart:", error);
+    await StoreCart.clearSelectedCart();
+    console.log(order_detail);
+    try {
+      for (const element of order_detail) {
+        console.log(element);
+        const cart_item = {
+          quantity: element.quantity,
+          sku_id: element.skus.id,
+        };
+        await StoreCart.BuyAgain_InOrder({ cart_item });
       }
+      if (StoreCart.status == 201) {
+        notification.success({
+          message: "Thêm lại sản phẩm thành công",
+          description: "Đang chuyển đến giỏ hàng...",
+          duration: 2,
+        });
+
+        // Đợi 2 giây trước khi điều hướng (tùy chọn)
+        setTimeout(() => {
+          router.push("/cart");
+        }, 200);
+      }
+    } catch (error) {
+      // Handle error in case the mutation fails
+      console.error("Failed to add product to cart:", error);
     }
-
-    // After the loop finishes, navigate to the cart page
-    // setCheckedProducts((prev) => {
-    //   return [...prev, ...arrayIdCart]; // Use spread operator to merge arrays
-    // });
-
-    // await navigate("/cart");
-    // Optionally, handle any logic after all products have been processed
-    console.log("Products added to cart:", arrayIdCart);
-  };
-  // Them vao gio hang
-  //   const mutateAddProductCart = useMutation({
-  //     mutationFn: CartAPI.addproduct_inCart,
-  //     onError: (error) => {
-  //       console.error(
-  //         "Lỗi khi thêm sản phẩm vào giỏ hàng:",
-  //         error.response.data.message[0]
-  //       );
-  //     },
-  //   });
-
-  //   const Cancel_CartOrder = useMutation({
-  //     mutationFn: OrderApi.Cancel_CartOrder,
-  //   });
-
-  const handleCancelOrder = (idOrder) => {
-    // console.log(idOrder)
-    // Cancel_CartOrder.mutate(idOrder, {
-    //   onSuccess: () => {
-    //     toast.success("Hủy đơn hàng thành công");
-    //     queryClient.invalidateQueries({ queryKey: ["getOrderApi"] });
-    //   },
-    //   onError: () => {
-    //     toast.error("Hủy đơn hàng thất bại ");
-    //   },
-    // });
   };
 
-  const handleCancelOrder1 = (idOrder) => {
-    // console.log(idOrder)
-    // Cancel_CartOrder.mutate(idOrder, {
-    //   onSuccess: () => {
-    //     queryClient.invalidateQueries({ queryKey: ["getOrderApi"] });
-    //   },
-    //   onError: () => {
-    //     toast.error("Hủy đơn hàng thất bại ");
-    //   },
-    // });
+  const handleCancelOrder = async (idOrder) => {
+    console.log(idOrder);
+    await StoreOrder.cancelOrder(idOrder, "I don't want it anymore");
+    if (StoreOrder.status === 200) {
+      notification.success({
+        message: "Hủy Đơn thành công",
+      });
+    } else {
+      notification.success({
+        message: "Hủy Đơn thất bại",
+      });
+    }
   };
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = (order_id, product_id) => {
-    // console.log(order_id, product_id)
     setIdOrder(order_id);
     setIdProduct(product_id);
     setIsModalOpen(true);
@@ -212,6 +185,7 @@ const OrderHistory = observer(() => {
       <div className="">
         {dataAll ? (
           dataAll?.map((element) => {
+            console.log(element.order_details);
             return (
               <div key={element?.order_id}>
                 {element?.order_details?.map((detail) => (
@@ -223,7 +197,7 @@ const OrderHistory = observer(() => {
                         /${element.id}`}
                       >
                         <img
-                          src="https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m0r1nxglujkfeb@resize_w48_nl.webp "
+                          src={detail?.skus?.image}
                           alt={detail.product_name}
                           className="w-full h-full rounded-lg object-contain"
                         />
@@ -233,10 +207,12 @@ const OrderHistory = observer(() => {
                       <div className="flex flex-col justify-between">
                         <Link href={`/purchase/order/${element.id}`}>
                           <p className="font-semibold line-clamp-2">
-                            {detail.name}
+                            {detail?.skus?.product?.title}
                           </p>
                         </Link>
-                        <span className="text-sm">Phân loại hàng 200</span>
+                        <span className="text-sm">
+                          Phân loại hàng: {detail?.skus?.name}
+                        </span>
                         <span className="text-sm">*{detail.quantity}</span>
                       </div>
                     </div>

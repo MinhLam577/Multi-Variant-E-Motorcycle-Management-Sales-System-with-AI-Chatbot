@@ -4,6 +4,7 @@ const endpoints = {
   product: {
     getListProduct: (query: string) => "/products?" + query,
     getDetailProduct: (id: string) => `/products/${id}`,
+    getDetailSKU: (id: string) => `/products/getSku/${id}`,
   },
   auth: {
     login: "/auth/login",
@@ -16,6 +17,7 @@ const endpoints = {
     retry_active: "/auth/retry-active",
     retry_password: "auth/retryPassword",
     change_password: "auth/change-password",
+    contactPrice: "auth/contact",
   },
 
   customers: {
@@ -190,6 +192,12 @@ const endpoints = {
     cancelOrder: (id: string) => `/order/${id}/cancel`,
     failedDelivery: (id: string) => `/order/${id}/failed-delivery`,
     returnOrder: (id: string) => `/order/${id}/return-order`,
+    createOrder: () => "/order/create-from-cartItem",
+  },
+
+  // zaloPay
+  zalo_pay: {
+    createZalopayOrder: () => "/zalo-payment/create-order",
   },
   paymentMethod: {
     list: () => `/payment-method`,
@@ -222,6 +230,8 @@ const endpoints = {
     update: (id) => `/cart/${id}`,
     // xóa từng biến thể trong giỏ hàng
     deleteSkus: (id) => `/cart/${id}`,
+    // xóa từng cartItem trong giỏ hàng
+    deleteCartItem: (id) => `/cart/cartItem/${id}`,
     // xóa  giỏ hàng
     deleteCart: () => `/cart`,
 
@@ -229,6 +239,45 @@ const endpoints = {
     upload: "/cart/upload-image",
     uploads: "/cart/upload-images",
   },
+  delivery: {
+    // Tạo phương thức giao hàng mới
+    create: () => `/delivery-method`,
+
+    // Lấy danh sách tất cả phương thức giao hàng
+    list: () => `/delivery-method`,
+
+    // Lấy chi tiết phương thức giao hàng theo ID
+    details: (id: string | number) => `/delivery-method/${id}`,
+
+    // Cập nhật phương thức giao hàng theo ID
+    update: (id: string | number) => `/delivery-method/${id}`,
+
+    // Xóa phương thức giao hàng theo ID
+    delete: (id: string | number) => `/delivery-method/${id}`,
+  },
+
+  paymentMethodOption: {
+    // Tạo phương thức thanh toán mới
+    create: () => `/payment-method-option`,
+
+    // Lấy danh sách tất cả phương thức thanh toán
+    list: () => `/payment-method-option`,
+
+    // Lấy chi tiết phương thức thanh toán theo ID
+    details: (id: string | number) => `/payment-method-option/${id}`,
+
+    // Lấy phương thức thanh toán theo tên
+    getByName: (name: string) => `/payment-method-option/name/${name}`,
+
+    // Cập nhật phương thức thanh toán theo ID
+    update: (id: string | number) => `/payment-method-option/${id}`,
+
+    // Xóa phương thức thanh toán theo ID
+    delete: (id: string | number) => `/payment-method-option/${id}`,
+  },
+
+  //
+  // delivery
 };
 
 export default endpoints;
