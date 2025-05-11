@@ -48,7 +48,8 @@ export default function DetailOrderHistory({ slug }) {
     {
       key: "3",
       label: "Địa chỉ",
-      children: `${data?.data?.data?.receiver_address}, ${data?.data?.data?.ward_name}, ${data?.data?.data?.district_name}, ${data?.data?.data?.province_name}`,
+      // children: `${data?.data?.data?.receiver_address}, ${data?.data?.data?.ward_name}, ${data?.data?.data?.district_name}, ${data?.data?.data?.province_name}`,
+      children: data?.receive_address?.address,
     },
   ];
 
@@ -93,11 +94,13 @@ export default function DetailOrderHistory({ slug }) {
         <div className="text-lg semibold">
           {(() => {
             const statusMap = {
-              pending: "Đang xử lý",
-              cancelled: "Hủy",
-              DELIVERING: "Đang giao",
-              delivered: "Đã giao",
-              confirmed: "Đã xác nhận",
+              PENDING: "Đang xử lý",
+              CONFIRMED: "Đã xác nhận",
+              EXPORTED: "Xuất kho",
+              CANCELED: "Hủy",
+              DELIVERING: "Đang vận chuyển",
+              SHIPPING: "Đang giao hàng",
+              DELIVERED: "Đã giao",
             };
             return statusMap[data?.order_status] || "Trạng thái không xác định";
           })()}{" "}

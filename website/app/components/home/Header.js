@@ -80,7 +80,7 @@ const Header = observer(() => {
             </button>
           </div>
 
-          <div className="flex justify-between items-center w-full px-4 ">
+          <div className="flex justify-between items-center w-full px-4  pt-2 pb-[4px]">
             {/* Menu bên trái */}
             <ul
               id="respMenu"
@@ -97,6 +97,7 @@ const Header = observer(() => {
                 <span className="text-lg text-white mr-2">
                   <i className="fas fa-search"></i>
                 </span>
+
                 <input
                   type="text"
                   placeholder="Tìm kiếm"
