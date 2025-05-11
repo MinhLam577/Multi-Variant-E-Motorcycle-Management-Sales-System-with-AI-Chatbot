@@ -68,9 +68,7 @@ const Profile = () => {
               </div>
               {/* End .row */}
 
-              
-                {/* End */}
-             
+              {/* End */}
             </div>
           </div>
         </div>
