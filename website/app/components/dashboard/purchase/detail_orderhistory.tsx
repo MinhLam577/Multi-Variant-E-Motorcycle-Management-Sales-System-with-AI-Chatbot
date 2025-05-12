@@ -62,12 +62,12 @@ export default function DetailOrderHistory({ slug }) {
     {
       key: "2",
       label: "Phương thức thanh toán",
-      children: data?.payment_method.description,
+      children: data?.payment_method.name,
     },
     {
       key: "3",
       label: "Phương thức vận chuyển",
-      children: data?.delivery_method.description,
+      children: data?.delivery_method.name,
     },
     {
       key: "4",

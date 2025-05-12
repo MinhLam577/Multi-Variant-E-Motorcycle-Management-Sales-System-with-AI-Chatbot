@@ -42,6 +42,7 @@ export default class AddressObservable {
     this.rootStore = rootStore;
     this.getAddressDefault = this.getAddressDefault.bind(this);
     this.getListAddress = this.getListAddress.bind(this);
+    this.postAddress = this.postAddress.bind(this);
   }
 
   *getAddressDefault(idCustomer: string) {
@@ -58,6 +59,7 @@ export default class AddressObservable {
         this.status = status;
         this.successMsg = message;
       } else {
+        this.data.addressDefault = "";
         this.status = status;
         this.errorMsg = Array.isArray(message) ? message.join(", ") : message;
       }
@@ -79,6 +81,32 @@ export default class AddressObservable {
       const success_status = [200, 201, 204];
       if (success_status.includes(status)) {
         this.data.listAddress = data;
+        yield this.getAddressDefault(idCustomer);
+        this.status = status;
+        this.successMsg = message;
+      } else {
+        this.status = status;
+        this.errorMsg = Array.isArray(message) ? message[0] : message;
+      }
+    } catch (e: any) {
+      console.error(e);
+      this.status = 500;
+      this.errorMsg = e?.message || "Lỗi không xác định";
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  *postAddress(formdata) {
+    try {
+      this.loading = true;
+      const response = yield AddressApi.createAddress(formdata);
+      console.log("response", toJS(response));
+      const { data, status, message } = response;
+      console.log(data);
+      const success_status = [200, 201, 204];
+      if (success_status.includes(status)) {
+        yield this.getListAddress(formdata.customerId);
         this.status = status;
         this.successMsg = message;
       } else {
