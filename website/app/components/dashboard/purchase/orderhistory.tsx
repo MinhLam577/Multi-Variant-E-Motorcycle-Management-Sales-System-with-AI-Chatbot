@@ -213,7 +213,9 @@ const OrderHistory = observer(() => {
                         <span className="text-sm">
                           Phân loại hàng: {detail?.skus?.name}
                         </span>
-                        <span className="text-sm">*{detail.quantity}</span>
+                        <span className="text-sm">
+                          Số lượng: {detail?.quantity}
+                        </span>
                       </div>
                     </div>
                     <div className="flex shrink-0 ml-3 items-center gap-x-4">

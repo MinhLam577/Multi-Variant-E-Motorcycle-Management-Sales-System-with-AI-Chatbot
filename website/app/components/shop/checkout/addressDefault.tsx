@@ -3,30 +3,35 @@ import { useStore } from "@/src/stores";
 import React, { useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import ModalListAddress from "./modalAddress/ModalListAddress";
+import AddressModalCreate from "../../dashboard/address/AddressModalCreate";
+import AddressModalCheckoutCreate from "../../dashboard/address/AddressModalCheckOut_Create";
 const AddressDefault = observer(() => {
   const [isModalOpen1, setIsModalOpen1] = useState(false);
   const [OpenListAddress, setOpenListAddress] = useState(false);
   const store = useStore();
   const storeAccount = store.accountObservable;
   const storeAddress = store.addressObservable;
-  //   useEffect(() => {
-  //     const fetchData = async () => {
-  //       await storeAccount.getAccount();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [openModalCreate, setOpenModalCreate] = useState(false);
 
-  //       // Delay nhỏ 1 tick để MobX update xong
-  //       setTimeout(async () => {
-  //         const idCustomer = storeAccount.account?.userId;
-  //         if (idCustomer) {
-  //           await storeAddress.getAddressDefault(idCustomer);
-  //           await storeAddress.getListAddress(idCustomer);
-  //           console.log(storeAddress?.data?.addressDefault);
-  //           console.log(storeAddress?.data?.listAddress);
-  //         }
-  //       }, 0);
-  //     };
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     await storeAccount.getAccount();
 
-  //     fetchData();
-  //   }, []);
+  //     // Delay nhỏ 1 tick để MobX update xong
+  //     setTimeout(async () => {
+  //       const idCustomer = storeAccount.account?.userId;
+  //       if (idCustomer) {
+  //         await storeAddress.getAddressDefault(idCustomer);
+  //         await storeAddress.getListAddress(idCustomer);
+  //         console.log(storeAddress?.data?.addressDefault);
+  //         console.log(storeAddress?.data?.listAddress);
+  //       }
+  //     }, 0);
+  //   };
+
+  //   fetchData();
+  // }, []);
 
   return (
     <>
@@ -46,6 +51,42 @@ const AddressDefault = observer(() => {
           </svg>
           Địa chỉ nhận hàng{" "}
         </div>
+        {!storeAddress?.data?.addressDefault &&
+          storeAddress?.data?.listAddress && (
+            <div className="flex mt-1">
+              <div className="w-[40%]">
+                <div className="text-sm font-medium text-gray-800 mb-1">
+                  <span className="text-base text-black">
+                    {storeAddress?.data?.listAddress?.[0]?.receiver_name}
+                  </span>
+                  {" - "}
+                  <span className="text-sm text-black">
+                    {storeAddress?.data?.listAddress?.[0]?.receiver_phone}
+                  </span>
+                </div>
+              </div>
+              <div className="w-[60%] flex md:flex-col lg:flex-row  justify-between">
+                <div className="">
+                  {storeAddress?.data?.listAddress?.[0]?.street +
+                    "," +
+                    storeAddress?.data?.listAddress?.[0]?.ward +
+                    " " +
+                    storeAddress?.data?.listAddress?.[0]?.district +
+                    " " +
+                    storeAddress?.data?.listAddress?.[0]?.province}
+                </div>
+                <div
+                  className="text-[#05a] cursor-pointer"
+                  onClick={() => {
+                    console.log(storeAddress?.data?.listAddress);
+                    setOpenListAddress(true);
+                  }}
+                >
+                  Thay đổi
+                </div>
+              </div>
+            </div>
+          )}
         {storeAddress?.data?.addressDefault && (
           <div className="flex mt-1">
             <div className="w-[40%]">
@@ -85,39 +126,40 @@ const AddressDefault = observer(() => {
             </div>
           </div>
         )}
-        {!storeAddress?.data?.addressDefault && (
-          <div className="flex mt-4 items-center gap-5 ">
-            <div
-              className="font-bold"
-              onClick={() => {
-                setIsModalOpen1(true);
-              }}
-            >
-              Thêm địa chỉ
-            </div>
-            <div
-              className="text-white  "
-              onClick={() => {
-                setIsModalOpen1(true);
-              }}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="size-6 bg-[#1A51A2] rounded-full"
+        {!storeAddress?.data?.addressDefault &&
+          !storeAddress?.data?.listAddress && (
+            <div className="flex mt-4 items-center gap-5 ">
+              <div
+                className="font-bold"
+                onClick={() => {
+                  setOpenModalCreate(true);
+                }}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                />
-              </svg>
+                Thêm địa chỉ
+              </div>
+              <div
+                className="text-white  "
+                onClick={() => {
+                  setOpenModalCreate(true);
+                }}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="size-6 bg-[#1A51A2] rounded-full"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                  />
+                </svg>
+              </div>
             </div>
-          </div>
-        )}
+          )}
       </div>
       <ModalListAddress
         OpenListAddress={OpenListAddress}
@@ -128,6 +170,13 @@ const AddressDefault = observer(() => {
         idCustomer={storeAccount.account?.userId}
         // valueAddress={valueAddress}
         // setValueAddress={setvalueAddress}
+      />
+
+      <AddressModalCheckoutCreate
+        openModalCreate={openModalCreate}
+        setOpenModalCreate={setOpenModalCreate}
+        fetchUser={storeAddress?.data?.listAddress}
+        userID={storeAccount?.account?.userId}
       />
     </>
   );
