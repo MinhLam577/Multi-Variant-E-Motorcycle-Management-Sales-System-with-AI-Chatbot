@@ -2,7 +2,7 @@ import { makeAutoObservable } from "mobx";
 import { MessageStore, paginationData, RootStore } from "./base";
 import BrandAPI from "src/api/brand.api";
 
-export type BrandType = {
+export type BrandResponseType = {
     id: string;
     name: string;
     description: string;
@@ -10,7 +10,6 @@ export type BrandType = {
     thumbnailUrl: string;
     created_at: Date;
     updated_at: Date;
-    productId?: any[];
 };
 
 class BrandObservable implements MessageStore {
@@ -23,7 +22,7 @@ class BrandObservable implements MessageStore {
         current: 1,
         pageSize: 100,
     };
-    data: any[] = [];
+    data: BrandResponseType[] = [];
     loading: boolean = false;
     constructor(rootStore: RootStore) {
         this.rootStore = rootStore;

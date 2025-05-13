@@ -25,14 +25,12 @@ export class RootStore {
     uploadImageObservable: UploadImageObservable;
     brandObservable: BrandObservable;
     productObservable: ProductObservable;
-
-<<<<<<< HEAD
-  skusObservable: SkusObservable;
-  voucherObservable: VoucherObservable;
-  settingObservable: SettingObservable;
-  blogsObservable: BlogsObservable;
-  cartObservable: CartObservable;
-  categoryObservable: CategoryObservable
+    skusObservable: SkusObservable;
+    voucherObservable: VoucherObservable;
+    settingObservable: SettingObservable;
+    blogsObservable: BlogsObservable;
+    cartObservable: CartObservable;
+    categoryObservable: CategoryObservable
   constructor() {
     this.paymentMethodObservable = new PaymentMethodObservable(this);
     this.skusObservable = new SkusObservable(this);
@@ -40,36 +38,12 @@ export class RootStore {
     this.accountObservable = new AccountObservable();
     this.loginObservable = new LoginObservable(this);
     this.userObservable = new UserObservable(this);
-=======
-    skusObservable: SkusObservable;
-    voucherObservable: VoucherObservable;
-    settingObservable: SettingObservable;
-    blogsObservable: BlogsObservable;
-    cartObservable: CartObservable;
-    constructor() {
-        this.paymentMethodObservable = new PaymentMethodObservable(this);
-        this.skusObservable = new SkusObservable(this);
-        this.orderObservable = new OrderObservable(this);
-        this.accountObservable = new AccountObservable();
-        this.loginObservable = new LoginObservable(this);
-        this.userObservable = new UserObservable(this);
->>>>>>> 5a89b1d563a8f342c5d034a075c2955e40431f66
-
-        this.brandObservable = new BrandObservable(this);
-        this.productObservable = new ProductObservable(this);
-
-<<<<<<< HEAD
+    this.brandObservable = new BrandObservable(this);
+    this.productObservable = new ProductObservable(this);
     this.voucherObservable = new VoucherObservable(this);
     this.settingObservable = new SettingObservable(this);
     this.blogsObservable = new BlogsObservable(this);
     this.cartObservable = new CartObservable(this);
     this.categoryObservable = new CategoryObservable(this);
   }
-=======
-        this.voucherObservable = new VoucherObservable(this);
-        this.settingObservable = new SettingObservable(this);
-        this.blogsObservable = new BlogsObservable(this);
-        this.cartObservable = new CartObservable(this);
-    }
->>>>>>> 5a89b1d563a8f342c5d034a075c2955e40431f66
 }

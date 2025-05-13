@@ -43,24 +43,6 @@ const Orders = () => {
         fetchData();
     }, []);
 
-    const loadData = async () => {
-        await fetchData();
-    };
-
-    const handleViewOrders = async (id: string) => {
-        try {
-            orderStore.setOrderSelected(id);
-            await orderStore.getOrderDetail(id);
-            orderStore.setOpenDetail(true);
-        } catch (e: any) {
-            store.setStatusMessage(
-                500,
-                e?.message || "Có lỗi xảy ra khi view order.",
-                ""
-            );
-        }
-    };
-
     useEffect(() => {
         const status = orderStore.data?.order_status_selected;
         const globalFilters = orderStore.globalFilters;
@@ -123,6 +105,20 @@ const Orders = () => {
         orderStore.data?.orders,
         orderStore.globalFilters,
     ]);
+
+    const handleViewOrders = async (id: string) => {
+        try {
+            orderStore.setOrderSelected(id);
+            await orderStore.getOrderDetail(id);
+            orderStore.setOpenDetail(true);
+        } catch (e: any) {
+            store.setStatusMessage(
+                500,
+                e?.message || "Có lỗi xảy ra khi view order.",
+                ""
+            );
+        }
+    };
 
     const handleUpdateOrderStatus = async (id: string) => {
         try {
@@ -210,9 +206,6 @@ const Orders = () => {
                                         setGlobalFilters={
                                             orderStore.setGlobalFilters
                                         }
-                                        order_status={
-                                            orderStore.data.order_status
-                                        }
                                         payment_status={
                                             paymentMethodStore.data
                                                 .payment_status
@@ -221,8 +214,6 @@ const Orders = () => {
                                             paymentMethodStore.data
                                                 .payment_method
                                         }
-                                        order_store={orderStore}
-                                        load_data={loadData}
                                     />
                                     <Drawer
                                         loading={orderStore.loading}
@@ -277,7 +268,6 @@ const Orders = () => {
                                         />
                                     </Drawer>
                                     <OrdersTable
-                                        globalFilters={orderStore.globalFilters}
                                         data={{
                                             data: filterData,
                                         }}

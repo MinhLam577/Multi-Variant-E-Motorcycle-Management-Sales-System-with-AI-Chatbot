@@ -4,42 +4,41 @@ import TableComponent from "../../containers/TableComponent";
 import React from "react";
 import { useStore } from "src/stores";
 import { observer } from "mobx-react-lite";
-import { ImportResponseType } from "src/stores/imports.store";
 import GroupActionButton from "../../components/GroupActionButton";
 import {
     processWithModals,
     ProcessModalName,
 } from "../../containers/processWithModals.js";
+import { ExportResponseType } from "src/stores/exports.store";
 
-interface ImportTableProps {
-    data: ImportResponseType[];
-    handleUpdateImport?: (item: ImportResponseType) => void;
-    handleDeleteImport?: (id: string) => void;
+interface ExportPageProps {
+    data: ExportResponseType[];
+    handleUpdateExport?: (item: ExportResponseType) => void;
+    handleDeleteExport?: (id: string) => void;
 }
 
-const ImportTable: React.FC<ImportTableProps> = ({
+const ExportPage: React.FC<ExportPageProps> = ({
     data,
-    handleUpdateImport,
-    handleDeleteImport,
+    handleUpdateExport,
+    handleDeleteExport,
 }) => {
-    const navigate = useNavigate();
     const store = useStore();
-    const importStore = store.importObservable;
+    const exportStore = store.exportObservable;
     const getColumnsConfig = ({
         handleUpdate,
         handleDelete,
     }: {
-        handleUpdate: (item: ImportResponseType) => void;
+        handleUpdate: (item: ExportResponseType) => void;
         handleDelete: (id: string) => void;
     }) => {
         return [
             {
-                title: "Mã nhập hàng",
+                title: "Mã phiếu xuất hàng",
                 dataIndex: "id",
                 key: "id",
             },
             {
-                title: "Ngày nhập",
+                title: "Ngày xuất",
                 dataIndex: "createdAt",
                 key: "createdAt",
                 render: (text: string) => {
@@ -56,12 +55,14 @@ const ImportTable: React.FC<ImportTableProps> = ({
                 key: "note",
             },
             {
-                title: "Số lượng nhập",
-                dataIndex: "detail_imports",
-                key: "detail_imports",
-                render: (text: ImportResponseType["detail_imports"]) => {
-                    return text.reduce(
-                        (acc, item) => acc + item.quantity_import,
+                title: "Số lượng xuất",
+                dataIndex: "detail_export",
+                key: "detail_export",
+                render: (
+                    detail_export: ExportResponseType["detail_export"]
+                ) => {
+                    return detail_export?.reduce(
+                        (total: number, item) => total + item.quantity_export,
                         0
                     );
                 },
@@ -78,7 +79,7 @@ const ImportTable: React.FC<ImportTableProps> = ({
                                     ProcessModalName.ConfirmCustomContent
                                 )(
                                     "Xác nhận",
-                                    `Bạn có chắc chắn muốn xóa phiếu nhập hàng #${item.id} không?`
+                                    `Bạn có chắc chắn muốn xóa phiếu xuất hàng #${item.id} không?`
                                 )(async () => {
                                     try {
                                         await handleDelete(item.id);
@@ -86,7 +87,7 @@ const ImportTable: React.FC<ImportTableProps> = ({
                                         console.error(e);
                                         const errorMessage =
                                             e?.message ||
-                                            "Có lỗi xảy ra trong quá trình xóa phiếu nhập hàng, vui lòng thử lại sau.";
+                                            "Có lỗi xảy ra trong quá trình xóa phiếu xuất hàng, vui lòng thử lại sau.";
                                         store.setStatusMessage(
                                             500,
                                             errorMessage,
@@ -107,20 +108,20 @@ const ImportTable: React.FC<ImportTableProps> = ({
     return (
         <>
             <TableComponent
-                loading={importStore.loading}
+                loading={exportStore.loading}
                 getColumnsConfig={() =>
                     getColumnsConfig({
-                        handleUpdate: handleUpdateImport,
-                        handleDelete: handleDeleteImport,
+                        handleUpdate: handleUpdateExport,
+                        handleDelete: handleDeleteExport,
                     })
                 }
                 loadData={() => {}}
-                observableName={importStore.constructor.name}
+                observableName={exportStore.constructor.name}
                 data={data || []}
-                rowKey={(item: ImportResponseType) => item.id}
+                rowKey={(item: ExportResponseType) => item.id}
                 scroll={{ y: "200px" }}
             />
         </>
     );
 };
-export default observer(ImportTable);
+export default observer(ExportPage);

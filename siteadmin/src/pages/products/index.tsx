@@ -18,7 +18,7 @@ import ProductHeader from "src/components/products/ProductHeader";
 import CustomizeTab from "src/components/common/CustomizeTab";
 import { reaction, set, toJS } from "mobx";
 import { displayMessage, generateUUIDV4, urlToBase64 } from "src/utils";
-import { CategoriesType } from "src/stores/categories.store";
+import { CategoryResponseType } from "src/stores/categories.store";
 import ModalCreateProduct, {
     IFormListRowData,
     IFormSkuCustomData,
@@ -46,6 +46,7 @@ export type productTableFilterDataType = {
     images: string[];
     totalSKU: number;
     totalStock: number;
+    skus: Omit<SkusDataResponseType, "optionValue">[];
     [key: string]: any;
 };
 export const getSelectOption = <
@@ -91,6 +92,13 @@ export const generateRandomString = (length: number): string => {
     return result;
 };
 
+export const getCategoriesTreeSelect = (data: CategoryResponseType[]) =>
+    data?.map((item) => ({
+        value: item.id,
+        title: item.name,
+        children: item.children ? getCategoriesTreeSelect(item.children) : [],
+    }));
+
 const Products = () => {
     const store = useStore();
     const productStore = store.productObservable;
@@ -133,6 +141,7 @@ const Products = () => {
                     images: products.images,
                     totalSKU: totalSKU,
                     totalStock: totalStock,
+                    skus: products?.skus,
                 };
             }
         );
@@ -160,15 +169,6 @@ const Products = () => {
     useEffect(() => {
         fetchData();
     }, []);
-
-    const getCategoriesTreeSelect = (data: CategoriesType[]) =>
-        data?.map((item) => ({
-            value: item.id,
-            title: item.name,
-            children: item.children
-                ? getCategoriesTreeSelect(item.children)
-                : [],
-        }));
 
     // Bắt sự kiện khi có sự thay đổi trong globalFilter
     useEffect(() => {
@@ -222,6 +222,7 @@ const Products = () => {
                 item.detail_import.map((detail) => ({
                     warehouse_id: detail.warehouse.id,
                     quantity_import: detail.quantity_import,
+                    lot_name: detail.lot_name,
                 }))
             )
             .filter(({ warehouse_id }) => {
@@ -239,6 +240,7 @@ const Products = () => {
                     {
                         quantity_import: item.quantity_import.toString(),
                         warehouse_id: item.warehouse_id,
+                        lot_name: item.lot_name,
                     },
                 ])
             );
@@ -310,10 +312,11 @@ const Products = () => {
             image: imagesConvertToBase64[index].url,
             price_sold: item.price_sold,
             price_compare: item.price_compare,
-            price_import: item.detail_import[0].price_import,
+            price_import: item.detail_import?.[0]?.price_import || 0,
             detail_import: item.detail_import.map((d) => ({
                 warehouse_id: d.warehouse.id,
                 quantity_import: d.quantity_import,
+                lot_name: d.lot_name,
             })),
             variant_combination: item.optionValue.map((option) => {
                 const optionId = option.option.id;
@@ -337,6 +340,9 @@ const Products = () => {
                 quantity_import:
                     item.detail_import.find((d) => d.warehouse_id === id)
                         ?.quantity_import || 0,
+                lot_name:
+                    item.detail_import.find((d) => d.warehouse_id === id)
+                        ?.lot_name || "",
             }));
             const variant_combination = item.variant_combination;
             skusData[name] = {
@@ -353,7 +359,6 @@ const Products = () => {
 
         // Lưu sku vào store
         modalCreateProductStore.setFullCustomData(skusData);
-
         // Lưu sku vào subForm (form của biến thể)
         subUpdateProductForm.setFieldsValue({
             skus: skusData,
@@ -427,6 +432,9 @@ const Products = () => {
             price_sold,
             price_import,
             detail_import: detailImport,
+            brand_id: productData.brand.id,
+            category_id: productData.category.id,
+            type: productData.type,
         };
         return product;
     };
@@ -568,7 +576,7 @@ const Products = () => {
                                     />
 
                                     <ModalUpdateProduct
-                                        key={"modal-update-product"}
+                                        key={`modal-update-product-${productId}`}
                                         isOpen={isOpenUpdateProductModal}
                                         onClose={handleCloseUpdateProductModal}
                                         onSave={handleSaveUpdateProductModal}

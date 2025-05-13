@@ -3,7 +3,7 @@ import { MessageStore, paginationData, RootStore } from "./base";
 import BrandAPI from "src/api/brand.api";
 import WarehouseAPI from "src/api/warehouse.api";
 
-export type warehouseType = {
+export type warehouseResponseType = {
     id: string;
     name: string;
     address: string;
@@ -18,7 +18,7 @@ class WarehouseObservable {
         current: 1,
         pageSize: 100,
     };
-    data: warehouseType[] = [];
+    data: warehouseResponseType[] = [];
     constructor(rootStore: RootStore) {
         this.rootStore = rootStore;
         makeAutoObservable(this);

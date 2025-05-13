@@ -48,6 +48,7 @@ import {
     EnumProductStore,
     EnumProductType,
     SkusDetailImportDto,
+    UpdateProductDto,
     VariantCombinationDto,
 } from "src/stores/product.store";
 import { ResponseImage } from "src/api";
@@ -106,11 +107,11 @@ export interface IFormSkuCustomData {
     barcode?: string;
     masku?: string;
     image?: string;
-    lot_name?: string;
     variant_combinations?: VariantCombinationDto[];
     detail_import?: Array<{
         warehouse_id: string;
         quantity_import: number;
+        lot_name: string;
     }>;
 }
 
@@ -121,11 +122,11 @@ export interface ISkuCustomInputData {
     barcode?: string;
     masku?: string;
     image?: string;
-    lot_name?: string;
     variant_combinations?: VariantCombinationDto[];
     detail_import?: Array<{
         warehouse_id: string;
         quantity_import: string;
+        lot_name: string;
     }>;
 }
 
@@ -253,6 +254,7 @@ export class ModalCreateProductStore {
                             return {
                                 warehouse_id: wh.warehouse_id,
                                 quantity_import: existingDetail.quantity_import,
+                                lot_name: existingDetail.lot_name,
                             };
                         }
 
@@ -260,6 +262,10 @@ export class ModalCreateProductStore {
                         return {
                             warehouse_id: wh.warehouse_id,
                             quantity_import: wh.quantity_import || 0,
+                            lot_name:
+                                currentDetailImport.find(
+                                    (d) => d.warehouse_id === wh.warehouse_id
+                                )?.lot_name || "",
                         };
                     });
                 // Cập nhật skuCustomData với detail_import mới
@@ -267,6 +273,7 @@ export class ModalCreateProductStore {
                     detail_import: updatedDetailImport.map((d) => ({
                         warehouse_id: d.warehouse_id,
                         quantity_import: String(d.quantity_import),
+                        lot_name: d.lot_name,
                     })),
                 });
             });
@@ -324,11 +331,6 @@ export class ModalCreateProductStore {
                 validData.price_compare = numberValue;
             }
         }
-
-        if (data.lot_name !== undefined) {
-            validData.lot_name = data.lot_name;
-        }
-
         if (data.price_import !== undefined) {
             const numberValue = Number(data.price_import);
             if (!isNaN(numberValue) && numberValue >= 0) {
@@ -355,6 +357,7 @@ export class ModalCreateProductStore {
                         return {
                             warehouse_id: d.warehouse_id,
                             quantity_import: quantity,
+                            lot_name: d.lot_name,
                         };
                     }
                     return null;
@@ -434,7 +437,6 @@ export class ModalCreateProductStore {
                       ? `${this.masku}-${index + 1}`
                       : "",
                 image: existing?.image || undefined,
-                lot_name: existing?.lot_name || undefined,
                 detail_import: this.warehouse_selected.map((wh) => ({
                     warehouse_id: wh.value,
                     quantity_import: String(
@@ -446,6 +448,10 @@ export class ModalCreateProductStore {
                             )?.quantity_import ||
                             0
                     ),
+                    lot_name:
+                        existing?.detail_import?.find(
+                            (d) => d.warehouse_id === wh.value
+                        )?.lot_name || "",
                 })),
             });
         });
@@ -492,6 +498,7 @@ export class ModalCreateProductStore {
     private getDefaultDetailImport(warehouse_id: string): {
         warehouse_id: string;
         quantity_import: number;
+        lot_name: string;
     } {
         return {
             warehouse_id,
@@ -499,6 +506,7 @@ export class ModalCreateProductStore {
                 this.warehouse_selected_quantities.find(
                     (q) => q.warehouse_id === warehouse_id
                 )?.quantity_import || 0,
+            lot_name: "",
         };
     }
 
@@ -514,11 +522,6 @@ export class ModalCreateProductStore {
     updateSkusPriceSold(value: string) {
         if (!this.skusNameSelected) return;
         this.setSkuCustomData(this.skusNameSelected, { price_sold: value });
-    }
-
-    updateSkusLotName(value: string) {
-        if (!this.skusNameSelected) return;
-        this.setSkuCustomData(this.skusNameSelected, { lot_name: value });
     }
 
     updateSkusPriceCompare(value: string) {
@@ -554,6 +557,7 @@ export class ModalCreateProductStore {
                 return {
                     warehouse_id: wh.value,
                     quantity_import,
+                    lot_name: currentDetailImport?.lot_name || "",
                 };
             }
             return currentDetailImport
@@ -565,6 +569,38 @@ export class ModalCreateProductStore {
             detail_import: updatedDetailImport.map((d) => ({
                 warehouse_id: d.warehouse_id,
                 quantity_import: String(d.quantity_import),
+                lot_name: d.lot_name,
+            })),
+        });
+    }
+
+    updateSkusLotName(value: string, warehouse_id: string) {
+        if (!this.skusNameSelected) return;
+        const currentCustomData = this.skuCustomData.get(this.skusNameSelected);
+        if (!currentCustomData) return;
+
+        const updatedDetailImport = this.warehouse_selected.map((wh) => {
+            const currentDetailImport = currentCustomData.detail_import?.find(
+                (d) => d.warehouse_id === wh.value
+            );
+
+            if (wh.value === warehouse_id) {
+                return {
+                    warehouse_id: wh.value,
+                    quantity_import: currentDetailImport?.quantity_import || 0,
+                    lot_name: value,
+                };
+            }
+            return currentDetailImport
+                ? currentDetailImport
+                : this.getDefaultDetailImport(wh.value);
+        });
+
+        this.setSkuCustomData(this.skusNameSelected, {
+            detail_import: updatedDetailImport.map((d) => ({
+                warehouse_id: d.warehouse_id,
+                quantity_import: String(d.quantity_import),
+                lot_name: d.lot_name,
             })),
         });
     }
@@ -821,14 +857,13 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                 setFormImageList(initialImages);
             }
         }, [form]);
+
         useEffect(() => {
-            const currentImages = form.getFieldValue("image") || [];
+            const initialImages = form.getFieldValue("image") || [];
             if (
-                JSON.stringify(currentImages) !== JSON.stringify(formImageList)
+                JSON.stringify(initialImages) !== JSON.stringify(formImageList)
             ) {
-                form.setFieldsValue({
-                    image: formImageList,
-                });
+                form.setFieldValue("image", formImageList);
             }
         }, [form, formImageList]);
         const productTypeOption: SelectType[] = Object.keys(
@@ -873,8 +908,10 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                     },
                                 ]}
                                 initialValue={
-                                    productTypeOption
-                                        ? productTypeOption[0].value
+                                    !productId
+                                        ? productTypeOption
+                                            ? productTypeOption[0].value
+                                            : undefined
                                         : undefined
                                 }
                             >
@@ -920,8 +957,10 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                     },
                                 ]}
                                 initialValue={
-                                    initialOptionsBrand
-                                        ? initialOptionsBrand[0]?.value
+                                    !productId
+                                        ? initialOptionsBrand
+                                            ? initialOptionsBrand[0]?.value
+                                            : undefined
                                         : undefined
                                 }
                             >
@@ -946,8 +985,13 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                     },
                                 ]}
                                 initialValue={
-                                    getFirstLevel3Node(selectableTreeData) ||
-                                    undefined
+                                    !productId
+                                        ? getFirstLevel3Node(selectableTreeData)
+                                            ? getFirstLevel3Node(
+                                                  selectableTreeData
+                                              )
+                                            : undefined
+                                        : undefined
                                 }
                             >
                                 <TreeSelect
@@ -1068,7 +1112,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                         onError,
                                     }) => {
                                         try {
-                                            onSuccess?.({}, file);
+                                            onSuccess?.("Thành công", file);
                                         } catch (error) {
                                             const errorrMsg =
                                                 error instanceof Error
@@ -1492,7 +1536,10 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                             rules={[
                                 {
                                     validator: (_, value) => {
-                                        if (!modalCreateProductStore.hasSkus) {
+                                        if (
+                                            !modalCreateProductStore.hasSkus &&
+                                            !productId
+                                        ) {
                                             if (!value) {
                                                 return Promise.reject(
                                                     new Error(
@@ -1527,7 +1574,10 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                             rules={[
                                 {
                                     validator: (_, value) => {
-                                        if (!modalCreateProductStore.hasSkus) {
+                                        if (
+                                            !modalCreateProductStore.hasSkus &&
+                                            !productId
+                                        ) {
                                             if (!value) {
                                                 return Promise.reject(
                                                     new Error(
@@ -1567,7 +1617,10 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                             rules={[
                                 {
                                     validator: (_, value) => {
-                                        if (!modalCreateProductStore.hasSkus) {
+                                        if (
+                                            !modalCreateProductStore.hasSkus &&
+                                            !productId
+                                        ) {
                                             if (!value || value.length === 0) {
                                                 return Promise.reject(
                                                     new Error(
@@ -1591,6 +1644,11 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                 onChange={handleWarehouseSelect}
                                 onClear={handleClearWarehouse}
                                 onDeselect={handleDeSelectWarehouse}
+                                disabled={
+                                    modalCreateProductStore.hasSkus && productId
+                                        ? true
+                                        : false
+                                }
                             />
                         </Form.Item>
                     </Col>
@@ -1657,6 +1715,12 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                                     placeholder="Nhập số lượng"
                                                     className="w-full h-10"
                                                     autoComplete="off"
+                                                    disabled={
+                                                        modalCreateProductStore.hasSkus &&
+                                                        productId
+                                                            ? true
+                                                            : false
+                                                    }
                                                     onChange={(e) => {
                                                         const value =
                                                             e.target.value.replace(
@@ -1731,7 +1795,6 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                     const name = modalCreateProductStore.skusNameSelected;
                     const currentSku =
                         modalCreateProductStore.skuCustomData.get(name);
-
                     const initialSubFormValues = {
                         skus: {
                             [name]: {
@@ -1765,6 +1828,8 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                                       quantity_import:
                                                           item.quantity_import ||
                                                           0,
+                                                      lot_name:
+                                                          item.lot_name || "",
                                                   },
                                               }),
                                               {}
@@ -1775,14 +1840,21 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                               (
                                                   value as {
                                                       quantity_import: number;
+                                                      lot_name: string;
                                                   }
                                               ).quantity_import || 0,
+                                          lot_name:
+                                              (
+                                                  value as {
+                                                      quantity_import: number;
+                                                      lot_name: string;
+                                                  }
+                                              )?.lot_name || "",
                                       }))
                                     : [],
                             },
                         },
                     };
-
                     subForm.setFieldsValue(initialSubFormValues);
                 }
             }, [
@@ -1817,7 +1889,10 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                         } else if (field === "masku") {
                             modalCreateProductStore.updateSkusMasku(value);
                         } else if (field === "lot_name") {
-                            modalCreateProductStore.updateSkusLotName(value);
+                            modalCreateProductStore.updateSkusLotName(
+                                value,
+                                warehouseId
+                            );
                         }
                     },
                     0
@@ -2034,6 +2109,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                 handleCheckVariant(e);
                             }}
                             id="variantCheck"
+                            disabled={productId ? true : false}
                             checked={modalCreateProductStore.showVariantForm}
                         />
                         <label htmlFor="variantCheck" className="text-sm">
@@ -2043,29 +2119,32 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                     {modalCreateProductStore.showVariantForm && (
                         <div className="flex flex-col gap-4">
                             <FormListSelectOrInput
+                                isUpdate={productId ? true : false}
                                 formListName="variants"
                                 fieldValue="variants"
                                 initialOptions={initialOptionsVariant}
                                 formItemLabel="Thuộc tính của biến thể"
                                 placeholderSelect="Chọn thuộc tính"
-                                renderComponent={({ onClick }) => (
-                                    <button
-                                        onClick={onClick}
-                                        className="w-full h-10 border-none outline-none cursor-pointer bg-transparent text-base pt-4"
-                                        type="button"
-                                    >
-                                        <div
-                                            className={
-                                                "text-gray-700 text-base"
-                                            }
+                                renderComponent={({ onClick }) =>
+                                    !productId && (
+                                        <button
+                                            onClick={onClick}
+                                            className="w-full h-10 border-none outline-none cursor-pointer bg-transparent text-base pt-4"
+                                            type="button"
                                         >
-                                            <PlusOutlined className="mr-1" />
-                                            <span>
-                                                Thêm thuộc tính biến thể
-                                            </span>
-                                        </div>
-                                    </button>
-                                )}
+                                            <div
+                                                className={
+                                                    "text-gray-700 text-base"
+                                                }
+                                            >
+                                                <PlusOutlined className="mr-1" />
+                                                <span>
+                                                    Thêm thuộc tính biến thể
+                                                </span>
+                                            </div>
+                                        </button>
+                                    )
+                                }
                                 maxFormListInputValue={5}
                                 form={form}
                                 setFormValue={() => {
@@ -2105,7 +2184,9 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                     <CustomizeModal
                         isOpen={isOpenUpdateVariantModal}
                         handleCloseModal={handleCloseUpdateVariantModal}
-                        handleSaveModal={handleSaveUpdateVariantModal}
+                        handleSaveModal={
+                            productId ? undefined : handleSaveUpdateVariantModal
+                        }
                         okText="Lưu"
                         cancelText="Hủy"
                         title={`Cật nhật biến thể ${modalCreateProductStore.skusNameSelected}`}
@@ -2138,6 +2219,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                             className="w-full h-10"
                                             autoComplete="off"
                                             placeholder="Nhập giá nhập"
+                                            disabled={productId ? true : false}
                                             onChange={(e) => {
                                                 const namePath =
                                                     getDefaultNamePathVariantFormItem(
@@ -2157,33 +2239,6 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                                     String(value || "0")
                                                 );
                                             }}
-                                            disabled={
-                                                !modalCreateProductStore.skusNameSelected
-                                            }
-                                        />
-                                    </Form.Item>
-                                </Col>
-                                <Col flex={"50%"}>
-                                    <Form.Item
-                                        label="Tên lô"
-                                        name={getDefaultNamePathVariantFormItem(
-                                            "lot_name"
-                                        )}
-                                        className="w-full"
-                                    >
-                                        <Input
-                                            className="w-full h-10"
-                                            autoComplete="off"
-                                            placeholder="Nhập tên lô"
-                                            onChange={(e) => {
-                                                handleUpdateVariantValue(
-                                                    "lot_name",
-                                                    String(e.target.value)
-                                                );
-                                            }}
-                                            disabled={
-                                                !modalCreateProductStore.skusNameSelected
-                                            }
                                         />
                                     </Form.Item>
                                 </Col>
@@ -2207,6 +2262,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                             placeholder="Nhập giá bán"
                                             className="w-full h-10"
                                             autoComplete="off"
+                                            disabled={productId ? true : false}
                                             onChange={(e) => {
                                                 const value =
                                                     e.target.value.replace(
@@ -2224,9 +2280,6 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                                     String(value || "0")
                                                 );
                                             }}
-                                            disabled={
-                                                !modalCreateProductStore.skusNameSelected
-                                            }
                                         />
                                     </Form.Item>
                                 </Col>
@@ -2248,6 +2301,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                             className="w-full h-10"
                                             autoComplete="off"
                                             placeholder="Nhập giá so sánh"
+                                            disabled={productId ? true : false}
                                             onChange={(e) => {
                                                 const value =
                                                     e.target.value.replace(
@@ -2265,9 +2319,6 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                                     String(value || "0")
                                                 );
                                             }}
-                                            disabled={
-                                                !modalCreateProductStore.skusNameSelected
-                                            }
                                         />
                                     </Form.Item>
                                 </Col>
@@ -2282,7 +2333,9 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                         className="w-full"
                                         rules={[
                                             {
-                                                required: true,
+                                                required: productId
+                                                    ? false
+                                                    : true,
                                                 message: `Vui lòng nhập SKU`,
                                             },
                                         ]}
@@ -2297,9 +2350,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                                     String(e.target.value || "")
                                                 );
                                             }}
-                                            disabled={
-                                                !modalCreateProductStore.skusNameSelected
-                                            }
+                                            disabled={productId ? true : false}
                                         />
                                     </Form.Item>
                                 </Col>
@@ -2312,7 +2363,9 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                         className="w-full"
                                         rules={[
                                             {
-                                                required: true,
+                                                required: productId
+                                                    ? false
+                                                    : true,
                                                 message: `Vui lòng nhập Barcode`,
                                             },
                                         ]}
@@ -2327,9 +2380,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                                     String(e.target.value || "")
                                                 );
                                             }}
-                                            disabled={
-                                                !modalCreateProductStore.skusNameSelected
-                                            }
+                                            disabled={productId ? true : false}
                                         />
                                     </Form.Item>
                                 </Col>
@@ -2366,29 +2417,31 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                                             fallback="/images/default_product_image.jpg"
                                                         />
                                                     )}
-                                                    <label
-                                                        className="absolute -top-10 right-0 w-8 h-8 flex justify-center items-center hover:bg-red-100 rounded-md cursor-pointer"
-                                                        onClick={(e) => {
-                                                            {
-                                                                modalCreateProductStore.updateSkusImage(
-                                                                    null
-                                                                );
-                                                                defaultForm.setFields(
-                                                                    [
-                                                                        {
-                                                                            name: getDefaultNamePathVariantFormItem(
-                                                                                "image"
-                                                                            ),
-                                                                            value: null,
-                                                                            errors: [],
-                                                                        },
-                                                                    ]
-                                                                );
-                                                            }
-                                                        }}
-                                                    >
-                                                        <DeleteOutlined className="text-red-600 cursor-pointer text-base" />
-                                                    </label>
+                                                    {!productId && (
+                                                        <label
+                                                            className="absolute -top-10 right-0 w-8 h-8 flex justify-center items-center hover:bg-red-100 rounded-md cursor-pointer"
+                                                            onClick={(e) => {
+                                                                {
+                                                                    modalCreateProductStore.updateSkusImage(
+                                                                        null
+                                                                    );
+                                                                    defaultForm.setFields(
+                                                                        [
+                                                                            {
+                                                                                name: getDefaultNamePathVariantFormItem(
+                                                                                    "image"
+                                                                                ),
+                                                                                value: null,
+                                                                                errors: [],
+                                                                            },
+                                                                        ]
+                                                                    );
+                                                                }
+                                                            }}
+                                                        >
+                                                            <DeleteOutlined className="text-red-600 cursor-pointer text-base" />
+                                                        </label>
+                                                    )}
                                                 </div>
                                             ) : (
                                                 <label
@@ -2414,6 +2467,9 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                                     handleUploadVariantImage
                                                 }
                                                 className="!hidden"
+                                                disabled={
+                                                    productId ? true : false
+                                                }
                                             />
                                         </div>
                                     </Form.Item>
@@ -2452,36 +2508,46 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                             >
                                                 {(fields) => (
                                                     <>
-                                                        {modalCreateProductStore.warehouse_selected.map(
+                                                        {fields.map(
                                                             (
-                                                                item: SelectType,
-                                                                index: number
+                                                                // item: SelectType,
+                                                                // index: number
+                                                                rowField
                                                             ) => (
                                                                 <Row
                                                                     gutter={24}
                                                                     key={
-                                                                        item.value
+                                                                        rowField.key
                                                                     }
                                                                     align="top"
                                                                 >
-                                                                    <Col flex="50%">
+                                                                    <Col
+                                                                        flex={`50%`}
+                                                                    >
                                                                         <span>
                                                                             {
-                                                                                item.label
+                                                                                modalCreateProductStore
+                                                                                    .warehouse_selected[
+                                                                                    rowField
+                                                                                        .name
+                                                                                ]
+                                                                                    ?.label
                                                                             }
                                                                         </span>
                                                                     </Col>
-                                                                    <Col flex="50%">
+                                                                    <Col
+                                                                        flex={`50%`}
+                                                                    >
                                                                         <Form.Item
                                                                             name={[
-                                                                                index,
+                                                                                rowField.name,
                                                                                 "quantity_import",
                                                                             ]}
                                                                             rules={[
                                                                                 {
                                                                                     required:
                                                                                         true,
-                                                                                    message: `Vui lòng nhập số lượng của kho biến thể`,
+                                                                                    message: `Vui lòng nhập số lượng kho biến thể`,
                                                                                 },
                                                                             ]}
                                                                         >
@@ -2489,6 +2555,11 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                                                                 placeholder="Nhập số lượng"
                                                                                 className="w-full h-10"
                                                                                 autoComplete="off"
+                                                                                disabled={
+                                                                                    productId
+                                                                                        ? true
+                                                                                        : false
+                                                                                }
                                                                                 onChange={(
                                                                                     e
                                                                                 ) => {
@@ -2504,17 +2575,22 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                                                                                     "skus",
                                                                                                     modalCreateProductStore.skusNameSelected,
                                                                                                     "detail_import",
-                                                                                                    index,
+                                                                                                    rowField.name,
                                                                                                     "warehouse_id",
                                                                                                 ],
-                                                                                                value: item.value,
+                                                                                                value: modalCreateProductStore
+                                                                                                    .warehouse_selected[
+                                                                                                    rowField
+                                                                                                        .name
+                                                                                                ]
+                                                                                                    ?.value,
                                                                                             },
                                                                                             {
                                                                                                 name: [
                                                                                                     "skus",
                                                                                                     modalCreateProductStore.skusNameSelected,
                                                                                                     "detail_import",
-                                                                                                    index,
+                                                                                                    rowField.name,
                                                                                                     "quantity_import",
                                                                                                 ],
                                                                                                 value: value,
@@ -2529,7 +2605,73 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                                                                                 .value ??
                                                                                                 ""
                                                                                         ),
-                                                                                        item.value
+                                                                                        modalCreateProductStore
+                                                                                            .warehouse_selected[
+                                                                                            rowField
+                                                                                                .name
+                                                                                        ]
+                                                                                            ?.value
+                                                                                    );
+                                                                                }}
+                                                                            />
+                                                                        </Form.Item>
+                                                                    </Col>
+                                                                    <Col
+                                                                        flex={`50%`}
+                                                                        push={
+                                                                            12
+                                                                        }
+                                                                        className="flex justify-end"
+                                                                    >
+                                                                        <Form.Item
+                                                                            label="Tên lô"
+                                                                            name={[
+                                                                                rowField.name,
+                                                                                "lot_name",
+                                                                            ]}
+                                                                            className="w-full"
+                                                                        >
+                                                                            <Input
+                                                                                className="w-full h-10"
+                                                                                autoComplete="off"
+                                                                                placeholder="Nhập tên lô"
+                                                                                disabled={
+                                                                                    productId
+                                                                                        ? true
+                                                                                        : false
+                                                                                }
+                                                                                onChange={(
+                                                                                    e
+                                                                                ) => {
+                                                                                    defaultForm.setFields(
+                                                                                        [
+                                                                                            {
+                                                                                                name: [
+                                                                                                    "skus",
+                                                                                                    modalCreateProductStore.skusNameSelected,
+                                                                                                    "detail_import",
+                                                                                                    rowField.name,
+                                                                                                    "lot_name",
+                                                                                                ],
+                                                                                                value: e
+                                                                                                    .target
+                                                                                                    .value,
+                                                                                            },
+                                                                                        ]
+                                                                                    );
+                                                                                    handleUpdateVariantValue(
+                                                                                        "lot_name",
+                                                                                        String(
+                                                                                            e
+                                                                                                .target
+                                                                                                .value
+                                                                                        ),
+                                                                                        modalCreateProductStore
+                                                                                            .warehouse_selected[
+                                                                                            rowField
+                                                                                                .name
+                                                                                        ]
+                                                                                            ?.value
                                                                                     );
                                                                                 }}
                                                                             />
@@ -2565,17 +2707,6 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
     );
 
     const validateSkusData = async (imageUrl?: string[]) => {
-        const formDetailImport = form.getFieldValue(["detail_import"]);
-        const { warehouse_id, ...restDetailImport } = formDetailImport;
-        const detailImport: SkusDetailImportDto[] = Object.entries(
-            restDetailImport || {}
-        ).map(([key, value]) => ({
-            warehouse_id: key,
-            quantity_import: Number(
-                (value as { quantity_import: number }).quantity_import
-            ),
-            price_import: Number(form.getFieldValue("price_import")),
-        }));
         const variants: VariantCombinationDto[] = (
             form.getFieldValue("variants") || []
         ).flatMap((item: { name: string; values: { value: string }[] }) =>
@@ -2585,20 +2716,47 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
             }))
         );
         if (!variants.length) {
+            const defaultDetailImport: SkusDetailImportDto[] =
+                modalCreateProductStore.warehouse_selected_quantities.map(
+                    (item) => ({
+                        warehouse_id: item.warehouse_id,
+                        quantity_import: Number(item.quantity_import) || 0,
+                        price_import:
+                            Number(form.getFieldValue("price_import")) || 0,
+                    })
+                );
             const defaultSkus: CreateSkusDto = filterEmptyFields({
                 price_sold: Number(form.getFieldValue("price_sold")),
                 price_compare: Number(form.getFieldValue("price_compare")),
-                detail_import: detailImport,
-                name: form.getFieldValue("title"),
+                detail_import: defaultDetailImport,
+                name: `$${form.getFieldValue("title")} - mặc định`,
                 barcode: form.getFieldValue("barcode"),
                 masku: form.getFieldValue("masku"),
                 image: imageUrl?.length ? imageUrl[0] : "",
-                lot_name: `Lô ${form.getFieldValue("title")} - ${dayjs(
-                    Date.now()
-                ).format("DD/MM/YYYY HH:mm:ss")}`,
             });
             return [defaultSkus];
         } else {
+            const skusDetailImport = [
+                ...toJS(modalCreateProductStore.skuCustomData).entries(),
+            ]
+                .map(([name, item]) => ({
+                    name,
+                    ...item,
+                }))
+                .flatMap((item) => item?.detail_import);
+            if (!skusDetailImport?.length) {
+                throw new Error(
+                    "Tồn tại chi tiết nhập kho của biến thể không hợp lệ"
+                );
+            }
+            const detailImport: SkusDetailImportDto[] = skusDetailImport?.map(
+                (item: any) => ({
+                    warehouse_id: item?.warehouse_id,
+                    quantity_import: Number(item?.quantity_import),
+                    price_import: Number(form.getFieldValue("price_import")),
+                    lot_name: item?.lot_name,
+                })
+            );
             const filePromises = Array.from(
                 modalCreateProductStore.skuCustomData.entries()
             ).map(async ([name, item]) => {
@@ -2632,29 +2790,17 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
             }
             const skusData: CreateSkusDto[] = fileResults.map(
                 ({ name, item }, index) => {
-                    const newDetailImport = detailImport.map((di) => ({
-                        ...di,
-                        ...(item.lot_name && {
-                            lot_name: item.lot_name,
-                        }),
-                    }));
                     return filterEmptyFields({
-                        name,
+                        name: `$${form.getFieldValue("title")} - ${name}`,
                         barcode: item.barcode,
                         masku: item.masku,
                         price_sold: Number(item.price_sold),
                         price_compare: Number(item.price_compare),
-                        detail_import: newDetailImport,
+                        detail_import: detailImport,
                         image: uploadImage[index],
                         variant_combinations:
-                            modalCreateProductStore.skuCustomData
-                                .get(name)
-                                .variant_combinations.map(
-                                    (variants: VariantCombinationDto) => ({
-                                        option_id: variants.option_id,
-                                        value: variants.value,
-                                    })
-                                ),
+                            modalCreateProductStore.skuCustomData.get(name)
+                                .variant_combinations,
                     });
                 }
             );
@@ -2676,18 +2822,32 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                 }));
             })
             .flat();
-        const productData: CreateProductDto = filterEmptyFields({
-            type: form.getFieldValue("type"),
-            slug_product: form.getFieldValue("slug_product"),
-            title: form.getFieldValue("title"),
-            brand_id: form.getFieldValue("brand_id"),
-            category_id: form.getFieldValue("category_id"),
-            description: form.getFieldValue("description"),
-            specifications: specifications,
-            images: uploadUrl,
-            skus: (await validateSkusData(uploadUrl)) as CreateSkusDto[],
-        });
-        return productData;
+        if (!productId) {
+            const productData: CreateProductDto = filterEmptyFields({
+                type: form.getFieldValue("type"),
+                slug_product: form.getFieldValue("slug_product"),
+                title: form.getFieldValue("title"),
+                brand_id: form.getFieldValue("brand_id"),
+                category_id: form.getFieldValue("category_id"),
+                description: form.getFieldValue("description"),
+                specifications: specifications,
+                images: uploadUrl,
+                skus: (await validateSkusData(uploadUrl)) as CreateSkusDto[],
+            });
+            return productData;
+        } else {
+            const productData: UpdateProductDto = filterEmptyFields({
+                type: form.getFieldValue("type"),
+                slug_product: form.getFieldValue("slug_product"),
+                title: form.getFieldValue("title"),
+                brand_id: form.getFieldValue("brand_id"),
+                category_id: form.getFieldValue("category_id"),
+                description: form.getFieldValue("description"),
+                specifications: specifications,
+                images: uploadUrl,
+            });
+            return productData;
+        }
     };
 
     const handleUploadProductImage = async () => {
@@ -2723,6 +2883,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
             store.setLoading(true);
             const skusFormValue = form.getFieldValue("skus");
             const validName = [...modalCreateProductStore.skuCustomData.keys()];
+
             if (!skusFormValue && validName.length > 0) {
                 store.setStatusMessage(
                     400,
@@ -2749,16 +2910,16 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                 }
             }
             const productData = await validateProductData();
-            console.log("-----------------------");
-            console.log("productData", toJS(productData));
-            console.log("formValue", form.getFieldsValue(true));
-            console.log("-----------------------");
-
             let res = null;
             if (!productId) {
-                res = await productStore.createProduct(productData);
+                res = await productStore.createProduct(
+                    productData as CreateProductDto
+                );
             } else {
-                res = await productStore.updateProduct(productId, productData);
+                res = await productStore.updateProduct(
+                    productId,
+                    productData as UpdateProductDto
+                );
             }
             if (res) {
                 store.setStatusMessage(
@@ -2784,10 +2945,13 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
     };
 
     const handleCloseCreateProductModal = () => {
-        form.resetFields();
         modalCreateProductStore.clearSkusCustomData();
         modalCreateProductStore.clearVariantCombination();
         modalCreateProductStore.clearWarehouseSelectedAndQuantity();
+        form.setFieldsValue({});
+        subForm.setFieldsValue({});
+        form.resetFields();
+        subForm.resetFields();
         onClose();
     };
 
@@ -2808,6 +2972,19 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
     const handleFormFieldChange = (changedFields: any, allFields: any) => {};
 
     const handleFormValueChange = (changedValues: any, values: any) => {};
+
+    useEffect(() => {
+        if (formInitialValues) {
+            const subFormValue: Record<
+                string,
+                Omit<IFormSkuCustomData, "name">
+            > = subForm.getFieldValue("skus");
+            if (subFormValue) {
+                modalCreateProductStore.setFullCustomData(subFormValue);
+            }
+            form.setFieldsValue(formInitialValues);
+        }
+    }, [formInitialValues]);
     return (
         <>
             <CustomizeModal
@@ -2830,14 +3007,15 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                         onFinishFailed={handleSubmitFailed}
                         onFieldsChange={handleFormFieldChange}
                         onValuesChange={handleFormValueChange}
-                        initialValues={
-                            formInitialValues ? formInitialValues : undefined
-                        }
                     >
                         <GeneralInformation />
                         <SpecificationsInformation />
-                        <PriceInformation />
-                        <InventoryInformation />
+                        {!productId && (
+                            <>
+                                <PriceInformation />
+                                <InventoryInformation />
+                            </>
+                        )}
                         <VariantInformation defaultForm={subForm} />
                     </Form>
                 </div>

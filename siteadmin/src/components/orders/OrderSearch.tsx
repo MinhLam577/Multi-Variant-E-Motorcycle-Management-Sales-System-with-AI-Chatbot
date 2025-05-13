@@ -20,23 +20,15 @@ const { RangePicker } = DatePicker;
 const OrderSearch = ({
     globalFilters,
     setGlobalFilters,
-    order_status,
     payment_status,
     payment_method,
-    order_store,
-    load_data,
 }) => {
     const [form] = Form.useForm();
-
-    const onFinish = async () => {
-        load_data(globalFilters);
-    };
 
     return (
         <>
             <Form
                 form={form}
-                onFinish={onFinish}
                 labelWrap
                 layout="vertical"
                 className="flex flex-col"

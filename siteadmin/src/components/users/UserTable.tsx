@@ -1,10 +1,9 @@
 import { Button } from "antd";
-import PropTypes from "prop-types";
 import { useNavigate } from "react-router";
 import {
     ProcessModalName,
     processWithModals,
-} from "../../containers/processWithModals";
+} from "../../containers/processWithModals.js";
 import TableComponent from "../../containers/TableComponent";
 import { RoleType, UserStaffResponseType } from "src/stores/user.store";
 import React from "react";

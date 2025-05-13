@@ -6,6 +6,15 @@ import { DateTimeFormat } from "src/constants";
 import UserAPI from "src/api/user.api";
 import { UserType } from "src/constants";
 
+export type ReceiveAddressResponseType = {
+    id: string;
+    receiver_name: string;
+    receiver_phone: string;
+    address: string;
+    postal_code: string;
+    note: string;
+};
+
 export type PermissionType = {
     id: string;
     name: string;
@@ -52,6 +61,14 @@ export type UserStaffResponseType = {
     joinedAt: string;
     isActive: boolean;
     roles: RoleType[];
+};
+
+export type CustomerResponseType = {
+    id: string;
+    username: string;
+    email: string;
+    phoneNumber: string;
+    avatarUrl: string;
 };
 
 export type globalFiltersDataUserStaff = {

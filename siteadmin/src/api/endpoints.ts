@@ -6,6 +6,15 @@ const endpoints = {
         list: (query: string) => `/import?${query}`,
         create: () => `/detail-import`,
         update: (id: string) => `/detail-import/${id}`,
+        detail: (id: string) => `/import/${id}`,
+        delete: (id: string) => `/import/${id}`,
+    },
+    export: {
+        list: (query: string) => `/export?${query}`,
+        create: () => `/export/Orders`,
+        update: (id: string) => `/export/${id}`,
+        detail: (id: string) => `/export/${id}`,
+        delete: (id: string) => `/export/${id}`,
     },
     product: {
         getListProduct: (query: string) => "/products?" + query,

@@ -32,6 +32,11 @@ const HeaderComponent = () => {
     const getMenuPopupContent = () => {
         return (
             <Menu
+                style={{
+                    backgroundColor: colorBgContainer,
+                    border: "none",
+                    width: 200,
+                }}
                 selectedKeys={null}
                 items={[
                     {

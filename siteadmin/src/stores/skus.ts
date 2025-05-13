@@ -1,8 +1,14 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, toJS } from "mobx";
 import { RootStore } from "./base";
 import SkusAPI from "../api/skus";
 import { SUCCESS_STATUSES } from "src/constants";
 import { ResponsePromise } from "src/api";
+import { DetailImportResponseType } from "./imports.store";
+
+export type SkusDetailImportResponseType = {
+    id: string;
+    detail_import: DetailImportResponseType[];
+};
 export default class SkusObservable {
     status: number = null;
     errorMsg: string = "";
@@ -10,7 +16,7 @@ export default class SkusObservable {
     showSuccessMsg: boolean = false;
     rootStore: RootStore;
     data: {
-        detail_imports: any[];
+        detail_imports: SkusDetailImportResponseType[];
     } = {
         detail_imports: [],
     };

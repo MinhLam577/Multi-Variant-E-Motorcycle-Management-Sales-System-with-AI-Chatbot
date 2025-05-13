@@ -36,7 +36,7 @@ import WareHouseDetail from "./pages/warehouses/WareHouseDetail";
 import { StoreProvider } from "./stores";
 import GlobalProvider from "./contexts/global";
 import CustomerDetail from "./pages/customers/CustomerDetail";
-
+import NetworkError from "./pages/NetworkError";
 import PermissionPage from "./pages/permission/permission";
 import RolePage from "./pages/role/role";
 // import Role from
@@ -47,6 +47,7 @@ import Setting from "./pages/setting/index";
 import Products from "./pages/products";
 import Overview from "./pages/adminOverview/Overview";
 import ImportPage from "./pages/imports";
+import ExportPage from "./pages/exports";
 function App() {
     return (
         <StoreProvider>
@@ -543,7 +544,11 @@ function App() {
                                         </ProtectedRoute>
                                     }
                                 />
-
+                                <Route
+                                    path="/network-error"
+                                    element={<NetworkError />}
+                                />
+                                <Route path="/:404" element={<Page404 />} />
                                 <Route
                                     path="/import"
                                     element={
@@ -552,7 +557,14 @@ function App() {
                                         </ProtectedRoute>
                                     }
                                 />
-                                <Route path="/:404" element={<Page404 />} />
+                                <Route
+                                    path="/export"
+                                    element={
+                                        <ProtectedRoute>
+                                            <ExportPage />
+                                        </ProtectedRoute>
+                                    }
+                                />
                             </Routes>
                         </Suspense>
                     </GlobalProvider>

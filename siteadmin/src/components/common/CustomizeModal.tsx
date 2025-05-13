@@ -26,8 +26,8 @@ const CustomizeModal: React.FC<CustomizeModalProps> = ({
         <Modal
             {...res}
             open={isOpen}
-            onCancel={handleCloseModal || null}
-            onOk={handleSaveModal || null}
+            onCancel={handleCloseModal || undefined}
+            onOk={handleSaveModal || undefined}
             okText={okText || "Xác nhận"}
             cancelText={cancelText || "Hủy"}
             destroyOnClose={true}

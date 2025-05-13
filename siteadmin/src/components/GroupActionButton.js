@@ -25,19 +25,23 @@ const GroupActionButton = ({
                 />
             )}
 
-            <Button
-                icon={<DeleteOutlined />}
-                title="Xóa"
-                onClick={() => handleDelete(item.id)}
-                style={{ minWidth: "30px" }}
-            />
+            {handleDelete && (
+                <Button
+                    icon={<DeleteOutlined />}
+                    title="Xóa"
+                    onClick={() => handleDelete(item.id)}
+                    style={{ minWidth: "30px" }}
+                />
+            )}
 
-            <Button
-                icon={<UndoOutlined />}
-                title="Phục hồi"
-                onClick={() => handleRestore(item.id)}
-                style={{ minWidth: "30px" }}
-            />
+            {handleRestore && (
+                <Button
+                    icon={<UndoOutlined />}
+                    title="Phục hồi"
+                    onClick={() => handleRestore(item.id)}
+                    style={{ minWidth: "30px" }}
+                />
+            )}
         </div>
     );
 };

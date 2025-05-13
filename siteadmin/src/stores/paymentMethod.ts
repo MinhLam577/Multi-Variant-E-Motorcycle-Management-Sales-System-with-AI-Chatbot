@@ -2,6 +2,13 @@ import { makeAutoObservable } from "mobx";
 import apiClient from "../api/apiClient";
 import endpoints from "../api/endpoints";
 
+export type PaymentMethodResponseType = {
+    id: string;
+    name: string;
+    description: string;
+    logo: string | null;
+};
+
 export default class PaymentMethodObservable {
     status: number = null;
     errorMsg: string = "";
