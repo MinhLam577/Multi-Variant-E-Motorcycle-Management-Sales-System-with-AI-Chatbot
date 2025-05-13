@@ -50,7 +50,7 @@ const Home_1 = () => {
           <div className="row justify-content-center">
             <div className="col-lg-8">
               <div className="main-title text-center">
-                <h2>Sản phẩm bán chạy</h2>
+                <h2>Sản phẩm bán chạy </h2>
               </div>
             </div>
           </div>
@@ -66,7 +66,7 @@ const Home_1 = () => {
           <div className="row mt20">
             <div className="col-lg-12">
               <div className="text-center">
-                <Link href="/listing-v1" className="more_listing">
+                <Link href="/listing-v1/?type=car" className="more_listing">
                   Xem tất cả{" "}
                   <span className="icon">
                     <span className="fas fa-plus" />
@@ -125,7 +125,7 @@ const Home_1 = () => {
           <div className="row mt20">
             <div className="col-lg-12">
               <div className="text-center">
-                <Link href="/listing-v1" className="more_listing">
+                <Link href="/listing-v1/?type=car" className="more_listing">
                   Xem tất cả{" "}
                   <span className="icon">
                     <span className="fas fa-plus" />

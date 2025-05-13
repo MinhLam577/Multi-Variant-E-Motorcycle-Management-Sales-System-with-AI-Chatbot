@@ -74,7 +74,10 @@ const HomeMotorbike = () => {
           <div className="row">
             <div className="col-lg-12">
               <div className="text-center">
-                <Link href="/page-list-v1" className="more_listing">
+                <Link
+                  href="/listing-v1/?type=motorbike"
+                  className="more_listing"
+                >
                   Xem tất cả{" "}
                   <span className="icon">
                     <span className="fas fa-plus" />
@@ -116,7 +119,7 @@ const HomeMotorbike = () => {
           <div className="row justify-content-center">
             <div className="col-lg-8">
               <div className="main-title text-center">
-                <h2>Cách loại xe máy điện</h2>
+                <h2>Xe máy nổi bật</h2>
               </div>
             </div>
           </div>
@@ -124,7 +127,7 @@ const HomeMotorbike = () => {
 
           <div className="row">
             <div className="col-lg-12" data-aos-delay="100" data-aos="fade-up">
-              <MotorBikeTypeList data={filterOptions} />
+              <MotorBikeTypeList />
             </div>
           </div>
           {/* End .row */}
@@ -132,7 +135,10 @@ const HomeMotorbike = () => {
           <div className="row mt20">
             <div className="col-lg-12">
               <div className="text-center">
-                <Link href="/page-list-v1" className="more_listing">
+                <Link
+                  href="/listing-v1/?type=motorbike"
+                  className="more_listing"
+                >
                   Xem tất cả{" "}
                   <span className="icon">
                     <span className="fas fa-plus" />
@@ -226,3 +232,4 @@ const HomeMotorbike = () => {
 };
 
 export default HomeMotorbike;
+// <h2>Cách loại xe máy điện</h2>

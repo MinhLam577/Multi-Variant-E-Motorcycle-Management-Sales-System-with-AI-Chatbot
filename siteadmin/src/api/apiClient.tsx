@@ -69,7 +69,7 @@ const handleError401 = async (originalRequest, error) => {
         return;
     }
 
-    if (originalRequest.url.includes(endpoints.auth.refreshToken)) {
+    if (originalRequest.url.includes(endpoints.authAdmin.refreshToken)) {
         checkLogout();
         return;
     }
@@ -109,7 +109,7 @@ const refreshToken = async () => {
         const account = await getAccount();
 
         // get api
-        const { data } = await apiClient.get(endpoints.auth.refreshToken, {
+        const { data } = await apiClient.get(endpoints.authAdmin.refreshToken, {
             headers: {
                 Authorization: `Bearer ${account?.refresh_token}`,
             },

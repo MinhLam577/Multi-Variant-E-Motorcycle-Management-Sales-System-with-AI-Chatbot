@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useState } from "react";
 import {
   Button,
@@ -12,7 +13,8 @@ import {
 
 import PropTypes from "prop-types";
 
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
+
 import apiClient from "@/src/api/apiClient";
 import endpoints from "@/src/api/endpoints";
 

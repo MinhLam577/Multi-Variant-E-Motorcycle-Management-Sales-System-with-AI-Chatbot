@@ -5,6 +5,7 @@ import HeaderTop from "../../components/common/HeaderTop";
 import MobileMenu from "../../components/common/MobileMenu";
 import LoginSignupModal from "@/app/components/common/login-signup";
 import BillingMain from "@/app/components/shop/checkout";
+import AddressDefault from "@/app/components/shop/checkout/addressDefault";
 
 export const metadata = {
   title: "Checkout || hongson ",
@@ -42,7 +43,7 @@ const Checkout = () => {
             <div className="col-xl-12">
               <div className="breadcrumb_content style2">
                 <h2 className="breadcrumb_title">Shop Checkout</h2>
-                <p className="subtitle">Checkout</p>
+
                 <ol className="breadcrumb">
                   <li className="breadcrumb-item">
                     <a href="#">Home</a>
@@ -90,3 +91,4 @@ const Checkout = () => {
 };
 
 export default Checkout;
+// <BillingMain />

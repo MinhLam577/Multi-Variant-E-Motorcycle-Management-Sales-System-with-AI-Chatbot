@@ -5,7 +5,7 @@ import { ThemeContext } from "@/app/layout/ThemeContext";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import { Input } from "antd";
 import Link from "next/link";
-import { ClockCircleOutlined } from "@ant-design/icons";
+
 import { Avatar, Badge, Space } from "antd";
 import PopoverCart from "../popover/cart";
 import PopoverAvatar from "../popover/avatar";
@@ -15,13 +15,36 @@ import { useRouter, useSearchParams } from "next/navigation";
 const { Search } = Input;
 const Header = observer(() => {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const value = useContext(ThemeContext);
-  const onSearch = (value) => {
-    // Nếu bạn muốn bao cả dấu ngoặc kép như yêu cầu: "Xe ô tô"
-    const encodedValue = encodeURIComponent(`${value}`);
-    router.push(`/listing-v1?search=${encodedValue}`);
+
+  const [keyword, setKeyword] = useState("");
+
+  const handleSearch = () => {
+    if (router.pathname === "/home-motorbike") {
+      if (keyword.trim()) {
+        const encodedValue = encodeURIComponent(`${keyword}`);
+        router.push(`/listing-v1?search=${encodedValue}&&type=motorbike`);
+        // Gọi API tìm kiếm hoặc xử lý dữ liệu tại đây
+      }
+    } else {
+      if (keyword.trim()) {
+        const encodedValue = encodeURIComponent(`${keyword}`);
+        router.push(`/listing-v1?search=${encodedValue}&&type=car`);
+        // Gọi API tìm kiếm hoặc xử lý dữ liệu tại đây
+      }
+    }
   };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
+  // const onSearch = (value) => {
+  //   // Nếu bạn muốn bao cả dấu ngoặc kép như yêu cầu: "Xe ô tô"
+  //   const encodedValue = encodeURIComponent(`${value}`);
+  //   router.push(`/listing-v1?search=${encodedValue}`);
+  // };
   const [user, setUser] = useState("");
 
   const store = useStore();
@@ -57,7 +80,7 @@ const Header = observer(() => {
             </button>
           </div>
 
-          <div className="flex justify-between items-center w-full px-4 ">
+          <div className="flex justify-between items-center w-full px-4  pt-2 pb-[4px]">
             {/* Menu bên trái */}
             <ul
               id="respMenu"
@@ -70,11 +93,20 @@ const Header = observer(() => {
             {/* Phần bên phải: Search, Cart, Avatar/User */}
 
             <div className="flex items-center gap-4 text-xl text-white">
-              <Search
-                placeholder="input search text"
-                onSearch={onSearch}
-                style={{ width: 200 }}
-              />
+              <div className="flex items-center border-b text-white py-1 w-full max-w-sm">
+                <span className="text-lg text-white mr-2">
+                  <i className="fas fa-search"></i>
+                </span>
+
+                <input
+                  type="text"
+                  placeholder="Tìm kiếm"
+                  value={keyword}
+                  onChange={(e) => setKeyword(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  className="w-full outline-none border-none bg-transparent text-white text-sm placeholder:text-sm"
+                />
+              </div>
 
               {!user && (
                 <PopoverCart
@@ -138,3 +170,8 @@ const Header = observer(() => {
 
 export default Header;
 // <button className="text-sm text-red-500 ">Đăng xuất</button>
+// <Search
+// placeholder="input search text"
+// onSearch={onSearch}
+// style={{ width: 200 }}
+// />

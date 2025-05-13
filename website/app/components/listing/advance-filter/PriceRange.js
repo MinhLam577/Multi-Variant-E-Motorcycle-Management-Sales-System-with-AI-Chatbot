@@ -4,12 +4,15 @@ import { useState } from "react";
 import InputRange from "react-input-range";
 import "react-input-range/lib/css/index.css";
 
-const PriceRange = () => {
-  const [price, setPrice] = useState({ value: { min: 5000, max: 15000 } });
+const PriceRange = ({ handleFilterChange, handleClearAllFilters }) => {
+  const [price, setPrice] = useState({
+    value: { min: 5000, max: 15000 },
+  });
 
   // price range handler
   const handleOnChange = (value) => {
-    console.log(price)
+    console.log(price);
+    console.log(value);
     setPrice({ value });
   };
 
@@ -21,6 +24,12 @@ const PriceRange = () => {
         minValue={1000000}
         value={price.value}
         onChange={(value) => handleOnChange(value)}
+        onChangeComplete={(value) =>
+          handleFilterChange({
+            price_max: value.max,
+            price_min: value.min,
+          })
+        } // Chỉ gọi khi người dùng dừng kéo
         id="slider"
       />
       <span id="slider-range-value1">{toCurrency(price.value.min)}</span>
@@ -30,3 +39,4 @@ const PriceRange = () => {
 };
 
 export default PriceRange;
+// onChangeComplete={(value) => handleFilterChange(value)} // Chỉ gọi khi người dùng dừng kéo

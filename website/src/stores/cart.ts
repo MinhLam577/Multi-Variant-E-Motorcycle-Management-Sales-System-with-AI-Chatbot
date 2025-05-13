@@ -75,6 +75,15 @@ export default class CartObservable {
   };
   loading: boolean = false;
   isOpenDetail: boolean = false;
+  // chonj ben cart
+  selectedItems = [];
+  // data checkout
+  listDataSelected = [];
+  dataOrder = {
+    orderId: null,
+    payment_method: null,
+    order_url: null,
+  };
   constructor(rootStore: RootStore) {
     makeAutoObservable(this);
     this.rootStore = rootStore;
@@ -82,6 +91,12 @@ export default class CartObservable {
     this.setPagination = this.setPagination.bind(this);
     this.getListCart = this.getListCart.bind(this);
     this.createVoucher = this.createVoucher.bind(this);
+    this.UpdateQuantityCart = this.UpdateQuantityCart.bind(this);
+    this.setSelectedItems = this.setSelectedItems.bind(this);
+    this.getSelectedItems = this.getSelectedItems.bind(this);
+    this.getItemCarts_Checkout = this.getItemCarts_Checkout.bind(this);
+    this.BuyAgain_InOrder = this.BuyAgain_InOrder.bind(this);
+    this.clearSelectedCart = this.clearSelectedCart.bind(this);
   }
 
   *getListCart() {
@@ -110,6 +125,105 @@ export default class CartObservable {
     }
   }
 
+  *setSelectedItems(items: string[]) {
+    this.selectedItems = items;
+    this.listDataSelected = this.data.filter((item) =>
+      this.selectedItems.includes(item.id)
+    );
+  }
+
+  *getSelectedItems() {
+    return this.selectedItems;
+  }
+  *getItemCarts_Checkout() {
+    return this.data.filter((item) => this.selectedItems.includes(item.id));
+  }
+  *clearSelectedCart() {
+    this.selectedItems = [];
+  }
+  *checkoutBycart(orderData) {
+    try {
+      this.loading = true;
+      const response = yield apiClient.post(
+        endpoints.order.createOrder(),
+        orderData
+      );
+      const { data, status, message } = response;
+      console.log(data);
+      const success_status = [200, 201, 204];
+      if (success_status.includes(status)) {
+        // lấy id cart
+        yield this.getListCart();
+        this.dataOrder.orderId = data.id;
+        this.dataOrder.payment_method = data.payment_method.name;
+        this.status = status;
+        this.successMsg = message;
+      } else {
+        this.status = status;
+        this.errorMsg = Array.isArray(message) ? message.join(", ") : message;
+      }
+    } catch (e: any) {
+      console.error(e);
+      this.status = 500;
+      this.errorMsg = e?.message || "Lỗi không xác định";
+    } finally {
+      this.loading = false;
+    }
+  }
+  *checkoutByZaloPay(orderID) {
+    try {
+      this.loading = true;
+      const response = yield apiClient.post(
+        endpoints.zalo_pay.createZalopayOrder(),
+        orderID
+      );
+      const { data, status, message } = response;
+      console.log(data);
+      const success_status = [200, 201, 204];
+      if (success_status.includes(status)) {
+        // lấy id cart
+        this.dataOrder.order_url = data.response.order_url;
+
+        this.status = status;
+        this.successMsg = message;
+      } else {
+        this.status = status;
+        this.errorMsg = Array.isArray(message) ? message.join(", ") : message;
+      }
+    } catch (e: any) {
+      console.error(e);
+      this.status = 500;
+      this.errorMsg = e?.message || "Lỗi không xác định";
+    } finally {
+      this.loading = false;
+    }
+  }
+  *BuyAgain_InOrder(body) {
+    try {
+      this.loading = true;
+      // quantity , skus
+      const response = yield apiClient.post(endpoints.cart.create(), body);
+      const { data, status, message } = response;
+      console.log(data);
+      const success_status = [200, 201, 204];
+      if (success_status.includes(status)) {
+        if (!this.selectedItems.includes(data.id)) {
+          this.selectedItems.push(data.id);
+        }
+        yield this.getListCart();
+        this.status = status;
+        this.successMsg = message;
+      } else {
+        this.errorMsg = Array.isArray(message) ? message.join(", ") : message;
+      }
+    } catch (e: any) {
+      console.error(e);
+      this.status = 500;
+      this.errorMsg = e?.message || "Lỗi không xác định";
+    } finally {
+      this.loading = false;
+    }
+  }
   *PostCart(body) {
     try {
       this.loading = true;
@@ -118,7 +232,9 @@ export default class CartObservable {
       console.log(data);
       const success_status = [200, 201, 204];
       if (success_status.includes(status)) {
-        this.dataById = data;
+        yield this.getListCart();
+        this.status = status;
+        this.successMsg = message;
       } else {
         this.errorMsg = Array.isArray(message) ? message.join(", ") : message;
       }
@@ -131,18 +247,46 @@ export default class CartObservable {
     }
   }
 
-  *UpdateCart(id, quantity) {
+  *PostCart_ByBuyNow(body) {
+    try {
+      this.loading = true;
+      const response = yield apiClient.post(endpoints.cart.create(), body);
+      const { data, status, message } = response;
+      console.log(data);
+      const success_status = [200, 201, 204];
+      if (success_status.includes(status)) {
+        if (!this.selectedItems.includes(data.id)) {
+          this.selectedItems.push(data.id);
+        }
+        yield this.getListCart();
+        this.status = status;
+        this.successMsg = message;
+      } else {
+        this.errorMsg = Array.isArray(message) ? message.join(", ") : message;
+      }
+    } catch (e: any) {
+      console.error(e);
+      this.status = 500;
+      this.errorMsg = e?.message || "Lỗi không xác định";
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  *UpdateQuantityCart(idCartItem, quantity) {
     try {
       this.loading = true;
       const response = yield apiClient.patch(
-        endpoints.cart.update(id),
+        endpoints.cart.update(idCartItem),
         quantity
       );
       const { data, status, message } = response;
       console.log(data);
       const success_status = [200, 201, 204];
       if (success_status.includes(status)) {
-        this.dataById = data;
+        yield this.getListCart();
+        this.status = status;
+        this.successMsg = message;
       } else {
         this.errorMsg = Array.isArray(message) ? message.join(", ") : message;
       }
@@ -162,14 +306,14 @@ export default class CartObservable {
     try {
       // gọi một hàm bất đồng bộ (API)
       const response: ResponsePromise = yield apiClient.delete(
-        endpoints.cart.deleteSkus(id)
+        endpoints.cart.deleteCartItem(id)
       );
       const { data, status, message } = response;
       console.log(response);
       const success_status = [200, 201, 204];
       if (success_status.includes(status)) {
         // ✅ Gọi lại API để refresh data
-        // yield this.getListBlogs();
+        yield this.getListCart();
         this.status = status;
         this.successMsg = message;
       } else {

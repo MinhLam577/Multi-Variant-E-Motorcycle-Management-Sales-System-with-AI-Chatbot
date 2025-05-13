@@ -17,7 +17,7 @@ import ReleatedCar from "../ReleatedCar";
 import { Footer } from "antd/es/layout/layout";
 import LoginSignupModal from "@/app/components/common/login-signup";
 import { useStore } from "@/src/stores";
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 // export const metadata = {
 //   title: "Ô Tô Hồng Sơn || Chuyên mua bán và trao đổi xe ô tô uy tín",
@@ -26,6 +26,10 @@ import { useEffect } from "react";
 import { useParams } from "next/navigation";
 import { observer } from "mobx-react-lite";
 const ListingSingle = observer(() => {
+  const [sku, setSku] = useState(null);
+  const [selectedOptionValueId, setSelectedOptionValueId] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+
   const params = useParams();
   const store = useStore();
   const id = params?.id;
@@ -45,6 +49,18 @@ const ListingSingle = observer(() => {
 
     fetchData();
   }, [id]);
+
+  const handleFindSku = async (idItem) => {
+    setSelectedOptionValueId(idItem);
+    await storeProduct.getDetailSKU_ByOptionValue(idItem);
+
+    console.log(storeProduct?.data?.dataSKU);
+    setSku(storeProduct?.data.dataSKU);
+  };
+  console.log(sku);
+  console.log(selectedOptionValueId);
+
+  const [showForm, setShowForm] = useState(false);
   return (
     <div className="wrapper">
       <div
@@ -288,39 +304,128 @@ const ListingSingle = observer(() => {
             {/* End .col-xl-8 */}
 
             <div className="col-lg-4 col-xl-4">
-              <h4 className="mb30 mt30">Màu</h4>
-              <div className="offer_btns">
-                {[
-                  { name: "Tím", hex: "#4B0082" },
-                  { name: "Cam", hex: "#FFA07A" },
-                  { name: "Hồng", hex: "#FF6347" },
-                  { name: "Nâu", hex: "#D2B48C" },
-                  { name: "Xám", hex: "#808080" },
-                  { name: "Bạc", hex: "#B1B1B1" },
-                ].map((color) => (
-                  <button
-                    key={color.name}
-                    className="btn btn-thm ofr_btn1 btn-block mt0 mb20 color_btns"
-                    style={{ backgroundColor: color.hex }}
-                  >
-                    {color.name}
-                  </button>
-                ))}
+              {/* Giá */}
+              <div className="bg-[#fff0f0] p-4 rounded-lg">
+                <div className="flex items-end gap-3 flex-wrap">
+                  <span className="text-red-500 text-2xl font-bold">
+                    ₫
+                    {Number(
+                      sku?.price_sold ||
+                        storeProduct?.data?.dataDetail?.data?.skus?.[0]
+                          ?.price_sold ||
+                        0
+                    ).toLocaleString()}
+                  </span>
+
+                  <span className="line-through text-gray-400 text-sm">
+                    ₫
+                    {Number(
+                      sku?.price_compare ||
+                        storeProduct?.data?.dataDetail?.data?.skus?.[0]
+                          ?.price_compare ||
+                        0
+                    ).toLocaleString()}
+                  </span>
+                  {(() => {
+                    const priceCompare =
+                      sku?.price_compare ||
+                      storeProduct?.data?.dataDetail?.data?.skus?.[0]
+                        ?.price_compare;
+                    const priceSold =
+                      sku?.price_sold ||
+                      storeProduct?.data?.dataDetail?.data?.skus?.[0]
+                        ?.price_sold;
+
+                    if (priceCompare && priceSold) {
+                      const discount = Math.round(
+                        ((+priceCompare - +priceSold) / +priceCompare) * 100
+                      );
+                      return (
+                        <span className="text-red-500 text-sm font-medium">
+                          -{discount}%
+                        </span>
+                      );
+                    }
+
+                    return null;
+                  })()}
+                </div>
               </div>
+              {storeProduct?.data?.resultOption_OptionValue?.map(
+                (element, index) => (
+                  <React.Fragment key={element.id || index}>
+                    <h4 className="mb30 mt30">{element.name}</h4>
+                    <div className="offer_btns">
+                      {element.option_values.map((item) => {
+                        const isActive = item.id === selectedOptionValueId;
+                        return (
+                          <button
+                            key={item.id}
+                            className={`btn  ofr_btn1 mt0 mb20  border px-3 py-1 rounded-full text-xs transition-colors ${
+                              isActive
+                                ? "border-red-500 text-red-500"
+                                : "hover:border-red-500 hover:text-red-500"
+                            }`}
+                            onClick={() => handleFindSku(item.id)}
+                          >
+                            {item.value}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </React.Fragment>
+                )
+              )}
+
               <div className="offer_btns">
                 <div className="text-end">
-                  <button className="btn btn-thm ofr_btn1 btn-block mt0 mb20">
+                  <button
+                    className=" btn btn-thm ofr_btn1 btn-block mt0 mb20"
+                    onClick={() => setShowModal(true)}
+                  >
                     <span className="flaticon-coin mr10 fz18 vam" />
                     Nhận báo giá
                   </button>
+                </div>
+                <div className="col-md-12">
+                  <div className="flex flex-wrap justify-between gap-3">
+                    <button className="flex-1 max-w-[48%] btn btn-thm ofr_btn1 mt0 mb20">
+                      Gửi tin nhắn
+                    </button>
+
+                    <a
+                      href="zalo://oa/show?oid=0973470778"
+                      className="flex-1 max-w-[48%] btn btn-thm ofr_btn1 mt0 mb20 text-white text-center flex items-center justify-center"
+                    >
+                      <span className="flaticon-whatsapp mr2" />
+                      Gọi ngay 0973470778
+                    </a>
+                  </div>
                 </div>
               </div>
               {/* End offer_btn
                */}
               <div className="sidebar_seller_contact">
                 <SellerDetail />
-                <h4 className="mb30">Liên hệ</h4>
-                <ContactSeller />
+                {/* <h4 className="mb30">Liên hệ</h4> */}
+                {showModal && (
+                  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                    <div className="relative bg-white p-6 rounded-xl w-full max-w-md shadow-lg">
+                      {/* Nút Đóng */}
+                      <button
+                        onClick={() => setShowModal(false)}
+                        className="absolute top-5 right-3 text-gray-500 hover:text-black text-2xl"
+                      >
+                        &times;
+                      </button>
+                      <h2 className="text-xl font-semibold mb-4">
+                        Thông tin báo giá
+                      </h2>
+
+                      <ContactSeller setShowModal={setShowModal} />
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* End .col-xl-4 */}
@@ -395,3 +500,8 @@ const ListingSingle = observer(() => {
 });
 
 export default ListingSingle;
+// className={`btn btn-thm ofr_btn1 btn-block mt0 mb20 color_btns border-red-500 text-red-500 ${
+//   isActive
+//     ? "border-red-500 text-red-500"
+//     : "hover:border-red-500 hover:text-red-500"
+// }`}

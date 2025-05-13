@@ -1,4 +1,5 @@
 import Home from "./(home)/home";
+
 import Wrapper from "./layout/wrapper";
 export const metadata = {
   title: "Ô Tô Hồng Sơn || Chuyên mua bán và trao đổi xe ô tô uy tín",

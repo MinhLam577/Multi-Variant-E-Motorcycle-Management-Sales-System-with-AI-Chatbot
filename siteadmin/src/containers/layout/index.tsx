@@ -37,6 +37,7 @@ import { useStore } from "src/stores";
 import { observer } from "mobx-react-lite";
 import { Profile2User } from "iconsax-react";
 import { displayMessage } from "src/utils";
+import { ALL_PERMISSIONS } from "src/constants/permissions";
 
 const { Content, Footer, Sider } = Layout;
 const { useBreakpoint } = Grid;
@@ -123,50 +124,181 @@ const AppLayout = (props) => {
     const store = useStore();
     const [messageApi, contextHolder] = message.useMessage();
     const screens = useBreakpoint();
-
+    const Store = useStore();
+    const { loginObservable } = useStore();
+    const AccountStore = Store.accountObservable;
+    const [
+        items, // set menu items vào state nếu có
+        setMenuItems,
+    ] = useState([]);
     //set user role
-    const items = [
-        getItem("Tổng quan", "1", <BarChartOutlined />, null, () =>
-            navigate("/")
-        ),
-        getItem("Nhân viên", "2", <UserOutlined />, null, () =>
-            navigate("/users")
-        ),
-        getItem("Khách hàng", "19", <UsergroupAddOutlined />, null, () =>
-            navigate("/customer")
-        ),
-        getItem("Sản phẩm", "4", <ShoppingOutlined />, null, () =>
-            navigate("/products")
-        ),
-        getItem("Danh mục", "7", <FileDoneOutlined />, null, () =>
-            navigate("/categories")
-        ),
-        getItem("Danh mục tin tức", "8", <CalendarOutlined />, null, () =>
-            navigate("/categorynews")
-        ),
-        getItem("Đơn hàng", "9", <OrderedListOutlined />, null, () =>
-            navigate("/orders")
-        ),
-        getItem("Thông báo", "15", <NotificationOutlined />, null, () =>
-            navigate("/notifications")
-        ),
-        getItem("Voucher", "16", <GiftOutlined />, null, () =>
-            navigate("/vouchers")
-        ),
-        getItem("Nhập kho", "22", <ImportOutlined />, null, () => {
-            navigate("/import");
-        }),
+    useEffect(() => {
+        fetchData();
+    }, []);
 
-        getItem("Xuất kho", "23", <TruckOutlined />, null, () => {
-            navigate("/export");
-        }),
-        getItem("Kho", "17", <DashboardOutlined />, null, () =>
-            navigate("/warehouse")
-        ),
-        getItem("Cấu hình", "20", <SettingOutlined />, null, () =>
-            navigate("/setting")
-        ),
-    ];
+    const fetchData = async () => {
+        await AccountStore.getAccount();
+        await loginObservable.getAccountApi(AccountStore.account.email);
+    };
+    const permissions = AccountStore.account?.permissions || [];
+    useEffect(() => {
+        if (!permissions?.length) return;
+        const items = [];
+
+        const hasPermission = (perm) =>
+            permissions.some(
+                (item) => item.path === perm.path && item.method === perm.method
+            );
+
+        items.push(
+            getItem("Tổng quan", "1", <BarChartOutlined />, null, () =>
+                navigate("/")
+            )
+        );
+
+        if (hasPermission(ALL_PERMISSIONS.USERS.GET_PAGINATE)) {
+            items.push(
+                getItem("Nhân viên", "2", <UserOutlined />, null, () =>
+                    navigate("/users")
+                )
+            );
+        }
+        if (hasPermission(ALL_PERMISSIONS.CUSTOMERS.GET_PAGINATE)) {
+            items.push(
+                getItem(
+                    "Khách hàng",
+                    "19",
+                    <UsergroupAddOutlined />,
+                    null,
+                    () => navigate("/customer")
+                )
+            );
+        }
+        if (hasPermission(ALL_PERMISSIONS.ROLES.GET_PAGINATE)) {
+            items.push(
+                getItem("Sản phẩm", "4", <ShoppingOutlined />, null, () =>
+                    navigate("/products")
+                )
+            );
+        }
+
+        if (hasPermission(ALL_PERMISSIONS.CATEGORIES.GET_PAGINATE)) {
+            items.push(
+                getItem("Danh mục", "7", <FileDoneOutlined />, null, () =>
+                    navigate("/categories")
+                )
+            );
+        }
+
+        if (hasPermission(ALL_PERMISSIONS.BLOGCATEGORY.GET_PAGINATE)) {
+            items.push(
+                getItem(
+                    "Danh mục tin tức",
+                    "8",
+                    <CalendarOutlined />,
+                    null,
+                    () => navigate("/categorynews")
+                )
+            );
+        }
+
+        if (hasPermission(ALL_PERMISSIONS.ORDERS.GET_PAGINATE)) {
+            items.push(
+                getItem("Đơn hàng", "9", <OrderedListOutlined />, null, () =>
+                    navigate("/orders")
+                )
+            );
+        }
+
+        if (hasPermission(ALL_PERMISSIONS.ROLES.GET_PAGINATE)) {
+            items.push(
+                getItem("Thông báo", "15", <NotificationOutlined />, null, () =>
+                    navigate("/notifications")
+                )
+            );
+        }
+
+        if (hasPermission(ALL_PERMISSIONS.VOURCHERS.GET_PAGINATE)) {
+            items.push(
+                getItem("Voucher", "16", <GiftOutlined />, null, () =>
+                    navigate("/vouchers")
+                )
+            );
+        }
+
+        if (hasPermission(ALL_PERMISSIONS.WAREHOUSE.GET_PAGINATE)) {
+            items.push(
+                getItem("Kho", "17", <DashboardOutlined />, null, () =>
+                    navigate("/warehouse")
+                )
+            );
+        }
+
+        if (hasPermission(ALL_PERMISSIONS.PERMISSIONS.GET_PAGINATE)) {
+            items.push(
+                getItem("Cấu hình", "20", <SettingOutlined />, null, () =>
+                    navigate("/setting")
+                )
+            );
+        }
+
+        if (hasPermission(ALL_PERMISSIONS.EXPORT.GET_PAGINATE)) {
+            items.push(
+                getItem("Xuất kho", "22", <ImportOutlined />, null, () =>
+                    navigate("/export")
+                )
+            );
+        }
+
+        if (hasPermission(ALL_PERMISSIONS.IMPORT.GET_PAGINATE)) {
+            items.push(
+                getItem("Nhập kho", "23", <ImportOutlined />, null, () =>
+                    navigate("/import")
+                )
+            );
+        }
+        // set menu items vào state nếu có
+        setMenuItems(items);
+    }, [permissions]);
+
+    //   const items = [
+    //     getItem("Tổng quan", "1", <BarChartOutlined />, null, () => navigate("/")),
+    //     getItem("Nhân viên", "2", <UserOutlined />, null, () => navigate("/users")),
+    //     getItem("Khách hàng", "19", <UsergroupAddOutlined />, null, () =>
+    //       navigate("/customer")
+    //     ),
+    //     // getItem("Chi nhánh", "3", <ShopOutlined />, null, () =>
+    //     //     navigate("/stores")
+    //     // ),
+    //     getItem("Sản phẩm", "4", <ShoppingOutlined />, null, () =>
+    //       navigate("/products")
+    //     ),
+    //     // getItem("Biến thể", "5", <TruckOutlined />, null, () =>
+    //     //     navigate("/combo_product")
+    //     // ),
+    //     getItem("Danh mục", "7", <FileDoneOutlined />, null, () =>
+    //       navigate("/categories")
+    //     ),
+    //     getItem("Danh mục tin tức", "8", <CalendarOutlined />, null, () =>
+    //       navigate("/categorynews")
+    //     ),
+    //     getItem("Đơn hàng", "9", <OrderedListOutlined />, null, () =>
+    //       navigate("/orders")
+    //     ),
+    //     getItem("Thông báo", "15", <NotificationOutlined />, null, () =>
+    //       navigate("/notifications")
+    //     ),
+    //     //check  1
+    //     getItem("Voucher", "16", <GiftOutlined />, null, () =>
+    //       navigate("/vouchers")
+    //     ),
+    //     getItem("Kho", "17", <DashboardOutlined />, null, () =>
+    //       navigate("/warehouse")
+    //     ),
+    //     getItem("Cấu hình", "20", <SettingOutlined />, null, () =>
+    //       navigate("/setting")
+    //     ),
+    //   ];
 
     const getSideMenuSelectedKeys = () => {
         const path = location.pathname;

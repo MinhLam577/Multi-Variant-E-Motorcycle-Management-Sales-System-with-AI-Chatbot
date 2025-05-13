@@ -1,13 +1,17 @@
 "use client";
-
+import { toJS } from "mobx";
+import { formatCurrency } from "@/utils";
 import { useRouter } from "next/navigation";
-const CartTotal = ({ cartList }) => {
+const CartTotal = ({ cartList, cartObservable }) => {
   const router = useRouter();
-  // Tính tổng tạm thời (subtotal)
-  const subtotal = cartList?.reduce(
-    (sum, item) => sum + item.skus.price_sold * item.quantity,
-    0
-  );
+  // Lấy danh sách ID đã chọn, đảm bảo là mảng thường
+  const selectedIds = cartObservable.selectedItems;
+  const subtotal = cartList?.reduce((sum, item) => {
+    if (selectedIds?.includes(item.id)) {
+      return sum + item.skus.price_sold * item.quantity;
+    }
+    return sum;
+  }, 0);
 
   return (
     <div className="order_sidebar_widget style2">
@@ -15,20 +19,28 @@ const CartTotal = ({ cartList }) => {
       <ul className="mb15">
         <li className="subtitle">
           <p>
-            Subtotal <span className="float-end">${subtotal}</span>
+            Subtotal{" "}
+            <span className="float-end">${formatCurrency(subtotal)}</span>
           </p>
         </li>
         <li className="subtitle">
           <p>
             Total{" "}
-            <span className="float-end totals color-orose">${subtotal}</span>
+            <span className="float-end totals color-orose">
+              ${formatCurrency(subtotal)}
+            </span>
           </p>
         </li>
       </ul>
       <div className="ui_kit_button payment_widget_btn">
         <button
           type="button"
-          className="btn btn-thm btn-block"
+          disabled={!cartObservable.selectedItems?.length}
+          className={`btn btn-thm btn-block ${
+            !cartObservable.selectedItems?.length
+              ? "cursor-not-allowed "
+              : "cursor-pointer"
+          }`}
           onClick={() => router.push("/checkout")}
         >
           Proceed to Checkout

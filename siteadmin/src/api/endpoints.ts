@@ -28,12 +28,13 @@ const endpoints = {
     options: {
         list: () => "/option",
     },
-    auth: {
-        login: "/auth/login",
-        logout: "/auth/logout",
+    authAdmin: {
+        login: "/auth/admin/login",
+        logout: "/auth/admin/logout",
         refreshToken: "/auth/refresh",
         forgotPassword: "/auth/forgot-password",
         changePassword: "/auth/change-password",
+        getAccount: "/auth/admin/getAccount",
     },
     user: {
         details: (id: string) => `/users/${id}`,

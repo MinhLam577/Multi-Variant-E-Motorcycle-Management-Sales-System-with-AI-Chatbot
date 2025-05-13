@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import Link from "next/link";
 import { Button, ConfigProvider, Empty, Flex, Popover } from "antd";
@@ -16,27 +17,36 @@ const PopoverCart = ({ cart, dataCart = [] }) => {
       ) : (
         <div className="flex flex-col gap-3">
           {dataCart.map((item, index) => (
-            <div
+            <Link
+              href={
+                item.skus.product.type === "car"
+                  ? `/listing-single-v1/${item.skus.product.id}`
+                  : `/listing-single-v2/${item.skus.product.id}`
+              }
               key={index}
-              className="flex justify-between items-center p-2 rounded-md hover:bg-gray-100 transition-all cursor-pointer"
             >
-              <div className="flex items-center gap-2">
-                <div className="w-10 h-10 flex-shrink-0 bg-gray-200 rounded overflow-hidden">
-                  {/* Ảnh sản phẩm */}
-                  <img
-                    src={item.skus.image}
-                    alt="Sản phẩm"
-                    className="object-cover w-full h-full"
-                  />
+              <div
+                key={index}
+                className="flex justify-between items-center p-2 rounded-md hover:bg-gray-100 transition-all cursor-pointer"
+              >
+                <div className="flex items-center gap-2">
+                  <div className="w-10 h-10 flex-shrink-0 bg-gray-200 rounded overflow-hidden">
+                    {/* Ảnh sản phẩm */}
+                    <img
+                      src={item.skus.image}
+                      alt="Sản phẩm"
+                      className="object-cover w-full h-full"
+                    />
+                  </div>
+                  <p className="text-sm text-gray-700 truncate w-[250px]">
+                    {item.skus.product.title}
+                  </p>
                 </div>
-                <p className="text-sm text-gray-700 truncate w-[250px]">
-                  {item.skus.product.title}
-                </p>
+                <div className="text-sm text-red-500 font-semibold whitespace-nowrap">
+                  {formatCurrency(item.skus.price_sold)}
+                </div>
               </div>
-              <div className="text-sm text-red-500 font-semibold whitespace-nowrap">
-                {formatCurrency(item.skus.price_sold)}
-              </div>
-            </div>
+            </Link>
           ))}
           <div className="flex justify-between items-center mt-4">
             <p className="text-[14px] font-medium text-gray-600">

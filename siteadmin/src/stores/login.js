@@ -17,7 +17,7 @@ export class LoginObservable {
         this.status = "submitting";
         try {
             const { data, status, message } = yield apiClient.post(
-                endpoints.auth.login,
+                endpoints.authAdmin.login,
                 {
                     email,
                     password,
@@ -31,6 +31,34 @@ export class LoginObservable {
             }
             yield this.rootStore.accountObservable.setAccount(data);
             yield this.rootStore.userObservable.getMe(data.userId);
+            // goi api account
+
+            this.status = "loginSuccess";
+            this.successMsg = message;
+        } catch (error) {
+            this.status = "loginFailed";
+            this.errorMsg = error?.message;
+        }
+    }
+
+    *getAccountApi(email) {
+        this.status = "submitting";
+        try {
+            const { data, status, message } = yield apiClient.post(
+                endpoints.authAdmin.getAccount,
+                {
+                    email,
+                }
+            );
+            if (status !== 200 && !data?.userId) {
+                this.status = "loginFailed";
+                this.errorMsg = message;
+                return;
+            }
+            yield this.rootStore.accountObservable.setAccount(data);
+            yield this.rootStore.userObservable.getMe(data.userId);
+            // goi api account
+
             this.status = "loginSuccess";
             this.successMsg = message;
         } catch (error) {

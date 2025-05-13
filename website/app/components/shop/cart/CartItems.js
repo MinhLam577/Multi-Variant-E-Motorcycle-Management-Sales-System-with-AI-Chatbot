@@ -6,59 +6,88 @@ import { Button, message, Popconfirm } from "antd";
 import { debounce } from "lodash";
 import { useCallback, useEffect } from "react";
 import { Empty } from "antd";
+import { formatCurrency } from "@/utils";
 const CartItems = ({
-  cartList,
+  cartListObserver,
   selectedItems,
   setSelectedItems,
   setSelectedAllItems,
+  cartObservable,
 }) => {
   const [cartItems, setCartItems] = useState([]);
-
-  const handleDeleteItem = (itemId) => {
+  const [tempQuantities, setTempQuantities] = useState({});
+  const handleDeleteItem = async (itemId) => {
     console.log(itemId);
+
+    await cartObservable.deleteCartByID(itemId);
+    if (cartObservable.status == 200) {
+      message.success(cartObservable.successMsg);
+    } else {
+      message.error(cartObservable.errorMsg);
+    }
   };
 
-  const handleQuantityChange = (itemId, value) => {
-    // Chỉ cập nhật sản phẩm đã thay đổi thay vì cập nhật toàn bộ cartItems
-    const updatedItems = cartItems.map((item) =>
-      item.id === itemId ? { ...item, quantity: value } : item
-    );
-    setCartItems(updatedItems);
+  const handleTempQuantityChange = (itemId, value) => {
+    setTempQuantities((prev) => ({
+      ...prev,
+      [itemId]: value,
+    }));
+  };
+  const handleQuantityBlur = async (itemId) => {
+    const inputVal = Number(tempQuantities[itemId]);
+    const quantity = isNaN(inputVal) || inputVal < 1 ? 1 : inputVal;
+
+    const item = cartListObserver.find((i) => i.id === itemId);
+    console.log(quantity);
+    await cartObservable.UpdateQuantityCart(itemId, { quantity: quantity });
+    setTempQuantities((prev) => {
+      const copy = { ...prev };
+      delete copy[itemId];
+      return copy;
+    });
   };
 
   // Cập nhật cartItems khi cartList thay đổi
   useEffect(() => {
-    if (cartList && cartList.length > 0) {
-      setCartItems(cartList);
+    if (cartListObserver && cartListObserver.length > 0) {
+      setCartItems(cartListObserver);
     }
-  }, [cartList]); // Chạy lại mỗi khi cartList thay đổi
+  }, [cartListObserver]); // Chạy lại mỗi khi cartList thay đổi
 
-  // Sử dụng debounce để giảm tần suất gọi API
-  const handleQuantityBlur = useCallback(
-    debounce((itemId, value) => {
-      console.log("Blur quantity:", itemId, value);
-      // Gọi API cập nhật dữ liệu ở đây nếu cần
-    }, 500), // 500ms delay
-    []
-  );
+  // dùng state bình thuong
+  // const handleCheckboxChange = (itemId) => {
+  // setSelectedItems((prevSelected) => {
+  //     let newSelected;
+  //     if (prevSelected.includes(itemId)) {
+  //       newSelected = prevSelected.filter((id) => id !== itemId); // Bỏ chọn
+  //     } else {
+  //       newSelected = [...prevSelected, itemId]; // Thêm chọn
+  //     }
 
-  const handleCheckboxChange = (itemId) => {
-    setSelectedItems((prevSelected) => {
-      let newSelected;
-      if (prevSelected.includes(itemId)) {
-        newSelected = prevSelected.filter((id) => id !== itemId); // Bỏ chọn
-      } else {
-        newSelected = [...prevSelected, itemId]; // Thêm chọn
-      }
+  //     // Sau khi cập nhật xong selectedItems, kiểm tra luôn
+  //     setSelectedAllItems(newSelected.length === cartListObserver.length);
 
-      // Sau khi cập nhật xong selectedItems, kiểm tra luôn
-      setSelectedAllItems(newSelected.length === cartList.length);
+  //     return newSelected;
+  //   });
+  // };
 
-      return newSelected;
-    });
+  const handleCheckboxChange = async (itemId) => {
+    const prevSelected = await cartObservable.getSelectedItems(); // 🟢 Lấy giá trị cũ từ observable
+
+    let newSelected;
+    if (prevSelected.includes(itemId)) {
+      newSelected = prevSelected.filter((id) => id !== itemId);
+    } else {
+      newSelected = [...prevSelected, itemId];
+    }
+
+    cartObservable.setSelectedItems(newSelected); // 🟢 Cập nhật lại
+
+    // Cập nhật state local nếu cần
+    setSelectedAllItems(newSelected.length === cartListObserver.length);
   };
 
-  if (!cartList || cartList.length === 0) {
+  if (!cartListObserver || cartListObserver.length === 0) {
     return (
       <div className="p-5 h4">
         <Empty />
@@ -69,13 +98,13 @@ const CartItems = ({
   console.log(selectedItems);
   return (
     <>
-      {cartItems?.map((item) => (
+      {cartListObserver?.map((item) => (
         <tr key={item.id}>
           {/* THÊM checkbox vào đây */}
           <td className="text-center">
             <input
               type="checkbox"
-              checked={selectedItems.includes(item.id)}
+              checked={selectedItems?.includes(item.id)}
               onChange={() => handleCheckboxChange(item.id)}
             />
           </td>
@@ -87,30 +116,42 @@ const CartItems = ({
                     width={70}
                     height={70}
                     quality={30}
-                    src="https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m0r1nxglujkfeb@resize_w48_nl.webp"
+                    src={item?.skus?.image}
                     alt="https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m0r1nxglujkfeb@resize_w48_nl.webp"
                   />
                 </Link>
               </li>
-              <li className="list-inline-item">
-                <Link className="cart_title" href="/shop-single">
-                  {item.skus.name}
-                </Link>
+
+              <li className="list-inline-item ">
+                <div className="flex flex-col">
+                  <Link className="cart_title" href="/shop-single">
+                    {item.skus.product.title}
+                  </Link>
+                  <Link className="cart_title" href="/shop-single">
+                    {item.skus.name}
+                  </Link>
+                </div>
               </li>
             </ul>
           </th>
-          <td>{item.skus.price_sold}</td>
+          <td>{formatCurrency(item.skus.price_sold)}</td>
           <td>
             <input
-              className="cart_count text-center"
-              value={item.quantity}
+              className="cart_count text-center border px-2 py-1 rounded w-16"
               type="number"
               min="1"
-              onChange={(e) => handleQuantityChange(item.id, e.target.value)}
-              onBlur={(e) => handleQuantityBlur(item.id, e.target.value)}
+              value={tempQuantities[item.id] ?? item.quantity}
+              onChange={(e) =>
+                handleTempQuantityChange(item.id, e.target.value)
+              }
+              onBlur={() => handleQuantityBlur(item.id)}
             />
           </td>
-          <td>{(item.total = item.quantity * item.skus.price_sold)}</td>
+          <td>
+            {formatCurrency(
+              (item.total = item.quantity * item.skus.price_sold)
+            )}
+          </td>
           <td className="pr25">
             <Popconfirm
               title="Xóa sản phẩm"
@@ -120,11 +161,7 @@ const CartItems = ({
               okText="Yes"
               cancelText="No"
             >
-              <div
-                className="pointer"
-                title="Delete"
-                onClick={() => handleDeleteItem(item.id)}
-              >
+              <div className="pointer" title="Delete">
                 <span className="flaticon-trash" />
               </div>
             </Popconfirm>
@@ -136,6 +173,7 @@ const CartItems = ({
 };
 
 export default CartItems;
+// onClick={() => handleDeleteItem(item.id)}
 // {item.skus.name}
 // {
 //   id: 1,

@@ -3,7 +3,8 @@ import { getAllCategory } from "@/src/api/categories";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-
+import { observer } from "mobx-react-lite";
+import { useStore } from "@/src/stores";
 const categories = [
   {
     imgSrc: "/images/category-item/1.png",
@@ -27,19 +28,20 @@ const categories = [
   },
 ];
 
-const Category = () => {
-  const [categories, setCategories] = useState([]);
-  useEffect(() => {
-    const fetchCategories = async () => {
-      const data = await getAllCategory();
-      console.log(data.data);
-      setCategories(data.data);
-    };
-    fetchCategories();
-  }, []);
+const Category = observer(() => {
+  // const [categories, setCategories] = useState([]);
+  // useEffect(() => {
+  //   const fetchCategories = async () => {
+  //     const data = await getAllCategory();
+  //     console.log(data.data);
+  //     setCategories(data.data);
+  //   };
+  //   fetchCategories();
+  // }, []);
+  const { categoryObservable } = useStore();
   return (
     <>
-      {categories.map((category, index) => (
+      {categoryObservable?.data?.categories?.map((category, index) => (
         <div
           key={index}
           className={`col-6 col-sm-6 col-md-4 col-lg col-xl`}
@@ -71,6 +73,6 @@ const Category = () => {
       ))}
     </>
   );
-};
+});
 
 export default Category;

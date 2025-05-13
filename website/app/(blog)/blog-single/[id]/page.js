@@ -54,7 +54,6 @@ const BlogDynamicSingle = observer(() => {
       };
       fetchData();
     }
-    
   }, [id]);
   return (
     <div className="wrapper">
@@ -81,92 +80,41 @@ const BlogDynamicSingle = observer(() => {
       {/* End Main Header Nav For Mobile */}
 
       {/* Blog Single Post */}
-      <section className="blog_post_container bt1 pt50 pb0 mt70-992">
-        <div className="container">
-          <div className="row">
-            <div className="col-xl-8 m-auto">
-              <div className="for_blog blog_single_post">
-                <div className="details">
-                  <div className="wrapper">
-                    <h2 className="title">{data?.title}</h2>
-                    <Meta />
-                  </div>
-                </div>
-              </div>
-            </div>
-            {/* End .col */}
-          </div>
-          {/* End .row */}
-        </div>
-        {/* End .container */}
+      <section className="py-16 bg-white">
+        <div className="max-w-3xl mx-auto px-4">
+          <article className="space-y-6">
+            <header className="text-center">
+              <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-gray-900 mb-4">
+                {data?.title}
+              </h1>
+              <Meta />
+            </header>
 
-        <div className="container-fluid p0">
-          <div className="row">
-            <div className="col-lg-12">
-              <div className="blog-single-post-thumb">
-                <Image
-                  width={1519}
-                  height={475}
-                  priority
-                  style={{ objectFit: "cover" }}
-                  className="img-whp"
-                  src={data?.thumbnail}
-                  alt="bsp1.jpg"
-                />
-              </div>
-            </div>
-          </div>
-          {/* End .row */}
+            {/* Optional banner image or spacing */}
+            <div className="w-full h-[1px] bg-gray-200 my-6"></div>
+          </article>
         </div>
-        {/* End container-fluid */}
       </section>
-      {/* Blog Single Post */}
 
-      {/* Start Blog Single Post Description */}
-      <section className="blog_post_container pt50 pb70">
-        <div className="container">
-          <div className="row justify-content-center">
-            <div className="col-xl-8">
-              <div className="main_blog_post_content">
-                <div className="mbp_thumb_post">
-                  <h4>Mô tả</h4>
-                  <p className="para mb25 mt20">{data?.content}</p>
-
-                  <div className="row">
-                    <div className="col-lg-12">
-                      <Image
-                        width={796}
-                        height={465}
-                        style={{
-                          objectFit: "cover",
-                          width: "100%",
-                          height: "100%",
-                        }}
-                        src="/images/blog/bsp2.jpg"
-                        alt="bsp2.jpg"
-                      />
-                    </div>
-                  </div>
-                  {/* End .row */}
-
-                  {/* End .row */}
-                </div>
-                {/* End mbp_thumb_post */}
-
-                <hr className="mt50" />
-                <Pagination />
-                <hr />
-
-                {/* End CommentForm */}
-              </div>
-              {/* End main_blog_post_content */}
-            </div>
-            {/* End .col */}
-          </div>
-          {/* End .row */}
+      <section className="py-16 bg-[#f3f4f6]">
+        {" "}
+        {/* nền tổng thể */}
+        <div className="max-w-3xl mx-auto px-4">
+          <article className=" md:p-10">
+            {" "}
+            {/* hoặc bỏ hẳn bg nếu muốn */}
+            <h2 className="text-2xl font-semibold text-gray-800 mb-6">Mô tả</h2>
+            <div
+              className="prose prose-lg max-w-none prose-img:rounded-xl prose-img:shadow-sm"
+              dangerouslySetInnerHTML={{ __html: data?.content }}
+            />
+            <div className="my-10 border-t "></div>
+            <Pagination />
+            <div className="mt-10 border-t "></div>
+          </article>
         </div>
-        {/* End .container */}
       </section>
+
       {/* End Blog Single Post Description */}
 
       {/* Our Blog Recent Articles */}
@@ -212,14 +160,3 @@ const BlogDynamicSingle = observer(() => {
 });
 
 export default BlogDynamicSingle;
-// <p className="para mb20">
-//                     Không có bắt hay phí ẩn – bạn chỉ cần trên 18 tuổi, và là cư
-//                     dân UK nắm giữ bằng lái xe UK đầy đủ. Bạn có thể kiểm tra
-//                     các điều khoản và điều kiện đầy đủ tại đây.
-//                   </p>
-//                   <p className="para mb40">
-//                     Đơn giản chỉ cần điền vào biểu mẫu quay số trúng thưởng vào
-//                     bất kỳ thời điểm nào giữa 1 tháng 7 năm 2021 và 31 tháng 7
-//                     năm 2021 và chiếc Mini Electric này có thể là của bạn miễn
-//                     phí!
-//                   </p>

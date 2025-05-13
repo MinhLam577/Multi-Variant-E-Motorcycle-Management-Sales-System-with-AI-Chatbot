@@ -30,6 +30,8 @@ type ProductData = {
   dataDetail: {
     data: any;
   };
+  resultOption_OptionValue: [];
+  dataSKU: null;
   globalFilter: globalFilterType;
 };
 
@@ -63,6 +65,8 @@ class ProductObservable {
       brand: "",
       categoryName: "",
     },
+    resultOption_OptionValue: [],
+    dataSKU: null,
   };
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
@@ -71,6 +75,7 @@ class ProductObservable {
     this.setStatusMessage = this.setStatusMessage.bind(this);
     this.clearStatusMessage = this.clearStatusMessage.bind(this);
     this.getListProduct = this.getListProduct.bind(this);
+    this.getListProductBuyMany = this.getListProductBuyMany.bind(this);
   }
   setStatusMessage(
     status: number,
@@ -149,6 +154,7 @@ class ProductObservable {
       const { data, status, message } = response;
       const resData = data?.data;
       console.log(resData);
+      console.log(resData);
       if (SUCCESS_STATUSES.includes(status)) {
         if (type === EnumProductType.CARS) {
           this.data.cars.data = resData;
@@ -187,6 +193,33 @@ class ProductObservable {
       this.setStatusMessage(0, e?.message, "");
     }
   }
+
+  //
+  *getListProductBuyMany(queryString, type) {
+    const queryString1 = new URLSearchParams(queryString).toString();
+    try {
+      const response: ResponsePromise = yield ProductAPI.getListProduct(
+        queryString1
+      );
+      const { data, status, message } = response;
+      const resData = data?.data;
+      console.log(resData);
+      if (SUCCESS_STATUSES.includes(status)) {
+        if (type === EnumProductType.CARS) {
+          this.data.cars.data = resData;
+        } else if (type === EnumProductType.MOTOBIKES) {
+          this.data.motobikes.data = resData;
+        }
+        this.setStatusMessage(200, "", message);
+      } else {
+        this.setStatusMessage(0, message, "");
+      }
+    } catch (e: any) {
+      console.error(e);
+      this.setStatusMessage(0, e?.message, "");
+    }
+  }
+
   *getDetailProductByID(id) {
     try {
       const response: ResponsePromise = yield ProductAPI.getDetailProduct(id);
@@ -195,6 +228,57 @@ class ProductObservable {
       console.log(resData);
       if (SUCCESS_STATUSES.includes(status)) {
         this.data.dataDetail.data = resData;
+        // Chuyển dữ liệu về dạng mới kèm theo image của sku
+        const result = this.data.dataDetail.data.skus.reduce((acc, sku) => {
+          sku.optionValue.forEach((optionValue) => {
+            const existingOption = acc.find(
+              (item) => item.name === optionValue.option.name
+            );
+            if (existingOption) {
+              existingOption.option_values.push({
+                id: optionValue.id,
+                value: optionValue.value,
+                image: sku.image, // Thêm image của SKU vào option_value
+              });
+            } else {
+              acc.push({
+                name: optionValue.option.name,
+                option_values: [
+                  {
+                    id: optionValue.id,
+                    value: optionValue.value,
+                    image: sku.image, // Thêm image của SKU vào option_value
+                  },
+                ],
+              });
+            }
+          });
+          return acc;
+        }, []);
+        console.log(result);
+        this.data.resultOption_OptionValue = result;
+        console.log(this.data.resultOption_OptionValue);
+
+        this.setStatusMessage(200, "", message);
+      } else {
+        this.setStatusMessage(0, message, "");
+      }
+    } catch (e: any) {
+      console.error(e);
+      this.setStatusMessage(0, e?.message, "");
+    }
+  }
+
+  *getDetailSKU_ByOptionValue(id) {
+    try {
+      const response: ResponsePromise = yield ProductAPI.getDetailSKU(id);
+      const { data, status, message } = response;
+      const resData = data;
+      console.log(resData);
+      if (SUCCESS_STATUSES.includes(status)) {
+        this.data.dataSKU = resData;
+        // Chuyển dữ liệu về dạng mới kèm theo image của sku
+        console.log(this.data.dataSKU);
 
         this.setStatusMessage(200, "", message);
       } else {

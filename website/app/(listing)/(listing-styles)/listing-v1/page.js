@@ -22,6 +22,9 @@ const ListingV1 = () => {
   const [queryObject, setQueryObject] = useState({});
   const store = useStore();
   const storeProduct = store.productObservable;
+  const params = new URLSearchParams(window.location.search);
+  const type = params.get("type");
+
   // Lắng nghe sự thay đổi của query params và gọi API
 
   useEffect(() => {
@@ -70,7 +73,7 @@ const ListingV1 = () => {
     updateUrl(updatedParams); // Cập nhật URL và gọi API tự động
   };
   const handleClearAllFilters = () => {
-    const clearedParams = {}; // hoặc giữ lại mặc định như { page: 1 } nếu muốn
+    const clearedParams = { type }; // hoặc giữ lại mặc định như { page: 1 } nếu muốn
     updateUrl(clearedParams);
   };
 
@@ -115,7 +118,12 @@ const ListingV1 = () => {
           <div className="row">
             <div className="col-xl-12">
               <div className="breadcrumb_content style2">
-                <h2 className="breadcrumb_title">Xe ôtô</h2>
+                {type === "motorbike" ? (
+                  <h2 className="breadcrumb_title">Xe máy điện</h2>
+                ) : (
+                  <h2 className="breadcrumb_title">Xe ôtô</h2>
+                )}
+
                 <ol className="breadcrumb fn-sm mt15-sm">
                   <li className="breadcrumb-item">
                     <a href="#">Home</a>
