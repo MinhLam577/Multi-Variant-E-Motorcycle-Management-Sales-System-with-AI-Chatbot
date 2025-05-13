@@ -11,15 +11,26 @@ export class AccountObservable {
     makeObservable(this, {
       account: observable,
       loadingAccount: observable,
+      //this.setAccount = this.setAccount.bind(this); : ko cần viết thủ công
       setAccount: action.bound,
       getAccount: action.bound,
       clearAccount: action.bound,
       init: action.bound,
+      checkPermission: action.bound,
     });
   }
 
   async init() {
     await this.getAccount();
+  }
+  // Hàm kiểm tra quyền
+  async checkPermission(permission) {
+    return this.account.permissions.find(
+      (item) =>
+        item.path === permission.path &&
+        item.method === permission.method &&
+        item.module === permission.module
+    );
   }
 
   async setAccount(data) {

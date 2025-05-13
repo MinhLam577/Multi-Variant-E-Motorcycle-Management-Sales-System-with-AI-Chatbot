@@ -10,83 +10,88 @@ import AdminBreadCrumb from "../../components/common/AdminBreadCrumb";
 import { getBreadcrumbItems } from "../../containers/layout";
 import CustomizeTab from "../../components/common/CustomizeTab";
 import VoucherSearch from "../../components/vouchers/VoucherSearch";
+import Access from "../../access/access.tsx";
+import { ALL_PERMISSIONS } from "../../constants/permissions";
 const Vouchers = observer(() => {
-    const navigate = useNavigate();
-    const { globalDispatch } = useContext(GlobalContext);
-    const store = useStore();
-    const voucherStore = store.voucherObservable;
-    const handleAddVouchers = () => {
-        navigate("/vouchers/add", { replace: true });
+  const navigate = useNavigate();
+  const { globalDispatch } = useContext(GlobalContext);
+  const store = useStore();
+  const voucherStore = store.voucherObservable;
+  const handleAddVouchers = () => {
+    navigate("/vouchers/add", { replace: true });
+  };
+  const [globalFilters, setGlobalFilters] = useState({});
+  useEffect(() => {
+    const fetchData = () => {
+      voucherStore.getListVoucher();
     };
-    const [globalFilters, setGlobalFilters] = useState({});
-    useEffect(() => {
-        const fetchData = () => {
-            voucherStore.getListVoucher();
-        };
-        fetchData();
-    }, []);
+    fetchData();
+  }, []);
 
-    const handleEditVouchers = (voucherData) => {
-        globalDispatch({
-            type: "breadcrum",
-            data: voucherData.voucher_name,
-        });
-        navigate(`/vouchers/${voucherData.id}/edit`, {
-            replace: true,
-        });
-    };
+  const handleEditVouchers = (voucherData) => {
+    globalDispatch({
+      type: "breadcrum",
+      data: voucherData.voucher_name,
+    });
+    navigate(`/vouchers/${voucherData.id}/edit`, {
+      replace: true,
+    });
+  };
 
-    const handleViewVouchers = (voucherData) => {
-        globalDispatch({
-            type: "breadcrum",
-            data: voucherData.voucher_name,
-        });
-        navigate(`/vouchers/${voucherData.id}`, { replace: true });
-    };
-    useEffect(() => {}, [globalFilters]);
-    return (
-        <>
-            <div className="flex justify-between items-center animate-slideDown">
-                <AdminBreadCrumb
-                    description="Thông tin danh sách voucher"
-                    items={[...getBreadcrumbItems(location.pathname)]}
-                />
-                <div className="flex justify-end items-center">
-                    <Button
-                        type="primary"
-                        icon={<PlusOutlined />}
-                        onClick={handleAddVouchers}
-                        size="large"
-                        className="!rounded-none"
-                    >
-                        Tạo mới
-                    </Button>
-                </div>
+  const handleViewVouchers = (voucherData) => {
+    globalDispatch({
+      type: "breadcrum",
+      data: voucherData.voucher_name,
+    });
+    navigate(`/vouchers/${voucherData.id}`, { replace: true });
+  };
+  useEffect(() => {}, [globalFilters]);
+  return (
+    <>
+      <Access permission={ALL_PERMISSIONS.VOURCHERS.GET_PAGINATE}>
+        <div className="flex justify-between items-center animate-slideDown">
+          <AdminBreadCrumb
+            description="Thông tin danh sách voucher"
+            items={[...getBreadcrumbItems(location.pathname)]}
+          />
+          <Access permission={ALL_PERMISSIONS.VOURCHERS.CREATE} hideChildren>
+            <div className="flex justify-end items-center">
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={handleAddVouchers}
+                size="large"
+                className="!rounded-none"
+              >
+                Tạo mới
+              </Button>
             </div>
-            <div className="w-full my-6 flex flex-col gap-4 px-4 border border-gray-200 rounded-lg bg-white shadow-sm animate-slideUp">
-                <CustomizeTab
-                    items={[
-                        {
-                            key: "1",
-                            label: "Tất cả voucher",
-                            children: (
-                                <div className="w-full mt-2">
-                                    <VoucherSearch
-                                        setFilters={setGlobalFilters}
-                                    />
-                                    <VouchersTable
-                                        data={voucherStore.data}
-                                        handleEditVouchers={handleEditVouchers}
-                                        handleViewVouchers={handleViewVouchers}
-                                        voucherStore={voucherStore}
-                                    />
-                                </div>
-                            ),
-                        },
-                    ]}
-                />
-            </div>
-        </>
-    );
+          </Access>
+        </div>
+
+        <div className="w-full my-6 flex flex-col gap-4 px-4 border border-gray-200 rounded-lg bg-white shadow-sm animate-slideUp">
+          <CustomizeTab
+            items={[
+              {
+                key: "1",
+                label: "Tất cả voucher",
+                children: (
+                  <div className="w-full mt-2">
+                    <VoucherSearch setFilters={setGlobalFilters} />
+                    <VouchersTable
+                      data={voucherStore.data}
+                      handleEditVouchers={handleEditVouchers}
+                      handleViewVouchers={handleViewVouchers}
+                      voucherStore={voucherStore}
+                    />
+                  </div>
+                ),
+              },
+            ]}
+          />
+        </div>
+      </Access> 
+    </>
+  );
 });
 export default Vouchers;

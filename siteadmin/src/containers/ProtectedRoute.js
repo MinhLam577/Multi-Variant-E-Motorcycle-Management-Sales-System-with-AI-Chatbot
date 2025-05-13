@@ -9,9 +9,11 @@ const ProtectedRoute = ({ children }) => {
   if (!user?.access_token) return <Navigate to="/login" replace />;
 
   const allowedRoles = [
-    UserRoleConstant.ADMIN,
-    UserRoleConstant.SALES,
-    UserRoleConstant.USER,
+    UserRoleConstant.admin,
+    UserRoleConstant.Staff,
+    // UserRoleConstant.USER,
+    UserRoleConstant.warehouse_manager,
+    UserRoleConstant.delivery_staff,
   ];
 
   if (!allowedRoles.includes(user?.Roles))

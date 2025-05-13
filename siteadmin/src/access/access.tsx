@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Result } from "antd";
 import { observer } from "mobx-react-lite";
 import { useStore } from "src/stores";
@@ -11,18 +11,29 @@ interface IProps {
 }
 
 const Access = observer((props: IProps) => {
-  //set default: hideChildren = false => vẫn render children
-  // hideChildren = true => ko render children, ví dụ hide button (button này check quyền)
   const { permission, hideChildren = false } = props;
   const [allow, setAllow] = useState<boolean>(true);
   //   const permissions = useAppSelector((state) => state.account.user.permissions);
   const Store = useStore();
+  const { loginObservable } = useStore();
   const AccountStore = Store.accountObservable;
-  useEffect(() => {
-    AccountStore.getAccount();
-  }, []);
-  const permissions = AccountStore.account?.permissions || [];
+  // Lấy permissions từ store, tránh object mới mỗi lần
+  const permissions = useMemo(() => {
+    return AccountStore.account?.permissions || [];
+  }, [AccountStore.account?.permissions]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!AccountStore.account?.email) {
+        await AccountStore.getAccount();
+      }
+      if (!AccountStore.account?.permissions?.length) {
+        await loginObservable.getAccountApi(AccountStore.account.email);
+      }
+    };
+
+    fetchData();
+  }, []);
   useEffect(() => {
     if (permissions.length) {
       const check = permissions.find(

@@ -20,7 +20,13 @@ export const ALL_PERMISSIONS = {
       path: "/api/v1/vouchers/:id",
       module: "VOUCHERS",
     },
+    CREATE_FOR_CUSTOMER: {
+      method: "POST",
+      path: "/api/v1/vouchers/give_customer/:id",
+      module: "VOUCHERS",
+    },
   },
+  // tặng voucher cho khách
   WAREHOUSE: {
     GET_PAGINATE: {
       method: "GET",
@@ -91,14 +97,42 @@ export const ALL_PERMISSIONS = {
     UPDATE: { method: "PATCH", path: "/api/v1/users/:id", module: "USERS" },
     DELETE: { method: "DELETE", path: "/api/v1/users/:id", module: "USERS" },
   },
-
   EXPORT: {
     GET_PAGINATE: { method: "GET", path: "/api/v1/export", module: "EXPORT" },
     CREATE: { method: "POST", path: "/api/v1/export", module: "EXPORT" },
     UPDATE: { method: "PATCH", path: "/api/v1/export/:id", module: "EXPORT" },
     DELETE: { method: "DELETE", path: "/api/v1/export/:id", module: "EXPORT" },
   },
-
+  DETAIL_IMPORT: {
+    CREATE: {
+      method: "POST",
+      path: "/api/v1/detail-import",
+      module: "DETAIL_IMPORT",
+      description:
+        "Chi tiết nhập kho biến thể tồn tại đã oki, data lấy từ file txt trong nhóm tele",
+    },
+    GET_PAGINATE: {
+      method: "GET",
+      path: "/api/v1/detail-import",
+      module: "DETAIL_IMPORT",
+      description: "Hiển thị danh sách nhập kho",
+    },
+    GET_BY_ID: {
+      method: "GET",
+      path: "/api/v1/detail-import/:id",
+      module: "DETAIL_IMPORT",
+    },
+    UPDATE: {
+      method: "PATCH",
+      path: "/api/v1/detail-import/:id",
+      module: "DETAIL_IMPORT",
+    },
+    DELETE: {
+      method: "DELETE",
+      path: "/api/v1/detail-import/:id",
+      module: "DETAIL_IMPORT",
+    },
+  },
   BLOGS: {
     GET_PAGINATE: { method: "GET", path: "/api/v1/blogs", module: "BLOGS" },
     CREATE: { method: "POST", path: "/api/v1/blogs", module: "BLOGS" },
@@ -112,9 +146,14 @@ export const ALL_PERMISSIONS = {
       path: "/api/v1/blog-categories",
       module: "BLOGCATEGORY",
     },
-    CREATE: { method: "POST", path: "/api/v1/blogs", module: "BLOGCATEGORY" },
+    CREATE: {
+      method: "POST",
+      path: "/api/v1/blog-categories",
+      module: "BLOGCATEGORY",
+    },
+    // cập nhật toàn bộ trường
     UPDATE: {
-      method: "PATCH",
+      method: "PUT",
       path: "/api/v1/blog-categories/:id",
       module: "BLOGCATEGORY",
     },
@@ -169,19 +208,44 @@ export const ALL_PERMISSIONS = {
       module: "CATEGORIES",
     },
   },
+  ORDERS: {
+    GET_PAGINATE: {
+      method: "GET",
+      path: "/api/v1/order",
+      module: "ORDERS",
+    },
+    CREATE: {
+      method: "POST",
+      path: "/api/v1/order",
+      module: "ORDERS",
+    },
+    UPDATE: {
+      method: "PATCH",
+      path: "/api/v1/order/:id",
+      module: "ORDERS",
+    },
+    DELETE: {
+      method: "DELETE",
+      path: "/api/v1/order/:id",
+      module: "ORDERS",
+    },
+  },
 };
 
 export const ALL_MODULES = {
   AUTH: "AUTH",
   WAREHOUSE: "WAREHOUSE",
   FILES: "FILES",
-  VOURCHERS: "VOURCHERS",
+  VOUCHERS: "VOURCHERS",
   PERMISSIONS: "PERMISSIONS",
   BRANCH: "BRANCH",
   ROLES: "ROLES",
   USERS: "USERS",
+  CUSTOMERS: "CUSTOMERS",
   BLOGS: "BLOGS",
   CATEGORIES: "CATEGORIES",
   BLOGCATEGORY: "BLOGCATEGORY",
   EXPORT: "EXPORT",
+  DETAIL_IMPORT: "DETAIL_IMPORT",
+  ORDERS: "ORDERS",
 };
