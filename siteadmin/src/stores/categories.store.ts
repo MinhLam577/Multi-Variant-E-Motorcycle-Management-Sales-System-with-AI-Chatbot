@@ -2,13 +2,14 @@ import { makeAutoObservable, toJS } from "mobx";
 import { paginationData, RootStore } from "./base";
 import CategoriesAPI from "src/api/categories.api";
 
-export type CategoriesType = {
+export type CategoryResponseType = {
     id: string;
     name: string;
     description: string;
     parentCategoryId: string | null;
+    deletedAt: string | null;
     slug: string;
-    children?: CategoriesType[];
+    children?: CategoryResponseType[];
 };
 export default class CategoriesObservable {
     status: number | null = null;
@@ -16,7 +17,7 @@ export default class CategoriesObservable {
     successMsg: string | null = null;
     showSuccessMsg: boolean = false;
     rootStore: RootStore;
-    data: CategoriesType[] | null = null;
+    data: CategoryResponseType[] | null = null;
     globalFilters: any;
     pagination: paginationData = {
         current: 1,

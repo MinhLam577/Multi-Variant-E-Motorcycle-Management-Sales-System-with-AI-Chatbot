@@ -394,8 +394,6 @@ const CustomizeEditor: React.FC<CustomizeEditorProps> = forwardRef<
             }
         };
         const handleCloseImageModal = () => {
-            // setFilesSelected([]);
-            // modalForm.resetFields();
             if (quillRef.current && cursorPosition !== null) {
                 const quill = quillRef.current.getEditor();
                 quill.setSelection(cursorPosition, 0, "silent");
@@ -506,7 +504,6 @@ const CustomizeEditor: React.FC<CustomizeEditorProps> = forwardRef<
                     ref={quillRef}
                     {...resProps}
                 />
-
                 <div id="file-input-container">
                     <input
                         id="file-input"

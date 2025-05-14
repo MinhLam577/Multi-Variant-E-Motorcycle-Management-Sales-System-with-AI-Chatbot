@@ -13,7 +13,6 @@ const ModalUpdateProduct: React.FC<IModalUpdateProductProps> = observer(
     ({ productId, initialData, ...props }: IModalUpdateProductProps) => {
         return (
             <ModalCreateProduct
-                key={"modal-update-product"}
                 {...props}
                 formInitialValues={initialData ? initialData : {}}
                 productId={productId}

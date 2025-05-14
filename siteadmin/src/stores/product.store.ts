@@ -3,6 +3,10 @@ import { SUCCESS_STATUSES } from "../constants";
 import { MessageStore, paginationData, RootStore } from "./base";
 import ProductAPI from "src/api/product.api";
 import { ResponsePromise } from "src/api";
+import { warehouseResponseType } from "./warehouse.store";
+import { BrandResponseType } from "./brand.store";
+import { CategoryResponseType } from "./categories.store";
+import { DetailImportResponseType } from "./imports.store";
 
 export enum EnumProductType {
     CAR = "Xe hơi",
@@ -23,10 +27,9 @@ export type globalFilterType = {
     status?: boolean;
     type?: EnumProductStore;
 };
-
 export type ProductType =
     | {
-          products: any;
+          products: ProductDataResponseType;
           totalSKU: number;
           totalStock: number;
       }[]
@@ -46,6 +49,31 @@ export type SkusDetailImportDto = {
     warehouse_id: string;
     quantity_import: number;
     price_import: number;
+    lot_name?: string;
+};
+
+export type SkusDetailImportDtoV2 = {
+    warehouses: {
+        warehouse_id: string;
+        quantity_import: number;
+        detail_import_id: string;
+        lot_name?: string;
+    }[];
+    skus_id: string;
+    price_import: number;
+};
+
+export type UpdateDetailImportDto = {
+    detail_import_id: string;
+    price_import?: number;
+    quantity_import?: number;
+    warehouse_id?: string;
+    lot_name?: string;
+};
+
+export type UpdateImportDto = {
+    note?: string;
+    detail_import: UpdateDetailImportDto[];
 };
 
 export type CreateSkusDto = {
@@ -57,6 +85,17 @@ export type CreateSkusDto = {
     price_compare: number;
     detail_import: SkusDetailImportDto[];
     variant_combinations?: VariantCombinationDto[];
+};
+
+export type UpdateProductDto = {
+    type: EnumProductStore;
+    slug_product: string;
+    title: string;
+    description?: string;
+    brand_id: string;
+    category_id: string;
+    specifications?: CreateProductSpecificationDto[];
+    images?: string[];
 };
 export type OptionValueDataResponseType = {
     id: string;
@@ -71,25 +110,7 @@ export type OptionDataResponseType = {
     createdAt: string;
     updatedAt: string;
 };
-export type WarehouseDataResponseType = {
-    id: string;
-    name: string;
-    address: string;
-    description?: string | null;
-    created_at: string;
-    updated_at: string;
-};
-export type DetailImportResponseType = {
-    id: string;
-    price_import: string;
-    quantity_import: number;
-    quantity_sold: number;
-    quantity_remaining: number;
-    created_at: string;
-    updated_at: string;
-    deleted_at: string | null;
-    warehouse: WarehouseDataResponseType | null;
-};
+
 export type SkusDataResponseType = {
     id: string;
     masku: string;
@@ -99,8 +120,8 @@ export type SkusDataResponseType = {
     price_compare: string;
     image: string | null;
     status: boolean;
-    detail_import: DetailImportResponseType[];
-    optionValue: OptionValueDataResponseType[];
+    detail_import?: DetailImportResponseType[];
+    optionValue?: OptionValueDataResponseType[];
 };
 export type ProductDataResponseType = {
     id: string;
@@ -115,22 +136,8 @@ export type ProductDataResponseType = {
     status?: boolean;
     skus?: SkusDataResponseType[];
     specifications?: CreateProductSpecificationDto[];
-    brand?: {
-        id: string;
-        name: string;
-        slug: string;
-        description: string;
-        thumbnailUrl: string;
-        created_at: string;
-        updated_at: string;
-    };
-    category?: {
-        id: string;
-        slug: string;
-        name: string;
-        description?: string | null;
-        deletedAt?: any | null;
-    };
+    brand?: BrandResponseType;
+    category?: CategoryResponseType;
 };
 
 export type CreateProductDto = {
@@ -157,7 +164,7 @@ class ProductObservable {
     rootStore: RootStore;
     pagination: paginationData = {
         current: 1,
-        pageSize: 100,
+        pageSize: 10,
     };
     data: ProductData = {
         products: {
@@ -243,8 +250,10 @@ class ProductObservable {
             }
         } catch (e: any) {
             console.error("Error fetching product list:", e);
+
             this.rootStore.status = 500;
-            this.rootStore.errorMsg = e?.message || "Lỗi không xác định";
+            this.rootStore.errorMsg =
+                e?.message || "Có lỗi xảy ra, vui lòng thử lại";
         } finally {
             this.loading = false;
         }
@@ -270,7 +279,8 @@ class ProductObservable {
         } catch (e: any) {
             console.error("Error fetching product details:", e);
             this.rootStore.status = 500;
-            this.rootStore.errorMsg = e?.message || "Lỗi không xác định";
+            this.rootStore.errorMsg =
+                e?.message || "Có lỗi xảy ra, vui lòng thử lại";
         } finally {
             this.loading = false;
         }
@@ -314,13 +324,14 @@ class ProductObservable {
         } catch (e: any) {
             console.error("Error creating product:", e);
             this.rootStore.status = 500;
-            this.rootStore.errorMsg = e?.message || "Lỗi không xác định";
+            this.rootStore.errorMsg =
+                e?.message || "Có lỗi xảy ra, vui lòng thử lại";
         } finally {
             this.rootStore.loading = false;
         }
     }
 
-    *updateProduct(id: string, updateData: CreateProductDto) {
+    *updateProduct(id: string, updateData: UpdateProductDto) {
         try {
             this.rootStore.loading = true;
             const response: ResponsePromise = yield ProductAPI.updateProduct(
@@ -342,7 +353,8 @@ class ProductObservable {
         } catch (e: any) {
             console.error("Error updating product:", e);
             this.rootStore.status = 500;
-            this.rootStore.errorMsg = e?.message || "Lỗi không xác định";
+            this.rootStore.errorMsg =
+                e?.message || "Có lỗi xảy ra, vui lòng thử lại";
         } finally {
             this.rootStore.loading = false;
         }

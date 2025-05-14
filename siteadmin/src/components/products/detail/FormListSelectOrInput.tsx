@@ -274,6 +274,7 @@ const FormListSelectOrInput: React.FC<IFormListSelectOrInputProps> = ({
                                                     placeholder="Nhập giá trị"
                                                     className="w-full p-[0.625rem] h-10"
                                                     autoComplete="off"
+                                                    disabled={rest?.isUpdate}
                                                     onBlur={(e) => {
                                                         const value =
                                                             e.target.value.trim();
@@ -349,7 +350,7 @@ const FormListSelectOrInput: React.FC<IFormListSelectOrInputProps> = ({
         return (
             <Col xs={13} md={13} lg={13} xl={13}>
                 <div className="flex flex-col items-center justify-between w-full relative">
-                    {showAddValue && (
+                    {showAddValue && !rest.isUpdate && (
                         <Button
                             type="primary"
                             shape="circle"
@@ -373,15 +374,17 @@ const FormListSelectOrInput: React.FC<IFormListSelectOrInputProps> = ({
                             formItemName={"value"}
                             callback={setAddSpecValueRef}
                             rowField={rowField as FormListFieldData}
-                            component={({ onClick, style }) => (
-                                <button
-                                    className="flex items-center justify-center text-[black] w-10 h-10 border-none outline-none cursor-pointer bg-transparent text-lg"
-                                    onClick={onClick}
-                                    style={style}
-                                >
-                                    <CloseOutlined />
-                                </button>
-                            )}
+                            component={({ onClick, style }) =>
+                                !rest.isUpdate && (
+                                    <button
+                                        className="flex items-center justify-center text-[black] w-10 h-10 border-none outline-none cursor-pointer bg-transparent text-lg"
+                                        onClick={onClick}
+                                        style={style}
+                                    >
+                                        <CloseOutlined />
+                                    </button>
+                                )
+                            }
                             fieldValue={fieldValue}
                             showAddValue={showAddValue}
                         />
@@ -430,6 +433,7 @@ const FormListSelectOrInput: React.FC<IFormListSelectOrInputProps> = ({
                                     placeholderSelect || "Chọn dữ liệu"
                                 }
                                 className="h-10"
+                                disabled={rest?.isUpdate}
                             />
                         ) : (
                             <Input
@@ -439,17 +443,19 @@ const FormListSelectOrInput: React.FC<IFormListSelectOrInputProps> = ({
                             />
                         )}
                     </Form.Item>
-                    <button
-                        className="flex items-center justify-center text-[red] w-10 h-10 border-none outline-none hover:bg-[rgb(255,0,0,0.2)] cursor-pointer bg-transparent text-lg"
-                        onClick={() => {
-                            removeRow(rowField.name);
-                            if (rest?.setFormValue) {
-                                rest.setFormValue();
-                            }
-                        }}
-                    >
-                        <DeleteOutlined />
-                    </button>
+                    {!rest.isUpdate && (
+                        <button
+                            className="flex items-center justify-center text-[red] w-10 h-10 border-none outline-none hover:bg-[rgb(255,0,0,0.2)] cursor-pointer bg-transparent text-lg"
+                            onClick={() => {
+                                removeRow(rowField.name);
+                                if (rest?.setFormValue) {
+                                    rest.setFormValue();
+                                }
+                            }}
+                        >
+                            <DeleteOutlined />
+                        </button>
+                    )}
                 </div>
             </Col>
         );

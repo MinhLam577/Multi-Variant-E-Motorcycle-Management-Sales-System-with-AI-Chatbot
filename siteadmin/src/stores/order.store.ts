@@ -2,11 +2,51 @@ import { makeAutoObservable, toJS } from "mobx";
 import { convertDate } from "../utils";
 import { DateTimeFormat } from "../constants";
 import OrderAPI, { ExportOrder } from "../api/order.api";
-import { MessageStore, paginationData, RootStore } from "./base";
+import { paginationData, RootStore } from "./base";
 import { ResponsePromise } from "src/api";
+import { SkusDataResponseType } from "./product.store";
+import { CustomerResponseType, ReceiveAddressResponseType } from "./user.store";
+import { PaymentMethodResponseType } from "./paymentMethod";
+
+export type OrderDetailResponseType = {
+    id: string;
+    customer: CustomerResponseType;
+    receive_address: ReceiveAddressResponseType;
+    order_status: string;
+    note: string | null;
+    order_details: OrderDetailDataResponseType[];
+    total_price: number;
+    discount_price: number;
+    payment_method: PaymentMethodResponseType;
+    payment_status: string;
+    delivery_method: DeliveryMethodResponseType;
+    delivery_time: string | null;
+    refund_time: string | null;
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string | null;
+};
+
+export type DeliveryMethodResponseType = {
+    id: string;
+    name: string;
+    description: string;
+    logo: string | null;
+};
 
 export type OrderStatus = {
     key?: string;
+};
+
+export type OrderDetailDataResponseType = {
+    id: string;
+    quantity: number;
+    skus: SkusDataResponseType & {
+        product: {
+            id: string;
+            title: string;
+        };
+    };
 };
 
 export type globalFiltersDataOrder = {
@@ -21,11 +61,11 @@ export type globalFiltersDataOrder = {
 };
 
 export type orderData = {
-    orders: any[];
+    orders: OrderDetailResponseType[];
     order_status: OrderStatus[];
     order_status_selected?: string;
     order_selected?: string;
-    order_detail?: any;
+    order_detail?: OrderDetailResponseType | null;
     confirm_order_data?: ExportOrder;
 };
 export default class OrderObservable {
@@ -120,6 +160,8 @@ export default class OrderObservable {
                 yield OrderAPI.getOrderList(queryString);
             const { data, status, message } = response;
             const success_status = [200, 201, 204];
+            const newUrl = `${window.location.pathname}?${queryString}`;
+            window.history.pushState({ path: newUrl }, "", newUrl);
             if (success_status.includes(status)) {
                 this.data.orders = data.orders;
                 this.rootStore.status = status;

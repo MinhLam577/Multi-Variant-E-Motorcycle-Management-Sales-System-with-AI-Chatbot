@@ -11,7 +11,7 @@ const BaseAPI: {
 } = {
     login: (username, password) => {
         return apiClient
-            .post(endpoints.auth.login, {
+            .post(endpoints.authAdmin.login, {
                 username,
                 password,
             })
@@ -40,7 +40,10 @@ const BaseAPI: {
                     },
                 }
             );
-            return response?.data as ResponseImage[] || response as unknown as ResponseFailure;
+            return (
+                (response?.data as ResponseImage[]) ||
+                (response as unknown as ResponseFailure)
+            );
         } catch (error) {
             throw error;
         }

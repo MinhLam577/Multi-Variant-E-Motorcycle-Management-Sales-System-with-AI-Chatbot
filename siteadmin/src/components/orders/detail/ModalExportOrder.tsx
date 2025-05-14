@@ -8,25 +8,30 @@ import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { useStore } from "src/stores";
 import { CreateDetailExport } from "src/api/order.api";
 import ModalConfirmReason from "./ModalConfirmReason";
+import { toJS } from "mobx";
+import { DetailImportResponseType } from "src/stores/imports.store";
+import { OrderDetailResponseType } from "src/stores/order.store";
+import { SkusDetailImportResponseType } from "src/stores/skus";
 
 interface ModalExportOrderProps {
-    orderDetail: any;
+    orderDetail: OrderDetailResponseType;
     isOpen: boolean;
     handleClose: () => void;
     handleSave: (
         orderExport: CreateDetailExport[],
         note: string
-    ) => Promise<any>;
-    map_skus_detail_import: Map<string, any>;
+    ) => Promise<boolean>;
+    map_skus_detail_import: Map<string, SkusDetailImportResponseType>;
 }
 
-interface lotOptionType {
+export interface lotOptionType {
     value: string;
     label: string;
 }
 
-interface LotType {
+export interface LotType {
     id: string;
+    order_id?: string;
     detail_import_id: string;
     quantity_export: number;
     warehouse_id: string;
@@ -73,11 +78,7 @@ const getColumnsConfig = () => {
                             alt={
                                 order_details?.name ? order_details.name : "N/A"
                             }
-                            onError={(e) => {
-                                (e.target as HTMLImageElement).onerror = null; // prevents looping
-                                (e.target as HTMLImageElement).src =
-                                    "https://static.tapchitaichinh.vn/w640/images/upload/08122020/honda-crv-7-1312-1597115159_860x0_5b796724.jpg";
-                            }}
+                            fallback="/images/default_product_image.png"
                             width={48}
                             height={48}
                             preview={false}
@@ -108,12 +109,12 @@ const getColumnsConfig = () => {
         },
         {
             title: "Giá",
-            dataIndex: ["skus", "pricesold"],
-            key: "pricesold",
+            dataIndex: ["skus", "price_sold"],
+            key: "price_sold",
             render: (value) => {
                 return (
                     <span className="text-sm font-medium">
-                        ${formatVNDMoney(value) + "đ"}
+                        {formatVNDMoney(value) + "đ"}
                     </span>
                 );
             },
@@ -266,10 +267,10 @@ const ModalExportOrder: React.FC<ModalExportOrderProps> = ({
     const getLotNameBySkusId = (id: string): lotOptionType[] => {
         const lot = map_skus_detail_import.get(id);
         if (!lot) return [];
-        const detail_import = lot?.detail_import;
+        const detail_import: DetailImportResponseType[] = lot?.detail_import;
         const result = detail_import?.map((item) => ({
             value: item.id,
-            label: item.name,
+            label: item.lot_name,
         }));
         return result;
     };
@@ -370,7 +371,6 @@ const ModalExportOrder: React.FC<ModalExportOrderProps> = ({
     // Bảng mở rộng hiện thông tin chi tiết xuất hàng
     const expandedRowRender = (record) => {
         const skus_id: string = record.skus.id;
-        const warehouse_id: string = getWareHoseIdBySkusId(skus_id);
         const lotNameData: lotOptionType[] = getLotNameBySkusId(skus_id);
         const expandTableData = detailImportTableData[skus_id] || [];
         return (
@@ -537,9 +537,9 @@ const ModalExportOrder: React.FC<ModalExportOrderProps> = ({
                 isOpen={isOpen}
                 handleCloseModal={handleCancelModalExport}
                 handleSaveModal={handleSaveModalExport}
-                okText="Xuất đơn hàng"
+                okText={`Xuất đơn hàng`}
                 cancelText="Hủy"
-                title="Xuất đơn hàng"
+                title={`Xuất đơn hàng ${orderDetail?.id}`}
                 centered
                 width={800}
             >

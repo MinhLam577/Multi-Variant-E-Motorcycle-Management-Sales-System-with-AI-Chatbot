@@ -1,7 +1,6 @@
 import { CopyOutlined } from "@ant-design/icons";
-import { Button, Image, Tag, message } from "antd";
+import { Button, Tag, message } from "antd";
 import moment from "moment";
-import PropTypes from "prop-types";
 import { useNavigate } from "react-router";
 import {
     DateTimeFormat,
@@ -10,7 +9,6 @@ import {
 } from "../../constants";
 import TableComponent from "src/containers/TableComponent";
 import { formatVNDMoney } from "../../utils";
-import { useEffect } from "react";
 import { useStore } from "src/stores";
 
 const handleCopy = (text) => {
@@ -18,7 +16,7 @@ const handleCopy = (text) => {
     message.info("Copied!!");
 };
 
-const getColumnsConfig = ({ handleViewOrders }) => {
+export const getOrderColumnsConfig = ({ handleViewOrders }) => {
     return [
         {
             title: "Mã đơn hàng",
@@ -26,16 +24,20 @@ const getColumnsConfig = ({ handleViewOrders }) => {
             key: "id",
             render: (_, record) => (
                 <div className="flex items-center gap-2">
-                    <Button
-                        type="link"
-                        className="!p-0 whitespace-normal"
-                        key={record.id}
-                        onClick={() => {
-                            handleViewOrders(record.id);
-                        }}
-                    >
-                        {record.id}
-                    </Button>
+                    {handleViewOrders ? (
+                        <Button
+                            type="link"
+                            className="!p-0 whitespace-normal"
+                            key={record.id}
+                            onClick={() => {
+                                handleViewOrders(record.id);
+                            }}
+                        >
+                            {record.id}
+                        </Button>
+                    ) : (
+                        <span className="font-semibold">{record.id}</span>
+                    )}
                     <CopyOutlined
                         onClick={() => {
                             handleCopy(record.id);
@@ -51,10 +53,7 @@ const getColumnsConfig = ({ handleViewOrders }) => {
             key: "username",
             render: (_, record) => (
                 <div>
-                    <span
-                        className="cursor-pointer text-sky-500 font-semibold"
-                        onClick={() => {}}
-                    >
+                    <span className="font-semibold">
                         {record.customer.username}
                     </span>
                 </div>
@@ -140,36 +139,22 @@ const getColumnsConfig = ({ handleViewOrders }) => {
         },
     ];
 };
-const OrdersTable = ({ globalFilters, handleViewOrders, data }) => {
-    const navigate = useNavigate();
+const OrdersTable = ({ handleViewOrders, data }) => {
     const store = useStore();
     const order_store = store.orderObservable;
-    const handleViewUser = (id: string) => {
-        navigate(`/users/${id}`, { replace: true });
-    };
 
     return (
         <>
             <TableComponent
-                filterValue={globalFilters}
                 data={data}
                 observableName={order_store.constructor.name}
                 loading={order_store.loading}
-                getColumnsConfig={getColumnsConfig}
+                getColumnsConfig={getOrderColumnsConfig}
                 handleViewOrders={handleViewOrders}
-                handleViewUser={handleViewUser}
                 scroll={{ y: "180px" }}
             />
         </>
     );
-};
-
-OrdersTable.propTypes = {
-    globalFilters: PropTypes.object,
-    handleViewOrders: PropTypes.func,
-    data: PropTypes.object,
-    loadData: PropTypes.func,
-    order_store: PropTypes.object,
 };
 
 export default OrdersTable;

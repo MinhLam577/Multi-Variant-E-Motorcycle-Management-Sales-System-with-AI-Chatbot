@@ -3,10 +3,8 @@ import secureLocalStorage from "react-secure-storage";
 import { keyStorageAccount } from "../constants";
 import { AccountObservable } from "../stores/account";
 import endpoints from "./endpoints";
-
 let isRefreshing = false;
 let refreshSubscribers = [];
-
 
 const apiClient = axios.create({
     baseURL: process.env.REACT_APP_API_BASE_URL,
@@ -37,7 +35,19 @@ const handleError = async (error) => {
     const respData = error?.response?.data;
     const respStatus = error?.response ? error?.response.status : -1;
     const originalRequest = error?.config;
-
+    if (!error.response && error.code === "ERR_NETWORK") {
+        console.error(
+            "Connection refused: Server is not responding at",
+            error?.config?.url
+        );
+        const currentUrl = window.location.href;
+        localStorage.setItem("lastUrl", currentUrl);
+        return Promise.reject({
+            message:
+                "Không thể kết nối đến server. Vui lòng kiểm tra lại kết nối hoặc thử lại sau.",
+            code: "ERR_NETWORK",
+        });
+    }
     switch (respStatus) {
         case 400:
             return respData;
@@ -59,7 +69,7 @@ const handleError401 = async (originalRequest, error) => {
         return;
     }
 
-    if (originalRequest.url.includes(endpoints.auth.refreshToken)) {
+    if (originalRequest.url.includes(endpoints.authAdmin.refreshToken)) {
         checkLogout();
         return;
     }
@@ -99,7 +109,7 @@ const refreshToken = async () => {
         const account = await getAccount();
 
         // get api
-        const { data } = await apiClient.get(endpoints.auth.refreshToken, {
+        const { data } = await apiClient.get(endpoints.authAdmin.refreshToken, {
             headers: {
                 Authorization: `Bearer ${account?.refresh_token}`,
             },

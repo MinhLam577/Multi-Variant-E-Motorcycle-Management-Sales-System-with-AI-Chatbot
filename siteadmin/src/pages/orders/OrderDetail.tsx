@@ -17,7 +17,9 @@ import OrderDescription from "../../components/orders/detail/OrderDescription";
 import CustomerDescription from "../../components/orders/detail/CustomerDescription";
 import ModalConfirmReason from "src/components/orders/detail/ModalConfirmReason";
 import ModalExportOrder from "src/components/orders/detail/ModalExportOrder";
-import OrderObservable from "../../stores/order.store";
+import OrderObservable, {
+    OrderDetailResponseType,
+} from "../../stores/order.store";
 import SkusObservable from "../../stores/skus";
 import { CreateDetailExport, ExportOrder } from "src/api/order.api";
 import { useStore } from "src/stores";
@@ -27,7 +29,7 @@ export const OrderDetailMode = {
 };
 
 interface OrderDetailProps {
-    orderDetail: any;
+    orderDetail: OrderDetailResponseType;
     orderNo: string;
     order_store: OrderObservable;
     skus_store: SkusObservable;
@@ -231,7 +233,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
     const handleSaveExportOrderModal = async (
         orderExport: CreateDetailExport[],
         note: string
-    ) => {
+    ): Promise<boolean> => {
         try {
             const data: ExportOrder = {
                 order_id: orderDetail.id,
@@ -239,7 +241,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
                 note: note,
             };
             const res = await order_store.confirmOrder(data);
-            return res;
+            return !!res;
         } catch (e: any) {
             console.error(e);
             store.setStatusMessage(
