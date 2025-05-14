@@ -7,39 +7,24 @@ import {
     ImportOutlined,
     NotificationOutlined,
     OrderedListOutlined,
-    ProductOutlined,
     SettingOutlined,
-    ShopOutlined,
     ShoppingOutlined,
-    TruckOutlined,
     UsergroupAddOutlined,
     UserOutlined,
 } from "@ant-design/icons";
-import {
-    Breadcrumb,
-    ConfigProvider,
-    Grid,
-    Layout,
-    Menu,
-    message,
-    Spin,
-    theme,
-} from "antd";
-import PropTypes from "prop-types";
-import { use, useContext, useEffect, useState } from "react";
+import { ConfigProvider, Grid, Layout, Menu, message, Spin } from "antd";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import Logo from "../../components/Logo";
-import { GlobalContext } from "../../contexts/global";
 import HeaderComponent from "./header";
 import "./index.css";
 import { makeAutoObservable, reaction } from "mobx";
 import { useStore } from "src/stores";
 import { observer } from "mobx-react-lite";
-import { Profile2User } from "iconsax-react";
 import { displayMessage } from "src/utils";
 import { ALL_PERMISSIONS } from "src/constants/permissions";
 
-const { Content, Footer, Sider } = Layout;
+const { Content, Sider } = Layout;
 const { useBreakpoint } = Grid;
 
 function getItem(label, key, icon, children, onClick = () => {}) {
@@ -116,6 +101,19 @@ export const getBreadcrumbItems = (path: string) => {
         : breadcrumbDataList;
 };
 
+class AppLayoutStore {
+    items = [];
+    constructor() {
+        makeAutoObservable(this, {}, { autoBind: true });
+    }
+
+    setItems(items) {
+        this.items = items;
+    }
+}
+
+export const appLayoutStore = new AppLayoutStore();
+
 const AppLayout = (props) => {
     const location = useLocation();
     const navigate = useNavigate();
@@ -127,21 +125,14 @@ const AppLayout = (props) => {
     const Store = useStore();
     const { loginObservable } = useStore();
     const AccountStore = Store.accountObservable;
-    const [
-        items, // set menu items vào state nếu có
-        setMenuItems,
-    ] = useState([]);
-    //set user role
-    useEffect(() => {
-        fetchData();
-    }, []);
 
     const fetchData = async () => {
         await AccountStore.getAccount();
         await loginObservable.getAccountApi(AccountStore.account.email);
     };
-    const permissions = AccountStore.account?.permissions || [];
     useEffect(() => {
+        fetchData();
+        const permissions = AccountStore.permissions || [];
         if (!permissions?.length) return;
         const items = [];
 
@@ -234,6 +225,20 @@ const AppLayout = (props) => {
             );
         }
 
+        if (hasPermission(ALL_PERMISSIONS.EXPORT.GET_PAGINATE)) {
+            items.push(
+                getItem("Xuất kho", "23", <ImportOutlined />, null, () =>
+                    navigate("/export")
+                )
+            );
+        }
+
+        items.push(
+            getItem("Nhập kho", "22", <ImportOutlined />, null, () =>
+                navigate("/import")
+            )
+        );
+
         if (hasPermission(ALL_PERMISSIONS.PERMISSIONS.GET_PAGINATE)) {
             items.push(
                 getItem("Cấu hình", "20", <SettingOutlined />, null, () =>
@@ -241,64 +246,8 @@ const AppLayout = (props) => {
                 )
             );
         }
-
-        if (hasPermission(ALL_PERMISSIONS.EXPORT.GET_PAGINATE)) {
-            items.push(
-                getItem("Xuất kho", "22", <ImportOutlined />, null, () =>
-                    navigate("/export")
-                )
-            );
-        }
-
-        if (hasPermission(ALL_PERMISSIONS.IMPORT.GET_PAGINATE)) {
-            items.push(
-                getItem("Nhập kho", "23", <ImportOutlined />, null, () =>
-                    navigate("/import")
-                )
-            );
-        }
-        // set menu items vào state nếu có
-        setMenuItems(items);
-    }, [permissions]);
-
-    //   const items = [
-    //     getItem("Tổng quan", "1", <BarChartOutlined />, null, () => navigate("/")),
-    //     getItem("Nhân viên", "2", <UserOutlined />, null, () => navigate("/users")),
-    //     getItem("Khách hàng", "19", <UsergroupAddOutlined />, null, () =>
-    //       navigate("/customer")
-    //     ),
-    //     // getItem("Chi nhánh", "3", <ShopOutlined />, null, () =>
-    //     //     navigate("/stores")
-    //     // ),
-    //     getItem("Sản phẩm", "4", <ShoppingOutlined />, null, () =>
-    //       navigate("/products")
-    //     ),
-    //     // getItem("Biến thể", "5", <TruckOutlined />, null, () =>
-    //     //     navigate("/combo_product")
-    //     // ),
-    //     getItem("Danh mục", "7", <FileDoneOutlined />, null, () =>
-    //       navigate("/categories")
-    //     ),
-    //     getItem("Danh mục tin tức", "8", <CalendarOutlined />, null, () =>
-    //       navigate("/categorynews")
-    //     ),
-    //     getItem("Đơn hàng", "9", <OrderedListOutlined />, null, () =>
-    //       navigate("/orders")
-    //     ),
-    //     getItem("Thông báo", "15", <NotificationOutlined />, null, () =>
-    //       navigate("/notifications")
-    //     ),
-    //     //check  1
-    //     getItem("Voucher", "16", <GiftOutlined />, null, () =>
-    //       navigate("/vouchers")
-    //     ),
-    //     getItem("Kho", "17", <DashboardOutlined />, null, () =>
-    //       navigate("/warehouse")
-    //     ),
-    //     getItem("Cấu hình", "20", <SettingOutlined />, null, () =>
-    //       navigate("/setting")
-    //     ),
-    //   ];
+        appLayoutStore.setItems(items);
+    }, []);
 
     const getSideMenuSelectedKeys = () => {
         const path = location.pathname;
@@ -402,7 +351,7 @@ const AppLayout = (props) => {
                     <Menu
                         defaultSelectedKeys={["1"]}
                         selectedKeys={getSideMenuSelectedKeys()}
-                        items={items}
+                        items={appLayoutStore.items}
                         mode="inline"
                     />
                 </Sider>

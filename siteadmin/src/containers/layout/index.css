@@ -2,16 +2,22 @@
     background-color: var(--sideBar-background-color) !important;
 }
 
-.ant-layout-sider-children .ant-menu > .ant-menu-item-selected,
-.ant-layout-sider-children .ant-menu > .ant-menu-item-active {
+.ant-layout-sider-children .ant-menu > .ant-menu-item-selected {
     background-color: var(--sideBar-item-active-color) !important;
+    color: var(--sideBar-text-color) !important;
+}
+
+.ant-layout-sider-children .ant-menu > .ant-menu-item-active {
     color: var(--sideBar-text-color) !important;
 }
 
 .ant-layout-sider-children
     .ant-menu
-    > .ant-menu-item:hover:not(.ant-menu-item-selected) {
-    background-color: var(--sideBar-item-background-color) !important;
+    > .ant-menu-item:hover:not(.ant-menu-item-selected),
+.ant-layout-sider-children
+    .ant-menu
+    > .ant-menu-item-active:not(.ant-menu-item-selected) {
+    background-color: transparent !important;
 }
 
 .ant-layout-sider-children

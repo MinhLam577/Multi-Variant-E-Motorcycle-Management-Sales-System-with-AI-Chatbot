@@ -137,8 +137,26 @@ const ExportPage: React.FC<ExportPageProps> = () => {
         setOpenUpdateModal(true);
     };
 
-    const handleDeleteImportRecord = (id: string) => {
-        alert(id);
+    const handleDeleteImportRecord = async (id: string) => {
+        try {
+            const res = await exportStore.deleteExport(id);
+            if (res) {
+                await exportStore.getListExport({
+                    ...exportStore.pagination,
+                });
+            }
+        } catch (e) {
+            console.log(e);
+            const errorMessage =
+                e instanceof Error
+                    ? e.message
+                    : typeof e === "object" && "message" in e
+                      ? Array.isArray(e.message)
+                          ? e.message[0]
+                          : e.message
+                      : "Có lỗi xảy ra khi xóa phiếu xuất hàng, vui lòng thử lại sau.";
+            store.setStatusMessage(500, errorMessage, "", false);
+        }
     };
 
     const handleSaveModalExport = async (
