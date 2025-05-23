@@ -48,6 +48,7 @@ import Products from "./pages/products";
 import Overview from "./pages/adminOverview/Overview";
 import ImportPage from "./pages/imports";
 import ExportPage from "./pages/exports";
+import VariantPage from "./pages/variants";
 function App() {
     return (
         <StoreProvider>
@@ -528,10 +529,28 @@ function App() {
                                 />
 
                                 <Route
+                                    path="/variants"
+                                    element={
+                                        <ProtectedRoute>
+                                            <VariantPage />
+                                        </ProtectedRoute>
+                                    }
+                                />
+
+                                <Route
                                     path="/setting/role"
                                     element={
                                         <ProtectedRoute>
                                             <RolePage />
+                                        </ProtectedRoute>
+                                    }
+                                />
+
+                                <Route
+                                    path="/setting/profile"
+                                    element={
+                                        <ProtectedRoute>
+                                            <Profile />
                                         </ProtectedRoute>
                                     }
                                 />

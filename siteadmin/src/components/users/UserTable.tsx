@@ -9,6 +9,7 @@ import { RoleType, UserStaffResponseType } from "src/stores/user.store";
 import React from "react";
 import { useStore } from "src/stores";
 import { observer } from "mobx-react-lite";
+import { RoleEnumValue } from "src/constants";
 
 interface IColumnsConfig {
     handleViewUser: (user: UserStaffResponseType) => void;
@@ -64,8 +65,10 @@ const getColumnsConfig = ({ handleViewUser }: IColumnsConfig) => {
             ellipsis: true,
             render: (Roles: RoleType[]) => {
                 if (!Roles || Roles.length === 0) return "Chưa có vai trò";
-
-                return Roles.map((role) => role?.name).join(", "); // Hiển thị danh sách tên vai trò, cách nhau bởi dấu phẩy
+                const roleName = Roles.map(
+                    (role) => role?.name
+                )[0]?.toUpperCase();
+                return roleName ? RoleEnumValue[roleName] : "Chưa có vai trò";
             },
         },
     ];

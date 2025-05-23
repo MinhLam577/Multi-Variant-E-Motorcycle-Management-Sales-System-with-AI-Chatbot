@@ -87,17 +87,12 @@ const Profile = () => {
     };
 
     const handleUpdateUserProfile = async (values) => {
-        console.log(values);
         const dto = {
             ...values,
         };
         await userObservable.updateUserProfile(dto, user?.userId || user?.id);
     };
 
-    // const handleUploadSuccess = (response) => {
-    //   console.log("upload thành công ", response);
-    //   form.setFieldsValue({ avatarUrl: response.url });
-    // };
     return (
         <>
             <Card

@@ -9,7 +9,12 @@ import {
     InputNumber,
 } from "antd";
 import React, { useEffect } from "react";
-import { GenderType, RegExps, UserType } from "../../../constants";
+import {
+    GenderType,
+    RegExps,
+    RoleEnum,
+    RoleEnumValue,
+} from "../../../constants";
 import UploadAvatarGetUrlWithImgCrop, {
     UploadAvatarGetUrlWithImgCropRemoteMode,
 } from "../../../containers/UploadAvatarGetUrlWithImgCrop";
@@ -24,7 +29,7 @@ interface UserFormProps {
 }
 type UserFormType = Omit<UserStaffResponseType, "birthday" | "roles"> & {
     birthday: dayjs.Dayjs | null;
-    roles: string | null;
+    roles: RoleEnum | null;
 };
 const UserForm: React.FC<UserFormProps> = ({ userBasicInfo }) => {
     const navigate = useNavigate();
@@ -37,7 +42,7 @@ const UserForm: React.FC<UserFormProps> = ({ userBasicInfo }) => {
             address: values.address || userBasicInfo.address,
             phoneNumber: values.phoneNumber || userBasicInfo.phoneNumber,
             gender: values.gender || userBasicInfo.gender,
-            Roles: values.roles as keyof typeof UserType,
+            Roles: values.roles,
             birthday: values.birthday
                 ? values.birthday.format("YYYY-MM-DD")
                 : null,
@@ -195,7 +200,7 @@ const UserForm: React.FC<UserFormProps> = ({ userBasicInfo }) => {
                             optionFilterProp="label"
                             options={Object.keys(GenderType).map((item) => ({
                                 value: item,
-                                label: UserType[item],
+                                label: GenderType[item],
                             }))}
                             placeholder="Chọn giới tính"
                         />
@@ -215,10 +220,12 @@ const UserForm: React.FC<UserFormProps> = ({ userBasicInfo }) => {
                         <Select
                             allowClear
                             optionFilterProp="label"
-                            options={Object.keys(UserType).map((item) => ({
-                                value: item,
-                                label: UserType[item],
-                            }))}
+                            options={Object.keys(RoleEnum)
+                                .map((item) => ({
+                                    value: RoleEnum[item],
+                                    label: RoleEnumValue[item],
+                                }))
+                                .filter((item) => item.value !== RoleEnum.USER)}
                             placeholder="Chọn loại người dùng"
                         />
                     </Form.Item>

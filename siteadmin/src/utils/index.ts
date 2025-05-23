@@ -89,6 +89,24 @@ export const getStatusKeyByEnumType = (
     }
 };
 
+export const getErrorMessage = (e: unknown, customMessage?: string) => {
+    const defaultMessage = "Có lỗi xảy ra, vui lòng thử lại sau.";
+    if (e instanceof Error) {
+        return e.message;
+    }
+
+    if (typeof e === "object" && "message" in e) {
+        return Array.isArray(e.message) ? e.message[0] : e.message;
+    }
+
+    if (typeof e === "object" && "errorFields" in e) {
+        return Array.isArray(e.errorFields)
+            ? "Vui lòng nhập đầy đủ và đúng thông tin"
+            : customMessage || defaultMessage;
+    }
+    return customMessage || defaultMessage;
+};
+
 export const displayMessage = (
     messageApi: MessageInstance,
     status: number,
@@ -220,11 +238,16 @@ export const convertBase64ToFile = async (
     }
 };
 
-export const urlToBase64 = async (url: string) => {
+export const urlToBase64 = async (
+    url: string
+): Promise<string | ArrayBuffer> => {
     try {
         const response = await fetch(url, { mode: "cors" });
         if (!response.ok) {
-            console.log(`Phản hồi lỗi: ${await response.text()}`);
+            const status = response.status;
+            if (status === 404) {
+                throw new Error("URL không hợp lệ hoặc không tồn tại");
+            }
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
 

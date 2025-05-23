@@ -102,7 +102,7 @@ export type OptionValueDataResponseType = {
     value: string;
     createdAt: string;
     updatedAt: string;
-    option: OptionDataResponseType;
+    option?: OptionDataResponseType;
 };
 export type OptionDataResponseType = {
     id: string;
@@ -122,6 +122,7 @@ export type SkusDataResponseType = {
     status: boolean;
     detail_import?: DetailImportResponseType[];
     optionValue?: OptionValueDataResponseType[];
+    product?: ProductDataResponseType;
 };
 export type ProductDataResponseType = {
     id: string;
@@ -250,7 +251,6 @@ class ProductObservable {
             }
         } catch (e: any) {
             console.error("Error fetching product list:", e);
-
             this.rootStore.status = 500;
             this.rootStore.errorMsg =
                 e?.message || "Có lỗi xảy ra, vui lòng thử lại";
@@ -274,7 +274,6 @@ class ProductObservable {
                 this.rootStore.errorMsg = Array.isArray(message)
                     ? message[0]
                     : message;
-                this.data.products.detailProductData = null;
             }
         } catch (e: any) {
             console.error("Error fetching product details:", e);

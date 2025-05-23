@@ -1,0 +1,5 @@
+.modal-create-variant .ant-modal-content,
+.modal-create-variant .ant-modal-header,
+.modal-create-variant .ant-modal-body {
+    background-color: var(--content-background-color) !important;
+}

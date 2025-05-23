@@ -16,10 +16,11 @@ import {
     CustomerType,
     GenderType,
     RegExps,
-    UserType,
+    RoleEnum,
+    RoleEnumValue,
 } from "../../../constants";
 import UploadAvatarGetUrlWithImgCrop, {
-  UploadAvatarGetUrlWithImgCropRemoteMode,
+    UploadAvatarGetUrlWithImgCropRemoteMode,
 } from "../../../containers/UploadAvatarGetUrlWithImgCrop";
 import dayjs from "dayjs";
 import apiClient from "../../../api/apiClient";
@@ -27,17 +28,17 @@ import endpoints from "../../../api/endpoints.ts";
 import { useNavigate } from "react-router";
 
 const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-  },
+    labelCol: {
+        xs: { span: 24 },
+    },
+    wrapperCol: {
+        xs: { span: 24 },
+    },
 };
 
 const UserForm = ({ userBasicInfo, refetch }) => {
-  const navigate = useNavigate();
-  const [form] = Form.useForm();
+    const navigate = useNavigate();
+    const [form] = Form.useForm();
 
     const handleFormFinish = async (values) => {
         console.log(values);
@@ -58,7 +59,6 @@ const UserForm = ({ userBasicInfo, refetch }) => {
                 endpoints.customers.update(values.id),
                 updateInfo
             );
-            console.log(data);
             if (data.status == 200) {
                 message.success(data.message);
                 navigate("/customer");
@@ -71,82 +71,86 @@ const UserForm = ({ userBasicInfo, refetch }) => {
         }
     };
 
-  useEffect(() => {
-    if (userBasicInfo && Object.keys(userBasicInfo).length > 0) {
-      console.log("Thông tin người dùng:", userBasicInfo);
-      console.log("Vai trò:", userBasicInfo?.Roles?.name || "Không có vai trò");
+    useEffect(() => {
+        if (userBasicInfo && Object.keys(userBasicInfo).length > 0) {
+            form.setFieldsValue({
+                ...userBasicInfo,
+                birthday: userBasicInfo?.birthday
+                    ? dayjs(userBasicInfo.birthday)
+                    : null,
+                Roles: userBasicInfo?.Roles?.name, // Hiển thị danh sách tên role
+            });
+        }
+    }, [userBasicInfo, form]);
 
-      form.setFieldsValue({
-        ...userBasicInfo,
-        birthday: userBasicInfo?.birthday
-          ? dayjs(userBasicInfo.birthday)
-          : null,
-        Roles: userBasicInfo?.Roles?.name, // Hiển thị danh sách tên role
-      });
-    }
-  }, [userBasicInfo, form]);
-
-  return (
-    <Form
-      form={form}
-      layout="vertical"
-      autoComplete="off"
-      onFinish={handleFormFinish}
-    >
-      {/* Avatar */}
-      <Form.Item className="flex justify-center" name="avatarUrl">
-        <UploadAvatarGetUrlWithImgCrop
-          remoteMode={UploadAvatarGetUrlWithImgCropRemoteMode.Private}
-          disabled={true}
-        />
-      </Form.Item>
-
-      {/* Chia thành 2 cột */}
-      <Col span={12}>
-        <Form.Item
-          label="id"
-          name="id"
-          hidden
-          rules={[{ required: true, message: "id!" }]}
+    return (
+        <Form
+            form={form}
+            layout="vertical"
+            autoComplete="off"
+            onFinish={handleFormFinish}
         >
-          <Input placeholder="id" />
-        </Form.Item>
-      </Col>
-      <Row gutter={16}>
-        <Col span={12}>
-          <Form.Item
-            label="Họ và tên"
-            name="username"
-            rules={[{ required: true, message: "Hãy nhập họ và tên!" }]}
-          >
-            <Input placeholder="Nhập Họ và tên" />
-          </Form.Item>
-        </Col>
+            {/* Avatar */}
+            <Form.Item className="flex justify-center" name="avatarUrl">
+                <UploadAvatarGetUrlWithImgCrop
+                    remoteMode={UploadAvatarGetUrlWithImgCropRemoteMode.Private}
+                    disabled={true}
+                />
+            </Form.Item>
 
-        <Col span={12}>
-          <Form.Item
-            label="Số điện thoại"
-            name="phoneNumber"
-            rules={[
-              {
-                required: true,
-                message: "Hãy nhập số điện thoại!",
-              },
-              () => ({
-                validator(_, value) {
-                  if (!value || RegExps.PhoneNumber.test(value)) {
-                    return Promise.resolve();
-                  }
-                  return Promise.reject(
-                    new Error("Số điện thoại không đúng định dạng.")
-                  );
-                },
-              }),
-            ]}
-          >
-            <Input placeholder="Nhập Số điện thoại" />
-          </Form.Item>
-        </Col>
+            {/* Chia thành 2 cột */}
+            <Col span={12}>
+                <Form.Item
+                    label="id"
+                    name="id"
+                    hidden
+                    rules={[{ required: true, message: "id!" }]}
+                >
+                    <Input placeholder="id" />
+                </Form.Item>
+            </Col>
+            <Row gutter={16}>
+                <Col span={12}>
+                    <Form.Item
+                        label="Họ và tên"
+                        name="username"
+                        rules={[
+                            { required: true, message: "Hãy nhập họ và tên!" },
+                        ]}
+                    >
+                        <Input placeholder="Nhập Họ và tên" />
+                    </Form.Item>
+                </Col>
+
+                <Col span={12}>
+                    <Form.Item
+                        label="Số điện thoại"
+                        name="phoneNumber"
+                        rules={[
+                            {
+                                required: true,
+                                message: "Hãy nhập số điện thoại!",
+                            },
+                            () => ({
+                                validator(_, value) {
+                                    if (
+                                        !value ||
+                                        RegExps.PhoneNumber.test(value)
+                                    ) {
+                                        return Promise.resolve();
+                                    }
+                                    return Promise.reject(
+                                        new Error(
+                                            "Số điện thoại không đúng định dạng."
+                                        )
+                                    );
+                                },
+                            }),
+                        ]}
+                    >
+                        <Input placeholder="Nhập Số điện thoại" />
+                    </Form.Item>
+                </Col>
 
                 <Col span={12}>
                     <Form.Item label="Ngày sinh" name="birthday">
@@ -163,22 +167,22 @@ const UserForm = ({ userBasicInfo, refetch }) => {
                     </Form.Item>
                 </Col>
 
-        <Col span={12}>
-          <Form.Item label="Giới tính" name="gender">
-            <Select
-              allowClear
-              optionFilterProp="label"
-              options={Object.keys(GenderType).map((item) => ({
-                value: item,
-                label: UserType[item],
-              }))}
-              placeholder="Chọn giới tính"
-            />
-          </Form.Item>
-        </Col>
+                <Col push={12} span={12}>
+                    <Form.Item label="Giới tính" name="gender">
+                        <Select
+                            allowClear
+                            optionFilterProp="label"
+                            options={Object.keys(GenderType).map((item) => ({
+                                value: item,
+                                label: GenderType[item],
+                            }))}
+                            placeholder="Chọn giới tính"
+                        />
+                    </Form.Item>
+                </Col>
 
                 <Col span={12}>
-                    <Form.Item label="Loại người dùng" name="Roles">
+                    {/* <Form.Item label="Loại người dùng" name="Roles">
                         <Select
                             allowClear
                             optionFilterProp="label"
@@ -188,7 +192,7 @@ const UserForm = ({ userBasicInfo, refetch }) => {
                             }))}
                             placeholder="Chọn loại người dùng customer "
                         />
-                    </Form.Item>
+                    </Form.Item> */}
                 </Col>
                 <Col push={12} span={12} className="flex justify-end">
                     <Form.Item>
@@ -203,12 +207,12 @@ const UserForm = ({ userBasicInfo, refetch }) => {
 };
 
 UserForm.propTypes = {
-  userBasicInfo: PropTypes.object,
-  refetch: PropTypes.func,
+    userBasicInfo: PropTypes.object,
+    refetch: PropTypes.func,
 };
 
 UserForm.defaultProps = {
-  userBasicInfo: {},
+    userBasicInfo: {},
 };
 
 export default UserForm;

@@ -54,6 +54,7 @@ import {
 import { ResponseImage } from "src/api";
 import FormListSelectOrInput from "../FormListSelectOrInput";
 import dayjs from "dayjs";
+import { useNavigate } from "react-router";
 
 export type TreeSelectType = {
     title: string;
@@ -735,6 +736,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
     const store = useStore();
     const quillRef = useRef<ReactQuill>(null);
     const productStore = store.productObservable;
+    const skusStore = store.skusObservable;
     const handleQuillChange = (content: string, delta, source, editor) => {
         try {
             form.setFieldValue("description", content);
@@ -1431,7 +1433,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
         );
 
         const handleClearWarehouse = useCallback(() => {
-            form.setFieldsValue({ detail_import: [] });
+            form.resetFields(["detail_import", "warehouse_id"]);
             modalCreateProductStore.clearWarehouseSelectedAndQuantity();
         }, [form]);
         useEffect(() => {
@@ -2985,6 +2987,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
             form.setFieldsValue(formInitialValues);
         }
     }, [formInitialValues]);
+    const navigate = useNavigate();
     return (
         <>
             <CustomizeModal
@@ -3010,13 +3013,28 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                     >
                         <GeneralInformation />
                         <SpecificationsInformation />
+
+                        {productId && (
+                            <Button
+                                onClick={() => {
+                                    navigate("/variants", {
+                                        state: {
+                                            productId: productId,
+                                        },
+                                    });
+                                    handleCloseCreateProductModal();
+                                }}
+                            >
+                                Quản lí biến thể
+                            </Button>
+                        )}
                         {!productId && (
                             <>
                                 <PriceInformation />
                                 <InventoryInformation />
+                                <VariantInformation defaultForm={subForm} />
                             </>
                         )}
-                        <VariantInformation defaultForm={subForm} />
                     </Form>
                 </div>
             </CustomizeModal>

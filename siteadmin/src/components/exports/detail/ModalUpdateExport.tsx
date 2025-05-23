@@ -1,6 +1,7 @@
 import {
     Button,
     Col,
+    Empty,
     Form,
     Image,
     Input,
@@ -18,7 +19,7 @@ import { FormInstance } from "antd/lib";
 import { DeleteOutlined } from "@ant-design/icons";
 import { toJS } from "mobx";
 import { lotOptionType } from "src/components/orders/detail/ModalExportOrder";
-import { SkusDetailImportResponseType } from "src/stores/skus";
+import { SkusDetailImportResponseType } from "src/stores/skus.store";
 import {
     ExportResponseType,
     UpdateExportDetailDto,
@@ -41,6 +42,7 @@ export type UpdateExportOrderTableType = {
         skus_id: string;
         skus_name: string;
         skus_image: string;
+        product_name: string;
         quantity: number;
         total_price: number;
         detail_imports: {
@@ -144,9 +146,14 @@ const ModalUpdateExport: React.FC<ModalUpdateExportProps> = ({
                                 preview={false}
                                 className="min-w-12 min-h-12 rounded-md cursor-pointer"
                             />
-                            <span className="text-sm font-semibold">
-                                {record?.skus_name}
-                            </span>
+                            <div className="flex flex-col gap-2">
+                                <span className="text-sm font-semibold">
+                                    {record?.product_name}
+                                </span>
+                                <span className="text-sm text-gray-500">
+                                    {record?.skus_name}
+                                </span>
+                            </div>
                         </div>
                     );
                 },
@@ -235,6 +242,7 @@ const ModalUpdateExport: React.FC<ModalUpdateExportProps> = ({
                     skus_id: item.skus.id,
                     skus_name: item.skus.name,
                     skus_image: item.skus.image,
+                    product_name: item.skus.product.title,
                     quantity: item.quantity_export,
                     total_price,
                     detail_imports,
@@ -270,12 +278,13 @@ const ModalUpdateExport: React.FC<ModalUpdateExportProps> = ({
             if (!skus_ids || skus_ids.length === 0) return [];
             await skus_store.getDetailImportsByIds(skus_ids);
             const data = toJS(skus_store.data.detail_imports);
+            console.log("data", data);
             if (data.length > 0) {
                 setSkusDetailImportData((prev) => {
                     const newMap = new Map(prev);
-                    data.forEach((item, index) => {
-                        if (!newMap.has(skus_ids[index])) {
-                            newMap.set(skus_ids[index], item);
+                    data.forEach((item) => {
+                        if (!newMap.has(item.id)) {
+                            newMap.set(item.id, item);
                         }
                     });
                     return newMap;
@@ -548,7 +557,6 @@ const ModalUpdateExport: React.FC<ModalUpdateExportProps> = ({
         );
     };
     const handleFormValuesChange = (changedValues: any, allValues: any) => {
-        console.log("allValues", allValues);
         setFormValues(allValues);
     };
     const handleCloseModal = () => {
@@ -597,11 +605,13 @@ const ModalUpdateExport: React.FC<ModalUpdateExportProps> = ({
             );
 
             tableData?.detail_exports?.forEach((item) => {
-                const skus_id = item.skus_id;
+                const detail_export_id = item.id;
                 const skusQuantityNeedExport = item.quantity;
                 const skusQuantityExported =
                     createDetailExport
-                        .filter((lot) => lot.skus_id === skus_id)
+                        .filter(
+                            (lot) => lot.detail_export_id === detail_export_id
+                        )
                         .reduce((acc, lot) => {
                             return acc + Number(lot.quantity_export);
                         }, 0) || 0;
@@ -680,6 +690,7 @@ const ModalUpdateExport: React.FC<ModalUpdateExportProps> = ({
                     <Col span={24}>
                         <div className="flex flex-col gap-2">
                             <Table
+                                key="export-table"
                                 locale={{
                                     ...AntdTableLocale,
                                 }}
@@ -703,6 +714,11 @@ const ModalUpdateExport: React.FC<ModalUpdateExportProps> = ({
                                         return null;
                                     },
                                     expandIconColumnIndex: -1,
+                                    defaultExpandAllRows: true,
+                                    expandedRowKeys:
+                                        tableData?.detail_exports.map(
+                                            (item) => item.id
+                                        ),
                                 }}
                             />
                         </div>

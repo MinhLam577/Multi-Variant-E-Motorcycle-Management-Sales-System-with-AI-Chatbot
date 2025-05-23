@@ -111,6 +111,7 @@ const ModalSelectOrder: React.FC<ModalSelectOrderProps> = ({
         setSelectedRowKeys(filterSelectedRowKeys);
     };
     const handleCloseModal = () => {
+        orderStore.setOrderStatusSelected(undefined);
         onClose();
     };
     return (
