@@ -1,10 +1,9 @@
 import { makeAutoObservable, toJS } from "mobx";
 import { RootStore } from "./base";
 import { paginationData } from "./voucher";
-import { convertDate, filterEmptyFields } from "src/utils";
-import { DateTimeFormat } from "src/constants";
+import { convertDate, filterEmptyFields, getErrorMessage } from "src/utils";
+import { DateTimeFormat, RoleEnum } from "src/constants";
 import UserAPI from "src/api/user.api";
-import { UserType } from "src/constants";
 
 export type ReceiveAddressResponseType = {
     id: string;
@@ -24,7 +23,7 @@ export type PermissionType = {
 };
 export type RoleType = {
     id: string;
-    name: UserType;
+    name: RoleEnum;
     permissions: PermissionType[];
 };
 
@@ -42,7 +41,7 @@ export class UpdateUserDto {
     phoneNumber?: string;
     gender?: GenderEnum;
     avatarUrl?: string;
-    Roles?: keyof typeof UserType;
+    Roles?: RoleEnum;
     birthday?: string | null;
 }
 
@@ -162,6 +161,7 @@ class UserStaffObservable {
             const success_status = [200, 201, 204];
             const newUrl = `${window.location.pathname}?${queryString}`;
             window.history.pushState({ path: newUrl }, "", newUrl);
+            console.log("resData", toJS(resData));
             if (success_status.includes(status)) {
                 this.data.listData = resData;
                 this.rootStore.status = status;
@@ -177,8 +177,12 @@ class UserStaffObservable {
             }
         } catch (e: any) {
             console.error(e);
-            this.rootStore.status = e?.response?.status || 500;
-            this.rootStore.errorMsg = e?.response?.data?.message || e.message;
+            const errorMessage = getErrorMessage(
+                e,
+                "Có lỗi xảy ra trong quá trình lấy danh sách người dùng, vui lòng thử lại sau."
+            );
+            this.rootStore.status = 500;
+            this.rootStore.errorMsg = errorMessage;
         } finally {
             this.loading = false;
         }

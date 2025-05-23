@@ -20,7 +20,7 @@ import { OrderDetailResponseType } from "src/stores/order.store";
 import { toJS } from "mobx";
 import { useStore } from "src/stores";
 import { lotOptionType } from "src/components/orders/detail/ModalExportOrder";
-import { SkusDetailImportResponseType } from "src/stores/skus";
+import { SkusDetailImportResponseType } from "src/stores/skus.store";
 import { FormInstance } from "antd/lib";
 import { CreateExportDto } from "src/stores/exports.store";
 import { CreateDetailExport } from "src/api/order.api";
@@ -49,6 +49,7 @@ export type CreateExportOrderTableType = {
         id: string;
         skus_id: string;
         skus_name: string;
+        product_name: string;
         skus_image: string;
         quantity: number;
         total_price: number;
@@ -167,6 +168,7 @@ const ModalCreateExport: React.FC<ModalCreateExportProps> = ({
                             if (!detail_imports) return null;
                             return {
                                 id: item.id,
+                                product_name: item.skus.product.title,
                                 skus_id: item.skus.id,
                                 skus_name: item.skus.name,
                                 skus_image: item.skus.image,
@@ -226,7 +228,7 @@ const ModalCreateExport: React.FC<ModalCreateExportProps> = ({
                     record: CreateExportOrderTableType["order_details"][number]
                 ) => {
                     return (
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-4">
                             <Image
                                 src={record?.skus_image}
                                 alt={
@@ -238,9 +240,15 @@ const ModalCreateExport: React.FC<ModalCreateExportProps> = ({
                                 preview={false}
                                 className="min-w-12 min-h-12 rounded-md cursor-pointer"
                             />
-                            <span className="text-sm font-semibold">
-                                {record?.skus_name}
-                            </span>
+
+                            <div className="flex flex-col gap-2">
+                                <span className="text-sm font-semibold">
+                                    {record?.product_name}
+                                </span>
+                                <span className="text-sm text-gray-500">
+                                    {record?.skus_name}
+                                </span>
+                            </div>
                         </div>
                     );
                 },
@@ -579,7 +587,6 @@ const ModalCreateExport: React.FC<ModalCreateExportProps> = ({
     };
 
     const handleFormValuesChange = (changeValues, allValues) => {
-        console.log("allValues", toJS(allValues));
         if (allValues?.order_details) {
             setFormData(allValues?.order_details);
         }
@@ -592,6 +599,7 @@ const ModalCreateExport: React.FC<ModalCreateExportProps> = ({
                 order_details: DetailExportTableType;
             } = await createExportForm.validateFields();
             const { note, order_details } = values;
+            console.log("values", values);
             if (!order_details) {
                 store.setStatusMessage(
                     500,

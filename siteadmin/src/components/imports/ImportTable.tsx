@@ -22,7 +22,6 @@ const ImportTable: React.FC<ImportTableProps> = ({
     handleUpdateImport,
     handleDeleteImport,
 }) => {
-    const navigate = useNavigate();
     const store = useStore();
     const importStore = store.importObservable;
     const getColumnsConfig = ({

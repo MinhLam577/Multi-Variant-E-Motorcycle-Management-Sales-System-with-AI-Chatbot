@@ -2,7 +2,6 @@ import { Button } from "antd";
 import { toJS } from "mobx";
 import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
-import { al } from "react-router/dist/development/route-data-BL8ToWby";
 import AdminBreadCrumb from "src/components/common/AdminBreadCrumb";
 import CustomizeTab from "src/components/common/CustomizeTab";
 import ModalCreateExport from "src/components/exports/detail/ModalCreateExport";
@@ -39,7 +38,12 @@ const ExportPage: React.FC<ExportPageProps> = () => {
     const paymentMethodStore = store.paymentMethodObservable;
 
     const [skusData, setSkusData] = useState<SelectType[]>([]);
-
+    const fetchExportData = async (query?: globalFilterExportDataType) => {
+        await exportStore.getListExport({
+            ...exportStore.pagination,
+            ...(query ? query : {}),
+        });
+    };
     const fetchData = async () => {
         await Promise.all([
             productStore.getListProduct({
@@ -47,16 +51,14 @@ const ExportPage: React.FC<ExportPageProps> = () => {
             }),
             orderStore.getOrderStatus(),
             warehouseStore.getListWarehouse(),
-            exportStore.getListExport({
-                ...exportStore.pagination,
-            }),
+            fetchExportData(),
             orderStore.getListOrder({
                 ...orderStore.pagination,
             }),
             paymentMethodStore.getPaymentStatus(),
             paymentMethodStore.getMethods(),
         ]);
-        getFullSelect();
+        getSkuSelectByProduct();
     };
 
     useEffect(() => {
@@ -97,6 +99,13 @@ const ExportPage: React.FC<ExportPageProps> = () => {
         }
     }, [globalFilterExportData.product_id]);
 
+    useEffect(() => {
+        fetchExportData({
+            ...exportStore.pagination,
+            ...globalFilterExportData,
+        });
+    }, [globalFilterExportData]);
+
     const getProductSelect = () => {
         const products = productStore.data;
         if (!products) return [];
@@ -117,7 +126,7 @@ const ExportPage: React.FC<ExportPageProps> = () => {
         return selectWarehouses;
     };
 
-    const getFullSelect = () => {
+    const getSkuSelectByProduct = () => {
         const products = productStore.data;
         if (!products) return [];
         const skus = products.products.data?.flatMap((item) => {

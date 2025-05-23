@@ -6,7 +6,7 @@ import ProductObservable from "./product.store";
 import UploadImageObservable from "./uploadImage";
 import OrderObservable from "./order.store";
 import PaymentMethodObservable from "./paymentMethod";
-import SkusObservable from "./skus";
+import SkusObservable from "./skus.store";
 import CategoriesObservable from "./categories.store";
 
 export type paginationData = {

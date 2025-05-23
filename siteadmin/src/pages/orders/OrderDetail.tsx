@@ -20,7 +20,7 @@ import ModalExportOrder from "src/components/orders/detail/ModalExportOrder";
 import OrderObservable, {
     OrderDetailResponseType,
 } from "../../stores/order.store";
-import SkusObservable from "../../stores/skus";
+import SkusObservable from "../../stores/skus.store";
 import { CreateDetailExport, ExportOrder } from "src/api/order.api";
 import { useStore } from "src/stores";
 export const OrderDetailMode = {

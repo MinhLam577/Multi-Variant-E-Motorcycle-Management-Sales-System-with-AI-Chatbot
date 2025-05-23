@@ -11,7 +11,7 @@ import ModalConfirmReason from "./ModalConfirmReason";
 import { toJS } from "mobx";
 import { DetailImportResponseType } from "src/stores/imports.store";
 import { OrderDetailResponseType } from "src/stores/order.store";
-import { SkusDetailImportResponseType } from "src/stores/skus";
+import { SkusDetailImportResponseType } from "src/stores/skus.store";
 
 interface ModalExportOrderProps {
     orderDetail: OrderDetailResponseType;

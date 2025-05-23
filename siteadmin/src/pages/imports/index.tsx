@@ -47,16 +47,19 @@ import { toJS } from "mobx";
 import { filterEmptyFields, generateUUIDV4 } from "src/utils";
 import { FormInstance } from "antd/lib";
 import TextArea from "antd/es/input/TextArea";
+import { SelectType } from "src/components/products/detail/ModalCreateProduct/ModalCreateProduct";
 
 interface ImportPageProps {}
 
 const ImportPage: React.FC<ImportPageProps> = () => {
     const [globalFilterImportData, setGlobalFilterImportData] =
         useState<globalFiltersImportDataType>({
-            search: "",
-            warehouse_id: "",
-            start_date: "",
-            end_date: "",
+            search: undefined,
+            warehouse_id: undefined,
+            start_date: undefined,
+            end_date: undefined,
+            product_id: undefined,
+            skus_id: undefined,
         });
     const store = useStore();
     const importStore = store.importObservable;
@@ -64,6 +67,7 @@ const ImportPage: React.FC<ImportPageProps> = () => {
     const productStore = store.productObservable;
     const [filterProductData, setFilterProductData] =
         useState<productTableFilterDataType[]>();
+    const [skusDataSelect, setSkusDataSelect] = useState<SelectType[]>([]);
     const fetchImportData = async (
         query: globalFiltersImportDataType & paginationData
     ) => {
@@ -118,11 +122,76 @@ const ImportPage: React.FC<ImportPageProps> = () => {
                 ...productStore.pagination,
             }),
         ]);
+        getSkuSelectByProduct();
+    };
+    const getProductSelect = () => {
+        const products = productStore.data;
+        if (!products) return [];
+        const selectProducts = products.products.data?.map((item) => ({
+            label: item.products.title,
+            value: item.products.id,
+        }));
+        return selectProducts;
+    };
+
+    const getWarehouseSelect = () => {
+        const warehouses = warehouseStore.data;
+        if (!warehouses) return [];
+        const selectWarehouses = warehouses?.map((item) => ({
+            label: item.name as string,
+            value: item.id as string,
+        }));
+        return selectWarehouses;
+    };
+
+    const getSkuSelectByProduct = () => {
+        const products = productStore.data;
+        if (!products) return [];
+        const skus = products.products.data?.flatMap((item) => {
+            const sku = item.products.skus.map((item) => ({
+                label: item.name,
+                value: item.id,
+            }));
+            return sku;
+        });
+        setSkusDataSelect(skus);
     };
     useEffect(() => {
         fetchData();
     }, []);
-
+    useEffect(() => {
+        const products = productStore.data;
+        if (products) {
+            const productId = globalFilterImportData.product_id;
+            let skus = [];
+            if (productId) {
+                skus = products.products.data
+                    ?.filter((p) => p.products.id === productId)
+                    .flatMap((item) => {
+                        const sku = item.products.skus.map((item) => ({
+                            label: item.name,
+                            value: item.id,
+                        }));
+                        return sku;
+                    });
+            } else {
+                skus = products.products.data?.flatMap((item) => {
+                    const sku = item.products.skus.map((item) => ({
+                        label: item.name,
+                        value: item.id,
+                    }));
+                    return sku;
+                });
+            }
+            setSkusDataSelect(skus);
+            if (!productId) {
+                setGlobalFilterImportData((prev) => ({
+                    ...prev,
+                    skus_id: undefined,
+                }));
+            }
+        }
+    }, [globalFilterImportData.product_id]);
     useEffect(() => {
         fetchImportData({
             ...importStore.pagination,
@@ -481,6 +550,11 @@ const ImportPage: React.FC<ImportPageProps> = () => {
             });
             return [...prev, ...newData];
         });
+        setGlobalFilterImportData((prev) => ({
+            ...prev,
+            search: "",
+        }));
+
         handleCloseVariantValueModal();
     };
     const getColumnProductShowConfig =
@@ -995,6 +1069,12 @@ const ImportPage: React.FC<ImportPageProps> = () => {
                                 <div className="w-full mt-2">
                                     <ImportSearch
                                         setFilters={setGlobalFilterImportData}
+                                        productsSelect={getProductSelect()}
+                                        warehouseSelect={getWarehouseSelect()}
+                                        skusSelect={skusDataSelect}
+                                        globalFiltersImportDataType={
+                                            globalFilterImportData
+                                        }
                                     />
                                     <ImportTable
                                         data={importStore.data}

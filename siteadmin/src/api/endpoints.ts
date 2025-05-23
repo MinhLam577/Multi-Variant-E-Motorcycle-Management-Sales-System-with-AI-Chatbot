@@ -54,7 +54,7 @@ const endpoints = {
         setRole: (id) => `/customers/${id}`,
         changePassword: (id) => `/customers/${id}`,
         uploadAvatar: "/customers/upload",
-        list: (page, limit) => `customers/?page=${page}&limit=${limit}`,
+        list: (query: string) => `/customers?${query}`,
         // tạo thông qua import file
         callBulkCreateCustomer: "/users/callBulkCreateCustomer",
         create: "/customers",
@@ -198,7 +198,11 @@ const endpoints = {
         getPaymentStatus: () => "/order/payment-status",
     },
 
-    sku: {
+    skus: {
+        list: (query: string) => `/skus?${query}`,
+        create: () => "/skus",
+        update: (id: string) => `/skus/${id}`,
+        remove: (id: string) => `/skus/${id}`,
         getDetailImportsById: (id: string) => `/skus/${id}/detail-import`,
         getDetailImportsByIds: () => `/skus/detail-imports-by-ids`,
     },

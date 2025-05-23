@@ -1,7 +1,9 @@
 import {
     BarChartOutlined,
     CalendarOutlined,
+    ClusterOutlined,
     DashboardOutlined,
+    ExportOutlined,
     FileDoneOutlined,
     GiftOutlined,
     ImportOutlined,
@@ -27,7 +29,13 @@ import { ALL_PERMISSIONS } from "src/constants/permissions";
 const { Content, Sider } = Layout;
 const { useBreakpoint } = Grid;
 
-function getItem(label, key, icon, children, onClick = () => {}) {
+export function getSideMenuItem(
+    label,
+    key,
+    icon,
+    children,
+    onClick = () => {}
+) {
     return {
         key,
         icon,
@@ -39,12 +47,12 @@ function getItem(label, key, icon, children, onClick = () => {}) {
 
 const BreadcrumbLabel = {
     dashboard: "Tổng quan",
-    profile: "Thông tin người dùng",
     users: "Quản lý Người dùng",
     products: "Quản lý sản phẩm",
     categories: "Quản lí danh mục sản phẩm",
     categorynews: "Danh mục tin tức",
     orders: "Quản lý đơn hàng",
+    variants: "Quản lý biến thể",
     add: "Tạo",
     edit: "Sửa",
     vouchers: "Quản lý vouchers",
@@ -142,21 +150,21 @@ const AppLayout = (props) => {
             );
 
         items.push(
-            getItem("Tổng quan", "1", <BarChartOutlined />, null, () =>
+            getSideMenuItem("Tổng quan", "1", <BarChartOutlined />, null, () =>
                 navigate("/")
             )
         );
 
         if (hasPermission(ALL_PERMISSIONS.USERS.GET_PAGINATE)) {
             items.push(
-                getItem("Nhân viên", "2", <UserOutlined />, null, () =>
+                getSideMenuItem("Nhân viên", "2", <UserOutlined />, null, () =>
                     navigate("/users")
                 )
             );
         }
         if (hasPermission(ALL_PERMISSIONS.CUSTOMERS.GET_PAGINATE)) {
             items.push(
-                getItem(
+                getSideMenuItem(
                     "Khách hàng",
                     "19",
                     <UsergroupAddOutlined />,
@@ -167,23 +175,37 @@ const AppLayout = (props) => {
         }
         if (hasPermission(ALL_PERMISSIONS.ROLES.GET_PAGINATE)) {
             items.push(
-                getItem("Sản phẩm", "4", <ShoppingOutlined />, null, () =>
-                    navigate("/products")
+                getSideMenuItem(
+                    "Sản phẩm",
+                    "4",
+                    <ShoppingOutlined />,
+                    null,
+                    () => navigate("/products")
                 )
             );
         }
 
+        items.push(
+            getSideMenuItem("Biến thể", "24", <ClusterOutlined />, null, () =>
+                navigate("/variants")
+            )
+        );
+
         if (hasPermission(ALL_PERMISSIONS.CATEGORIES.GET_PAGINATE)) {
             items.push(
-                getItem("Danh mục", "7", <FileDoneOutlined />, null, () =>
-                    navigate("/categories")
+                getSideMenuItem(
+                    "Danh mục",
+                    "7",
+                    <FileDoneOutlined />,
+                    null,
+                    () => navigate("/categories")
                 )
             );
         }
 
         if (hasPermission(ALL_PERMISSIONS.BLOGCATEGORY.GET_PAGINATE)) {
             items.push(
-                getItem(
+                getSideMenuItem(
                     "Danh mục tin tức",
                     "8",
                     <CalendarOutlined />,
@@ -195,23 +217,31 @@ const AppLayout = (props) => {
 
         if (hasPermission(ALL_PERMISSIONS.ORDERS.GET_PAGINATE)) {
             items.push(
-                getItem("Đơn hàng", "9", <OrderedListOutlined />, null, () =>
-                    navigate("/orders")
+                getSideMenuItem(
+                    "Đơn hàng",
+                    "9",
+                    <OrderedListOutlined />,
+                    null,
+                    () => navigate("/orders")
                 )
             );
         }
 
         if (hasPermission(ALL_PERMISSIONS.ROLES.GET_PAGINATE)) {
             items.push(
-                getItem("Thông báo", "15", <NotificationOutlined />, null, () =>
-                    navigate("/notifications")
+                getSideMenuItem(
+                    "Thông báo",
+                    "15",
+                    <NotificationOutlined />,
+                    null,
+                    () => navigate("/notifications")
                 )
             );
         }
 
         if (hasPermission(ALL_PERMISSIONS.VOURCHERS.GET_PAGINATE)) {
             items.push(
-                getItem("Voucher", "16", <GiftOutlined />, null, () =>
+                getSideMenuItem("Voucher", "16", <GiftOutlined />, null, () =>
                     navigate("/vouchers")
                 )
             );
@@ -219,7 +249,7 @@ const AppLayout = (props) => {
 
         if (hasPermission(ALL_PERMISSIONS.WAREHOUSE.GET_PAGINATE)) {
             items.push(
-                getItem("Kho", "17", <DashboardOutlined />, null, () =>
+                getSideMenuItem("Kho", "17", <DashboardOutlined />, null, () =>
                     navigate("/warehouse")
                 )
             );
@@ -227,22 +257,30 @@ const AppLayout = (props) => {
 
         if (hasPermission(ALL_PERMISSIONS.EXPORT.GET_PAGINATE)) {
             items.push(
-                getItem("Xuất kho", "23", <ImportOutlined />, null, () =>
-                    navigate("/export")
+                getSideMenuItem(
+                    "Xuất kho",
+                    "23",
+                    <ExportOutlined />,
+                    null,
+                    () => navigate("/export")
                 )
             );
         }
 
         items.push(
-            getItem("Nhập kho", "22", <ImportOutlined />, null, () =>
+            getSideMenuItem("Nhập kho", "22", <ImportOutlined />, null, () =>
                 navigate("/import")
             )
         );
 
         if (hasPermission(ALL_PERMISSIONS.PERMISSIONS.GET_PAGINATE)) {
             items.push(
-                getItem("Cấu hình", "20", <SettingOutlined />, null, () =>
-                    navigate("/setting")
+                getSideMenuItem(
+                    "Cấu hình",
+                    "20",
+                    <SettingOutlined />,
+                    null,
+                    () => navigate("/setting")
                 )
             );
         }
@@ -257,7 +295,6 @@ const AppLayout = (props) => {
         } else {
             const menuKeys = {
                 "/dashboard": "1",
-                "/profile": "19",
                 "/users": "2",
                 "/stores": "3",
                 "/categories": "7",
@@ -273,6 +310,7 @@ const AppLayout = (props) => {
                 "/role": "21",
                 "/import": "22",
                 "/export": "23",
+                "/variants": "24",
             };
             for (let key of Object.keys(menuKeys)) {
                 if (path.startsWith(key)) {

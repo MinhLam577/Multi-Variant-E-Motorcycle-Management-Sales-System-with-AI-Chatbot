@@ -1,5 +1,4 @@
 import { Col, DatePicker, Form, Input, Row, Select } from "antd";
-import { UserType } from "../../constants";
 import { debounce } from "lodash";
 import { useCallback } from "react";
 import { EnumProductStore, EnumProductType } from "src/stores/product.store";

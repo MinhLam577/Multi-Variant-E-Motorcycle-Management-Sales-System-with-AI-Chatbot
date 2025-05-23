@@ -1,12 +1,25 @@
-import { useCallback } from "react";
+import { Dispatch, SetStateAction, useCallback, useEffect } from "react";
 import { debounce } from "lodash";
 import { Col, Form, Input, Row, Select, DatePicker } from "antd";
 import { useStore } from "src/stores";
 import { getSelectOption } from "src/pages/products";
 import { globalFiltersImportDataType } from "src/stores/imports.store";
 import { observer } from "mobx-react-lite";
+import { SelectType } from "../products/detail/ModalCreateProduct/ModalCreateProduct";
 const { RangePicker } = DatePicker;
-const ImportSearch = ({ setFilters }) => {
+const ImportSearch: React.FC<{
+    setFilters: Dispatch<SetStateAction<globalFiltersImportDataType>>;
+    productsSelect: SelectType[];
+    warehouseSelect: SelectType[];
+    skusSelect: SelectType[];
+    globalFiltersImportDataType: globalFiltersImportDataType;
+}> = ({
+    setFilters,
+    productsSelect,
+    warehouseSelect,
+    skusSelect,
+    globalFiltersImportDataType,
+}) => {
     const debounceInputChange: (value: string) => void = useCallback(
         debounce((value: string) => {
             setFilters((prev) => ({
@@ -16,11 +29,12 @@ const ImportSearch = ({ setFilters }) => {
         }, 400),
         []
     );
-    const store = useStore();
-    const warehouseStore = store.warehouseObservable;
-    const selectWarehouse = getSelectOption(warehouseStore.data);
-    const firstWarehouse = selectWarehouse?.[0]?.value;
     const [form] = Form.useForm<globalFiltersImportDataType>();
+    useEffect(() => {
+        form.setFieldsValue({
+            ...globalFiltersImportDataType,
+        });
+    }, [globalFiltersImportDataType, form]);
     return (
         <Form
             labelWrap
@@ -47,13 +61,12 @@ const ImportSearch = ({ setFilters }) => {
                         <Form.Item
                             label={<div className="font-bold">Kho hàng</div>}
                             name="warehouse_id"
-                            initialValue={firstWarehouse || undefined}
                         >
                             <Select
                                 allowClear
                                 showSearch
                                 optionFilterProp="label"
-                                options={selectWarehouse || []}
+                                options={warehouseSelect || []}
                                 placeholder="Chọn kho hàng"
                                 onChange={(value) => {
                                     setFilters((prev) => ({
@@ -89,6 +102,46 @@ const ImportSearch = ({ setFilters }) => {
                                         ...prev,
                                         start_date: formattedDate?.[0],
                                         end_date: formattedDate?.[1],
+                                    }));
+                                }}
+                            />
+                        </Form.Item>
+                    </Col>
+                    <Col xs={24} sm={12} md={12} lg={12} xl={12}>
+                        <Form.Item
+                            label={<div className="font-bold">Sản phẩm</div>}
+                            name="product_id"
+                        >
+                            <Select
+                                allowClear
+                                showSearch
+                                optionFilterProp="label"
+                                options={productsSelect}
+                                placeholder="Chọn sản phẩm"
+                                onChange={(value) => {
+                                    setFilters((prev) => ({
+                                        ...prev,
+                                        product_id: value,
+                                    }));
+                                }}
+                            />
+                        </Form.Item>
+                    </Col>
+                    <Col xs={24} sm={12} md={12} lg={12} xl={12}>
+                        <Form.Item
+                            label={<div className="font-bold">Biến thể</div>}
+                            name="skus_id"
+                        >
+                            <Select
+                                allowClear
+                                showSearch
+                                optionFilterProp="label"
+                                options={skusSelect || []}
+                                placeholder="Chọn biến thể"
+                                onChange={(value) => {
+                                    setFilters((prev) => ({
+                                        ...prev,
+                                        skus_id: value,
                                     }));
                                 }}
                             />

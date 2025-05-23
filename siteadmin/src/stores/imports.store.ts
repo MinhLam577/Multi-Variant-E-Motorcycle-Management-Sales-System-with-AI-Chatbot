@@ -11,6 +11,8 @@ export type globalFiltersImportDataType = {
     warehouse_id?: string;
     start_date?: string;
     end_date?: string;
+    product_id?: string;
+    skus_id?: string;
 };
 export type DetailImportResponseType = {
     id: string;
@@ -102,10 +104,12 @@ export default class ImportObservable {
         return queryString;
     }
 
-    *getListImports(query: string | object) {
+    *getListImports(query: object) {
         try {
             this.loading = true;
-            const queryString = this.validateQuery(query);
+            const queryString = this.validateQuery({
+                ...query,
+            });
             const response = yield ImportAPI.getList(queryString);
             const { data, status, message } = response;
             const success_status = [200, 201, 204];

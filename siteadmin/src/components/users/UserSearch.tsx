@@ -1,5 +1,5 @@
 import { Col, DatePicker, Form, Input, Row, Select } from "antd";
-import { UserType } from "../../constants";
+import { RoleEnum, RoleEnumValue } from "../../constants";
 import { debounce } from "lodash";
 import { useCallback } from "react";
 const { RangePicker } = DatePicker;
@@ -42,12 +42,16 @@ const UserSearch = ({ setFilters }) => {
                                 allowClear
                                 showSearch
                                 optionFilterProp="label"
-                                options={Object.keys(UserType).map((item) => {
-                                    return {
-                                        label: UserType[item],
-                                        value: item,
-                                    };
-                                })}
+                                options={Object.keys(RoleEnumValue)
+                                    .map((item) => {
+                                        return {
+                                            label: RoleEnumValue[item],
+                                            value: RoleEnum[item],
+                                        };
+                                    })
+                                    .filter(
+                                        (item) => item.value !== RoleEnum.USER
+                                    )}
                                 placeholder="Chọn loại người dùng"
                                 onChange={(value) => {
                                     setFilters((prev) => ({
