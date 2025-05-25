@@ -205,8 +205,6 @@ export enum RoleEnumValue {
 
 export const CustomerType = {
     user: "Khách hàng",
-    hr: "Tuyển dụng",
-    sales: "Sales",
 };
 export const GenderType = {
     male: "male",

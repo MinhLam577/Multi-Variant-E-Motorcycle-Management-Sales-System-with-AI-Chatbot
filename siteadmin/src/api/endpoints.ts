@@ -39,6 +39,7 @@ const endpoints = {
     user: {
         details: (id: string) => `/users/${id}`,
         update: (id: string) => `/users/${id}`,
+        remove: (id: string) => `/users/${id}`,
         setRole: (id: string) => `/users/${id}`,
         changePassword: (id: string) => `/users/${id}`,
         uploadAvatar: () => "/users/upload",
@@ -75,7 +76,11 @@ const endpoints = {
     },
 
     categories: {
-        list: `/categories`,
+        list: (query: string) => `/categories?${query}`,
+        create: () => `/categories`,
+        update: (id: string) => `/categories/${id}`,
+        detail: (id: string) => `/categories/${id}`,
+        remove: (id: string) => `/categories/${id}`,
     },
 
     //brand
@@ -156,7 +161,7 @@ const endpoints = {
 
     // blogs - categories
     blogcategories: {
-        list: () => `/blog-categories`,
+        list: (query: string) => `/blog-categories?${query}`,
         details: (id) => `/blog-categories/${id}`,
         update: (id) => `/blog-categories/${id}`,
         delete: (id) => `/blog-categories/${id}`,
@@ -164,7 +169,7 @@ const endpoints = {
     },
     // blog - categories
     blogs: {
-        list: () => `/blogs`,
+        list: (query: string) => `/blogs?${query}`,
         details: (id) => `/blogs/${id}`,
         update: (id) => `/blogs/${id}`,
         delete: (id) => `/blogs/${id}`,

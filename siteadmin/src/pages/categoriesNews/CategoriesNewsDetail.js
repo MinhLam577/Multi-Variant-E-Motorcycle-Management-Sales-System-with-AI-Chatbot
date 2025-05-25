@@ -45,7 +45,6 @@ const CategoriesNewsDetail = ({ mode }) => {
             const data = await apiClient.get(
                 endpoints.blogcategories.details(id)
             );
-            console.log(data);
             form.setFieldsValue(data.data);
         };
         GetCategoriesBlogByid();

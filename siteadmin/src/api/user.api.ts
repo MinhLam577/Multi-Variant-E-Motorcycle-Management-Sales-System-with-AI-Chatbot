@@ -8,11 +8,14 @@ type UserAPIType = {
     list: (query: string) => Promise<ResponsePromise>;
     getUserDetails: (id: string) => Promise<ResponsePromise>;
     update: (id: string, data: UpdateUserDto) => Promise<ResponsePromise>;
+    remove: (id: string) => Promise<ResponsePromise>;
 };
 
 const UserAPI: UserAPIType = {
     list: async (query: string) =>
         await apiClient.get(userEndpoints.list(query)),
+    remove: async (id: string) =>
+        await apiClient.delete(userEndpoints.remove(id)),
     getUserDetails: async (id: string) =>
         await apiClient.get(userEndpoints.details(id)),
     update: async (id: string, data: UpdateUserDto) =>
