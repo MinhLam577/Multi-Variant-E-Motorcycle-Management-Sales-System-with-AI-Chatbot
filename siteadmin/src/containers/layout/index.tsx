@@ -194,7 +194,7 @@ const AppLayout = (props) => {
         if (hasPermission(ALL_PERMISSIONS.CATEGORIES.GET_PAGINATE)) {
             items.push(
                 getSideMenuItem(
-                    "Danh mục",
+                    "Danh mục sản phẩm",
                     "7",
                     <FileDoneOutlined />,
                     null,

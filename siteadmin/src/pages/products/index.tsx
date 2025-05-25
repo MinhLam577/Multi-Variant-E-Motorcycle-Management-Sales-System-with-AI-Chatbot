@@ -18,6 +18,7 @@ import { CategoryResponseType } from "src/stores/categories.store";
 import ModalCreateProduct, {
     IFormListRowData,
     modalCreateProductStore,
+    TreeSelectType,
 } from "src/components/products/detail/ModalCreateProduct/ModalCreateProduct";
 import ModalUpdateProduct from "src/components/products/detail/ModalUpdateProduct/ModalUpdateProduct";
 
@@ -86,12 +87,35 @@ export const generateRandomString = (length: number): string => {
     return result;
 };
 
-export const getCategoriesTreeSelect = (data: CategoryResponseType[]) =>
-    data?.map((item) => ({
-        value: item.id,
-        title: item.name,
-        children: item.children ? getCategoriesTreeSelect(item.children) : [],
-    }));
+// export const getCategoriesTreeSelect = (data: CategoryResponseType[]) =>
+//     data?.map((item) => ({
+//         value: item.id,
+//         title: item.name,
+//         children: item.children ? getCategoriesTreeSelect(item.children) : [],
+//     }));
+
+export const getCategoriesTreeSelect = (
+    data: CategoryResponseType[],
+    excludeId?: string,
+    maxLevel: number = 3
+): TreeSelectType[] => {
+    const buildTree = (
+        nodes: CategoryResponseType[],
+        level: number
+    ): TreeSelectType[] =>
+        nodes
+            ?.filter((item) => item.id !== excludeId)
+            .map((item) => ({
+                value: item.id,
+                title: item.name,
+                children:
+                    level < maxLevel && item.children
+                        ? buildTree(item.children, level + 1)
+                        : [],
+            }));
+
+    return buildTree(data, 1);
+};
 
 const Products = () => {
     const store = useStore();

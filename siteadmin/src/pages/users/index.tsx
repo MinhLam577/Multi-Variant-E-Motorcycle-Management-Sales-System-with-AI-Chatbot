@@ -23,6 +23,7 @@ import {
 import { useStore } from "src/stores";
 import { observer } from "mobx-react-lite";
 import CustomizeTab from "src/components/common/CustomizeTab";
+import { getErrorMessage } from "src/utils";
 const User = () => {
     const navigate = useNavigate();
     const store = useStore();
@@ -76,6 +77,26 @@ const User = () => {
             data: usersData.username,
         });
         navigate(`/users/${usersData.id}`, { replace: true });
+    };
+
+    const handleDeleteUser = async (id: string) => {
+        try {
+            const response = await userStore.removeUserById(id);
+            if (response) {
+                message.success("Xóa người dùng thành công");
+                fetchUsers({
+                    ...userStore.pagination,
+                });
+            } else {
+                message.error("Xóa người dùng thất bại");
+            }
+        } catch (error) {
+            const errorMessage = getErrorMessage(
+                error,
+                "Có lỗi xảy ra khi xóa người dùng. Vui lòng thử lại sau."
+            );
+            message.error(errorMessage);
+        }
     };
 
     // xử lý get Data với CSVLink
@@ -160,7 +181,7 @@ const User = () => {
                     items={[
                         {
                             key: "1",
-                            label: "Tất cả người dùng",
+                            label: "Tất cả nhân viên",
                             children: (
                                 <div className="w-full mt-2">
                                     <UserSearch setFilters={setGlobalFilters} />
@@ -168,6 +189,7 @@ const User = () => {
                                         data={userStore.data.listData || []}
                                         handleUpdateUser={handleEditUser}
                                         handleViewUser={handleViewUser}
+                                        handleDeleteUser={handleDeleteUser}
                                     />
                                     <UserImport
                                         openModalImport={openModalImport}

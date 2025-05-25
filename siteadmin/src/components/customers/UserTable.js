@@ -13,7 +13,7 @@ import endpoints from "../../api/endpoints";
 import UserStaffObservable from "../../stores/user.store";
 import Access from "../../access/access";
 import { ALL_PERMISSIONS } from "../../constants/permissions";
-import { formatVNDMoney } from "../../utils";
+import { formatVNDMoney, getErrorMessage } from "../../utils";
 const getColumnsConfig = ({
     handleUpdateUser,
     handleViewUser,
@@ -88,28 +88,32 @@ const getColumnsConfig = ({
             render: (text, record, index) => {
                 return (
                     <>
-                        <Popconfirm
-                            placement="leftTop"
-                            title={"Xác nhận xóa user"}
-                            description={"Bạn có chắc chắn muốn xóa user này ?"}
-                            onConfirm={() => handleDeleteUser(record.id)}
-                            okText="Xác nhận"
-                            cancelText="Hủy"
+                        <Access
+                            permission={ALL_PERMISSIONS.CUSTOMERS.DELETE}
+                            hideChildren
                         >
-                            <Access
-                                permission={ALL_PERMISSIONS.CUSTOMERS.DELETE}
-                                hideChildren
+                            <span
+                                style={{
+                                    cursor: "pointer",
+                                    margin: "0 20px",
+                                }}
                             >
-                                <span
-                                    style={{
-                                        cursor: "pointer",
-                                        margin: "0 20px",
-                                    }}
-                                >
-                                    <DeleteTwoTone twoToneColor="#ff4d4f" />
-                                </span>
-                            </Access>
-                        </Popconfirm>
+                                <DeleteTwoTone
+                                    twoToneColor="#ff4d4f"
+                                    onClick={() =>
+                                        processWithModals(
+                                            ProcessModalName.ConfirmCustomContent
+                                        )(
+                                            "Xác nhận",
+                                            `Bạn có chắc chắn muốn xóa khách hàng #${record.id} không?`
+                                        )(() => {
+                                            if (handleDeleteUser)
+                                                handleDeleteUser(record.id);
+                                        })
+                                    }
+                                />
+                            </span>
+                        </Access>
                         <Access
                             permission={ALL_PERMISSIONS.CUSTOMERS.UPDATE}
                             hideChildren
@@ -154,25 +158,29 @@ const CustomerTable = ({
         )(() => {});
     };
 
-    const handleDeleteUser = (id) => {
-        processWithModals(ProcessModalName.ConfirmCustomContent)(
-            "Xác nhận",
-            "Bạn có chắc chắn ngưng hoạt động của người dùng này?"
-        )(async () => {
+    const handleDeleteUser = async (id) => {
+        try {
             const res = await apiClient.delete(endpoints.customers.delete(id));
             if (res && res.data) {
-                message.success(res.message);
+                message.success("Xóa khách hàng thành công");
                 setOpenModalCreate(false);
                 await fetchCustomer();
             } else {
-                notification.error({
-                    message: "You can only have max 3 receive address",
-                    description: res.message,
-                });
+                const errorMessage = getErrorMessage(
+                    res,
+                    "Lỗi xảy ra khi xóa khách hàng, vui lòng thử lại sau."
+                );
+                message.error(errorMessage);
             }
-        });
+        } catch (error) {
+            const errorMessage = getErrorMessage(
+                error,
+                "Lỗi xảy ra khi xóa khách hàng, vui lòng thử lại sau."
+            );
+            message.error(errorMessage);
+        }
     };
-    const hanleAddressUser = (item) => {
+    const handleAddressUser = (item) => {
         navigate(`/users/${item}/address`, { replace: true });
     };
 
@@ -198,7 +206,7 @@ const CustomerTable = ({
                 handleUpdateUser={handleUpdateUser}
                 handleViewUser={handleViewUser}
                 hanleActivateUser={hanleActivateUser}
-                hanleAddressUser={hanleAddressUser}
+                handleAddressUser={handleAddressUser}
                 setOpenModalUpdate={setOpenModalUpdate}
                 setDataUpdate={setDataUpdate}
                 scroll={{ y: "200px" }}

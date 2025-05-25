@@ -161,7 +161,6 @@ class UserStaffObservable {
             const success_status = [200, 201, 204];
             const newUrl = `${window.location.pathname}?${queryString}`;
             window.history.pushState({ path: newUrl }, "", newUrl);
-            console.log("resData", toJS(resData));
             if (success_status.includes(status)) {
                 this.data.listData = resData;
                 this.rootStore.status = status;
@@ -242,12 +241,43 @@ class UserStaffObservable {
         }
     }
 
+    *removeUserById(id: string) {
+        try {
+            this.loading = true;
+            const response = yield UserAPI.remove(id);
+            const { status, message } = response;
+            const success_status = [200, 201, 204];
+            if (success_status.includes(status)) {
+                this.rootStore.status = status;
+                this.rootStore.successMsg = message;
+                this.rootStore.showSuccessMsg = true;
+                return true;
+            } else {
+                this.rootStore.status = status;
+                this.rootStore.errorMsg = Array.isArray(message)
+                    ? message[0]
+                    : message;
+                return false;
+            }
+        } catch (e: any) {
+            console.error(e);
+            this.rootStore.status = 500;
+            const errorMessage = getErrorMessage(
+                e,
+                "Có lỗi xảy ra trong quá trình xóa người dùng, vui lòng thử lại sau."
+            );
+            this.rootStore.errorMsg = errorMessage;
+            return false;
+        } finally {
+            this.loading = false;
+        }
+    }
+
     setPagination(pagination: paginationData) {
         this.pagination = {
             ...this.pagination,
             ...pagination,
         };
-        console.log("pagination", toJS(this.pagination));
         this.getListUser({
             ...this.globalFilter,
             ...this.pagination,

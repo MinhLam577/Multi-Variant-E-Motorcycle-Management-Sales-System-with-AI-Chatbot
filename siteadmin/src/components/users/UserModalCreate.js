@@ -10,7 +10,7 @@ import {
     notification,
     Select,
 } from "antd";
-import { GenderType, RoleEnum, RoleEnumValue } from "../../constants";
+import { GenderType, RegExps, RoleEnum, RoleEnumValue } from "../../constants";
 import apiClient from "../../api/apiClient";
 import endpoints from "../../api/endpoints";
 
@@ -18,13 +18,12 @@ const UserModalCreate = (props) => {
     const { openModalCreate, setOpenModalCreate } = props;
     const [isSubmit, setIsSubmit] = useState(false);
 
-    // https://ant.design/components/form#components-form-demo-control-hooks
     const [form] = Form.useForm();
     const onFinish = async (values) => {
-        console.log(values);
         setIsSubmit(true);
         const updateInfo = {
             ...values,
+            role: values.role || RoleEnum.STAFF,
             birthday: values.birthday
                 ? values.birthday.format("YYYY-MM-DD")
                 : null, // Chỉ lấy ngày, tránh lỗi múi giờ
@@ -32,7 +31,6 @@ const UserModalCreate = (props) => {
 
         try {
             const res = await apiClient.post(endpoints.user.create, updateInfo);
-            console.log(res);
             if (res && res.data) {
                 message.success("Tạo mới user thành công");
                 form.resetFields();
@@ -42,13 +40,11 @@ const UserModalCreate = (props) => {
         } catch (error) {
             if (error.status === 409) {
                 console.log(error);
-                console.log("Lỗi user ");
                 notification.error({
                     message: "Lỗi tạo user",
                     description: "Email đã tồn tại, vui lòng chọn email khác.",
                 });
             } else {
-                console.log("Sao lại vo đây");
                 notification.error({
                     message: "Đã có lỗi xảy ra",
                     description:
@@ -118,6 +114,21 @@ const UserModalCreate = (props) => {
                                 pattern: /^\d{10}$/,
                                 message: "Số điện thoại phải có đúng 10 số!",
                             },
+                            () => ({
+                                validator(_, value) {
+                                    if (
+                                        !value ||
+                                        RegExps.PhoneNumber.test(value)
+                                    ) {
+                                        return Promise.resolve();
+                                    }
+                                    return Promise.reject(
+                                        new Error(
+                                            "Số điện thoại không đúng định dạng."
+                                        )
+                                    );
+                                },
+                            }),
                         ]}
                     >
                         <Input placeholder="Nhập số điện thoại" />
@@ -173,10 +184,12 @@ const UserModalCreate = (props) => {
                         <Select
                             allowClear
                             optionFilterProp="label"
-                            options={Object.keys(RoleEnum).map((item) => ({
-                                value: RoleEnum[item],
-                                label: RoleEnumValue[item],
-                            }))}
+                            options={Object.keys(RoleEnum)
+                                .map((item) => ({
+                                    value: RoleEnum[item],
+                                    label: RoleEnumValue[item],
+                                }))
+                                .filter((item) => item.value !== RoleEnum.USER)}
                             placeholder="Chọn loại người dùng"
                         />
                     </Form.Item>
@@ -186,9 +199,4 @@ const UserModalCreate = (props) => {
     );
 };
 
-UserModalCreate.propTypes = {
-    fetchUser: PropTypes.func,
-    openModalCreate: PropTypes.func,
-    setOpenModalCreate: PropTypes.func,
-};
 export default UserModalCreate;

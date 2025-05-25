@@ -1,4 +1,4 @@
-import { Button } from "antd";
+import { Button, Popconfirm } from "antd";
 import { useNavigate } from "react-router";
 import {
     ProcessModalName,
@@ -10,12 +10,21 @@ import React from "react";
 import { useStore } from "src/stores";
 import { observer } from "mobx-react-lite";
 import { RoleEnumValue } from "src/constants";
+import Access from "src/access/access";
+import { ALL_PERMISSIONS } from "src/constants/permissions";
+import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
 
 interface IColumnsConfig {
     handleViewUser: (user: UserStaffResponseType) => void;
+    handleDeleteUser?: (id: string) => void;
+    handleUpdateUser?: (user: UserStaffResponseType) => void;
 }
 
-const getColumnsConfig = ({ handleViewUser }: IColumnsConfig) => {
+const getColumnsConfig = ({
+    handleViewUser,
+    handleDeleteUser,
+    handleUpdateUser,
+}: IColumnsConfig) => {
     return [
         {
             title: "Họ tên",
@@ -32,20 +41,17 @@ const getColumnsConfig = ({ handleViewUser }: IColumnsConfig) => {
                     </Button>
                 );
             },
-            width: "140px",
         },
         {
             title: "Email",
             dataIndex: "email",
             key: "email",
-            width: "140px",
             ellipsis: true,
         },
         {
             title: "Số điện thoại",
             dataIndex: "phoneNumber",
             key: "phoneNumber",
-            width: "140px",
             ellipsis: true,
         },
 
@@ -53,15 +59,22 @@ const getColumnsConfig = ({ handleViewUser }: IColumnsConfig) => {
             title: "Ngày sinh",
             dataIndex: "birthday",
             key: "birthday",
-            width: "140px",
             ellipsis: true,
+            render: (value) => {
+                return value
+                    ? new Date(value).toLocaleDateString("vi-VN", {
+                          year: "numeric",
+                          month: "2-digit",
+                          day: "2-digit",
+                      })
+                    : "Chưa có ngày sinh";
+            },
         },
 
         {
             title: "Vai trò",
             dataIndex: "roles",
             key: "roles",
-            width: "200px",
             ellipsis: true,
             render: (Roles: RoleType[]) => {
                 if (!Roles || Roles.length === 0) return "Chưa có vai trò";
@@ -71,11 +84,60 @@ const getColumnsConfig = ({ handleViewUser }: IColumnsConfig) => {
                 return roleName ? RoleEnumValue[roleName] : "Chưa có vai trò";
             },
         },
+
+        {
+            title: "Action",
+            render: (text, record, index) => {
+                return (
+                    <>
+                        <Access
+                            permission={ALL_PERMISSIONS.USERS.DELETE}
+                            hideChildren
+                        >
+                            <span
+                                style={{
+                                    cursor: "pointer",
+                                    margin: "0 20px",
+                                }}
+                            >
+                                <DeleteTwoTone
+                                    twoToneColor="#ff4d4f"
+                                    onClick={() =>
+                                        processWithModals(
+                                            ProcessModalName.ConfirmCustomContent
+                                        )(
+                                            "Xác nhận",
+                                            `Bạn có chắc chắn muốn xóa user #${record.id} không?`
+                                        )(() => {
+                                            if (handleDeleteUser)
+                                                handleDeleteUser(record.id);
+                                        })
+                                    }
+                                />
+                            </span>
+                        </Access>
+                        <Access
+                            permission={ALL_PERMISSIONS.USERS.UPDATE}
+                            hideChildren
+                        >
+                            <EditTwoTone
+                                twoToneColor="#f57800"
+                                style={{ cursor: "pointer" }}
+                                onClick={() => {
+                                    handleUpdateUser(record);
+                                }}
+                            />
+                        </Access>
+                    </>
+                );
+            },
+        },
     ];
 };
 
 interface IUserTableProps {
     data: UserStaffResponseType[];
+    handleDeleteUser: (id: string) => Promise<void>;
     handleUpdateUser: (user: UserStaffResponseType) => void;
     handleViewUser: (user: UserStaffResponseType) => void;
 }
@@ -84,6 +146,7 @@ const UserTable: React.FC<IUserTableProps> = ({
     data,
     handleUpdateUser,
     handleViewUser,
+    handleDeleteUser,
 }) => {
     const navigate = useNavigate();
     const store = useStore();
@@ -95,12 +158,12 @@ const UserTable: React.FC<IUserTableProps> = ({
         )(() => {});
     };
 
-    const handleDeleteUser = (id: string) => {
-        processWithModals(ProcessModalName.ConfirmCustomContent)(
-            "Xác nhận",
-            "Bạn có chắc chắn ngưng hoạt động của người dùng này?"
-        )(() => {});
-    };
+    // const handleDeleteUser = (id: string) => {
+    //     processWithModals(ProcessModalName.ConfirmCustomContent)(
+    //         "Xác nhận",
+    //         "Bạn có chắc chắn ngưng hoạt động của người dùng này?"
+    //     )(() => {});
+    // };
     const hanleAddressUser = (item) => {
         navigate(`/users/${item}/address`, { replace: true });
     };

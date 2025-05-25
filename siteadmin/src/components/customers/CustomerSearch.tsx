@@ -120,7 +120,6 @@ const CustomerSearch = ({ setFilters }) => {
                             />
                         </Form.Item>
                     </Col>
-
                     <Col xs={24} sm={12} md={12} lg={12} xl={5}>
                         <Form.Item
                             label={

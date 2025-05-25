@@ -36,21 +36,19 @@ const formItemLayout = {
     },
 };
 
-const UserForm = ({ userBasicInfo, refetch }) => {
+const UserForm = ({ userBasicInfo }) => {
     const navigate = useNavigate();
     const [form] = Form.useForm();
 
     const handleFormFinish = async (values) => {
-        console.log(values);
         const updateInfo = {
             username: values.username || userBasicInfo.username,
             phoneNumber: values.phoneNumber || userBasicInfo.phoneNumber,
             gender: values.gender || userBasicInfo.gender,
-            // BE đang thiếu 2 trường này
-            Roles: values.Roles, // Đổi key 'roles' thành 'Roles'
+            Roles: values.Roles,
             birthday: values.birthday
                 ? values.birthday.format("YYYY-MM-DD")
-                : null, // Chỉ lấy ngày, tránh lỗi múi giờ
+                : null,
         };
         const ignoredKeys = ["__typename", "parent", "created_at", "userCode"];
         ignoredKeys.forEach((key) => delete updateInfo[key]);
@@ -78,7 +76,7 @@ const UserForm = ({ userBasicInfo, refetch }) => {
                 birthday: userBasicInfo?.birthday
                     ? dayjs(userBasicInfo.birthday)
                     : null,
-                Roles: userBasicInfo?.Roles?.name, // Hiển thị danh sách tên role
+                Roles: userBasicInfo?.Roles?.name,
             });
         }
     }, [userBasicInfo, form]);
@@ -163,7 +161,7 @@ const UserForm = ({ userBasicInfo, refetch }) => {
                 </Col>
                 <Col span={12}>
                     <Form.Item label="Email" name="email">
-                        <Input placeholder="Email" disabled="true" />
+                        <Input placeholder="Email" disabled={true} />
                     </Form.Item>
                 </Col>
 
@@ -181,20 +179,7 @@ const UserForm = ({ userBasicInfo, refetch }) => {
                     </Form.Item>
                 </Col>
 
-                <Col span={12}>
-                    {/* <Form.Item label="Loại người dùng" name="Roles">
-                        <Select
-                            allowClear
-                            optionFilterProp="label"
-                            options={Object.keys(CustomerType).map((item) => ({
-                                value: item,
-                                label: CustomerType[item],
-                            }))}
-                            placeholder="Chọn loại người dùng customer "
-                        />
-                    </Form.Item> */}
-                </Col>
-                <Col push={12} span={12} className="flex justify-end">
+                <Col span={24} className="flex justify-end">
                     <Form.Item>
                         <Button type="primary" htmlType="submit">
                             Cập nhật
@@ -204,15 +189,6 @@ const UserForm = ({ userBasicInfo, refetch }) => {
             </Row>
         </Form>
     );
-};
-
-UserForm.propTypes = {
-    userBasicInfo: PropTypes.object,
-    refetch: PropTypes.func,
-};
-
-UserForm.defaultProps = {
-    userBasicInfo: {},
 };
 
 export default UserForm;

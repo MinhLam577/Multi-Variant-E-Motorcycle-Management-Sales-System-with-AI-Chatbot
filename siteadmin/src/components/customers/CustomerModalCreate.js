@@ -14,12 +14,13 @@ import {
 import {
     CustomerType,
     GenderType,
+    RegExps,
     RoleEnum,
     RoleEnumValue,
 } from "../../constants";
 import apiClient from "../../api/apiClient";
 import endpoints from "../../api/endpoints";
-
+import { getErrorMessage } from "../../utils/index";
 const CustomerModalCreate = (props) => {
     const { openModalCreate, setOpenModalCreate } = props;
     const [isSubmit, setIsSubmit] = useState(false);
@@ -27,31 +28,45 @@ const CustomerModalCreate = (props) => {
     const [form] = Form.useForm();
 
     const onFinish = async (values) => {
-        setIsSubmit(true);
-        const updateInfo = {
-            ...values,
-            birthday: values.birthday
-                ? values.birthday.format("YYYY-MM-DD")
-                : null, // Chỉ lấy ngày, tránh lỗi múi giờ
-        };
+        try {
+            setIsSubmit(true);
+            const updateInfo = {
+                ...values,
+                role: RoleEnum.USER,
+                birthday: values.birthday
+                    ? values.birthday.format("YYYY-MM-DD")
+                    : null,
+            };
 
-        setIsSubmit(true);
+            setIsSubmit(true);
 
-        const res = await apiClient.post(
-            endpoints.customers.create,
-            updateInfo
-        );
-        if (res && res.data) {
-            message.success("Tạo mới user thành công");
-            form.resetFields();
-            setOpenModalCreate(false);
-            await props.fetchUser();
-        } else {
+            const res = await apiClient
+                .post(endpoints.customers.create, updateInfo)
+                .catch((error) => {
+                    throw error;
+                });
+            if (res && res.data) {
+                message.success("Tạo mới user thành công");
+                form.resetFields();
+                setOpenModalCreate(false);
+                await props.fetchUser();
+            } else {
+                const errorMessage = getErrorMessage(
+                    res,
+                    "Lỗi khi tạo người dùng"
+                );
+                notification.error({
+                    message: errorMessage,
+                });
+            }
+        } catch (e) {
+            const errorMessage = getErrorMessage(e, "Lỗi khi tạo người dùng");
             notification.error({
-                message: "lỗi",
+                message: errorMessage,
             });
+        } finally {
+            setIsSubmit(false);
         }
-        setIsSubmit(false);
     };
 
     return (
@@ -114,6 +129,21 @@ const CustomerModalCreate = (props) => {
                                 pattern: /^\d{10}$/,
                                 message: "Số điện thoại phải có đúng 10 số!",
                             },
+                            () => ({
+                                validator(_, value) {
+                                    if (
+                                        !value ||
+                                        RegExps.PhoneNumber.test(value)
+                                    ) {
+                                        return Promise.resolve();
+                                    }
+                                    return Promise.reject(
+                                        new Error(
+                                            "Số điện thoại không đúng định dạng."
+                                        )
+                                    );
+                                },
+                            }),
                         ]}
                     >
                         <Input placeholder="Nhập số điện thoại" />
@@ -167,7 +197,7 @@ const CustomerModalCreate = (props) => {
                         />
                     </Form.Item>
 
-                    <Form.Item
+                    {/* <Form.Item
                         label="Loại người dùng"
                         name="role"
                         style={{ marginBottom: "10px" }}
@@ -181,16 +211,11 @@ const CustomerModalCreate = (props) => {
                             }))}
                             placeholder="Chọn loại người dùng"
                         />
-                    </Form.Item>
+                    </Form.Item> */}
                 </Form>
             </Modal>
         </>
     );
 };
 
-CustomerModalCreate.propTypes = {
-    fetchUser: PropTypes.func,
-    openModalCreate: PropTypes.func,
-    setOpenModalCreate: PropTypes.func,
-};
 export default CustomerModalCreate;
