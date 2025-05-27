@@ -11,6 +11,7 @@ import {
     OrderedListOutlined,
     SettingOutlined,
     ShoppingOutlined,
+    SolutionOutlined,
     UsergroupAddOutlined,
     UserOutlined,
 } from "@ant-design/icons";
@@ -66,6 +67,7 @@ const BreadcrumbLabel = {
     notifications: "Quản lí thông báo",
     import: "Quản lí nhập kho",
     export: "Quản lí xuất kho",
+    brands: "Quản lí nhãn hàng cung cấp",
 };
 
 export const getBreadcrumbItems = (path: string) => {
@@ -227,17 +229,17 @@ const AppLayout = (props) => {
             );
         }
 
-        if (hasPermission(ALL_PERMISSIONS.ROLES.GET_PAGINATE)) {
-            items.push(
-                getSideMenuItem(
-                    "Thông báo",
-                    "15",
-                    <NotificationOutlined />,
-                    null,
-                    () => navigate("/notifications")
-                )
-            );
-        }
+        // if (hasPermission(ALL_PERMISSIONS.ROLES.GET_PAGINATE)) {
+        //     items.push(
+        //         getSideMenuItem(
+        //             "Thông báo",
+        //             "15",
+        //             <NotificationOutlined />,
+        //             null,
+        //             () => navigate("/notifications")
+        //         )
+        //     );
+        // }
 
         if (hasPermission(ALL_PERMISSIONS.VOURCHERS.GET_PAGINATE)) {
             items.push(
@@ -254,6 +256,21 @@ const AppLayout = (props) => {
                 )
             );
         }
+        items.push(
+            getSideMenuItem(
+                "Nhãn hàng cung cấp",
+                "25",
+                <SolutionOutlined />,
+                null,
+                () => navigate("/brands")
+            )
+        );
+
+        items.push(
+            getSideMenuItem("Nhập kho", "22", <ImportOutlined />, null, () =>
+                navigate("/import")
+            )
+        );
 
         if (hasPermission(ALL_PERMISSIONS.EXPORT.GET_PAGINATE)) {
             items.push(
@@ -266,12 +283,6 @@ const AppLayout = (props) => {
                 )
             );
         }
-
-        items.push(
-            getSideMenuItem("Nhập kho", "22", <ImportOutlined />, null, () =>
-                navigate("/import")
-            )
-        );
 
         if (hasPermission(ALL_PERMISSIONS.PERMISSIONS.GET_PAGINATE)) {
             items.push(
@@ -311,6 +322,7 @@ const AppLayout = (props) => {
                 "/import": "22",
                 "/export": "23",
                 "/variants": "24",
+                "/brands": "25",
             };
             for (let key of Object.keys(menuKeys)) {
                 if (path.startsWith(key)) {

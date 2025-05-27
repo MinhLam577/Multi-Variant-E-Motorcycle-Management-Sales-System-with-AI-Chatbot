@@ -14,8 +14,7 @@ import endpoints from "../../api/endpoints.ts";
 const getColumnsConfig = ({
     handleUpdateNews,
     handleViewNews,
-
-    hanleDeleteNews,
+    handleDeleteNews,
 }) => {
     return [
         {
@@ -58,7 +57,7 @@ const getColumnsConfig = ({
                 return (
                     <GroupActionButton
                         item={item}
-                        hanleDelete={hanleDeleteNews}
+                        handleDelete={handleDeleteNews}
                         handleUpdate={handleUpdateNews}
                     />
                 );
@@ -92,7 +91,7 @@ const NewsTable = ({
         )(() => {});
     };
 
-    const hanleDeleteNews = async (id) => {
+    const handleDeleteNews = async (id) => {
         processWithModals(ProcessModalName.ConfirmCustomContent)(
             "Xác nhận",
             "Bạn chắc chắn muốn xóa danh mục tin tức này?"
@@ -102,7 +101,7 @@ const NewsTable = ({
                     endpoints.blogcategories.delete(id)
                 );
                 message.success(data?.message || "Xóa thành công");
-                refreshData(); // Gọi refreshData để làm mới danh sách sau khi xóa
+                refreshData();
             } catch (error) {
                 console.error("Lỗi khi xóa:", error);
                 message.error(
@@ -121,7 +120,7 @@ const NewsTable = ({
                 getColumnsConfig={() =>
                     getColumnsConfig({
                         handleUpdateNews,
-                        hanleDeleteNews,
+                        handleDeleteNews,
                         handleViewNews,
                     })
                 }
