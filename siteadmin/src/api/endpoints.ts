@@ -1,6 +1,8 @@
 const endpoints = {
     base: {
         uploadImagesToServer: "/products/upload/multipleImage",
+        convertUrlToBase64: (url: string) =>
+            `/brand/convert-url-to-base64?url=${url}`,
     },
     import: {
         list: (query: string) => `/import?${query}`,
@@ -86,6 +88,9 @@ const endpoints = {
     //brand
     brand: {
         list: (query: string) => `/brand?${query}`,
+        create: () => `/brand`,
+        update: (id: string) => `/brand/${id}`,
+        delete: (id: string) => `/brand/${id}`,
     },
 
     // branch

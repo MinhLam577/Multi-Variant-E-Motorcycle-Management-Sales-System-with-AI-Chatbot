@@ -40,7 +40,7 @@ const NewsSearch = ({ setFilters }) => {
                         <Form.Item
                             label={
                                 <div className="font-bold">
-                                    Khoảng thời gian đăng bài
+                                    Khoảng thời gian
                                 </div>
                             }
                             name="date"

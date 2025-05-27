@@ -225,4 +225,9 @@ export const AUTH_STORAGE_KEYS = {
 
 export const SUCCESS_STATUSES = [200, 201, 204];
 
-export const AcceptImageTypes = ["image/jpeg", "image/png", "image/jpg"];
+export const AcceptImageTypes = [
+    "image/jpeg",
+    "image/png",
+    "image/jpg",
+    "image/webp",
+];
