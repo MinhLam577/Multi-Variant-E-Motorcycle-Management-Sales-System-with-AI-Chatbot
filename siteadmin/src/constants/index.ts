@@ -126,7 +126,7 @@ export const EnumOrderStatuses = {
     SHIPPING: "ĐANG GIAO HÀNG",
     DELIVERED: "GIAO THÀNH CÔNG",
     CANCELED: "HỦY ĐƠN",
-    RETURNED: "TRẢ HÀNG",
+    // RETURNED: "TRẢ HÀNG",
     FAILED_DELIVERY: "GIAO THẤT BẠI",
 };
 

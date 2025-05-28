@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import ReactApexChart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import Chart from "react-apexcharts";
@@ -10,25 +10,23 @@ import {
     ArrowDown2,
     UserAdd,
     ArrowDown,
+    ArrowSwapVertical,
 } from "iconsax-react";
-import {
-    Select,
-    ConfigProvider,
-    DatePicker,
-    message,
-    Skeleton,
-    Breadcrumb,
-    Button,
-} from "antd";
+import { Select, ConfigProvider, DatePicker, Skeleton, message } from "antd";
 import dayjs from "dayjs";
 import qs from "qs";
-import { makeAutoObservable, reaction, set, toJS } from "mobx";
+import { makeAutoObservable, reaction, toJS } from "mobx";
 import { observer } from "mobx-react-lite";
 import { EnumOrderColorStatuses, EnumOrderStatuses } from "src/constants";
-import { filterEmptyFields } from "src/utils";
-import products from "../products";
 import { getBreadcrumbItems } from "src/containers/layout";
 import AdminBreadCrumb from "src/components/common/AdminBreadCrumb";
+import { RevenueProfitStatisticsDto } from "src/stores/order.store";
+import OrderAPI from "src/api/order.api";
+import { RootStore } from "src/stores/base";
+import { useStore } from "src/stores";
+import { filterEmptyFields, getErrorMessage } from "src/utils";
+import apiClient from "src/api/apiClient";
+import endpoints from "src/api/endpoints";
 const { RangePicker } = DatePicker;
 
 const filterTheme = {
@@ -61,15 +59,26 @@ interface IEarningSeriesProps {
     name: string;
     type?: string;
 }
-interface IProfitAndRevenueProps {
+export interface StatisticsResponse {
     monthly_revenue: number[];
     monthly_profit: number[];
     revenue_daily: number[];
     profit_daily: number[];
 }
-enum SelectType {
+export enum EnumTypeOfTimeStatistics {
     MONTH = "month",
     DAY = "day",
+}
+interface DailyStats {
+    date: string;
+    revenue: number;
+    profit: number;
+}
+
+interface MonthlyStats {
+    month: string;
+    revenue: number;
+    profit: number;
 }
 
 const orderLabels = Object.entries(EnumOrderStatuses)
@@ -117,14 +126,14 @@ const orderColor = Object.entries(EnumOrderStatuses)
 
 const getDefaultRange = (
     current_year: number,
-    type: SelectType = SelectType.MONTH
+    type: EnumTypeOfTimeStatistics = EnumTypeOfTimeStatistics.MONTH
 ) => {
     // Kiểm tra tính hợp lệ của current_year
     if (!current_year || isNaN(current_year)) {
         current_year = dayjs().year();
     }
 
-    if (type === SelectType.MONTH) {
+    if (type === EnumTypeOfTimeStatistics.MONTH) {
         // Trả về khoảng từ đầu năm đến cuối năm
         const startOfYear = dayjs(`${current_year}-01-01`).startOf("year");
         const endOfYear = dayjs(`${current_year}-01-01`).endOf("year");
@@ -151,7 +160,7 @@ class OverviewStore {
     suppliers: number = 0;
     orders: number = 0;
     totalRevenue: number = 0;
-    profitAndRevenue: IProfitAndRevenueProps = {
+    profitAndRevenue: StatisticsResponse = {
         monthly_revenue: [],
         monthly_profit: [],
         revenue_daily: [],
@@ -326,7 +335,8 @@ class OverviewStore {
     showSkeleton: boolean = false;
     start_date: string = null;
     end_date: string = null;
-    selectType: SelectType = SelectType.MONTH;
+    selectType: EnumTypeOfTimeStatistics = EnumTypeOfTimeStatistics.MONTH;
+
     constructor() {
         makeAutoObservable(this, {}, { autoBind: true });
         reaction(
@@ -345,7 +355,7 @@ class OverviewStore {
             { fireImmediately: true }
         );
     }
-    setSelectType(selectType: SelectType) {
+    setSelectType(selectType: EnumTypeOfTimeStatistics) {
         this.selectType = selectType;
         const { start_date, end_date } = getDefaultRange(this.year, selectType);
         this.setDateRange(start_date, end_date);
@@ -365,7 +375,7 @@ class OverviewStore {
     setTotalRevenue(totalRevenue: number) {
         this.totalRevenue = totalRevenue;
     }
-    setProfitAndRevenue(profitAndRevenue: IProfitAndRevenueProps) {
+    setProfitAndRevenue(profitAndRevenue: StatisticsResponse) {
         this.profitAndRevenue = profitAndRevenue;
     }
     setEarningSeries(earningSeries: IEarningSeriesProps[]) {
@@ -392,43 +402,98 @@ class OverviewStore {
         this.updateStatistics();
     }
 
-    private fetchDailyStatistics(start: string | null, end: string | null) {
+    private async fetchDailyStatistics(
+        start: string | null,
+        end: string | null
+    ) {
         if (!start || !end) return { type: "daily", data: [] };
+
         const startDate = dayjs(start).startOf("day");
         const endDate = dayjs(end).endOf("day");
-        const daysInRange = endDate.diff(startDate, "day") + 1;
-        const data = [];
-        for (let i = 0; i < daysInRange; i++) {
-            const date = startDate.add(i, "day");
-            data.push({
-                date: date.format("DD/MM/YYYY"),
-                revenue: getRandomNumberRange(100000, 10000000, 1)[0],
-                profit: getRandomNumberRange(100000, 10000000, 1)[0],
-            });
+
+        try {
+            const payload: RevenueProfitStatisticsDto = {
+                time_type: EnumTypeOfTimeStatistics.DAY,
+                year: startDate.year(),
+                month: startDate.month() + 1,
+                startDay: startDate.date(),
+                endDay: endDate.date(),
+            };
+
+            const {
+                data: response,
+                message: responseMessage,
+                status,
+            } = await OrderAPI.profitStatistic(payload);
+            if (status !== 200) {
+                return { type: "monthly", data: [] };
+            }
+            const resData = response as StatisticsResponse;
+            const data: DailyStats[] =
+                resData?.profit_daily?.map((profit, index) => {
+                    const date = startDate.add(index, "day");
+                    return {
+                        date: date.format("DD/MM/YYYY"),
+                        revenue: resData.revenue_daily[index] || 0,
+                        profit: profit || 0,
+                    };
+                }) || [];
+
+            return { type: "daily", data };
+        } catch (error) {
+            console.error("Error fetching daily statistics:", error);
+            return { type: "daily", data: [] };
         }
-        return { type: "daily", data };
     }
 
-    private fetchMonthlyStatistics(start: string | null, end: string | null) {
+    private async fetchMonthlyStatistics(
+        start: string | null,
+        end: string | null
+    ) {
         if (!start || !end) return { type: "monthly", data: [] };
+
         const startDate = dayjs(start).startOf("month");
         const endDate = dayjs(end).endOf("month");
-        const monthsInRange = endDate.diff(startDate, "month") + 1;
-        const data = [];
-        for (let i = 0; i < monthsInRange; i++) {
-            const date = startDate.add(i, "month");
-            data.push({
-                month: date.format("MM/YYYY"),
-                revenue: getRandomNumberRange(100000, 10000000, 1)[0],
-                profit: getRandomNumberRange(100000, 10000000, 1)[0],
-            });
+
+        try {
+            const payload: RevenueProfitStatisticsDto = {
+                time_type: EnumTypeOfTimeStatistics.MONTH,
+                month: startDate.month() + 1,
+                year: startDate.year(),
+                startMonth: startDate.month() + 1,
+                endMonth: endDate.month() + 1,
+            };
+
+            const {
+                data: response,
+                message: responseMessage,
+                status,
+            } = await OrderAPI.profitStatistic(payload);
+            if (status !== 200) {
+                message.error(
+                    responseMessage ||
+                        "Có lỗi xảy ra khi lấy dữ liệu thống kê theo tháng."
+                );
+                return { type: "monthly", data: [] };
+            }
+            const resData = response as StatisticsResponse;
+            const data: MonthlyStats[] =
+                resData?.monthly_revenue?.map((revenue, index) => ({
+                    month: startDate.add(index, "month").format("MM/YYYY"),
+                    revenue,
+                    profit: resData.monthly_profit[index] || 0,
+                })) || [];
+
+            return { type: "monthly", data };
+        } catch (error) {
+            console.error("Error fetching monthly statistics:", error);
+            return { type: "monthly", data: [] };
         }
-        return { type: "monthly", data };
     }
 
-    updateStatistics() {
-        if (this.selectType === SelectType.DAY) {
-            const stats = this.fetchDailyStatistics(
+    async updateStatistics() {
+        if (this.selectType === EnumTypeOfTimeStatistics.DAY) {
+            const stats = await this.fetchDailyStatistics(
                 this.start_date,
                 this.end_date
             );
@@ -449,19 +514,19 @@ class OverviewStore {
                 labels: stats.data.map((d) => d.date),
             };
         } else {
-            const stats = this.fetchMonthlyStatistics(
+            const stats = await this.fetchMonthlyStatistics(
                 this.start_date,
                 this.end_date
             );
             this.earningSeries = [
                 {
                     name: "Profit",
-                    data: stats.data.map((d) => d.profit),
+                    data: stats.data.map((d: MonthlyStats) => d.profit),
                     type: "line",
                 },
                 {
                     name: "Revenue",
-                    data: stats.data.map((d) => d.revenue),
+                    data: stats.data.map((d: MonthlyStats) => d.revenue),
                     type: "column",
                 },
             ];
@@ -475,7 +540,7 @@ class OverviewStore {
     get getTimeUnitList(): string[] {
         if (!this.start_date || !this.end_date) return [];
 
-        if (this.selectType === SelectType.MONTH) {
+        if (this.selectType === EnumTypeOfTimeStatistics.MONTH) {
             const start = dayjs(this.start_date).startOf("month");
             const end = dayjs(this.end_date).endOf("month");
             const monthsInRange = end.diff(start, "month") + 1;
@@ -501,10 +566,16 @@ class OverviewStore {
         }
     }
 }
-
 const overviewStore = new OverviewStore();
 
 const Overview = observer(() => {
+    const store = useStore();
+    const {
+        orderObservable: orderStore,
+        userObservable: customerStore,
+        productObservable: productStore,
+        brandObservable: brandStore,
+    } = store;
     const disabledSameMonthDate = (
         current,
         { from, type }: { from?: dayjs.Dayjs; type: string }
@@ -546,67 +617,155 @@ const Overview = observer(() => {
 
     const fetchAllCustomers = async () => {
         try {
+            const query = qs.stringify(
+                filterEmptyFields({
+                    ...customerStore.pagination,
+                })
+            );
+            const response = await apiClient.get(
+                endpoints.customers.list(query)
+            );
+            const data = response?.data?.result || [];
+            overviewStore.setCustomers(data?.length || 0);
         } catch (err) {
-        } finally {
+            const errorMessage = getErrorMessage(
+                err,
+                "Không thể lấy dữ liệu khách hàng"
+            );
+            store.setStatusMessage(500, errorMessage, "", false);
         }
     };
 
     const fetchAllOrders = async () => {
         try {
-        } catch (err) {}
+            await orderStore.getListOrder({
+                ...orderStore.pagination,
+            });
+            const orders = toJS(orderStore.data.orders);
+            if (orders) {
+                overviewStore.setOrders(orders.length);
+            } else {
+                overviewStore.setOrders(0);
+            }
+        } catch (err) {
+            const errorMessage = getErrorMessage(
+                err,
+                "Không thể lấy dữ liệu đơn hàng"
+            );
+            store.setStatusMessage(500, errorMessage, "", false);
+        }
     };
 
     const fetchAllProducts = async () => {
         try {
-        } catch (err) {}
+            await productStore.getListProduct({
+                ...productStore.pagination,
+            });
+            const products = toJS(productStore.data.products.data);
+            if (products) {
+                overviewStore.setProducts(products.length);
+            } else {
+                overviewStore.setProducts(0);
+            }
+        } catch (err) {
+            const errorMessage = getErrorMessage(
+                err,
+                "Không thể lấy dữ liệu sản phẩm"
+            );
+            store.setStatusMessage(500, errorMessage, "", false);
+        }
     };
 
     const fetchAllSuppliers = async () => {
         try {
-        } catch (err) {}
+            await brandStore.getListBrands({
+                ...brandStore.pagination,
+            });
+            const suppliers = toJS(brandStore.data);
+            if (suppliers) {
+                overviewStore.setSuppliers(suppliers.length);
+            } else {
+                overviewStore.setSuppliers(0);
+            }
+        } catch (err) {
+            const errorMessage = getErrorMessage(
+                err,
+                "Không thể lấy dữ liệu nhà cung cấp"
+            );
+            store.setStatusMessage(500, errorMessage, "", false);
+        }
     };
 
-    const fetchProfitAndRevenue = async () => {
+    const fetchTotalRevenue = async (year?: number) => {
         try {
-            const data: IProfitAndRevenueProps = {
-                monthly_revenue: [],
-                monthly_profit: [],
-                revenue_daily: [],
-                profit_daily: [],
-            };
-            const totalRevenue = data.monthly_revenue
-                ? Object.values(data.monthly_revenue).reduce((a, b) => a + b, 0)
-                : data.revenue_daily
-                  ? Object.values(data.revenue_daily).reduce((a, b) => a + b, 0)
-                  : 0;
+            const currentYear = year || overviewStore.year;
+            await orderStore.getTotalRevenueByYear(currentYear);
+            const totalRevenue = toJS(orderStore.data.total_revenue_by_year);
+            if (totalRevenue) {
+                overviewStore.setTotalRevenue(totalRevenue);
+            } else {
+                overviewStore.setTotalRevenue(0);
+            }
         } catch (err) {}
     };
 
-    const fetchOrderOverview = async (searchParam) => {
+    const fetchOrderOverview = async (year?: number) => {
         try {
-            const queryParam = qs.stringify(searchParam);
-        } catch (err) {}
+            const currentYear = year || overviewStore.year;
+            await orderStore.getOrderStatusStatics(currentYear);
+            const orderStatusData = toJS(orderStore.data.order_status_statics);
+            if (orderStatusData) {
+                const orderPieSeries = Object.keys(EnumOrderStatuses)
+                    .filter((key) => key !== "All")
+                    .map((label) => orderStatusData[label] || 0);
+                overviewStore.setOrderPieSeries(orderPieSeries);
+            } else {
+                overviewStore.setOrderPieSeries(
+                    getRandomNumberRange(0, 0, orderLabels.length)
+                );
+            }
+        } catch (err) {
+            const errorMessage = getErrorMessage(
+                err,
+                "Không thể lấy dữ liệu đơn hàng"
+            );
+            store.setStatusMessage(500, errorMessage, "", false);
+        }
     };
 
-    const fetchMockData = () => {
-        overviewStore.setOrderPieSeries(
-            getRandomNumberRange(10, 1000, orderLabels.length)
-        );
-        overviewStore.setEarningSeries([
-            {
-                name: "Profit",
-                data: getRandomNumberRange(100000, 10000000, 12),
-                type: "line",
-            },
-            {
-                name: "Revenue",
-                data: getRandomNumberRange(100000, 10000000, 12),
-                type: "column",
-            },
+    const fetchStaticData = async () => {
+        await Promise.all([
+            fetchTotalRevenue(overviewStore.year),
+            fetchOrderOverview(overviewStore.year),
         ]);
     };
+
+    const fetchData = async () => {
+        overviewStore.setShowSkeleton(true);
+        try {
+            await Promise.all([
+                fetchAllCustomers(),
+                fetchAllOrders(),
+                fetchAllProducts(),
+                fetchAllSuppliers(),
+                fetchStaticData(),
+            ]);
+            overviewStore.setShowSkeleton(false);
+        } catch (err) {
+            const errorMessage = getErrorMessage(
+                err,
+                "Không thể lấy dữ liệu tổng quan"
+            );
+            store.setStatusMessage(500, errorMessage, "", false);
+            overviewStore.setShowSkeleton(false);
+        }
+    };
     useEffect(() => {
-        fetchMockData();
+        fetchStaticData();
+    }, [overviewStore.year]);
+
+    useEffect(() => {
+        fetchData();
     }, []);
 
     const [display, setDisplay] = useState(false);
@@ -678,7 +837,7 @@ const Overview = observer(() => {
                                     size={30}
                                 />
                                 <span className="font-bold text-[1.25rem] text-[#1D242E]">
-                                    {"12"}
+                                    {`${convertAmountToUnit(overviewStore.customers || 0)}`}
                                 </span>
                                 <h2 className="font-medium text-sm text-[#1D242E]">
                                     Total Customer
@@ -704,7 +863,7 @@ const Overview = observer(() => {
                             <div className="bg-[#ffffff] flex justify-stretch items-center gap-2 flex-col py-4">
                                 <Bill className="text-[#817AF3]" size={30} />
                                 <span className="font-bold text-[1.25rem] text-[#1D242E]">
-                                    12
+                                    {`${convertAmountToUnit(overviewStore.orders || 0)}`}
                                 </span>
                                 <h2 className="font-medium text-sm text-[#1D242E]">
                                     Total Order
@@ -733,7 +892,7 @@ const Overview = observer(() => {
                                     size={30}
                                 />
                                 <span className="font-bold text-[1.25rem] text-[#1D242E]">
-                                    13
+                                    {`${convertAmountToUnit(overviewStore.products || 0)}`}
                                 </span>
                                 <h2 className="font-medium text-sm text-[#1D242E]">
                                     Total Products
@@ -762,7 +921,7 @@ const Overview = observer(() => {
                                     size={30}
                                 />
                                 <span className="font-bold text-[1.25rem] text-[#1D242E]">
-                                    {"75M+"}
+                                    {`${convertAmountToUnit(overviewStore.totalRevenue || 0)}+`}
                                 </span>
                                 <h2 className="font-medium text-sm text-[#1D242E]">
                                     Total Revenue
@@ -792,7 +951,7 @@ const Overview = observer(() => {
                             <div className="bg-[#ffffff] flex justify-stretch items-center gap-2 flex-col py-4">
                                 <UserAdd className="text-[#DBA362]" size={30} />
                                 <span className="font-bold text-[1.25rem] text-[#1D242E]">
-                                    {"12"}
+                                    {`${convertAmountToUnit(overviewStore.suppliers || 0)}`}
                                 </span>
                                 <h2 className="font-medium text-sm text-[#1D242E]">
                                     Total Suppliers
@@ -843,15 +1002,17 @@ const Overview = observer(() => {
                                             options={[
                                                 {
                                                     label: "Tháng",
-                                                    value: SelectType.MONTH,
+                                                    value: EnumTypeOfTimeStatistics.MONTH,
                                                 },
                                                 {
                                                     label: "Ngày",
-                                                    value: SelectType.DAY,
+                                                    value: EnumTypeOfTimeStatistics.DAY,
                                                 },
                                             ]}
                                             className="h-12 w-28 mr-4"
-                                            defaultValue={SelectType.MONTH}
+                                            defaultValue={
+                                                EnumTypeOfTimeStatistics.MONTH
+                                            }
                                             onChange={(value) => {
                                                 overviewStore.setSelectType(
                                                     value
@@ -865,7 +1026,7 @@ const Overview = observer(() => {
                                             }
                                         />
                                         {overviewStore.selectType ===
-                                        SelectType.DAY ? (
+                                        EnumTypeOfTimeStatistics.DAY ? (
                                             <RangePicker
                                                 className="h-12 w-60"
                                                 suffixIcon={
@@ -1081,54 +1242,3 @@ const Overview = observer(() => {
 });
 
 export default Overview;
-
-// overviewStore.setEarningOptions({
-//     ...overviewStore.earningOptions,
-//     xaxis: {
-//         categories: [
-//             "Jan",
-//             "Feb",
-//             "Mar",
-//             "Apr",
-//             "May",
-//             "Jun",
-//             "Jul",
-//             "Aug",
-//             "Sep",
-//             "Oct",
-//             "Nov",
-//             "Dec",
-//         ],
-//     },
-// });
-
-// overviewStore.setOrderPieOptions({
-//     ...overviewStore.orderPieOptions,
-//     labels: [
-//         ...Object.values(EnumOrderStatuses).filter(
-//             (item) => item !== "All"
-//         ),
-//         "Other",
-//     ],
-// });
-// overviewStore.setTotalRevenue(
-//     overviewStore.earningSeries[1].data.reduce((a, b) => a + b, 0)
-// );
-// overviewStore.setProfitAndRevenue({
-//     monthly_revenue: overviewStore.earningSeries[1].data,
-//     monthly_profit: overviewStore.earningSeries[0].data,
-//     revenue_daily: overviewStore.earningSeries[1].data,
-//     profit_daily: overviewStore.earningSeries[0].data,
-// });
-// overviewStore.setProducts(
-//     overviewStore.earningSeries[0].data.reduce((a, b) => a + b, 0)
-// );
-// overviewStore.setCustomers(
-//     overviewStore.earningSeries[1].data.reduce((a, b) => a + b, 0)
-// );
-// overviewStore.setSuppliers(
-//     overviewStore.earningSeries[0].data.reduce((a, b) => a + b, 0)
-// );
-// overviewStore.setOrders(
-//     overviewStore.earningSeries[1].data.reduce((a, b) => a + b, 0)
-// );
