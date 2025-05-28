@@ -201,6 +201,9 @@ const endpoints = {
         cancelOrder: (id: string) => `/order/${id}/cancel`,
         failedDelivery: (id: string) => `/order/${id}/failed-delivery`,
         returnOrder: (id: string) => `/order/${id}/return-order`,
+        revenueProfitStatistic: () => "/order/revenue-profit-statics",
+        totalRevenueByYear: () => `/order/total-revenue-profit-statics`,
+        orderStatusStatics: () => `/order/order-status-statics`,
     },
     paymentMethod: {
         list: () => `/payment-method`,

@@ -1,3 +1,4 @@
+import { RevenueProfitStatisticsDto } from "src/stores/order.store";
 import { ResponsePromise } from ".";
 import apiClient from "./apiClient";
 import endpoints from "./endpoints";
@@ -26,6 +27,11 @@ const OrderAPI: {
     cancelOrder: (id: string, reason?: string) => Promise<ResponsePromise>;
     failedDelivery: (id: string, reason?: string) => Promise<ResponsePromise>;
     returnOrder: (id: string, reason?: string) => Promise<ResponsePromise>;
+    profitStatistic: (
+        data: RevenueProfitStatisticsDto
+    ) => Promise<ResponsePromise>;
+    totalRevenueByYear: (year: number) => Promise<ResponsePromise>;
+    orderStatusStatics: (year: number) => Promise<ResponsePromise>;
 } = {
     getOrderList: async (query: string) =>
         await apiClient.get(orderEndpoints.list(query)),
@@ -74,6 +80,26 @@ const OrderAPI: {
             );
         }
         return await apiClient.patch(orderEndpoints.returnOrder(id));
+    },
+    profitStatistic: async (
+        data: RevenueProfitStatisticsDto
+    ): Promise<ResponsePromise> => {
+        return await apiClient.post(
+            orderEndpoints.revenueProfitStatistic(),
+            JSON.stringify(data)
+        );
+    },
+    totalRevenueByYear: async (year: number): Promise<ResponsePromise> => {
+        return await apiClient.post(
+            orderEndpoints.totalRevenueByYear(),
+            JSON.stringify({ year })
+        );
+    },
+    orderStatusStatics: async (year: number): Promise<ResponsePromise> => {
+        return await apiClient.post(
+            orderEndpoints.orderStatusStatics(),
+            JSON.stringify({ year })
+        );
     },
 };
 
