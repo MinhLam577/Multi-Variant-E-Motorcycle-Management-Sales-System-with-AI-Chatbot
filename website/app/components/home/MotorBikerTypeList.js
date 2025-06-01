@@ -50,15 +50,11 @@ const MotorBikeTypeList = observer(() => {
         {productObservable?.data?.motobikes?.data.slice(0, 3).map((listing) => (
           <div className="col-sm-6 col-xl-3" key={listing.products.id}>
             <div className="car-listing">
-              <div className="thumb">
+              <div className="thumb relative w-full h-[183px]">
                 <Image
                   width={284}
                   height={183}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                  }}
+                  className="w-full h-full object-cover"
                   priority
                   src={listing.products.images[0]}
                   alt={listing.title}
@@ -94,12 +90,12 @@ const MotorBikeTypeList = observer(() => {
                   </ul>
                 </div>
               </div>
-              <div className="details p-4 bg-white rounded-xl shadow-md">
+              <div className="details p-4 h-full flex flex-col justify-between">
                 <div className="wrapper space-y-2">
                   <h5 className="price text-xl font-semibold text-green-600">
-                    {toCurrency(listing.price)}
+                    Báo giá
                   </h5>
-                  <h6 className="title text-base font-medium text-gray-800 hover:text-blue-600 transition">
+                  <h6 className="title text-base font-medium text-gray-800 hover:text-blue-600 transition line-clamp-2 truncate">
                     <Link href={`/listing-single-v2/${listing.products.id}`}>
                       {listing.products.title}
                     </Link>

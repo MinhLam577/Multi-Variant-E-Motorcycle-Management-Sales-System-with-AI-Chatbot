@@ -70,10 +70,10 @@ const HomeMotorbike = () => {
           </div>
           {/* End .row */}
 
-          <div className="row mt20">
+          <div className="row  mt20">
             <div className="col-lg-12">
-              <div className="text-center">
-                <Link href="/page-list-v1" className="more_listing">
+              <div className="text-center ">
+                <Link href="/page-list-v1" className="more_listing ">
                   Xem tất cả{" "}
                   <span className="icon">
                     <span className="fas fa-plus" />
@@ -129,9 +129,9 @@ const HomeMotorbike = () => {
           </div>
           {/* End .row */}
 
-          <div className="row mt20">
-            <div className="col-lg-12">
-              <div className="text-center">
+          <div className="row mt20 ">
+            <div className="col-lg-12 ">
+              <div className="text-center mt-20">
                 <Link href="/page-list-v1" className="more_listing">
                   Xem tất cả{" "}
                   <span className="icon">
