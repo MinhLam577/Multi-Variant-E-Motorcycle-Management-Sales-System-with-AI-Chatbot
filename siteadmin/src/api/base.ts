@@ -8,10 +8,11 @@ const BaseAPI: {
         files: File[],
         folder?: string
     ) => Promise<ResponseImage[] | ResponseFailure>;
+    convertUrlToBase64: (url: string) => Promise<string>;
 } = {
     login: (username, password) => {
         return apiClient
-            .post(endpoints.auth.login, {
+            .post(endpoints.authAdmin.login, {
                 username,
                 password,
             })
@@ -40,9 +41,32 @@ const BaseAPI: {
                     },
                 }
             );
-            return response?.data as ResponseImage[] || response as unknown as ResponseFailure;
+            return (
+                (response?.data as ResponseImage[]) ||
+                (response as unknown as ResponseFailure)
+            );
         } catch (error) {
             throw error;
+        }
+    },
+    convertUrlToBase64: async (url: string) => {
+        try {
+            if (!url || !url.match(/^https?:\/\//)) {
+                throw new Error("Invalid URL");
+            }
+
+            const response = await apiClient.get(
+                endpoints.base.convertUrlToBase64(encodeURIComponent(url))
+            );
+
+            if (response.status !== 200) {
+                throw new Error("Failed to convert URL to Base64");
+            }
+
+            return response.data as string;
+        } catch (e) {
+            console.error("Error converting URL to Base64:", e);
+            throw new Error("Error converting URL to Base64");
         }
     },
 };

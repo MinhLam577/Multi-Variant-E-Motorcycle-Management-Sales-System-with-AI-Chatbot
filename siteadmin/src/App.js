@@ -36,7 +36,7 @@ import WareHouseDetail from "./pages/warehouses/WareHouseDetail";
 import { StoreProvider } from "./stores";
 import GlobalProvider from "./contexts/global";
 import CustomerDetail from "./pages/customers/CustomerDetail";
-
+import NetworkError from "./pages/NetworkError";
 import PermissionPage from "./pages/permission/permission";
 import RolePage from "./pages/role/role";
 // import Role from
@@ -46,6 +46,10 @@ import CategoriesNewsDetail from "./pages/categoriesNews/CategoriesNewsDetail";
 import Setting from "./pages/setting/index";
 import Products from "./pages/products";
 import Overview from "./pages/adminOverview/Overview";
+import ImportPage from "./pages/imports";
+import ExportPage from "./pages/exports";
+import VariantPage from "./pages/variants";
+import BrandsPage from "./pages/brands";
 function App() {
     return (
         <StoreProvider>
@@ -526,10 +530,28 @@ function App() {
                                 />
 
                                 <Route
+                                    path="/variants"
+                                    element={
+                                        <ProtectedRoute>
+                                            <VariantPage />
+                                        </ProtectedRoute>
+                                    }
+                                />
+
+                                <Route
                                     path="/setting/role"
                                     element={
                                         <ProtectedRoute>
                                             <RolePage />
+                                        </ProtectedRoute>
+                                    }
+                                />
+
+                                <Route
+                                    path="/setting/profile"
+                                    element={
+                                        <ProtectedRoute>
+                                            <Profile />
                                         </ProtectedRoute>
                                     }
                                 />
@@ -542,8 +564,36 @@ function App() {
                                         </ProtectedRoute>
                                     }
                                 />
-
+                                <Route
+                                    path="/network-error"
+                                    element={<NetworkError />}
+                                />
                                 <Route path="/:404" element={<Page404 />} />
+                                <Route
+                                    path="/import"
+                                    element={
+                                        <ProtectedRoute>
+                                            <ImportPage />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/export"
+                                    element={
+                                        <ProtectedRoute>
+                                            <ExportPage />
+                                        </ProtectedRoute>
+                                    }
+                                />
+
+                                <Route
+                                    path="/brands"
+                                    element={
+                                        <ProtectedRoute>
+                                            <BrandsPage />
+                                        </ProtectedRoute>
+                                    }
+                                />
                             </Routes>
                         </Suspense>
                     </GlobalProvider>

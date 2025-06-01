@@ -1,7 +1,11 @@
 import endpoints from "./endpoints";
 import { HeaderContentType, ResponseImage, ResponsePromise } from ".";
 import apiClient from "./apiClient";
-import { CreateProductDto, CreateSkusDto } from "src/stores/product.store";
+import {
+    CreateProductDto,
+    CreateSkusDto,
+    UpdateProductDto,
+} from "src/stores/product.store";
 const productEndpoints = endpoints.product;
 
 const ProductAPI: {
@@ -11,7 +15,7 @@ const ProductAPI: {
     createProduct: (data: CreateProductDto) => Promise<ResponsePromise>;
     updateProduct: (
         id: string,
-        data: CreateProductDto
+        data: UpdateProductDto
     ) => Promise<ResponsePromise>;
     softDeleteProduct: (id: string) => Promise<ResponsePromise>;
     restoreDeleteProduct: (id: string) => Promise<ResponsePromise>;
@@ -46,7 +50,7 @@ const ProductAPI: {
     },
     createProduct: async (data: CreateProductDto) =>
         await apiClient.post(productEndpoints.create, JSON.stringify(data)),
-    updateProduct: async (id: string, data: CreateProductDto) =>
+    updateProduct: async (id: string, data: UpdateProductDto) =>
         await apiClient.put(productEndpoints.update(id), JSON.stringify(data)),
     softDeleteProduct: async (id: string) =>
         await apiClient.delete(productEndpoints.softDelete(id)),

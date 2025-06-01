@@ -1,10 +1,18 @@
 import { makeAutoObservable, toJS } from "mobx";
 import { RootStore } from "./base";
 import { paginationData } from "./voucher";
-import { convertDate, filterEmptyFields } from "src/utils";
-import { DateTimeFormat } from "src/constants";
+import { convertDate, filterEmptyFields, getErrorMessage } from "src/utils";
+import { DateTimeFormat, RoleEnum } from "src/constants";
 import UserAPI from "src/api/user.api";
-import { UserType } from "src/constants";
+
+export type ReceiveAddressResponseType = {
+    id: string;
+    receiver_name: string;
+    receiver_phone: string;
+    address: string;
+    postal_code: string;
+    note: string;
+};
 
 export type PermissionType = {
     id: string;
@@ -15,7 +23,7 @@ export type PermissionType = {
 };
 export type RoleType = {
     id: string;
-    name: UserType;
+    name: RoleEnum;
     permissions: PermissionType[];
 };
 
@@ -33,7 +41,7 @@ export class UpdateUserDto {
     phoneNumber?: string;
     gender?: GenderEnum;
     avatarUrl?: string;
-    Roles?: keyof typeof UserType;
+    Roles?: RoleEnum;
     birthday?: string | null;
 }
 
@@ -52,6 +60,14 @@ export type UserStaffResponseType = {
     joinedAt: string;
     isActive: boolean;
     roles: RoleType[];
+};
+
+export type CustomerResponseType = {
+    id: string;
+    username: string;
+    email: string;
+    phoneNumber: string;
+    avatarUrl: string;
 };
 
 export type globalFiltersDataUserStaff = {
@@ -160,8 +176,12 @@ class UserStaffObservable {
             }
         } catch (e: any) {
             console.error(e);
-            this.rootStore.status = e?.response?.status || 500;
-            this.rootStore.errorMsg = e?.response?.data?.message || e.message;
+            const errorMessage = getErrorMessage(
+                e,
+                "Có lỗi xảy ra trong quá trình lấy danh sách người dùng, vui lòng thử lại sau."
+            );
+            this.rootStore.status = 500;
+            this.rootStore.errorMsg = errorMessage;
         } finally {
             this.loading = false;
         }
@@ -221,12 +241,43 @@ class UserStaffObservable {
         }
     }
 
+    *removeUserById(id: string) {
+        try {
+            this.loading = true;
+            const response = yield UserAPI.remove(id);
+            const { status, message } = response;
+            const success_status = [200, 201, 204];
+            if (success_status.includes(status)) {
+                this.rootStore.status = status;
+                this.rootStore.successMsg = message;
+                this.rootStore.showSuccessMsg = true;
+                return true;
+            } else {
+                this.rootStore.status = status;
+                this.rootStore.errorMsg = Array.isArray(message)
+                    ? message[0]
+                    : message;
+                return false;
+            }
+        } catch (e: any) {
+            console.error(e);
+            this.rootStore.status = 500;
+            const errorMessage = getErrorMessage(
+                e,
+                "Có lỗi xảy ra trong quá trình xóa người dùng, vui lòng thử lại sau."
+            );
+            this.rootStore.errorMsg = errorMessage;
+            return false;
+        } finally {
+            this.loading = false;
+        }
+    }
+
     setPagination(pagination: paginationData) {
         this.pagination = {
             ...this.pagination,
             ...pagination,
         };
-        console.log("pagination", toJS(this.pagination));
         this.getListUser({
             ...this.globalFilter,
             ...this.pagination,

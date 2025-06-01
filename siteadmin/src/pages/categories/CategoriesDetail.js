@@ -4,16 +4,7 @@ import {
     PlusOutlined,
     SaveOutlined,
 } from "@ant-design/icons";
-import {
-    Button,
-    Card,
-    Divider,
-    Form,
-    Input,
-    InputNumber,
-    message,
-    Select,
-} from "antd";
+import { Button, Card, Divider, Form, Input, message, TreeSelect } from "antd";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
@@ -21,12 +12,19 @@ import {
     ProcessModalName,
     processWithModals,
 } from "../../containers/processWithModals";
-import UploadSinglePictureGetUrl, {
-    UploadSinglePictureGetUrlRemoteMode,
-} from "../../containers/UploadSinglePictureGetUrl";
 import apiClient from "../../api/apiClient";
-import endpoints from "../../api/endpoints.ts";
-
+import endpoints from "../../api/endpoints";
+import { useStore } from "../../stores";
+import { observer } from "mobx-react-lite";
+import { toJS } from "mobx";
+import { CategoryResponseTypeEnum } from "../../stores/categories.store";
+import { getErrorMessage } from "../../utils";
+import {
+    getCategoriesTreeSelect,
+    CategoryResponseType,
+} from "../../pages/products";
+import AdminBreadCrumb from "../../components/common/AdminBreadCrumb";
+import { getBreadcrumbItems } from "../../containers/layout";
 export const CategoriesDetailMode = {
     View: 1,
     Add: 2,
@@ -44,15 +42,15 @@ const formItemLayout = {
 
 const CategoriesDetail = ({ mode }) => {
     const [categories, setData] = useState([]);
+    const store = useStore();
+    const categoriesStore = store.categoriesObservable;
     const { id } = useParams();
     useEffect(() => {
         const fetchCategory = async () => {
             try {
-                const { data } = await apiClient.get(
-                    endpoints.category.details(id)
-                );
-                console.log(data);
-                const { parentCategory, ...values } = data;
+                await categoriesStore.getCategoryDetail(id);
+                const { parentCategory, ...values } =
+                    categoriesStore.detailData;
                 if (parentCategory) {
                     form.setFieldsValue({
                         ...values,
@@ -197,61 +195,60 @@ const CategoriesDetail = ({ mode }) => {
             ...values,
         };
 
-        //
         if (mode === CategoriesDetailMode.Add) {
-            console.log(mode + "" + CategoriesDetailMode);
             processWithModals(ProcessModalName.ConfirmCreateNews)(async () => {
                 try {
-                    const response = await apiClient.post(
-                        endpoints.category.create,
-                        dto
-                    );
-                    console.log(response);
-                    if (response?.data) {
-                        message.success(response.message);
+                    const response = await categoriesStore.createCategory(dto);
+                    if (response) {
+                        message.success("Tạo danh mục thành công.");
                         navigate("/categories");
                     } else {
-                        message.error(
-                            "Không nhận được dữ liệu phản hồi từ server."
+                        throw new Error(
+                            "Có lỗi xảy ra khi tạo danh mục sản phẩm."
                         );
                     }
                 } catch (error) {
                     console.error("Lỗi khi tạo danh mục sản phẩm:", error);
-                    message.error(
-                        error?.response?.data?.message ||
-                            "Có lỗi xảy ra khi gọi API."
+                    const errorMessage = getErrorMessage(
+                        error,
+                        "Lỗi khi tạo danh mục sản phẩm."
                     );
+                    message.error(errorMessage);
                 }
             });
         } else if (mode === CategoriesDetailMode.Edit) {
             // mình đang chạy vào onCallback Oki
             processWithModals(ProcessModalName.ConfirmUpdateNews)(async () => {
                 try {
-                    const data = await apiClient.patch(
-                        endpoints.category.update(id),
-                        dto
-                    );
-                    console.log(data);
-                    if (data) {
-                        message.success(data.message);
+                    const res = await categoriesStore.updateCategory(id, dto);
+                    if (res) {
+                        message.success("Cập nhật danh mục thành công.");
                         navigate("/categories");
-                    } else {
-                        message.error(data.error);
                     }
                 } catch (error) {
-                    message.error(
-                        "Lỗi khi tạo danh mục: " +
-                            (error.response?.data?.message || "Không xác định")
+                    const errorMessage = getErrorMessage(
+                        error,
+                        "Lỗi khi cập nhật danh mục sản phẩm."
                     );
+                    message.error(errorMessage);
                 }
             });
         }
     };
+
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const { data } = await apiClient.get(endpoints.category.list);
-                setData(data);
+                await categoriesStore.getListCategories({
+                    ...categoriesStore.pagination,
+                    responseType: CategoryResponseTypeEnum.TREE,
+                });
+                const convertData = getCategoriesTreeSelect(
+                    toJS(categoriesStore.data),
+                    id,
+                    2
+                );
+                setData(convertData);
             } catch (error) {
                 console.error("Lỗi khi lấy danh mục:", error);
             }
@@ -260,8 +257,18 @@ const CategoriesDetail = ({ mode }) => {
     }, []);
 
     return (
-        <>
-            <Card loading={loading} title={getCardTitle()}>
+        <section className="flex flex-col gap-4">
+            <div className="animate-slideDown">
+                <AdminBreadCrumb
+                    description="Thông tin chi tiết danh mục"
+                    items={[...getBreadcrumbItems(location.pathname)]}
+                />
+            </div>
+            <Card
+                loading={loading}
+                title={getCardTitle()}
+                className="animate-slideUp"
+            >
                 <Form
                     form={form}
                     {...formItemLayout}
@@ -317,22 +324,25 @@ const CategoriesDetail = ({ mode }) => {
                     </Form.Item>
 
                     <Form.Item label="Parent Category" name="parentCategoryId">
-                        <Select
+                        <TreeSelect
                             allowClear
-                            optionFilterProp="label"
-                            options={[
-                                { value: "", label: "Mặc định default" },
-                                ...categories.map((category) => ({
-                                    value: category.id,
-                                    label: category.name,
-                                })),
+                            showSearch
+                            disable={isReadOnly()?.toString()}
+                            treeData={[
+                                {
+                                    title: "Root Category",
+                                    value: "",
+                                    key: "",
+                                },
+                                ...categories,
                             ]}
-                            readOnly={isReadOnly()}
-                            placeholder="Mặc định default"
+                            treeDefaultExpandAll
+                            treeNodeFilterProp="title"
+                            placeholder="Root Category"
                         />
                     </Form.Item>
 
-                    <>
+                    <div className="flex justify-end">
                         <Button onClick={handleCancel}>
                             {getButtonCancelText()}
                         </Button>
@@ -351,15 +361,11 @@ const CategoriesDetail = ({ mode }) => {
                                 </Button>
                             </>
                         )}
-                    </>
+                    </div>
                 </Form>
             </Card>
-        </>
+        </section>
     );
 };
 
-CategoriesDetail.propTypes = {
-    mode: PropTypes.number,
-};
-
-export default CategoriesDetail;
+export default observer(CategoriesDetail);

@@ -40,8 +40,6 @@ const PermissionPage = observer(() => {
     const [permissions, setPermission] = useState([]);
     const handleDeletePermission = async (_id: string | undefined) => {
         if (_id) {
-            console.log(_id);
-
             const res = await apiClient.delete(
                 endpoints.permission.delete(_id)
             );
@@ -70,10 +68,8 @@ const PermissionPage = observer(() => {
             const { data } = await apiClient.get(
                 endpoints.permission.list("", "")
             );
-            console.log(data);
             setLoading(false);
             if (data) {
-                console.log(data);
                 setPermission(data);
             } else {
                 message.error("Lỗi khi không lấy dữ liệu permission được");
@@ -83,7 +79,6 @@ const PermissionPage = observer(() => {
         }
     };
     const reloadTable = () => {
-        console.log("tableRef:", tableRef.current);
         tableRef?.current?.reload();
     };
 

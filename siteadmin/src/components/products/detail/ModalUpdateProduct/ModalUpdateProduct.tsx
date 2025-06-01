@@ -3,6 +3,7 @@ import ModalCreateProduct, {
 } from "../ModalCreateProduct/ModalCreateProduct";
 import React from "react";
 import { observer } from "mobx-react-lite";
+import { Button } from "antd";
 
 interface IModalUpdateProductProps extends IModalCreateProductProps {
     productId: string;
@@ -13,7 +14,6 @@ const ModalUpdateProduct: React.FC<IModalUpdateProductProps> = observer(
     ({ productId, initialData, ...props }: IModalUpdateProductProps) => {
         return (
             <ModalCreateProduct
-                key={"modal-update-product"}
                 {...props}
                 formInitialValues={initialData ? initialData : {}}
                 productId={productId}

@@ -49,15 +49,14 @@ const getColumnsConfig = ({ handleViewProducts }) => {
             },
             width: "30%",
         },
-
         {
             title: "Giá",
-            dataIndex: ["skus", "pricesold"],
-            key: "pricesold",
+            dataIndex: ["skus", "price_sold"],
+            key: "price_sold",
             render: (value) => {
                 return (
                     <span className="text-sm font-medium">
-                        ${formatVNDMoney(value) + "đ"}
+                        {formatVNDMoney(value) + "đ"}
                     </span>
                 );
             },

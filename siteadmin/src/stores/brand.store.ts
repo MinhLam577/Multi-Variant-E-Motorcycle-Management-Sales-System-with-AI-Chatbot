@@ -1,8 +1,19 @@
 import { makeAutoObservable } from "mobx";
 import { MessageStore, paginationData, RootStore } from "./base";
 import BrandAPI from "src/api/brand.api";
+import { convertDate, filterEmptyFields, getErrorMessage } from "src/utils";
+import { DateTimeFormat } from "src/constants";
 
-export type BrandType = {
+export class CreateBrandDto {
+    name: string;
+    description?: string;
+    thumbnailUrl: string;
+    slug: string;
+}
+
+export type UpdateBrandDto = Partial<CreateBrandDto>;
+
+export type BrandResponseType = {
     id: string;
     name: string;
     description: string;
@@ -10,54 +21,64 @@ export type BrandType = {
     thumbnailUrl: string;
     created_at: Date;
     updated_at: Date;
-    productId?: any[];
 };
 
-class BrandObservable implements MessageStore {
-    status: number = null;
-    errorMsg: string = null;
-    successMsg: string = null;
-    showSuccessMsg: boolean = false;
+export type globalFilterBrandType = {
+    search?: string;
+    created_from?: string;
+    created_to?: string;
+};
+
+class BrandObservable {
     rootStore: RootStore;
     pagination: paginationData = {
         current: 1,
         pageSize: 100,
     };
-    data: any[] = [];
+    data: BrandResponseType[] = [];
     loading: boolean = false;
     constructor(rootStore: RootStore) {
         this.rootStore = rootStore;
-        makeAutoObservable(this);
-        this.setStatusMessage = this.setStatusMessage.bind(this);
-        this.clearMessage = this.clearMessage.bind(this);
+        makeAutoObservable(this, {}, { autoBind: true });
     }
-    setStatusMessage(
-        status: number,
-        errorMsg: string,
-        successMsg: string
-    ): void {
-        if (status) this.status = status;
-        if (errorMsg) this.errorMsg = errorMsg;
-        if (successMsg) this.successMsg = successMsg;
-        this.showSuccessMsg = true;
-    }
-    clearMessage(): void {
-        this.errorMsg = null;
-        this.successMsg = null;
-        this.status = null;
-        this.showSuccessMsg = false;
-    }
-
     private validateQuery(query?: string | object): string {
-        const parseQuery: paginationData = {
-            ...this.pagination,
+        // Xử lý chuyển đổi query string thành object
+        let parsedQuery: globalFilterBrandType & paginationData = {
+            ...(typeof query === "string"
+                ? Object.fromEntries(new URLSearchParams(query.trim()))
+                : query),
+            current: Number(this.pagination.current),
+            pageSize: Number(this.pagination.pageSize),
         };
 
+        // Gộp filters và xử lý dữ liệu
+        const filters: paginationData & globalFilterBrandType =
+            filterEmptyFields({
+                ...this.pagination,
+                ...parsedQuery,
+                search: parsedQuery?.search?.trim(),
+                created_from: parsedQuery?.created_from
+                    ? convertDate(
+                          parsedQuery.created_from,
+                          DateTimeFormat.Date,
+                          DateTimeFormat.TIME_STAMP_POSTGRES
+                      )
+                    : undefined,
+                created_to: parsedQuery?.created_to
+                    ? convertDate(
+                          parsedQuery.created_to,
+                          DateTimeFormat.Date,
+                          DateTimeFormat.TIME_STAMP_POSTGRES
+                      )
+                    : undefined,
+            });
+
+        // Tạo query string
         const queryString = new URLSearchParams(
             Object.fromEntries(
-                Object.entries(parseQuery).map(([key, value]) => [
+                Object.entries(filters).map(([key, value]) => [
                     key,
-                    value.toString(),
+                    String(value),
                 ])
             )
         ).toString();
@@ -73,16 +94,113 @@ class BrandObservable implements MessageStore {
             const success_status = [200, 201, 204];
             if (success_status.includes(status)) {
                 this.data = resData;
-                this.status = status;
-                this.successMsg = message;
+                this.rootStore.status = status;
+                this.rootStore.successMsg = message;
             } else {
-                this.status = status;
-                this.errorMsg = message;
+                this.rootStore.status = status;
+                this.rootStore.errorMsg = message;
             }
         } catch (e: any) {
             console.error(e);
-            this.status = 500;
-            this.errorMsg = e?.message || "Lỗi không xác định";
+            this.rootStore.status = 500;
+            const errorMessage = getErrorMessage(
+                e,
+                "Có lỗi xảy ra khi lấy danh sách thương hiệu"
+            );
+            this.rootStore.errorMsg = errorMessage;
+        }
+    }
+
+    *createBrand(brand: CreateBrandDto) {
+        try {
+            const response = yield BrandAPI.create(brand);
+            const { status, message } = response;
+            const success_status = [200, 201, 204];
+            if (success_status.includes(status)) {
+                this.rootStore.status = status;
+                this.rootStore.successMsg = message;
+                this.rootStore.showSuccessMsg = true;
+                yield this.getListBrands({
+                    ...this.pagination,
+                });
+                return true;
+            } else {
+                this.rootStore.status = status;
+                this.rootStore.errorMsg = Array.isArray(message)
+                    ? message[0]
+                    : message;
+                return false;
+            }
+        } catch (e: any) {
+            console.error(e);
+            this.rootStore.status = 500;
+            const errorMessage = getErrorMessage(
+                e,
+                "Có lỗi xảy ra khi tạo thương hiệu"
+            );
+            this.rootStore.errorMsg = errorMessage;
+        }
+    }
+
+    *updateBrand(id: string, brand: UpdateBrandDto) {
+        try {
+            const response = yield BrandAPI.update(id, brand);
+            const { status, message } = response;
+            const success_status = [200, 201, 204];
+            if (success_status.includes(status)) {
+                this.rootStore.status = status;
+                this.rootStore.successMsg = message;
+                this.rootStore.showSuccessMsg = true;
+                yield this.getListBrands({
+                    ...this.pagination,
+                });
+                return true;
+            } else {
+                this.rootStore.status = status;
+                this.rootStore.errorMsg = Array.isArray(message)
+                    ? message[0]
+                    : message;
+                return false;
+            }
+        } catch (e: any) {
+            console.error(e);
+            this.rootStore.status = 500;
+            const errorMessage = getErrorMessage(
+                e,
+                "Có lỗi xảy ra khi cập nhật thương hiệu"
+            );
+            this.rootStore.errorMsg = errorMessage;
+        }
+    }
+
+    *deleteBrand(id: string) {
+        try {
+            const response = yield BrandAPI.delete(id);
+            const { status, message } = response;
+            const success_status = [200, 201, 204];
+            if (success_status.includes(status)) {
+                this.rootStore.status = status;
+                this.rootStore.successMsg = message;
+                this.rootStore.showSuccessMsg = true;
+                yield this.getListBrands({
+                    ...this.pagination,
+                });
+                return true;
+            } else {
+                this.rootStore.status = status;
+                this.rootStore.errorMsg = Array.isArray(message)
+                    ? message[0]
+                    : message;
+                return false;
+            }
+        } catch (e: any) {
+            console.error(e);
+            this.rootStore.status = 500;
+            const errorMessage = getErrorMessage(
+                e,
+                "Có lỗi xảy ra khi xóa thương hiệu"
+            );
+            this.rootStore.errorMsg = errorMessage;
         }
     }
 }

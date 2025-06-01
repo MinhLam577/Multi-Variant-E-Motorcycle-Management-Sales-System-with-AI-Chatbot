@@ -1,9 +1,12 @@
 import { Col, DatePicker, Form, Input, Row, Select } from "antd";
-import { UserType } from "../../constants";
 import { debounce } from "lodash";
 import { useCallback } from "react";
 import { EnumProductStore, EnumProductType } from "src/stores/product.store";
 import { SelectType } from "../products/detail/ModalCreateProduct/ModalCreateProduct";
+import {
+    CategoryResponseLabel,
+    CategoryResponseTypeEnum,
+} from "src/stores/categories.store";
 const { RangePicker } = DatePicker;
 
 const CategoriesSearch = ({ setFilters }) => {
@@ -51,11 +54,43 @@ const CategoriesSearch = ({ setFilters }) => {
                                 optionFilterProp="label"
                                 allowClear
                                 size="middle"
-                                onChange={(value) => {}}
+                                onChange={(value) => {
+                                    setFilters((prev) => ({
+                                        ...prev,
+                                        type: value,
+                                    }));
+                                }}
                             />
                         </Form.Item>
                     </Col>
                     <Col xs={24} sm={12} md={8} lg={6} xl={6}>
+                        <Form.Item
+                            label={
+                                <div className="font-bold">Kiểu hiển thị</div>
+                            }
+                            name="responseType"
+                            initialValue={CategoryResponseTypeEnum.FLAT}
+                        >
+                            <Select
+                                showSearch
+                                optionFilterProp="label"
+                                options={Object.keys(
+                                    CategoryResponseTypeEnum
+                                ).map((key) => ({
+                                    label: CategoryResponseLabel[key],
+                                    value: CategoryResponseTypeEnum[key],
+                                }))}
+                                onChange={(value) => {
+                                    setFilters((prev) => ({
+                                        ...prev,
+                                        responseType: value,
+                                    }));
+                                }}
+                                placeholder="Chọn kiểu hiển thị"
+                            />
+                        </Form.Item>
+                    </Col>
+                    {/* <Col xs={24} sm={12} md={8} lg={6} xl={5}>
                         <Form.Item
                             label={
                                 <div className="font-bold">
@@ -87,7 +122,7 @@ const CategoriesSearch = ({ setFilters }) => {
                                 placeholder="Chọn trạng thái"
                             />
                         </Form.Item>
-                    </Col>
+                    </Col> */}
                     <Col xs={24} sm={12} md={8} lg={6} xl={6}>
                         <Form.Item
                             label={

@@ -116,7 +116,7 @@ const ProductsSearch: React.FC<IProductsSearchProps> = ({
                             optionFilterProp="label"
                             allowClear
                             size="middle"
-                            onChange={(value)=> {
+                            onChange={(value) => {
                                 productStore.setGlobalFilter({
                                     type: value,
                                 });
@@ -140,7 +140,7 @@ const ProductsSearch: React.FC<IProductsSearchProps> = ({
                             }}
                             treeData={categorySelectData}
                             treeNodeFilterProp="title"
-                            onChange={(value, label, extra) => {
+                            onChange={(value) => {
                                 productStore.setGlobalFilter({
                                     categoryID: value,
                                 });

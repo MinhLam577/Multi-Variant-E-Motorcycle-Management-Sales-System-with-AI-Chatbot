@@ -1,6 +1,5 @@
-import { Form, message, UploadFile } from "antd";
+import { Form } from "antd";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
 import ProductsSearch from "src/components/products/ProductsSearch";
 import ProductsTable from "src/components/products/ProductsTable";
 import { useStore } from "../../stores";
@@ -8,22 +7,18 @@ import { observer } from "mobx-react-lite";
 import { paginationData } from "src/stores/base";
 import {
     CreateProductDto,
-    EnumProductStore,
     globalFilterType,
     SkusDataResponseType,
-    SkusDetailImportDto,
-    VariantCombinationDto,
 } from "src/stores/product.store";
 import ProductHeader from "src/components/products/ProductHeader";
 import CustomizeTab from "src/components/common/CustomizeTab";
-import { reaction, set, toJS } from "mobx";
-import { displayMessage, generateUUIDV4, urlToBase64 } from "src/utils";
-import { CategoriesType } from "src/stores/categories.store";
+import { reaction, toJS } from "mobx";
+import { generateUUIDV4, urlToBase64 } from "src/utils";
+import { CategoryResponseType } from "src/stores/categories.store";
 import ModalCreateProduct, {
     IFormListRowData,
-    IFormSkuCustomData,
-    IVariantCombination,
     modalCreateProductStore,
+    TreeSelectType,
 } from "src/components/products/detail/ModalCreateProduct/ModalCreateProduct";
 import ModalUpdateProduct from "src/components/products/detail/ModalUpdateProduct/ModalUpdateProduct";
 
@@ -46,6 +41,7 @@ export type productTableFilterDataType = {
     images: string[];
     totalSKU: number;
     totalStock: number;
+    skus: Omit<SkusDataResponseType, "optionValue">[];
     [key: string]: any;
 };
 export const getSelectOption = <
@@ -91,6 +87,36 @@ export const generateRandomString = (length: number): string => {
     return result;
 };
 
+// export const getCategoriesTreeSelect = (data: CategoryResponseType[]) =>
+//     data?.map((item) => ({
+//         value: item.id,
+//         title: item.name,
+//         children: item.children ? getCategoriesTreeSelect(item.children) : [],
+//     }));
+
+export const getCategoriesTreeSelect = (
+    data: CategoryResponseType[],
+    excludeId?: string,
+    maxLevel: number = 3
+): TreeSelectType[] => {
+    const buildTree = (
+        nodes: CategoryResponseType[],
+        level: number
+    ): TreeSelectType[] =>
+        nodes
+            ?.filter((item) => item.id !== excludeId)
+            .map((item) => ({
+                value: item.id,
+                title: item.name,
+                children:
+                    level < maxLevel && item.children
+                        ? buildTree(item.children, level + 1)
+                        : [],
+            }));
+
+    return buildTree(data, 1);
+};
+
 const Products = () => {
     const store = useStore();
     const productStore = store.productObservable;
@@ -133,6 +159,7 @@ const Products = () => {
                     images: products.images,
                     totalSKU: totalSKU,
                     totalStock: totalStock,
+                    skus: products?.skus,
                 };
             }
         );
@@ -160,15 +187,6 @@ const Products = () => {
     useEffect(() => {
         fetchData();
     }, []);
-
-    const getCategoriesTreeSelect = (data: CategoriesType[]) =>
-        data?.map((item) => ({
-            value: item.id,
-            title: item.name,
-            children: item.children
-                ? getCategoriesTreeSelect(item.children)
-                : [],
-        }));
 
     // Bắt sự kiện khi có sự thay đổi trong globalFilter
     useEffect(() => {
@@ -212,39 +230,8 @@ const Products = () => {
     };
 
     const fetchDetailData = async (id: string): Promise<any> => {
-        const warehouseSelectData = getSelectOption(warehouseStore.data);
         await productStore.detailProduct(id);
         const productData = toJS(productStore.data.products.detailProductData);
-        const warehouseMap = new Map<string, number>();
-        const warehouseData = productData.skus
-            .filter((item) => item.detail_import?.length > 0)
-            .flatMap((item) =>
-                item.detail_import.map((detail) => ({
-                    warehouse_id: detail.warehouse.id,
-                    quantity_import: detail.quantity_import,
-                }))
-            )
-            .filter(({ warehouse_id }) => {
-                if (warehouseMap.has(warehouse_id)) return false;
-                warehouseMap.set(warehouse_id, 0);
-                return true;
-            });
-
-        // Dữ liệu detail_import của sản phẩm
-        const detailImport = Array.from({ length: 1 }).map(() => {
-            const warehouseId = warehouseData.map((item) => item.warehouse_id);
-            const detailObject = Object.fromEntries(
-                warehouseData.map((item) => [
-                    item.warehouse_id,
-                    {
-                        quantity_import: item.quantity_import.toString(),
-                        warehouse_id: item.warehouse_id,
-                    },
-                ])
-            );
-            return Object.assign({ warehouse_id: warehouseId }, detailObject);
-        })[0];
-
         // Dữ liệu thông số kỹ thuật của sản phẩm
         const specifications: IFormListRowData[] =
             productData.specifications.map((item) => ({
@@ -257,131 +244,11 @@ const Products = () => {
             }));
         const specData = specifications;
 
-        // Dữ liệu biến thể của sản phẩm
-        const convertOptionDataResponseToFormListRowData = (
-            skus: SkusDataResponseType[]
-        ): IFormListRowData[] => {
-            const attributeMap = new Map<string, Set<string>>();
-            for (const sku of skus) {
-                for (const optionValue of sku.optionValue || []) {
-                    const optionID = optionValue.option.id;
-                    if (!attributeMap.has(optionID)) {
-                        attributeMap.set(optionID, new Set());
-                    }
-                    attributeMap.get(optionID)?.add(optionValue.value);
-                }
-            }
-            const result: IFormListRowData[] = [];
-            for (const [id, valuesSet] of attributeMap.entries()) {
-                result.push({
-                    name: id,
-                    values: Array.from(valuesSet).map((value) => ({ value })),
-                });
-            }
-            return result;
-        };
-        const optionValue: IFormListRowData[] =
-            convertOptionDataResponseToFormListRowData(productData.skus);
-        // Dữ liệu biến thể của sản phẩm
-        const variantsData = optionValue;
-
-        modalCreateProductStore.setWarehouseSelected(
-            detailImport.warehouse_id.map((id) => ({
-                value: id,
-                label: warehouseSelectData.find((item) => item.value === id)
-                    ?.label,
-            }))
-        );
-        modalCreateProductStore.setFormVariantValue({
-            variants: variantsData,
-        });
-
-        // SKU data
-        const imagesConvertToBase64 = await Promise.all(
-            productData.skus.map((item) => {
-                const fileName = `${generateUUIDV4() + Date.now()}.jpg`;
-                return generateImageFilesFromUrl(item.image, fileName);
-            })
-        );
-        const skusResponseData = productData.skus.map((item, index) => ({
-            name: item.name,
-            masku: item.masku,
-            barcode: item.barcode,
-            image: imagesConvertToBase64[index].url,
-            price_sold: item.price_sold,
-            price_compare: item.price_compare,
-            price_import: item.detail_import[0].price_import,
-            detail_import: item.detail_import.map((d) => ({
-                warehouse_id: d.warehouse.id,
-                quantity_import: d.quantity_import,
-            })),
-            variant_combination: item.optionValue.map((option) => {
-                const optionId = option.option.id;
-                return {
-                    option_id: optionId,
-                    value: option.value,
-                } as VariantCombinationDto;
-            }),
-        }));
-        const skusData: Record<string, Omit<IFormSkuCustomData, "name">> = {};
-        skusResponseData.forEach((item) => {
-            const name = item.name;
-            const masku = item.masku;
-            const barcode = item.barcode;
-            const image = item.image as string;
-            const price_sold = item.price_sold;
-            const price_compare = item.price_compare;
-            const price_import = item.price_import;
-            const detail_import = detailImport.warehouse_id.map((id) => ({
-                warehouse_id: id,
-                quantity_import:
-                    item.detail_import.find((d) => d.warehouse_id === id)
-                        ?.quantity_import || 0,
-            }));
-            const variant_combination = item.variant_combination;
-            skusData[name] = {
-                masku,
-                barcode,
-                image,
-                price_sold: Number(price_sold),
-                price_compare: Number(price_compare),
-                price_import: Number(price_import),
-                detail_import,
-                variant_combinations: variant_combination,
-            };
-        });
-
-        // Lưu sku vào store
-        modalCreateProductStore.setFullCustomData(skusData);
-
-        // Lưu sku vào subForm (form của biến thể)
-        subUpdateProductForm.setFieldsValue({
-            skus: skusData,
-        });
-
-        // Chuyển đổi sku data thành định dạng form sản phẩm
-        const convertSkusDataToSkuFormData: IFormSkuCustomData[] =
-            Object.entries(skusData).map(([name, value]) => ({
-                name,
-                ...value,
-            }));
-        // Lưu sku định dạng mới vào form chính (form của sản phẩm)
-        updateProductForm.setFieldsValue({
-            skus: convertSkusDataToSkuFormData,
-        });
-
         if (specData.length > 0) {
             modalCreateProductStore.setShowSpecForm(true);
         } else {
             modalCreateProductStore.setShowSpecForm(false);
         }
-
-        if (modalCreateProductStore.VariantCombination.length > 0) {
-            modalCreateProductStore.setShowVariantForm(true);
-        } else {
-            modalCreateProductStore.setShowVariantForm(false);
-        }
-
         // Tạo các giá trị ngẫu nhiên cho các thuộc tính khác của sản phẩm
         const productImages =
             (await Promise.all(
@@ -405,28 +272,17 @@ const Products = () => {
             "price_compare"
         );
         modalCreateProductStore.setPrice(String(price_import), "price_import");
-        detailImport.warehouse_id.forEach((id) => {
-            const quantity_import = detailImport[id].quantity_import;
-            modalCreateProductStore.setWarehouse_selected_quantities(
-                quantity_import,
-                id
-            );
-        });
 
         // Tạo đối tượng sản phẩm
         const product: any = {
             title: productData.title || "",
             description: productData.description || "",
             slug_product: productData.slug_product || "",
-            variants: variantsData,
             image: productImages,
             specifications: specData,
-            barcode,
-            masku,
-            price_compare,
-            price_sold,
-            price_import,
-            detail_import: detailImport,
+            brand_id: productData.brand.id,
+            category_id: productData.category.id,
+            type: productData.type,
         };
         return product;
     };
@@ -568,7 +424,7 @@ const Products = () => {
                                     />
 
                                     <ModalUpdateProduct
-                                        key={"modal-update-product"}
+                                        key={`modal-update-product-${productId}`}
                                         isOpen={isOpenUpdateProductModal}
                                         onClose={handleCloseUpdateProductModal}
                                         onSave={handleSaveUpdateProductModal}

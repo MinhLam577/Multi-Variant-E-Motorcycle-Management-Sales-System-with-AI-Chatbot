@@ -51,8 +51,6 @@ const Profile = () => {
     }, []);
 
     const handleLoginEvents = (prevStatus, status) => {
-        console.log("Previous Statusdsvsdrvrs", prevStatus);
-        console.log("Current Status:", status);
         if (prevStatus === "submitting") {
             setLoading(false);
         }
@@ -65,7 +63,6 @@ const Profile = () => {
             case "updateSuccess": {
                 message.success("Thay đổi thông tin người dùng thành công!");
                 const updatedData = toJS(userObservable.me); // Lấy dữ liệu mới nhất
-                console.log(updatedData);
                 runInAction(() => {
                     form.setFieldsValue(updatedData);
                 });
@@ -90,18 +87,12 @@ const Profile = () => {
     };
 
     const handleUpdateUserProfile = async (values) => {
-        console.log(values);
         const dto = {
             ...values,
         };
         await userObservable.updateUserProfile(dto, user?.userId || user?.id);
     };
 
-    // const handleUploadSuccess = (response) => {
-    //   console.log("upload thành công ", response);
-    //   form.setFieldsValue({ avatarUrl: response.url });
-    // };
-    console.log("re-render" + user);
     return (
         <>
             <Card

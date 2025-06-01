@@ -1,12 +1,66 @@
 import { makeAutoObservable, toJS } from "mobx";
-import { convertDate } from "../utils";
-import { DateTimeFormat } from "../constants";
+import { convertDate, getErrorMessage } from "../utils";
+import { DateTimeFormat, EnumOrderStatusesValue } from "../constants";
 import OrderAPI, { ExportOrder } from "../api/order.api";
-import { MessageStore, paginationData, RootStore } from "./base";
+import { paginationData, RootStore } from "./base";
 import { ResponsePromise } from "src/api";
+import { SkusDataResponseType } from "./product.store";
+import { CustomerResponseType, ReceiveAddressResponseType } from "./user.store";
+import { PaymentMethodResponseType } from "./paymentMethod";
+import {
+    EnumTypeOfTimeStatistics,
+    StatisticsResponse,
+} from "src/pages/adminOverview/Overview";
+
+export type RevenueProfitStatisticsDto = {
+    time_type: EnumTypeOfTimeStatistics;
+    year?: number;
+    startMonth?: number;
+    endMonth?: number;
+    month?: number;
+    startDay?: number;
+    endDay?: number;
+};
+
+export type OrderDetailResponseType = {
+    id: string;
+    customer: CustomerResponseType;
+    receive_address: ReceiveAddressResponseType;
+    order_status: string;
+    note: string | null;
+    order_details: OrderDetailDataResponseType[];
+    total_price: number;
+    discount_price: number;
+    payment_method: PaymentMethodResponseType;
+    payment_status: string;
+    delivery_method: DeliveryMethodResponseType;
+    delivery_time: string | null;
+    refund_time: string | null;
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string | null;
+};
+
+export type DeliveryMethodResponseType = {
+    id: string;
+    name: string;
+    description: string;
+    logo: string | null;
+};
 
 export type OrderStatus = {
     key?: string;
+};
+
+export type OrderDetailDataResponseType = {
+    id: string;
+    quantity: number;
+    skus: SkusDataResponseType & {
+        product: {
+            id: string;
+            title: string;
+        };
+    };
 };
 
 export type globalFiltersDataOrder = {
@@ -20,13 +74,19 @@ export type globalFiltersDataOrder = {
     created_to?: string;
 };
 
+export type OrderStatusStaticsResponseType = {
+    [K in Exclude<keyof typeof EnumOrderStatusesValue, "All">]: number;
+};
 export type orderData = {
-    orders: any[];
+    orders: OrderDetailResponseType[];
     order_status: OrderStatus[];
     order_status_selected?: string;
     order_selected?: string;
-    order_detail?: any;
+    order_detail?: OrderDetailResponseType;
     confirm_order_data?: ExportOrder;
+    revenue_profit_statistics?: StatisticsResponse;
+    total_revenue_by_year?: number;
+    order_status_statics?: OrderStatusStaticsResponseType[];
 };
 export default class OrderObservable {
     rootStore: RootStore;
@@ -37,6 +97,9 @@ export default class OrderObservable {
         order_selected: null,
         order_detail: null,
         confirm_order_data: null,
+        revenue_profit_statistics: null,
+        total_revenue_by_year: null,
+        order_status_statics: null,
     };
     globalFilters: globalFiltersDataOrder = {
         search: null,
@@ -120,6 +183,8 @@ export default class OrderObservable {
                 yield OrderAPI.getOrderList(queryString);
             const { data, status, message } = response;
             const success_status = [200, 201, 204];
+            const newUrl = `${window.location.pathname}?${queryString}`;
+            window.history.pushState({ path: newUrl }, "", newUrl);
             if (success_status.includes(status)) {
                 this.data.orders = data.orders;
                 this.rootStore.status = status;
@@ -352,5 +417,104 @@ export default class OrderObservable {
 
     setOrderStatusSelected(order_status_selected: string) {
         this.data.order_status_selected = order_status_selected;
+    }
+
+    *getRevenueProfitStatistics(data: RevenueProfitStatisticsDto) {
+        try {
+            this.loading = true;
+            const response: ResponsePromise =
+                yield OrderAPI.profitStatistic(data);
+            const { data: statistics, status, message } = response;
+            const success_status = [200, 201, 204];
+            if (success_status.includes(status)) {
+                this.data.revenue_profit_statistics = statistics;
+                this.rootStore.status = status;
+                this.rootStore.successMsg = message;
+                return statistics;
+            } else {
+                this.rootStore.status = status;
+                this.rootStore.errorMsg = Array.isArray(message)
+                    ? message[0]
+                    : message;
+                return null;
+            }
+        } catch (e: any) {
+            console.error(e);
+            const errorMessage = getErrorMessage(
+                e,
+                "Không thể lấy thống kê doanh thu lợi nhuận"
+            );
+            this.rootStore.status = 500;
+            this.rootStore.errorMsg = errorMessage;
+            return null;
+        } finally {
+            this.loading = false;
+        }
+    }
+
+    *getTotalRevenueByYear(year: number) {
+        try {
+            this.loading = true;
+            const response: ResponsePromise =
+                yield OrderAPI.totalRevenueByYear(year);
+            const { data, status, message } = response;
+            const success_status = [200, 201, 204];
+            if (success_status.includes(status)) {
+                this.data.total_revenue_by_year = data;
+                this.rootStore.status = status;
+                this.rootStore.successMsg = message;
+                return true;
+            } else {
+                this.rootStore.status = status;
+                this.rootStore.errorMsg = Array.isArray(message)
+                    ? message[0]
+                    : message;
+                return false;
+            }
+        } catch (e: any) {
+            console.error(e);
+            const errorMessage = getErrorMessage(
+                e,
+                "Không thể lấy doanh thu theo năm"
+            );
+            this.rootStore.status = 500;
+            this.rootStore.errorMsg = errorMessage;
+            return false;
+        } finally {
+            this.loading = false;
+        }
+    }
+
+    *getOrderStatusStatics(year: number) {
+        try {
+            this.loading = true;
+            const response: ResponsePromise =
+                yield OrderAPI.orderStatusStatics(year);
+            const { data, status, message } = response;
+            const success_status = [200, 201, 204];
+            if (success_status.includes(status)) {
+                this.data.order_status_statics = data;
+                this.rootStore.status = status;
+                this.rootStore.successMsg = message;
+                return true;
+            } else {
+                this.rootStore.status = status;
+                this.rootStore.errorMsg = Array.isArray(message)
+                    ? message[0]
+                    : message;
+                return false;
+            }
+        } catch (e: any) {
+            console.error(e);
+            const errorMessage = getErrorMessage(
+                e,
+                "Không thể lấy thống kê trạng thái đơn hàng"
+            );
+            this.rootStore.status = 500;
+            this.rootStore.errorMsg = errorMessage;
+            return false;
+        } finally {
+            this.loading = false;
+        }
     }
 }

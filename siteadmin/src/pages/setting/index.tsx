@@ -12,10 +12,11 @@ export default function Setting() {
     const navigate = useNavigate();
     const settingsItems = [
         {
-            title: "Cấu hình chung",
-            description: "Cấu hình thông tin chung của cửa hàng của bạn",
+            title: "Cấu hình tài khoản",
+            description: "Cật nhật thông tin tài khoản cá nhân",
             icon: <SettingOutlined />,
             active: true,
+            navigate: "/setting/profile",
         },
         {
             title: "Nhân viên",
@@ -30,13 +31,6 @@ export default function Setting() {
             icon: <UserSwitchOutlined />,
             active: true,
             navigate: "/setting/role",
-        },
-        {
-            title: "Nhóm phân công",
-            description: "Quản lý phân công tài khoản",
-            icon: <HomeOutlined />,
-            active: true,
-            navigate: "/account",
         },
         {
             title: "Địa chỉ và kho hàng",

@@ -7,6 +7,7 @@ export interface CreateDetailExport {
     skus_id: string;
     detail_import_id: string;
     warehouse_id: string;
+    order_id?: string;
 }
 
 export interface ExportOrder {
