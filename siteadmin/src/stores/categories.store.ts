@@ -49,7 +49,9 @@ export default class CategoriesObservable {
         let parsedQuery: globalFilterCategoryType & paginationData = {
             ...(typeof query === "string"
                 ? Object.fromEntries(new URLSearchParams(query.trim()))
-                : query),
+                : query
+                  ? query
+                  : {}),
             current: Number(this.pagination.current),
             pageSize: Number(this.pagination.pageSize),
         };
@@ -143,7 +145,10 @@ export default class CategoriesObservable {
                 this.rootStore.status = status;
                 this.rootStore.successMsg = message;
                 this.isOpenDetail = false;
-                yield this.getListCategories();
+                yield this.getListCategories({
+                    ...this.pagination,
+                    responseType: CategoryResponseTypeEnum.TREE,
+                });
                 return true;
             } else {
                 this.rootStore.status = status;
@@ -175,7 +180,10 @@ export default class CategoriesObservable {
                 this.rootStore.status = status;
                 this.rootStore.successMsg = message;
                 this.isOpenDetail = false;
-                yield this.getListCategories();
+                yield this.getListCategories({
+                    ...this.pagination,
+                    responseType: CategoryResponseTypeEnum.TREE,
+                });
                 return true;
             } else {
                 this.rootStore.status = status;
@@ -207,7 +215,10 @@ export default class CategoriesObservable {
                 this.rootStore.status = status;
                 this.rootStore.successMsg = message;
                 this.rootStore.showSuccessMsg = true;
-                yield this.getListCategories();
+                yield this.getListCategories({
+                    ...this.pagination,
+                    responseType: CategoryResponseTypeEnum.TREE,
+                });
                 return true;
             } else {
                 this.rootStore.status = status;
