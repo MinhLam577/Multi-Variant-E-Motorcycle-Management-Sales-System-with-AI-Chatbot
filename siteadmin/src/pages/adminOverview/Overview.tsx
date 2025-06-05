@@ -12,7 +12,14 @@ import {
     ArrowDown,
     ArrowSwapVertical,
 } from "iconsax-react";
-import { Select, ConfigProvider, DatePicker, Skeleton, message } from "antd";
+import {
+    Select,
+    ConfigProvider,
+    DatePicker,
+    Skeleton,
+    message,
+    Empty,
+} from "antd";
 import dayjs from "dayjs";
 import qs from "qs";
 import { makeAutoObservable, reaction, toJS } from "mobx";
@@ -27,6 +34,7 @@ import { useStore } from "src/stores";
 import { filterEmptyFields, getErrorMessage } from "src/utils";
 import apiClient from "src/api/apiClient";
 import endpoints from "src/api/endpoints";
+import { useNavigate } from "react-router";
 const { RangePicker } = DatePicker;
 
 const filterTheme = {
@@ -570,6 +578,7 @@ const overviewStore = new OverviewStore();
 
 const Overview = observer(() => {
     const store = useStore();
+    const navigate = useNavigate();
     const {
         orderObservable: orderStore,
         userObservable: customerStore,
@@ -734,10 +743,18 @@ const Overview = observer(() => {
     };
 
     const fetchStaticData = async () => {
-        await Promise.all([
-            fetchTotalRevenue(overviewStore.year),
-            fetchOrderOverview(overviewStore.year),
-        ]);
+        try {
+            await Promise.all([
+                fetchTotalRevenue(overviewStore.year),
+                fetchOrderOverview(overviewStore.year),
+            ]);
+        } catch (err) {
+            const errorMessage = getErrorMessage(
+                err,
+                "Không thể lấy dữ liệu tổng quan"
+            );
+            store.setStatusMessage(500, errorMessage, "", false);
+        }
     };
 
     const fetchData = async () => {
@@ -750,13 +767,13 @@ const Overview = observer(() => {
                 fetchAllSuppliers(),
                 fetchStaticData(),
             ]);
-            overviewStore.setShowSkeleton(false);
         } catch (err) {
             const errorMessage = getErrorMessage(
                 err,
                 "Không thể lấy dữ liệu tổng quan"
             );
             store.setStatusMessage(500, errorMessage, "", false);
+        } finally {
             overviewStore.setShowSkeleton(false);
         }
     };
@@ -777,7 +794,6 @@ const Overview = observer(() => {
     if (!display) {
         return <></>;
     }
-
     return (
         <section className="w-full select-none overview__section">
             <Skeleton
@@ -850,6 +866,9 @@ const Overview = observer(() => {
                                     border: "none",
                                     borderTop: "1px solid #01A768",
                                 }}
+                                onClick={() => {
+                                    navigate("/customer", { replace: true });
+                                }}
                             >
                                 <span className="text-xs text-[#1D242E]">
                                     View Detail
@@ -875,6 +894,9 @@ const Overview = observer(() => {
                                 style={{
                                     border: "none",
                                     borderTop: "1px solid #c8c6f3",
+                                }}
+                                onClick={() => {
+                                    navigate("/orders", { replace: true });
                                 }}
                             >
                                 <span className="text-xs text-[#1D242E]">
@@ -904,6 +926,9 @@ const Overview = observer(() => {
                                 style={{
                                     border: "none",
                                     borderTop: "1px solid #03A9F5",
+                                }}
+                                onClick={() => {
+                                    navigate("/products", { replace: true });
                                 }}
                             >
                                 <span className="text-xs text-[#1D242E]">
@@ -963,6 +988,9 @@ const Overview = observer(() => {
                                 style={{
                                     border: "none",
                                     borderTop: "1px solid #DBA362",
+                                }}
+                                onClick={() => {
+                                    navigate("/brands", { replace: true });
                                 }}
                             >
                                 <span className="text-xs text-[#1D242E]">
@@ -1225,12 +1253,32 @@ const Overview = observer(() => {
                             </div>
                             <div className="relative w-full p-5">
                                 <div className="gap-4 w-full relative">
-                                    <Chart
-                                        options={overviewStore.orderPieOptions}
-                                        series={overviewStore.orderPieSeries}
-                                        type="pie"
-                                        width={"100%"}
-                                    />
+                                    {overviewStore.orderPieSeries.length ===
+                                        0 ||
+                                    overviewStore.orderPieSeries.every(
+                                        (value) => value === 0
+                                    ) ? (
+                                        <div className="flex items-center justify-center w-full h-full">
+                                            <Empty
+                                                description="Không có dữ liệu"
+                                                className="h-64 flex flex-col items-center justify-center"
+                                                image={
+                                                    Empty.PRESENTED_IMAGE_SIMPLE
+                                                }
+                                            />
+                                        </div>
+                                    ) : (
+                                        <Chart
+                                            options={
+                                                overviewStore.orderPieOptions
+                                            }
+                                            series={
+                                                overviewStore.orderPieSeries
+                                            }
+                                            type="pie"
+                                            width={"100%"}
+                                        />
+                                    )}
                                 </div>
                             </div>
                         </div>

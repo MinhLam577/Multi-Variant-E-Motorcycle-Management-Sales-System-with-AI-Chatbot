@@ -594,6 +594,16 @@ function App() {
                                         </ProtectedRoute>
                                     }
                                 />
+
+                                <Route
+                                    path="/PaymentSuccess"
+                                    element={<div>Payment Success</div>}
+                                />
+
+                                <Route
+                                    path="/PaymentFailed"
+                                    element={<div>Payment Failed</div>}
+                                />
                             </Routes>
                         </Suspense>
                     </GlobalProvider>

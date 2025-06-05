@@ -78,10 +78,10 @@ const TableComponent: React.FC<ITableComponentProps> = ({
                 store[key]?.setPagination &&
                 value?.constructor?.name === observableName
             ) {
-                value?.setPagination({
-                    current: pagination.current,
-                    pageSize: pagination.pageSize,
-                });
+                value?.setPagination(
+                    Number(pagination.current) || 1,
+                    Number(pagination.pageSize) || 10
+                );
             }
         });
     };

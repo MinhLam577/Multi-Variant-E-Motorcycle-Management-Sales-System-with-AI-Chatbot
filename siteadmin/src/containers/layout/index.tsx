@@ -7,7 +7,6 @@ import {
     FileDoneOutlined,
     GiftOutlined,
     ImportOutlined,
-    NotificationOutlined,
     OrderedListOutlined,
     SettingOutlined,
     ShoppingOutlined,

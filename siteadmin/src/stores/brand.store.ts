@@ -92,6 +92,10 @@ class BrandObservable {
             const { data, status, message } = response;
             const resData = data?.result;
             const success_status = [200, 201, 204];
+            const newUrl = `${window.location.pathname}?${queryString}`;
+            if (newUrl.includes("brands")) {
+                window.history.replaceState({}, "", newUrl);
+            }
             if (success_status.includes(status)) {
                 this.data = resData;
                 this.rootStore.status = status;
