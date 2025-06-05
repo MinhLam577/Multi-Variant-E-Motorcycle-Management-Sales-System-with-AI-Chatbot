@@ -159,19 +159,6 @@ const Orders = () => {
         }
     };
 
-    const handleReturnOrder = async (id: string, reason?: string) => {
-        try {
-            await orderStore.returnOrder(id, reason);
-        } catch (e: any) {
-            console.log(e);
-            store.setStatusMessage(
-                500,
-                e?.message || "Có lỗi xảy ra khi trả hàng.",
-                ""
-            );
-        }
-    };
-
     return (
         <section className="w-full flex flex-col">
             <div className="w-full flex flex-col animate-slideDown">
@@ -261,9 +248,6 @@ const Orders = () => {
                                             }
                                             handleFailedDelivery={
                                                 handleFailedDelivery
-                                            }
-                                            handleReturnOrder={
-                                                handleReturnOrder
                                             }
                                         />
                                     </Drawer>

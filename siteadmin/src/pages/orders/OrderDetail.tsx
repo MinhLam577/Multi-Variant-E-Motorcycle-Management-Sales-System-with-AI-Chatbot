@@ -36,7 +36,6 @@ interface OrderDetailProps {
     handleUpdateOrderStatus: (orderNo: string) => void;
     handleCancelOrderStatus: (orderNo: string, reason: string) => void;
     handleFailedDelivery: (orderNo: string, reason: string) => void;
-    handleReturnOrder: (orderNo: string, reason: string) => void;
 }
 
 const OrderDetail: React.FC<OrderDetailProps> = ({
@@ -47,7 +46,6 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
     handleUpdateOrderStatus,
     handleCancelOrderStatus,
     handleFailedDelivery,
-    handleReturnOrder,
 }) => {
     const elementPrintOrder = useRef<HTMLDivElement | null>(null);
     const store = useStore();
@@ -215,8 +213,6 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
             handleCancelOrderStatus(orderNo, reason);
         } else if (typeOpenReasonModal === "failed_delivery") {
             handleFailedDelivery(orderNo, reason);
-        } else if (typeOpenReasonModal === "return") {
-            handleReturnOrder(orderNo, reason);
         }
         setTypeOpenReasonModal("cancel");
         setOpenReasonModal(false);
@@ -361,14 +357,6 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
                             }}
                         >
                             Hủy đơn
-                        </Button>
-                        <Button
-                            onClick={() => {
-                                setTypeOpenReasonModal("return");
-                                setOpenReasonModal(true);
-                            }}
-                        >
-                            Trả hàng
                         </Button>
                     </CustomizeButton>
                 </div>
