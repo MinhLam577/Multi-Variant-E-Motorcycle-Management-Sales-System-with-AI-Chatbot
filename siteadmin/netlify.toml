@@ -1,0 +1,9 @@
+[[redirects]]
+  from = "/*"
+  to = "/"
+  status = 200
+
+[build]
+  base    = "."
+  command = "yarn build"
+  publish = "build"
