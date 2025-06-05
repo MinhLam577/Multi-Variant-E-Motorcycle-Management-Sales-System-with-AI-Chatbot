@@ -9,10 +9,6 @@ import PaymentMethodObservable from "./paymentMethod";
 import SkusObservable from "./skus.store";
 import CategoriesObservable from "./categories.store";
 
-export type paginationData = {
-    current: number;
-    pageSize: number;
-};
 import VoucherObservable from "./voucher";
 import SettingObservable from "./setting";
 import WarehouseObservable from "./warehouse.store";
@@ -34,6 +30,11 @@ export interface MessageStore {
         successMsg: string
     ) => void;
 }
+
+export type paginationData = {
+    current: number;
+    pageSize: number;
+};
 export class RootStore implements MessageStore {
     @observable status: number = null;
     @observable errorMsg: string = null;
