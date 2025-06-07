@@ -35,7 +35,7 @@ const VehicleTypeList = () => {
   const fetchData = async () => {
     const data = await getAllCategory();
     console.log(data);
-    setDataCategory(data.data);
+    setDataCategory(data?.data?.data);
   };
   const fetchDataProduct = async (categoryID = undefined) => {
     const query = {

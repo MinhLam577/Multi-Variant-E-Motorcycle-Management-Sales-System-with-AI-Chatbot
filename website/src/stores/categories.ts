@@ -134,8 +134,9 @@ export default class CategoryObservable {
     ).toString();
     return queryString;
   }
-
+/////
   *getListOrder() {
+    
     try {
       this.loading = true;
 
@@ -144,7 +145,7 @@ export default class CategoryObservable {
       const { data, status, message } = response;
       const success_status = [200, 201, 204];
       if (success_status.includes(status)) {
-        this.data.categories = data;
+        this.data.categories = data.data;
         this.status = status;
         this.successMsg = message;
       } else {
@@ -159,6 +160,11 @@ export default class CategoryObservable {
       this.loading = false;
     }
   }
+
+
+
+
+
 
   *getOrderStatus() {
     try {

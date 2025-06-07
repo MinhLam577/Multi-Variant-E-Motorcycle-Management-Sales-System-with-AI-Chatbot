@@ -42,8 +42,9 @@ const MainFilter = observer(({ handleFilterChange }) => {
 
     // Gọi và xử lý dữ liệu category
     const res = await getAllCategory();
+    console.log(res);
     if (res?.data) {
-      const converted = convertToTreeData(res.data);
+      const converted = convertToTreeData(res.data.data);
       setTreeData(converted);
     }
   };
