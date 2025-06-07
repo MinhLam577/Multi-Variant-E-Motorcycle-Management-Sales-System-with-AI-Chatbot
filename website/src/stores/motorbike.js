@@ -62,7 +62,6 @@ class EMotorbikeObservable {
     *updateMotorbike({ form, id }) {
         this.status = RequestStatus.SUBMITTING;
         try {
-            console.log("updateMotorbike", form);
             const { data, status } = yield apiClient.patch(
                 endpoints.motorbike.details(id),
                 form
@@ -123,7 +122,6 @@ class EMotorbikeObservable {
                 endpoints.motorbike.brand
             );
             this.listBrand = data?.data;
-            console.log("data?.data?.colors", data?.data);
 
             this.status = RequestStatus.FETCH_SUCCESS;
         } catch (error) {

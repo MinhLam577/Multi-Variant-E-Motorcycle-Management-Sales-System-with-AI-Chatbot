@@ -18,7 +18,6 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(
     async (config) => {
         let account = await new AccountObservable().getAccount();
-        console.log(account);
 
         config.headers.Authorization = "Bearer " + account?.access_token;
 
@@ -30,7 +29,6 @@ apiClient.interceptors.request.use(
 );
 
 const handleSuccess = async (response) => {
-    console.log(response);
     return response.data;
 };
 
@@ -56,7 +54,6 @@ const handleError = async (error) => {
 };
 
 const handleError401 = async (originalRequest, error) => {
-    console.log(originalRequest);
     if (originalRequest._retry) {
         return;
     }
