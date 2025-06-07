@@ -1,6 +1,6 @@
 "use client";
 import Aos from "aos";
-import React, { useEffect } from "react";
+import React, { Suspense, useEffect } from "react";
 import { Montserrat } from "next/font/google";
 import "../node_modules/react-modal-video/scss/modal-video.scss";
 import "aos/dist/aos.css";
@@ -12,36 +12,36 @@ import { StoreProvider } from "@/src/stores";
 import "./globals.css";
 import Chatbox from "./(pages)/chatbot/page";
 if (typeof window !== "undefined") {
-  import("bootstrap");
+    import("bootstrap");
 }
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
 const Body = styled.body`
-  font-family: ${montserrat.family};
-  font-size: ${montserrat.fontSize};
-  margin: 0;
-  padding: 0;
+    font-family: ${montserrat.family};
+    font-size: ${montserrat.fontSize};
+    margin: 0;
+    padding: 0;
 `;
 
 export default function RootLayout({ children }) {
-  useEffect(() => {
-    Aos.init({
-      duration: 1200,
-    });
-  }, []);
+    useEffect(() => {
+        Aos.init({
+            duration: 1200,
+        });
+    }, []);
 
-  return (
-    <html lang="en">
-      <ThemeProvider>
-        <Body>
-          <StoreProvider>
-            {children}
-            <ScrollToTop />
-            <Chatbox />
-          </StoreProvider>
-        </Body>
-      </ThemeProvider>
-    </html>
-  );
+    return (
+        <html lang="en">
+            <ThemeProvider>
+                <Body>
+                    <StoreProvider>
+                        <Suspense>{children}</Suspense>
+                        <ScrollToTop />
+                        <Chatbox />
+                    </StoreProvider>
+                </Body>
+            </ThemeProvider>
+        </html>
+    );
 }
