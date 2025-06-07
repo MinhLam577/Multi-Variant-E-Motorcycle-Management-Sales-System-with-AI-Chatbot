@@ -76,7 +76,6 @@ export default class VoucherObservable {
         try {
             this.loading = true;
             const response = yield voucherApi.getList();
-            console.log("response", toJS(response));
             const { data, status, message } = response;
             const success_status = [200, 201, 204];
             if (success_status.includes(status)) {
