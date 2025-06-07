@@ -25,136 +25,15 @@ const MainMenu = observer(() => {
         { id: "s2", name: "KHUYẾN MÃI", href: "/khuyen-mai" },
         { id: "s3", name: "CỬA HÀNG", href: "/cua-hang" },
         { id: "s4", name: "TIN TỨC", href: "/blog-list" },
-
         { id: "s6", name: "LIÊN HỆ", href: "/lien-he" },
     ];
-    const data = [
-        {
-            id: "1",
-            slug: "xe-o-to",
-            name: "XE Ô TÔ",
-            children: [
-                {
-                    id: "2",
-                    slug: "sedan",
-                    name: "Sedan",
-                    children: [
-                        { id: "5", slug: "toyota-camry", name: "Toyota Camry" },
-                        { id: "6", slug: "honda-accord", name: "Honda Accord" },
-                        {
-                            id: "7",
-                            slug: "mercedes-benz-c-class",
-                            name: "Mercedes-Benz C-Class",
-                        },
-                    ],
-                },
-                {
-                    id: "3",
-                    slug: "suv",
-                    name: "SUV",
-                    children: [
-                        { id: "8", slug: "toyota-rav4", name: "Toyota RAV4" },
-                        { id: "9", slug: "bmw-x5", name: "BMW X5" },
-                        {
-                            id: "10",
-                            slug: "tesla-model-x",
-                            name: "Tesla Model X",
-                        },
-                    ],
-                },
-            ],
-        },
-        {
-            id: "2",
-            slug: "xe-may-dien",
-            name: "XE MÁY ĐIỆN",
-            children: [
-                {
-                    id: "11",
-                    slug: "sedan-dien",
-                    name: "Sedan",
-                    children: [
-                        // { id: "12", slug: "vinfast-e34", name: "VinFast VF e34" },
-                        // { id: "13", slug: "hyundai-ioniq", name: "Hyundai Ioniq 5" },
-                    ],
-                },
-                {
-                    id: "14",
-                    slug: "suv-dien",
-                    name: "SUV",
-                    children: [
-                        {
-                            id: "15",
-                            slug: "tesla-model-y",
-                            name: "Tesla Model Y",
-                        },
-                        { id: "16", slug: "vinfast-vf8", name: "VinFast VF8" },
-                    ],
-                },
-            ],
-        },
-    ];
     return (
-        //       {menuItems.map((menuItem, index) => (
-        //         <li className="dropitem" key={index}>
-        //           <a
-        //             className={isParentActive(menuItem.subMenu, path) ? "active" : ""}
-        //             href={menuItem.path}
-        //           >
-        //             <span className="title">{menuItem.label}</span>
-        //             {menuItem.subMenu?.length > 0 && <span className="arrow" />}
-        //           </a>
-        //           <ul className="sub-menu">
-        //             {menuItem.subMenu.map((subItem, subIndex) => (
-        //               <li key={subIndex} className="dropitem">
-        //                 {subItem.subMenu ? (
-        //                   <>
-        //                     <a
-        //                       className={
-        //                         isParentActive(subItem.subMenu, path) ? "active" : ""
-        //                       }
-        //                       href={path}
-        //                     >
-        //                       {subItem.label}
-        //                     </a>
-        //                     <span className="arrow"></span>
-        //                     <ul className="sub-menu">
-        //                       {subItem.subMenu.map((nestedSubItem, nestedSubIndex) => (
-        //                         <li key={nestedSubIndex}>
-        //                           <Link
-        //                             className={
-        //                               path === nestedSubItem.path ? "active" : ""
-        //                             }
-        //                             href={nestedSubItem.path}
-        //                           >
-        //                             {nestedSubItem.label}
-        //                           </Link>
-        //                         </li>
-        //                       ))}
-        //                     </ul>
-        //                   </>
-        //                 ) : (
-        //                   <Link
-        //                     href={subItem.path}
-        //                     className={path === subItem.path ? "active" : ""}
-        //                   >
-        //                     {subItem.label}
-        //                   </Link>
-        //                 )}
-        //               </li>
-        //             ))}
-        //           </ul>
-        //         </li>
-        //       ))}
-        //       {/* Menu bên phải */}
-
         <div className="">
             {categoryObservable?.data?.data?.map((parent) => {
                 const isActive =
                     pathname === "/" || pathname === "/home-motorbike";
                 const redirectedSlug =
                     parent.slug === "xe-may-dien" ? "home-motorbike" : "/";
-
                 return (
                     <div
                         key={parent.id}
