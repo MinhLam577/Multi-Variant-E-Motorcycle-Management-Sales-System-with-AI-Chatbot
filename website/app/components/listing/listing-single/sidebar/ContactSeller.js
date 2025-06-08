@@ -22,12 +22,10 @@ const ContactSeller = ({ setShowModal }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         // Gửi dữ liệu hoặc xử lý tại đây
-        console.log("Form submitted:", formData);
 
         // Ví dụ: Gọi API hoặc reset form
         // fetch('/api/contact', { method: 'POST', body: JSON.stringify(formData) });
         const { data, message, status } = await authAPI.contactPrice(formData);
-        console.log(message, status);
         if (status === 201) {
             notification.success({
                 message: "Thành công",

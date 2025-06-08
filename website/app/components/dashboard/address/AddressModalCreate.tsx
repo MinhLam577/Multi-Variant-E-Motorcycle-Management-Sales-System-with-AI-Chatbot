@@ -65,7 +65,6 @@ const AddressModalCreate = (props) => {
     useEffect(() => {
         const fetchProvince = async () => {
             const data = await apiClient.get(endpoints.province.list);
-            console.log(data.data.data);
             setProvinces(data.data.data);
         };
         fetchProvince();
@@ -74,7 +73,6 @@ const AddressModalCreate = (props) => {
     // gọi api tìm district
     const fetchDistrict = async (idProvince) => {
         form.setFieldsValue({ district: undefined, ward: undefined });
-        console.log(idProvince);
         const data = await apiClient.get(
             endpoints.district.districtByName(idProvince)
         );
@@ -84,14 +82,11 @@ const AddressModalCreate = (props) => {
     // gọi api tìm award
     const fetchAward = async (idDistrict) => {
         form.setFieldsValue({ ward: undefined });
-        console.log(idDistrict);
         const data = await apiClient.get(endpoints.ward.wardByName(idDistrict));
-        console.log(data);
         setWards(data.data.data);
     };
 
     const handleProvinceChange = (value) => {
-        console.log(value); // 15
         fetchDistrict(value);
     };
 

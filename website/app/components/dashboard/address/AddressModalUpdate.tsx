@@ -32,7 +32,6 @@ const AddressModalUpdate = (props) => {
     const [form] = Form.useForm();
     useEffect(() => {
         if (dataAddressUpdate) {
-            console.log("Updating form with:", dataAddressUpdate);
             form.setFieldsValue(dataAddressUpdate);
         }
     }, [dataAddressUpdate]);
@@ -108,9 +107,7 @@ const AddressModalUpdate = (props) => {
     // gọi api tìm award
     const fetchAward = async (idDistrict) => {
         form.setFieldsValue({ ward: undefined });
-        console.log(idDistrict);
         const data = await apiClient.get(endpoints.ward.wardByName(idDistrict));
-        console.log(data);
         setWards(data.data.data);
     };
 
