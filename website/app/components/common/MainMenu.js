@@ -8,6 +8,7 @@ import { useStore } from "@/src/stores";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
+import { CategoryResponseTypeEnum } from "@/src/stores/categories"; // sửa path theo dự án bạn
 const MainMenu = observer(() => {
   const { categoryObservable } = useStore();
   const pathname = usePathname();
@@ -15,9 +16,9 @@ const MainMenu = observer(() => {
 
   useEffect(() => {
     const fetchCategories = async () => {
-      await categoryObservable.getListOrder();
-      console.log(categoryObservable?.data?.categories);
+      await categoryObservable.getListOrder({ responseType: "Tree" });
     };
+    console.log(categoryObservable?.data?.categories);
     fetchCategories();
   }, []);
   const router = useRouter();
@@ -29,64 +30,7 @@ const MainMenu = observer(() => {
 
     { id: "s6", name: "LIÊN HỆ", href: "/lien-he" },
   ];
-  const data = [
-    {
-      id: "1",
-      slug: "xe-o-to",
-      name: "XE Ô TÔ",
-      children: [
-        {
-          id: "2",
-          slug: "sedan",
-          name: "Sedan",
-          children: [
-            { id: "5", slug: "toyota-camry", name: "Toyota Camry" },
-            { id: "6", slug: "honda-accord", name: "Honda Accord" },
-            {
-              id: "7",
-              slug: "mercedes-benz-c-class",
-              name: "Mercedes-Benz C-Class",
-            },
-          ],
-        },
-        {
-          id: "3",
-          slug: "suv",
-          name: "SUV",
-          children: [
-            { id: "8", slug: "toyota-rav4", name: "Toyota RAV4" },
-            { id: "9", slug: "bmw-x5", name: "BMW X5" },
-            { id: "10", slug: "tesla-model-x", name: "Tesla Model X" },
-          ],
-        },
-      ],
-    },
-    {
-      id: "2",
-      slug: "xe-may-dien",
-      name: "XE MÁY ĐIỆN",
-      children: [
-        {
-          id: "11",
-          slug: "sedan-dien",
-          name: "Sedan",
-          children: [
-            // { id: "12", slug: "vinfast-e34", name: "VinFast VF e34" },
-            // { id: "13", slug: "hyundai-ioniq", name: "Hyundai Ioniq 5" },
-          ],
-        },
-        {
-          id: "14",
-          slug: "suv-dien",
-          name: "SUV",
-          children: [
-            { id: "15", slug: "tesla-model-y", name: "Tesla Model Y" },
-            { id: "16", slug: "vinfast-vf8", name: "VinFast VF8" },
-          ],
-        },
-      ],
-    },
-  ];
+
   return (
     //       {menuItems.map((menuItem, index) => (
     //         <li className="dropitem" key={index}>
@@ -142,7 +86,8 @@ const MainMenu = observer(() => {
     //       {/* Menu bên phải */}
 
     <div className="">
-      {categoryObservable?.data?.categories?.map((parent) => {
+      {categoryObservable?.data?.categories?.data?.map((parent) => {
+        console.log(parent);
         const isActive = pathname === "/" || pathname === "/home-motorbike";
         const redirectedSlug =
           parent.slug === "xe-may-dien" ? "home-motorbike" : "/";
@@ -152,7 +97,7 @@ const MainMenu = observer(() => {
             <button
               onClick={() => router.push(`/${redirectedSlug}`)}
               className={`relative px-3 py-2 mb-2 text-black rounded flex items-center space-x-2 
-                after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:bg-yellow-400 
+                after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:bg-yellow-400  uppercase
                 after:w-0 group-hover:after:w-full after:transition-all after:duration-500 after:ease-in-out  ${
                   isActive
                     ? "text-white hover:text-yellow-400 hover:after:w-full"
@@ -176,7 +121,7 @@ const MainMenu = observer(() => {
                   <div key={child.id} className="relative group/submenu">
                     <Link
                       href={`/${redirectedSlug}&&categoryID=${child.id}`}
-                      className="block px-4 py-2 hover:bg-gray-100 cursor-pointer rounded"
+                      className="block px-4 py-2 hover:bg-gray-100 cursor-pointer rounded "
                     >
                       {child.name}
                     </Link>
@@ -225,3 +170,69 @@ const MainMenu = observer(() => {
 });
 
 export default MainMenu;
+// const data = [
+//     {
+//       id: "1",
+//       slug: "xe-o-to",
+//       name: "XE Ô TÔ",
+//       children: [
+//         {
+//           id: "2",
+//           slug: "sedan",
+//           name: "Sedan",
+//           children: [
+//             { id: "5", slug: "toyota-camry", name: "Toyota Camry" },
+//             { id: "6", slug: "honda-accord", name: "Honda Accord" },
+//             {
+//               id: "7",
+//               slug: "mercedes-benz-c-class",
+//               name: "Mercedes-Benz C-Class",
+//             },
+//           ],
+//         },
+//         {
+//           id: "3",
+//           slug: "suv",
+//           name: "SUV",
+//           children: [
+//             { id: "8", slug: "toyota-rav4", name: "Toyota RAV4" },
+//             { id: "9", slug: "bmw-x5", name: "BMW X5" },
+//             {
+//               id: "10",
+//               slug: "tesla-model-x",
+//               name: "Tesla Model X",
+//             },
+//           ],
+//         },
+//       ],
+//     },
+//     {
+//       id: "2",
+//       slug: "xe-may-dien",
+//       name: "XE MÁY ĐIỆN",
+//       children: [
+//         {
+//           id: "11",
+//           slug: "sedan-dien",
+//           name: "Sedan",
+//           children: [
+//             // { id: "12", slug: "vinfast-e34", name: "VinFast VF e34" },
+//             // { id: "13", slug: "hyundai-ioniq", name: "Hyundai Ioniq 5" },
+//           ],
+//         },
+//         {
+//           id: "14",
+//           slug: "suv-dien",
+//           name: "SUV",
+//           children: [
+//             {
+//               id: "15",
+//               slug: "tesla-model-y",
+//               name: "Tesla Model Y",
+//             },
+//             { id: "16", slug: "vinfast-vf8", name: "VinFast VF8" },
+//           ],
+//         },
+//       ],
+//     },
+//   ];

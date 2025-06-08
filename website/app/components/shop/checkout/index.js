@@ -17,15 +17,19 @@ const BillingMain = () => {
   const storeAddress = store.addressObservable;
   const storeDelivery = store.deliveryObservable;
   const storePayment = store.paymentMethodObservable;
+  const storeVoucher = store.voucherObservable;
   const storeCart = store.cartObservable;
 
   useEffect(() => {
     const fetchData = async () => {
       await storeAccount.getAccount();
       await storeDelivery.getDetailDelivery(
-        "b9519536-f2c2-48e6-8280-a49fdbb15dcb"
+        "3ad90081-2197-49b1-a556-2db021651f8b"
       ); // Delay nhỏ 1 tick để MobX update xong
       await storePayment.getListPaymentMethod();
+      await storeVoucher.getListVoucher_of_User();
+
+      console.log(storeVoucher?.data);
       setTimeout(async () => {
         const idCustomer = storeAccount.account?.userId;
         if (idCustomer) {
@@ -41,10 +45,25 @@ const BillingMain = () => {
   const handlePlaceOrder = async () => {
     let addressDefault = "";
     const customer_id = storeAccount.account?.userId;
-    const subtotal = storeCart?.listDataSelected?.reduce(
+    const subtotal = storeCart?.listDataSelected.reduce(
       (sum, item) => sum + item.skus.price_sold * item.quantity,
       0
     );
+    function getDiscountAmount(itemTotal) {
+      const voucher = storeVoucher.dataDetail?.voucher;
+      if (!voucher) return 0;
+
+      const amount = Number(voucher.discount_amount);
+      return voucher.fixed ? (amount / 100) * itemTotal : amount;
+    }
+
+    const total = storeCart?.listDataSelected.reduce((sum, item) => {
+      const itemTotal = item.skus.price_sold * item.quantity;
+      const fee = storeDelivery.data.detailDelivery?.fee ?? 0;
+      const discountAmount = getDiscountAmount(itemTotal);
+      return sum + itemTotal + fee - discountAmount;
+    }, 0);
+
     if (storeAddress?.data?.listAddress.length == 0) {
       notification.error({
         message: "Lỗi chưa có địa chỉ",
@@ -58,13 +77,18 @@ const BillingMain = () => {
         delivery_method_id: storeDelivery?.data?.detailDelivery.id,
         payment_method_id: storePayment?.data?.selectedPayment,
         cart_item_ids: storeCart?.selectedItems,
-        total_price: subtotal,
+        total_price: total,
         discount_price: subtotal,
       };
+
+      console.log(orderData);
+      console.log(storeVoucher?.dataDetail?.id);
+
       await storeCart.checkoutBycart(orderData);
       // console.log(storeCart?.dataOrder?.orderId);
-      // console.log(storeCart?.dataOrder?.payment_method);
+      console.log(storeCart?.dataOrder?.payment_method);
       // console.log(storeCart?.successMsg);
+
       if (
         storeCart?.dataOrder?.orderId &&
         storeCart?.dataOrder?.payment_method == "COD" &&
@@ -79,21 +103,37 @@ const BillingMain = () => {
         router.push("/purchase"); // chuyển đến trang mua hàng đã thanh toán
       } else if (
         storeCart?.dataOrder.orderId &&
-        storeCart?.dataOrder?.payment_method !== "COD" &&
+        storeCart?.dataOrder?.payment_method == "ZALOPAY" &&
         storeCart?.successMsg == "Order has been successfully created" &&
         storeCart?.status == 201
       ) {
+        alert("navigate Zalo pay ");
         await storeCart.checkoutByZaloPay({
           orderId: storeCart.dataOrder.orderId,
-          description: `Thanh toán đơn hàng ${storeCart.dataOrder.orderId}`,
+          description: `Thanh toán đơn`,
+          voucherIds: [storeVoucher?.dataDetail?.voucher.id],
         });
-
+        // ${storeCart.dataOrder.orderId}
         alert("navigate Zalo pay ");
         console.log(storeCart?.dataOrder?.order_url);
         router.push(storeCart?.dataOrder?.order_url); // chuyển sang trang thanh toán ZaloPay
+      } else if (
+        storeCart?.dataOrder.orderId &&
+        storeCart?.dataOrder?.payment_method == "PAYOS" &&
+        storeCart?.successMsg == "Order has been successfully created" &&
+        storeCart?.status == 201
+      ) {
+        console.log("Thánh toán payos");
+        await storeCart.checkoutByPayos({
+          orderId: storeCart.dataOrder.orderId,
+          description: `Thanh toán Đơn`,
+          voucherIds: [storeVoucher?.dataDetail?.voucher.id],
+        });
+        alert("navigate By PayOs");
+        console.log(storeCart?.dataOrder?.checkoutUrl);
+        router.push(storeCart?.dataOrder?.checkoutUrl); // chuyển sang trang thanh toán ZaloPay
       }
     }
-
     // gọi api checkoutByZaloPay
   };
   return (
@@ -104,7 +144,7 @@ const BillingMain = () => {
 
           <AddressDefault />
           <Delivery />
-          <VoucherSection />
+          <VoucherSection storeVoucher={storeVoucher} />
         </div>
       </div>
       {/* End billing content */}
@@ -112,7 +152,10 @@ const BillingMain = () => {
       <div className="col-lg-4">
         <div className="order_sidebar_widget mb30">
           <h4 className="title">Your Order</h4>
-          <OrderAmountDetails listDataSelected={storeCart.listDataSelected} />
+          <OrderAmountDetails
+            listDataSelected={storeCart.listDataSelected}
+            storeVoucher={storeVoucher}
+          />
         </div>
         {/* End your order */}
 

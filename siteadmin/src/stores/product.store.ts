@@ -238,7 +238,9 @@ class ProductObservable {
                 totalStock: number;
             }[] = data?.data;
             const newUrl = `${window.location.pathname}?${queryString}`;
-            window.history.pushState({ path: newUrl }, "", newUrl);
+            if (newUrl.includes("products")) {
+                window.history.replaceState({}, "", newUrl); // Cập nhật URL nếu có tham số truy vấn
+            }
             if (SUCCESS_STATUSES.includes(status)) {
                 this.data.products.data = resData;
                 this.rootStore.status = status;

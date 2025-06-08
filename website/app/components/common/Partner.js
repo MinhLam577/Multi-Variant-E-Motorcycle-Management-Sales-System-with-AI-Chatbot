@@ -18,7 +18,7 @@ const Partner = () => {
   }, []);
 
   const fetchData = async () => {
-    const { data } = await getAllBrand(1, 8);
+    const { data } = await getAllBrand(1, 10);
     console.log(data);
     setPartners(data.result);
   };

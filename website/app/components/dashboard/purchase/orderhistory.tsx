@@ -67,6 +67,21 @@ const OrderHistory = observer(() => {
       const account = AccountStore.account;
       // console.log(account);
       await StoreOrder.getListOrder({ customer_id: account?.id }); // ví dụ dùng account để truyền query
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const status = urlParams.get("status");
+      console.log(status);
+      if (status === "CANCELLED") {
+        notification.error({
+          message: "Thanh toán thất bại",
+          description: "Đơn hàng của bạn đã bị huỷ.",
+        });
+      } else if (status === "SUCCESS") {
+        notification.success({
+          message: "Thanh toán thành công",
+          description: "Cảm ơn bạn đã đặt hàng!",
+        });
+      }
     };
 
     fetchData();

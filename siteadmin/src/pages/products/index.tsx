@@ -21,6 +21,7 @@ import ModalCreateProduct, {
     TreeSelectType,
 } from "src/components/products/detail/ModalCreateProduct/ModalCreateProduct";
 import ModalUpdateProduct from "src/components/products/detail/ModalUpdateProduct/ModalUpdateProduct";
+import BaseAPI from "src/api/base";
 
 type product_brand_type = {
     id: string;
@@ -59,7 +60,7 @@ export const generateImageFilesFromUrl = async (
     url: string,
     fileName: string
 ) => {
-    const base64String = (await urlToBase64(url)) as string;
+    const base64String = await BaseAPI.convertUrlToBase64(url);
     return {
         uid: `-${generateUUIDV4() + Date.now()}`,
         name: fileName,

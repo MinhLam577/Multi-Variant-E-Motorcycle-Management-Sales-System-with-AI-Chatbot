@@ -6,28 +6,40 @@ import {
   QuestionCircleOutlined,
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
+import { observer } from "mobx-react-lite";
+import { useStore } from "@/src/stores";
+import { formatCurrency } from "@/utils";
 interface Props {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isModalOpen: boolean;
   showModal: () => void;
+  listVoucher_User: any;
 }
-const ModalVoucher = (prop: Props) => {
+const ModalVoucher = observer((prop: Props) => {
+  const store = useStore();
+  const storeVoucher = store.voucherObservable;
   const [selectedCode, setSelectedCode] = useState("");
+  const [selectedVoucherID, setSelectedVoucherID] = useState("");
   const { setIsModalOpen, isModalOpen, showModal } = prop;
 
-  const handleOk = () => {
+  console.log(prop.listVoucher_User);
+  const handleOk = async () => {
     console.log(selectedCode);
+    console.log(selectedVoucherID);
     setIsModalOpen(false);
     setSelectedCode("");
+    await storeVoucher.getUser_Voucher_Detail(selectedVoucherID);
   };
 
   const handleCancel = () => {
     setSelectedCode("");
     setIsModalOpen(false);
+    setSelectedVoucherID("");
   };
 
   const handleApply = () => {
     console.log(selectedCode);
+    console.log(selectedVoucherID);
     setIsModalOpen(false);
     setSelectedCode("");
   };
@@ -106,43 +118,43 @@ const ModalVoucher = (prop: Props) => {
 
         {/* Voucher list */}
         <div className="space-y-4 max-h-60 overflow-y-auto pr-2">
-          {vouchers.map((v) => (
+          {prop.listVoucher_User?.map((v) => (
             <div
               key={v.id}
               className="border rounded flex overflow-hidden shadow-sm relative"
             >
               <div className="bg-teal-300 text-white p-4 text-center w-32">
-                <div className="font-bold leading-tight">{v.title}</div>
-                <div className="text-xs mt-1">Mã vận chuyển</div>
+                <div className="font-bold leading-tight">
+                  {v.voucher.voucher_name}
+                </div>
+                <div className="text-xs mt-1">{v.voucher.description}</div>
               </div>
               <div className="flex-1 p-4 text-sm relative">
-                <div className="font-semibold">{v.value}</div>
+                <div className="font-semibold">
+                  {v.voucher.fixed ? (
+                    <>Giảm {v.voucher.discount_amount}%</>
+                  ) : (
+                    <>Giảm {formatCurrency(v.voucher.discount_amount)}</>
+                  )}
+                </div>
                 <div>{v.minOrder}</div>
                 {v.tag && <div className="text-pink-500">{v.tag}</div>}
-                <div className="text-gray-500">
-                  {v.expired}{" "}
-                  <span className="text-blue-500 cursor-pointer">
-                    {v.condition}
-                  </span>
-                </div>
-                {v.quantity && (
-                  <span className="absolute top-2 right-2 text-xs bg-red-500 text-white px-1.5 rounded-full">
-                    x {v.quantity}
+                <div className="text-gray-500">{v.voucher.end_date} </div>
+                {!v.is_used && (
+                  <span className=" text-xs bg-red-500 text-white px-1.5 rounded-full">
+                    x 1
                   </span>
                 )}
-                {/* {v.appOnly && (
-                  <div className="mt-2 text-xs text-red-600 bg-yellow-100 border border-yellow-400 rounded p-2 flex items-center gap-1">
-                    <ExclamationCircleOutlined /> Vui lòng mua hàng trên ứng
-                    dụng Shopee để sử dụng ưu đãi.
-                  </div>
-                )} */}
               </div>
               <div className="p-4 flex items-center">
                 <input
                   type="radio"
                   name="voucher"
-                  onChange={() => setSelectedCode(v.value)} // ← cập nhật mã
-                  checked={selectedCode === v.value}
+                  onChange={() => {
+                    setSelectedCode(v.voucher.voucher_code);
+                    setSelectedVoucherID(v.id);
+                  }}
+                  checked={selectedCode === v.voucher.voucher_code}
                 />
               </div>
             </div>
@@ -159,6 +171,6 @@ const ModalVoucher = (prop: Props) => {
       </Modal>
     </>
   );
-};
+});
 
 export default ModalVoucher;

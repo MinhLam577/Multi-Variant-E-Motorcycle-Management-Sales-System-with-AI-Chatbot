@@ -38,14 +38,38 @@
 // };
 
 // export default OrderAmountDetails;
+import { useStore } from "@/src/stores";
 import { formatCurrency } from "@/utils"; // Hàm định dạng tiền nếu có
+import { observer } from "mobx-react-lite";
 
-const OrderAmountDetails = ({ listDataSelected }) => {
+const OrderAmountDetails = observer(({ listDataSelected }) => {
   // Tính tổng phụ (subtotal)
+  const store = useStore();
+  const storeDelivery = store.deliveryObservable;
+  const storeVoucher = store.voucherObservable;
+  console.log(storeVoucher?.dataDetail?.voucher?.discount_amount);
   const subtotal = listDataSelected.reduce(
     (sum, item) => sum + item.skus.price_sold * item.quantity,
     0
   );
+  function getDiscountAmount(itemTotal) {
+    const voucher = storeVoucher.dataDetail?.voucher;
+    if (!voucher) return 0;
+
+    const amount = Number(voucher.discount_amount);
+    return voucher.fixed ? (amount / 100) * itemTotal : amount;
+  }
+
+  const total = listDataSelected.reduce((sum, item) => {
+    const itemTotal = item.skus.price_sold * item.quantity;
+    const fee = storeDelivery.data.detailDelivery?.fee ?? 0;
+    const discountAmount = getDiscountAmount(itemTotal);
+    return sum + itemTotal + fee - discountAmount;
+  }, 0);
+
+  
+  // tiền giảm voucher
+  const calculatePercentDiscount = (percent, total) => formatCurrency((percent / 100) * total);
 
   return (
     <ul className="divide-y divide-gray-200 text-sm text-gray-700">
@@ -70,18 +94,43 @@ const OrderAmountDetails = ({ listDataSelected }) => {
 
       <li className="pt-4 font-semibold">
         <p className="flex justify-between">
-          <span>Tạm tính</span>
-          <span className="text-orange-600">{formatCurrency(subtotal)}</span>
+          <span>Tổng tiền hàng</span>
+          <span className="text-black">{formatCurrency(subtotal)}</span>
+        </p>
+        <p className="flex justify-between mt-2 ">
+          <span>Tổng tiền phí vận chuyển</span>
+          <span className="text-black">
+            {formatCurrency(storeDelivery.data.detailDelivery?.fee)}
+          </span>
+        </p>
+
+        <p className="flex justify-between mt-2">
+          <span>Tổng cộng Voucher giảm giá</span>
+          {storeVoucher.dataDetail ? (
+            <span className="text-orange-600">
+              -{" "}
+              {storeVoucher.dataDetail.voucher.fixed
+                ? calculatePercentDiscount(
+                    storeVoucher?.dataDetail?.voucher?.discount_amount,
+                    subtotal
+                  ) 
+                : formatCurrency(
+                    storeVoucher.dataDetail.voucher.discount_amount
+                  )}
+            </span>
+          ) : (
+            0
+          )}
         </p>
       </li>
       <li className="pt-2 font-bold text-lg border-t border-dashed mt-2 pt-4">
         <p className="flex justify-between">
           <span>Tổng cộng</span>
-          <span className="text-orange-600">{formatCurrency(subtotal)}</span>
+          <span className="text-orange-600">{formatCurrency(total)}</span>
         </p>
       </li>
     </ul>
   );
-};
+});
 
 export default OrderAmountDetails;

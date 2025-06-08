@@ -47,7 +47,9 @@ export type DeliveryMethodResponseType = {
     description: string;
     logo: string | null;
 };
-
+export type OrderStatusStaticsResponseType = {
+    [K in Exclude<keyof typeof EnumOrderStatusesValue, "All">]: number;
+};
 export type OrderStatus = {
     key?: string;
 };
@@ -74,9 +76,6 @@ export type globalFiltersDataOrder = {
     created_to?: string;
 };
 
-export type OrderStatusStaticsResponseType = {
-    [K in Exclude<keyof typeof EnumOrderStatusesValue, "All">]: number;
-};
 export type orderData = {
     orders: OrderDetailResponseType[];
     order_status: OrderStatus[];
@@ -113,7 +112,7 @@ export default class OrderObservable {
     };
     pagination: paginationData = {
         current: 1,
-        pageSize: 100,
+        pageSize: 10,
     };
     loading: boolean = false;
     isOpenDetail: boolean = false;
@@ -177,14 +176,15 @@ export default class OrderObservable {
     *getListOrder(query?: string | object) {
         try {
             this.loading = true;
-
             const queryString = this.validateQuery(query);
             const response: ResponsePromise =
                 yield OrderAPI.getOrderList(queryString);
             const { data, status, message } = response;
             const success_status = [200, 201, 204];
             const newUrl = `${window.location.pathname}?${queryString}`;
-            window.history.pushState({ path: newUrl }, "", newUrl);
+            if (newUrl.includes("orders")) {
+                window.history.replaceState({}, "", newUrl);
+            }
             if (success_status.includes(status)) {
                 this.data.orders = data.orders;
                 this.rootStore.status = status;
@@ -332,34 +332,6 @@ export default class OrderObservable {
         }
     }
 
-    *returnOrder(id: string, reason?: string) {
-        try {
-            this.loading = true;
-            let response: ResponsePromise = yield OrderAPI.returnOrder(
-                id,
-                reason
-            );
-            const { status, message } = response;
-            const success_status = [200, 201, 204];
-            if (success_status.includes(status)) {
-                yield this.getListOrder();
-                yield this.getOrderDetail(id);
-                this.rootStore.status = status;
-                this.rootStore.successMsg = message;
-                this.rootStore.showSuccessMsg = true;
-            } else {
-                this.rootStore.status = status;
-                this.rootStore.errorMsg = message;
-            }
-        } catch (e: any) {
-            console.error(e);
-            this.rootStore.status = 500;
-            this.rootStore.errorMsg = e?.message || "Lỗi không xác định";
-        } finally {
-            this.loading = false;
-        }
-    }
-
     *confirmOrder(data: ExportOrder) {
         try {
             const response: ResponsePromise = yield OrderAPI.confirmOrder(data);
@@ -395,7 +367,6 @@ export default class OrderObservable {
 
     setPagination(page: number, pageSize: number) {
         if (page < 1 || pageSize < 1) return;
-
         this.pagination = {
             ...this.pagination,
             current: page,

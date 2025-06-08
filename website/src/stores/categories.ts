@@ -4,6 +4,7 @@ import { DateTimeFormat } from "../constants";
 import OrderAPI, { ExportOrder, ResponsePromise } from "../api/order";
 import { RootStore } from "./base";
 import { getAllCategory } from "../api/categories";
+import { filterEmptyFields } from "../lib/utils";
 
 export type OrderStatus = {
   key?: string;
@@ -24,7 +25,16 @@ export type paginationData = {
   current: number;
   pageSize: number;
 };
-
+export enum CategoryResponseTypeEnum {
+  TREE = "tree",
+  FLAT = "flat",
+}
+export type globalFilterCategoryType = {
+  search?: string;
+  type?: string;
+  status?: boolean;
+  responseType?: CategoryResponseTypeEnum;
+};
 export type orderData = {
   orders: any[];
   order_status: OrderStatus[];
@@ -34,6 +44,7 @@ export type orderData = {
   confirm_order_data?: ExportOrder;
   categories: [];
 };
+
 export default class CategoryObservable {
   status: number | null = null;
   errorMsg: string | null = null;
@@ -88,43 +99,22 @@ export default class CategoryObservable {
 
   private validateQuery(query?: string | object): string {
     // Xử lý chuyển đổi query string thành object
-    let parsedQuery: globalFiltersDataOrder & paginationData = {
+    let parsedQuery: globalFilterCategoryType & paginationData = {
       ...(typeof query === "string"
         ? Object.fromEntries(new URLSearchParams(query.trim()))
         : query),
       current: Number(this.pagination.current),
       pageSize: Number(this.pagination.pageSize),
+      responseType: CategoryResponseTypeEnum.TREE,
     };
 
     // Gộp filters và xử lý dữ liệu
-    const filters: paginationData & globalFiltersDataOrder = {
-      ...this.globalFilters,
-      ...this.pagination,
-      ...parsedQuery,
-      created_from: parsedQuery?.created_from
-        ? convertDate(
-            parsedQuery.created_from,
-            DateTimeFormat.TIME_STAMP_POSTGRES
-          )
-        : undefined,
-      created_to: parsedQuery?.created_to
-        ? convertDate(
-            parsedQuery.created_to,
-            DateTimeFormat.TIME_STAMP_POSTGRES
-          )
-        : undefined,
-      search: parsedQuery?.search?.trim(),
-    };
-
-    // Xóa các key có giá trị null, undefined hoặc ""
-    Object.keys(filters).forEach((key) => {
-      if (
-        filters[key] === null ||
-        filters[key] === undefined ||
-        filters[key] === ""
-      )
-        delete filters[key];
-    });
+    const filters: paginationData & globalFilterCategoryType =
+      filterEmptyFields({
+        ...this.pagination,
+        ...parsedQuery,
+        search: parsedQuery?.search?.trim(),
+      });
 
     // Tạo query string
     const queryString = new URLSearchParams(
@@ -134,18 +124,17 @@ export default class CategoryObservable {
     ).toString();
     return queryString;
   }
-/////
-  *getListOrder() {
-    
+
+  *getListOrder(query?: string | object) {
     try {
       this.loading = true;
-
-      const response: ResponsePromise = yield getAllCategory();
-      console.log(response);
+      const queryString = this.validateQuery(query);
+      const response: ResponsePromise = yield getAllCategory(queryString);
       const { data, status, message } = response;
+      console.log(data);
       const success_status = [200, 201, 204];
       if (success_status.includes(status)) {
-        this.data.categories = data.data;
+        this.data.categories = data;
         this.status = status;
         this.successMsg = message;
       } else {
@@ -160,11 +149,6 @@ export default class CategoryObservable {
       this.loading = false;
     }
   }
-
-
-
-
-
 
   *getOrderStatus() {
     try {
