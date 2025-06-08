@@ -81,7 +81,6 @@ const BillingMain = () => {
         discount_price: subtotal,
       };
 
-      console.log(orderData);
       console.log(storeVoucher?.dataDetail?.id);
 
       await storeCart.checkoutBycart(orderData);
@@ -107,14 +106,15 @@ const BillingMain = () => {
         storeCart?.successMsg == "Order has been successfully created" &&
         storeCart?.status == 201
       ) {
-        alert("navigate Zalo pay ");
         await storeCart.checkoutByZaloPay({
           orderId: storeCart.dataOrder.orderId,
           description: `Thanh toán đơn`,
-          voucherIds: [storeVoucher?.dataDetail?.voucher.id],
+          ...(storeVoucher?.dataDetail?.voucher?.id && {
+            voucherIds: [storeVoucher.dataDetail.voucher.id],
+          }),
         });
         // ${storeCart.dataOrder.orderId}
-        alert("navigate Zalo pay ");
+
         console.log(storeCart?.dataOrder?.order_url);
         router.push(storeCart?.dataOrder?.order_url); // chuyển sang trang thanh toán ZaloPay
       } else if (
@@ -123,13 +123,14 @@ const BillingMain = () => {
         storeCart?.successMsg == "Order has been successfully created" &&
         storeCart?.status == 201
       ) {
-        console.log("Thánh toán payos");
         await storeCart.checkoutByPayos({
           orderId: storeCart.dataOrder.orderId,
           description: `Thanh toán Đơn`,
-          voucherIds: [storeVoucher?.dataDetail?.voucher.id],
+          ...(storeVoucher?.dataDetail?.voucher?.id && {
+            voucherIds: [storeVoucher.dataDetail.voucher.id],
+          }),
         });
-        alert("navigate By PayOs");
+
         console.log(storeCart?.dataOrder?.checkoutUrl);
         router.push(storeCart?.dataOrder?.checkoutUrl); // chuyển sang trang thanh toán ZaloPay
       }

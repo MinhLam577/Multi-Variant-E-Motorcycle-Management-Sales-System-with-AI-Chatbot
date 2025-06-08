@@ -71,15 +71,15 @@ const OrderHistory = observer(() => {
       const urlParams = new URLSearchParams(window.location.search);
       const status = urlParams.get("status");
       console.log(status);
-      if (status === "CANCELLED") {
+      if (status === "PAID") {
+        notification.success({
+          message: "Thanh toán thành công",
+          description: "Đơn hàng của bạn đã thanh toán thành công.",
+        });
+      } else if (status == "CANCELLED") {
         notification.error({
           message: "Thanh toán thất bại",
           description: "Đơn hàng của bạn đã bị huỷ.",
-        });
-      } else if (status === "SUCCESS") {
-        notification.success({
-          message: "Thanh toán thành công",
-          description: "Cảm ơn bạn đã đặt hàng!",
         });
       }
     };
