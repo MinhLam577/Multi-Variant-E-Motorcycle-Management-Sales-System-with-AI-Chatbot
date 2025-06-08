@@ -1,6 +1,6 @@
 [build]
   publish = ".next"
-  command = "yarn build"
+  command = "CI= npm run build"
 
 # The following redirect is intended for use with most SPAs that handle routing internally.
 [[redirects]]
