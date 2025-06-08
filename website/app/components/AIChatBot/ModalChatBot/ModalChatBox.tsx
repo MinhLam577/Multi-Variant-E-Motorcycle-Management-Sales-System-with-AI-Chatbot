@@ -31,7 +31,7 @@ export default function ModalChatBox() {
             // Add message Bot
             try {
                 const response = await fetch(
-                    "https://vclxyz.app.n8n.cloud/webhook/71bc1b76-7c2b-4f16-b54a-6abb092ef0c6",
+                    "https://nguyenvanhuyn8n.app.n8n.cloud/webhook/71bc1b76-7c2b-4f16-b54a-6abb092ef0c6",
                     {
                         method: "POST",
                         headers: {
