@@ -63,24 +63,7 @@ const HeaderTop = () => {
                     </a>
                   </li>
                 ))}
-                <li className="list-inline-item">
-                  <a
-                    href="#"
-                    data-bs-toggle="modal"
-                    data-bs-target="#logInModal"
-                  >
-                    Đăng nhập
-                  </a>
-                </li>
-                <li className="list-inline-item">
-                  <a
-                    href="#"
-                    data-bs-toggle="modal"
-                    data-bs-target="#logInModal"
-                  >
-                    Đăng ký
-                  </a>
-                </li>
+                {/*Đăng kí đăng nhập*/}
               </ul>
             </div>
           </div>
@@ -94,3 +77,21 @@ const HeaderTop = () => {
 };
 
 export default HeaderTop;
+// <li className="list-inline-item">
+//                   <a
+//                     href="#"
+//                     data-bs-toggle="modal"
+//                     data-bs-target="#logInModal"
+//                   >
+//                     Đăng nhập
+//                   </a>
+//                 </li>
+//                 <li className="list-inline-item">
+//                   <a
+//                     href="#"
+//                     data-bs-toggle="modal"
+//                     data-bs-target="#logInModal"
+//                   >
+//                     Đăng ký
+//                   </a>
+//                 </li>

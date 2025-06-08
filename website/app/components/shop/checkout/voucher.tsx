@@ -2,13 +2,18 @@
 
 import { useState } from "react";
 import ModalVoucher from "./modalVoucher/modalVoucher";
+import { observer } from "mobx-react-lite";
+import { useStore } from "@/src/stores";
 
-const VoucherSection = () => {
+const VoucherSection = observer(( {storeVoucher} : any ) => {
+  const store = useStore();
+  // const storeVoucher = store.voucherObservable;
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const showModal = () => {
     setIsModalOpen(true);
   };
+  console.log(storeVoucher.data);
   return (
     <>
       <div className="flex justify-between items-center py-4 border-b mt-4">
@@ -28,10 +33,10 @@ const VoucherSection = () => {
         setIsModalOpen={setIsModalOpen}
         isModalOpen={isModalOpen}
         showModal={showModal}
+        listVoucher_User={storeVoucher?.data}
       />
-      
     </>
   );
-};
+});
 
 export default VoucherSection;

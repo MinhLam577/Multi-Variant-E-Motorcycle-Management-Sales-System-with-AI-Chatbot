@@ -18,9 +18,18 @@ export interface Voucher {
   end_date: string;
   count_user_get: number;
 }
+export interface data {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: string;
+  is_used: boolean;
+  used_at: Date;
+  voucher: Voucher;
+}
 
 export interface VoucherResponse {
-  data: Voucher[];
+  data: data[];
   status: number;
   message: string;
 }
@@ -34,9 +43,16 @@ export interface TypeVoucherResponse {
   message: string;
 }
 const voucherApi = {
-  getList: async (): Promise<VoucherResponse> => {
+  getList_Of_User: async (): Promise<VoucherResponse> => {
     const Response = await apiClient.get<any, VoucherResponse>(
-      endpoints.vouchers.list()
+      endpoints.vouchers.getListVoucher_Of_Customer()
+    );
+    return Response;
+  },
+
+  getVoucher_User_ById: async (id: string): Promise<VoucherResponse> => {
+    const Response = await apiClient.get<any, VoucherResponse>(
+      endpoints.vouchers.getVoucher_Of_Customer_ByID(id)
     );
     return Response;
   },
