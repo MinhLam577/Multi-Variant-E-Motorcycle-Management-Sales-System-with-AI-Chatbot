@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, toJS } from "mobx";
 import { SUCCESS_STATUSES } from "../constants";
 import { paginationData, RootStore } from "./base";
 import ProductAPI from "src/api/product";
@@ -17,6 +17,38 @@ export type globalFilterType = {
     categoryName?: string;
 };
 
+export type OptionValueResponseType = {
+    id: string;
+    value: string;
+    createdAt: string;
+    updatedAt: string;
+};
+export type skus_OptionValue_ResponseType = {
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string | null;
+    masku: string;
+    barcode: string;
+    name: string;
+    price_sold: string;
+    price_compare: string;
+    image: string | null;
+    status: boolean;
+    optionValue: OptionValueResponseType[];
+};
+
+export type ConvertSkusOptionValue_UI = {
+    id: string;
+    createdAt: string;
+    name: string;
+    option_values: {
+        id: string;
+        value: string;
+        image: string | null; // Thêm trường image
+    }[];
+};
+
 type ProductData = {
     cars: {
         data: any[] | null;
@@ -30,7 +62,7 @@ type ProductData = {
     dataDetail: {
         data: any;
     };
-    resultOption_OptionValue: [];
+    resultOption_OptionValue: ConvertSkusOptionValue_UI[];
     dataSKU: null;
     globalFilter: globalFilterType;
 };
@@ -199,8 +231,8 @@ class ProductObservable {
             if (SUCCESS_STATUSES.includes(status)) {
                 this.data.dataDetail.data = resData;
                 // Chuyển dữ liệu về dạng mới kèm theo image của sku
-                const result = this.data.dataDetail.data.skus.reduce(
-                    (acc, sku) => {
+                const result: ConvertSkusOptionValue_UI[] =
+                    this.data.dataDetail.data.skus.reduce((acc, sku) => {
                         sku.optionValue.forEach((optionValue) => {
                             const existingOption = acc.find(
                                 (item) => item.name === optionValue.option.name
@@ -214,6 +246,7 @@ class ProductObservable {
                             } else {
                                 acc.push({
                                     name: optionValue.option.name,
+                                    id: optionValue.option.id,
                                     option_values: [
                                         {
                                             id: optionValue.id,
@@ -225,9 +258,7 @@ class ProductObservable {
                             }
                         });
                         return acc;
-                    },
-                    []
-                );
+                    }, []);
 
                 this.data.resultOption_OptionValue = result;
 
@@ -248,7 +279,6 @@ class ProductObservable {
             const resData = data;
             if (SUCCESS_STATUSES.includes(status)) {
                 this.data.dataSKU = resData;
-                // Chuyển dữ liệu về dạng mới kèm theo image của sku
 
                 this.setStatusMessage(200, "", message);
             } else {

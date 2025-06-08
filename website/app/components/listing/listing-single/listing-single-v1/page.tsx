@@ -21,6 +21,10 @@ import React, { useEffect, useState } from "react";
 
 import { useParams } from "next/navigation";
 import { observer } from "mobx-react-lite";
+import {
+    ConvertSkusOptionValue_UI,
+    skus_OptionValue_ResponseType,
+} from "@/src/stores/productStore";
 const ListingSingle = observer(() => {
     const [sku, setSku] = useState(null);
     const [selectedOptionValueId, setSelectedOptionValueId] = useState(null);
@@ -47,11 +51,9 @@ const ListingSingle = observer(() => {
     const handleFindSku = async (idItem) => {
         setSelectedOptionValueId(idItem);
         await storeProduct.getDetailSKU_ByOptionValue(idItem);
-
         setSku(storeProduct?.data.dataSKU);
     };
 
-    const [showForm, setShowForm] = useState(false);
     return (
         <div className="wrapper">
             <div
@@ -378,7 +380,7 @@ const ListingSingle = observer(() => {
                                 </div>
                             </div>
                             {storeProduct?.data?.resultOption_OptionValue?.map(
-                                (element, index) => (
+                                (element: ConvertSkusOptionValue_UI, index) => (
                                     <React.Fragment key={element.id || index}>
                                         <h4 className="mb30 mt30">
                                             {element.name}
