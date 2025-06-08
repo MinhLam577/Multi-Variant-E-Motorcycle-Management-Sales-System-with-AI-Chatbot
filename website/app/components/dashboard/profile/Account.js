@@ -46,7 +46,6 @@ const Account = observer(() => {
     try {
       await storeAccount.getAccount();
       const dataAccount = storeAccount.account;
-      console.log(dataAccount);
       if (dataAccount) {
         const arrThumbnail = [
           {
@@ -82,11 +81,9 @@ const Account = observer(() => {
   };
 
   useEffect(() => {
-    console.log("Fetch ");
     fetchBlogDetail();
   }, []);
   const handleFormFinish = async (values) => {
-    console.log(values);
     const updateInfo = {
       avatarUrl: dataThumbnail[0]?.url || "",
       username: values?.username,
@@ -100,19 +97,15 @@ const Account = observer(() => {
         endpoints.customers.update(storeAccount.account?.userId),
         updateInfo
       );
-      console.log(data);
       if (data.status == 200) {
-        console.log(updateInfo);
 
         const dataAccount = {
           ...storeAccount.account,
           ...updateInfo,
         };
-        console.log(dataAccount);
         await storeAccount.setAccount(dataAccount);
         message.success("Cập nhật thành công");
       } else {
-        console.log(updateInfo);
         message.error("Lỗi");
       }
     } catch (error) {
@@ -121,7 +114,6 @@ const Account = observer(() => {
     }
   };
   const handleChange = (info, type) => {
-    console.log(info);
     if (info.file.status === "uploading") {
       type ? setLoadingSlider(true) : setLoading(true);
       return;
@@ -131,7 +123,6 @@ const Account = observer(() => {
       // Get this url from response in real world.
       getBase64(info.file.originFileObj, (url) => {
         type ? setLoadingSlider(false) : setLoading(false);
-        console.log(url);
         setImageUrl(url);
       });
     }
@@ -155,9 +146,7 @@ const Account = observer(() => {
   };
   const handleUploadFileThumbnail = async ({ file, onSuccess, onError }) => {
     // upload ảnh
-    console.log(file);
     const res = await UploadPictureApi.createImageCustomer(file);
-    console.log(res);
     if (res && res.data) {
       setDataThumbnail([
         {

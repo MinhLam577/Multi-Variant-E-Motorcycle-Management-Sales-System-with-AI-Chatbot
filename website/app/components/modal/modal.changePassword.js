@@ -22,7 +22,6 @@ const ModalChangePassword = (props) => {
 
     const onFinishStep0 = async (values) => {
         const { email } = values;
-        console.log(email);
         const res = await authAPI.retry_password({ email });
 
         if (res?.data) {

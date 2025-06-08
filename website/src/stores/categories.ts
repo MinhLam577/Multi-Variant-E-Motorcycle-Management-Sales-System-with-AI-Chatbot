@@ -1,24 +1,12 @@
 import { makeAutoObservable, toJS } from "mobx";
-import { convertDate } from "../constants";
-import { DateTimeFormat } from "../constants";
 import OrderAPI, { ExportOrder, ResponsePromise } from "../api/order";
 import { RootStore } from "./base";
 import { getAllCategory } from "../api/categories";
 import { filterEmptyFields } from "../lib/utils";
+import { EnumProductStore } from "./product.store";
 
 export type OrderStatus = {
     key?: string;
-};
-
-export type globalFiltersDataOrder = {
-    search?: string;
-    sortOrder?: string;
-    sortBy?: string;
-    order_status?: string;
-    payment_status?: string;
-    payment_method?: string;
-    created_from?: string;
-    created_to?: string;
 };
 
 export type paginationData = {
@@ -35,6 +23,17 @@ export type globalFilterCategoryType = {
     status?: boolean;
     responseType?: CategoryResponseTypeEnum;
 };
+
+export type CategoryResponseType = {
+    id: string;
+    name: string;
+    description: string;
+    parentCategoryId: string | null;
+    deletedAt: string | null;
+    slug: string;
+    type: EnumProductStore;
+    children?: CategoryResponseType[];
+};
 export type orderData = {
     orders: any[];
     order_status: OrderStatus[];
@@ -42,7 +41,7 @@ export type orderData = {
     order_selected?: string;
     order_detail?: any;
     confirm_order_data?: ExportOrder;
-    categories: [];
+    categories?: CategoryResponseType[];
 };
 
 export default class CategoryObservable {
@@ -60,16 +59,6 @@ export default class CategoryObservable {
         order_detail: null,
         confirm_order_data: null,
     };
-    globalFilters: globalFiltersDataOrder = {
-        search: null,
-        sortOrder: null,
-        sortBy: null,
-        order_status: null,
-        payment_status: null,
-        payment_method: null,
-        created_from: null,
-        created_to: null,
-    };
     pagination: paginationData = {
         current: 1,
         pageSize: 100,
@@ -77,24 +66,8 @@ export default class CategoryObservable {
     loading: boolean = false;
     isOpenDetail: boolean = false;
     constructor(rootStore: RootStore) {
-        makeAutoObservable(this);
+        makeAutoObservable(this, {}, { autoBind: true });
         this.rootStore = rootStore;
-        this.setGlobalFilters = this.setGlobalFilters.bind(this);
-        this.setPagination = this.setPagination.bind(this);
-        this.getListOrder = this.getListOrder.bind(this);
-        this.getOrderDetail = this.getOrderDetail.bind(this);
-        this.getOrderStatus = this.getOrderStatus.bind(this);
-        this.clearMessage = this.clearMessage.bind(this);
-        this.setOrderDetail = this.setOrderDetail.bind(this);
-        this.setOpenDetail = this.setOpenDetail.bind(this);
-        this.setOrderStatusSelected = this.setOrderStatusSelected.bind(this);
-        this.setOrderSelected = this.setOrderSelected.bind(this);
-        this.updateOrderStatus = this.updateOrderStatus.bind(this);
-        this.cancelOrder = this.cancelOrder.bind(this);
-        this.failedDelivery = this.failedDelivery.bind(this);
-        this.returnOrder = this.returnOrder.bind(this);
-        this.setStatusMessage = this.setStatusMessage.bind(this);
-        this.confirmOrder = this.confirmOrder.bind(this);
     }
 
     private validateQuery(query?: string | object): string {
@@ -102,7 +75,9 @@ export default class CategoryObservable {
         let parsedQuery: globalFilterCategoryType & paginationData = {
             ...(typeof query === "string"
                 ? Object.fromEntries(new URLSearchParams(query.trim()))
-                : query),
+                : query
+                ? query
+                : {}),
             current: Number(this.pagination.current),
             pageSize: Number(this.pagination.pageSize),
             responseType: CategoryResponseTypeEnum.TREE,
@@ -136,7 +111,7 @@ export default class CategoryObservable {
             const { data, status, message } = response;
             const success_status = [200, 201, 204];
             if (success_status.includes(status)) {
-                this.data.categories = data;
+                this.data.categories = data?.data;
                 this.status = status;
                 this.successMsg = message;
             } else {
@@ -151,186 +126,6 @@ export default class CategoryObservable {
             this.errorMsg = e?.message || "Lỗi không xác định";
         } finally {
             this.loading = false;
-        }
-    }
-
-    *getOrderStatus() {
-        try {
-            const response: ResponsePromise = yield OrderAPI.getOrderStatus();
-            const { data, status, message } = response;
-            const success_status = [200, 201, 204];
-            if (success_status.includes(status)) {
-                this.data.order_status = [
-                    {
-                        key: "All",
-                        value: null,
-                    },
-                    ...data,
-                ];
-                this.status = status;
-                this.successMsg = message;
-            } else {
-                this.status = status;
-                this.errorMsg = message;
-            }
-        } catch (e: any) {
-            console.error(e);
-            this.status = 500;
-            this.errorMsg = e?.message || "Lỗi không xác định";
-        }
-    }
-
-    *getOrderDetail(id: string) {
-        try {
-            const response: ResponsePromise = yield OrderAPI.getOrderDetail(id);
-            const { data, status, message } = response;
-            const success_status = [200, 201, 204];
-            if (success_status.includes(status)) {
-                this.data.order_detail = data;
-                this.status = status;
-                this.successMsg = message;
-            } else {
-                this.status = status;
-                this.errorMsg = message;
-            }
-        } catch (e: any) {
-            console.error(e);
-            this.status = 500;
-            this.errorMsg = e?.message || "Lỗi không xác định";
-        }
-    }
-
-    *updateOrderStatus(id: string) {
-        try {
-            this.loading = true;
-            const response: ResponsePromise = yield OrderAPI.updateOrderStatus(
-                id
-            );
-            const { status, message } = response;
-            const success_status = [200, 201, 204];
-            if (success_status.includes(status)) {
-                yield this.getListOrder();
-                yield this.getOrderDetail(id);
-                this.status = status;
-                this.successMsg = message;
-                this.showSuccessMsg = true;
-            } else {
-                this.status = status;
-                this.errorMsg = message;
-            }
-        } catch (e: any) {
-            console.error(e);
-            this.status = 500;
-            this.errorMsg = e?.message || "Lỗi không xác định";
-        } finally {
-            this.loading = false;
-        }
-    }
-
-    *cancelOrder(id: string, reason?: string) {
-        try {
-            this.loading = true;
-            let response: ResponsePromise = yield OrderAPI.cancelOrder(
-                id,
-                reason
-            );
-            const { status, message } = response;
-            const success_status = [200, 201, 204];
-            if (success_status.includes(status)) {
-                yield this.getListOrder();
-                yield this.getOrderDetail(id);
-                this.status = status;
-                this.successMsg = message;
-                this.showSuccessMsg = true;
-            } else {
-                this.status = status;
-                this.errorMsg = message;
-            }
-        } catch (e: any) {
-            console.error(e);
-            this.status = 500;
-            this.errorMsg = e?.message || "Lỗi không xác định";
-        } finally {
-            this.loading = false;
-        }
-    }
-
-    *failedDelivery(id: string, reason?: string) {
-        try {
-            this.loading = true;
-            let response: ResponsePromise = yield OrderAPI.failedDelivery(
-                id,
-                reason
-            );
-            const { status, message } = response;
-            const success_status = [200, 201, 204];
-            if (success_status.includes(status)) {
-                yield this.getListOrder();
-                yield this.getOrderDetail(id);
-                this.status = status;
-                this.successMsg = message;
-                this.showSuccessMsg = true;
-            } else {
-                this.status = status;
-                this.errorMsg = message;
-            }
-        } catch (e: any) {
-            console.error(e);
-            this.status = 500;
-            this.errorMsg = e?.message || "Lỗi không xác định";
-        } finally {
-            this.loading = false;
-        }
-    }
-
-    *returnOrder(id: string, reason?: string) {
-        try {
-            this.loading = true;
-            let response: ResponsePromise = yield OrderAPI.returnOrder(
-                id,
-                reason
-            );
-            const { status, message } = response;
-            const success_status = [200, 201, 204];
-            if (success_status.includes(status)) {
-                yield this.getListOrder();
-                yield this.getOrderDetail(id);
-                this.status = status;
-                this.successMsg = message;
-                this.showSuccessMsg = true;
-            } else {
-                this.status = status;
-                this.errorMsg = message;
-            }
-        } catch (e: any) {
-            console.error(e);
-            this.status = 500;
-            this.errorMsg = e?.message || "Lỗi không xác định";
-        } finally {
-            this.loading = false;
-        }
-    }
-
-    *confirmOrder(data: ExportOrder) {
-        try {
-            const response: ResponsePromise = yield OrderAPI.confirmOrder(data);
-            const { status, message } = response;
-            const success_status = [200, 201, 204];
-            if (success_status.includes(status)) {
-                yield this.getListOrder();
-                yield this.getOrderDetail(data.order_id);
-                this.status = status;
-                this.successMsg = message;
-                this.showSuccessMsg = true;
-            } else {
-                this.status = status;
-                this.errorMsg = message;
-                this.showSuccessMsg = false;
-            }
-        } catch (e: any) {
-            console.error(e);
-            this.status = 500;
-            this.errorMsg = e?.message || "Lỗi không xác định";
         }
     }
 
@@ -359,13 +154,6 @@ export default class CategoryObservable {
         if (successMsg) {
             this.successMsg = successMsg;
         }
-    }
-
-    setGlobalFilters(filters: globalFiltersDataOrder) {
-        this.globalFilters = {
-            ...this.globalFilters,
-            ...filters,
-        };
     }
 
     setPagination(page: number, pageSize: number) {

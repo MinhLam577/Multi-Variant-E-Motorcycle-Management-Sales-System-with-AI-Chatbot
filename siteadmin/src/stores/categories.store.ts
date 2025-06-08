@@ -2,6 +2,7 @@ import { makeAutoObservable, toJS } from "mobx";
 import { paginationData, RootStore } from "./base";
 import CategoriesAPI from "src/api/categories.api";
 import { filterEmptyFields, getErrorMessage } from "src/utils";
+import { EnumProductStore } from "./product.store";
 
 export enum CategoryResponseTypeEnum {
     TREE = "tree",
@@ -27,6 +28,7 @@ export type CategoryResponseType = {
     parentCategoryId: string | null;
     deletedAt: string | null;
     slug: string;
+    type: EnumProductStore;
     children?: CategoryResponseType[];
 };
 export default class CategoriesObservable {

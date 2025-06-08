@@ -9,6 +9,11 @@ export enum EnumProductType {
     MOTOBIKES = "Xe máy điện",
 }
 
+export enum EnumProductStore {
+    CAR = "car",
+    MOTORBIKE = "motorbike",
+}
+
 export type globalFilterType = {
     search?: string;
     price_max?: number;
@@ -110,8 +115,9 @@ class ProductObservable {
     ) {
         try {
             const queryString = this.validateQuery(query, type);
-            const response: ResponsePromise =
-                yield ProductAPI.getListProduct(queryString);
+            const response: ResponsePromise = yield ProductAPI.getListProduct(
+                queryString
+            );
             const { data, status, message } = response;
             const resData = data?.data;
             if (SUCCESS_STATUSES.includes(status)) {

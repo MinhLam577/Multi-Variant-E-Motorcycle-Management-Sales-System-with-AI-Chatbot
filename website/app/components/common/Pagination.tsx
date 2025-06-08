@@ -52,7 +52,6 @@ export default function Pagination({ queryObject }) {
     const page = Number(queryObject.current) || 1;
     const pageSize = Number(queryObject.pageSize) || 10;
 
-    console.log(page + "" + pageSize);
     const renderPagination = () => {
         let dotAfter = false;
         let dotBefore = false;

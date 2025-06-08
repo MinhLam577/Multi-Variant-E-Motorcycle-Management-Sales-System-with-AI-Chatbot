@@ -77,9 +77,7 @@ const MainFilter = observer(
             setValue(newValue);
             handleFilterChange({ categoryID: newValue });
         };
-        const onPopupScroll = (e) => {
-            console.log("onPopupScroll", e);
-        };
+        const onPopupScroll = (e) => {};
         return (
             <>
                 {/* Điều kiện */}
