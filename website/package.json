@@ -15,6 +15,7 @@
         "@ant-design/icons": "^6.0.0",
         "@faker-js/faker": "^8.0.2",
         "@hookform/resolvers": "^5.0.1",
+        "@netlify/plugin-nextjs": "^5.11.2",
         "@popperjs/core": "^2.11.7",
         "antd": "^5.25.0",
         "aos": "^2.3.4",
