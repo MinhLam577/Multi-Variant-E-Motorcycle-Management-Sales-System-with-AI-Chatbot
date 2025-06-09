@@ -16,13 +16,7 @@ import CustomizeModal from "../../../common/CustomizeModal";
 import "./ModalCreateProduct.css";
 import { useStore } from "src/stores";
 import ReactQuill from "react-quill";
-import React, {
-    useCallback,
-    useEffect,
-    useMemo,
-    useRef,
-    useState,
-} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import CustomizeEditor from "../../../common/CustomizeEditor";
 import { observer } from "mobx-react-lite";
 import {
@@ -2731,7 +2725,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                 price_sold: Number(form.getFieldValue("price_sold")),
                 price_compare: Number(form.getFieldValue("price_compare")),
                 detail_import: defaultDetailImport,
-                name: `$${form.getFieldValue("title")} - mặc định`,
+                name: `${form.getFieldValue("title")} - mặc định`,
                 barcode: form.getFieldValue("barcode"),
                 masku: form.getFieldValue("masku"),
                 image: imageUrl?.length ? imageUrl[0] : "",
@@ -2745,20 +2739,43 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                     name,
                     ...item,
                 }))
-                .flatMap((item) => item?.detail_import);
+                .flatMap((item) => ({
+                    name: item?.name,
+                    detail_import: item?.detail_import,
+                }));
             if (!skusDetailImport?.length) {
                 throw new Error(
                     "Tồn tại chi tiết nhập kho của biến thể không hợp lệ"
                 );
             }
-            const detailImport: SkusDetailImportDto[] = skusDetailImport?.map(
-                (item: any) => ({
-                    warehouse_id: item?.warehouse_id,
-                    quantity_import: Number(item?.quantity_import),
-                    price_import: Number(form.getFieldValue("price_import")),
-                    lot_name: item?.lot_name,
-                })
-            );
+            const detailImport: SkusDetailImportDto[] =
+                skusDetailImport
+                    ?.flatMap(
+                        (item: {
+                            name: string;
+                            detail_import: {
+                                warehouse_id: string;
+                                quantity_import: number;
+                                lot_name: string;
+                            }[];
+                        }) =>
+                            item.detail_import.map(
+                                (detail: {
+                                    warehouse_id: string;
+                                    quantity_import: number;
+                                    lot_name: string;
+                                }) => ({
+                                    name: item.name,
+                                    price_import: Number(
+                                        form.getFieldValue("price_import")
+                                    ),
+                                    warehouse_id: detail.warehouse_id,
+                                    quantity_import: detail.quantity_import,
+                                    lot_name: detail.lot_name,
+                                })
+                            )
+                    )
+                    .flat() || [];
             const filePromises = Array.from(
                 modalCreateProductStore.skuCustomData.entries()
             ).map(async ([name, item]) => {
@@ -2790,15 +2807,40 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                     "Số ảnh trả về không khớp với số lượng ảnh tải lên"
                 );
             }
+            const detail_import_per_sku = detailImport.reduce(
+                (acc: Record<string, SkusDetailImportDto[]>, item) => {
+                    if (!acc[item.name]) {
+                        acc[item.name] = [];
+                    }
+                    acc[item.name].push({
+                        warehouse_id: item.warehouse_id,
+                        quantity_import: item.quantity_import,
+                        price_import: item.price_import,
+                        lot_name: item.lot_name,
+                    });
+                    return acc;
+                },
+                {}
+            );
+            // kiểm tra sku có detail_import rỗng ko
+            Object.entries(detail_import_per_sku).forEach(
+                ([name, detail_import]) => {
+                    if (!detail_import?.length) {
+                        throw new Error(
+                            `Chi tiết nhập kho của biến thể ${name} không hợp lệ`
+                        );
+                    }
+                }
+            );
             const skusData: CreateSkusDto[] = fileResults.map(
                 ({ name, item }, index) => {
                     return filterEmptyFields({
-                        name: `$${form.getFieldValue("title")} - ${name}`,
+                        name: `${name}`,
                         barcode: item.barcode,
                         masku: item.masku,
                         price_sold: Number(item.price_sold),
                         price_compare: Number(item.price_compare),
-                        detail_import: detailImport,
+                        detail_import: detail_import_per_sku[name],
                         image: uploadImage[index],
                         variant_combinations:
                             modalCreateProductStore.skuCustomData.get(name)

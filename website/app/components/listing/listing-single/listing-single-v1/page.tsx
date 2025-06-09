@@ -21,10 +21,7 @@ import React, { useEffect, useState } from "react";
 
 import { useParams } from "next/navigation";
 import { observer } from "mobx-react-lite";
-import {
-    ConvertSkusOptionValue_UI,
-    skus_OptionValue_ResponseType,
-} from "@/src/stores/productStore";
+import { ConvertSkusOptionValue_UI } from "@/src/stores/productStore";
 const ListingSingle = observer(() => {
     const [sku, setSku] = useState(null);
     const [selectedOptionValueId, setSelectedOptionValueId] = useState(null);
