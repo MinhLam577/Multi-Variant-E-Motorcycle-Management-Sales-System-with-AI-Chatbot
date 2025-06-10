@@ -11,6 +11,8 @@ import CarItems from "@/app/components/listing/listing-styles/listing-v1/CarItem
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useStore } from "@/src/stores";
+import { paginationData } from "@/src/stores/order.store";
+import { EnumProductStore, globalFilterType } from "@/src/stores/product.store";
 // export const metadata = {
 //   title: "Listing V1 || hongson ",
 // };
@@ -21,7 +23,7 @@ const ListingV1 = () => {
     const [queryObject, setQueryObject] = useState({});
     const store = useStore();
     const storeProduct = store.productObservable;
-    const [type, setType] = useState("car");
+    const [type, setType] = useState<EnumProductStore>(EnumProductStore.CAR);
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -29,15 +31,14 @@ const ListingV1 = () => {
             const params = new URLSearchParams(window.location.search);
             const typeFromParams = params.get("type");
             if (typeFromParams) {
-                setType(typeFromParams); // Cập nhật type từ query params
+                setType(typeFromParams as EnumProductStore); // Cập nhật type từ query params
             } else {
-                setType("car"); // Giá trị mặc định nếu không có type trong query params
+                setType(EnumProductStore.CAR);
             }
         }
     }, []);
 
     // Lắng nghe sự thay đổi của query params và gọi API
-
     useEffect(() => {
         // Chuyển đổi searchParams thành đối tượng
         const queryObject = Object.fromEntries(searchParams.entries());
@@ -48,9 +49,7 @@ const ListingV1 = () => {
             current: Number(queryObject.current) || 1, // Giá trị mặc định cho current
             pageSize: Number(queryObject.pageSize) || 10, // Giá trị mặc định cho pageSize
         };
-
         setQueryObject(updatedQueryObject); // Cập nhật đối tượng query
-
         // Gọi API với các tham số trong query
         const params = new URLSearchParams(
             Object.fromEntries(
@@ -60,13 +59,20 @@ const ListingV1 = () => {
                 ])
             )
         ).toString();
-        fetchData(params); // Gọi API với các tham số trong URL
+        fetchData(params, type); // Gọi API với các tham số trong URL
     }, [searchParams]); // Chạy lại khi searchParams thay đổi
 
     // Function gọi API
-    const fetchData = async (params) => {
+    const fetchData = async (
+        query:
+            | string
+            | (paginationData & globalFilterType)
+            | paginationData
+            | globalFilterType,
+        type: EnumProductStore = EnumProductStore.CAR
+    ) => {
         try {
-            await storeProduct.getListProduct(params, "Xe hơi");
+            await storeProduct.getListProduct(query, type);
             setData(storeProduct?.data?.cars?.data || []);
             // Xe hơi
         } catch (error) {

@@ -59,10 +59,7 @@ class ProductObservable {
     };
     constructor(rootStore: RootStore) {
         this.rootStore = rootStore;
-        makeAutoObservable(this);
-        this.setStatusMessage = this.setStatusMessage.bind(this);
-        this.clearStatusMessage = this.clearStatusMessage.bind(this);
-        this.getListProduct = this.getListProduct.bind(this);
+        makeAutoObservable(this, {}, { autoBind: true });
     }
     setStatusMessage(
         status: number,
