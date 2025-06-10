@@ -79,7 +79,7 @@ const ListingSingleV2 = observer(() => {
       if (
         cartObservable.successMsg == "Thêm sản phẩm vào giỏ hàng thành công"
       ) {
-        alert(cartObservable.successMsg);
+        message.success(cartObservable.successMsg);
         router.push("/cart"); // Chuyển hướng tới trang thanh toán
       }
     } else {

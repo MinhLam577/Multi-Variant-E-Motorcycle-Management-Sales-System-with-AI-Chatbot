@@ -21,8 +21,20 @@ const ListingV1 = () => {
     const [queryObject, setQueryObject] = useState({});
     const store = useStore();
     const storeProduct = store.productObservable;
-    const params = new URLSearchParams(window.location.search);
-    const type = params.get("type");
+    const [type, setType] = useState("car");
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            // Chỉ chạy khi component được mount
+            const params = new URLSearchParams(window.location.search);
+            const typeFromParams = params.get("type");
+            if (typeFromParams) {
+                setType(typeFromParams); // Cập nhật type từ query params
+            } else {
+                setType("car"); // Giá trị mặc định nếu không có type trong query params
+            }
+        }
+    }, []);
 
     // Lắng nghe sự thay đổi của query params và gọi API
 
