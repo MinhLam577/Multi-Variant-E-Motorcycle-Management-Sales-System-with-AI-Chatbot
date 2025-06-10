@@ -3,6 +3,7 @@ import { SUCCESS_STATUSES } from "../constants";
 import { paginationData, RootStore } from "./base";
 import ProductAPI from "src/api/product";
 import { ResponsePromise } from "src/api/order";
+import { EnumProductStore } from "./product.store";
 
 export enum EnumProductType {
     CARS = "Xe hơi",
@@ -13,8 +14,10 @@ export type globalFilterType = {
     search?: string;
     price_max?: number;
     price_min?: number;
-    brand?: string;
-    categoryName?: string;
+    brandID?: string;
+    categoryID?: string;
+    status?: boolean;
+    type?: EnumProductStore;
 };
 
 export type OptionValueResponseType = {
@@ -48,13 +51,49 @@ export type ConvertSkusOptionValue_UI = {
         image: string | null; // Thêm trường image
     }[];
 };
-
+export type DetailImportResponseType = {
+    id: string;
+    price_import: string;
+    quantity_import: number;
+    quantity_sold: number;
+    lot_name: string;
+    quantity_remaining: number;
+    created_at: string;
+    updated_at: string;
+    deleted_at: null | string;
+};
+export type SkusDataResponseType = {
+    id: string;
+    masku: string;
+    barcode: string;
+    name: string;
+    price_sold: string;
+    price_compare: string;
+    image: string | null;
+    status: boolean;
+    detail_import?: DetailImportResponseType[];
+};
+export type ProductDataResponseType = {
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string | null;
+    slug_product: string;
+    title: string;
+    type: EnumProductStore;
+    description?: string;
+    images?: string[];
+    status?: boolean;
+    skus?: SkusDataResponseType[];
+};
 type ProductData = {
     cars: {
         data: any[] | null;
+        bestSelling: ProductDataResponseType[] | null; // Thêm trường bestSelling nếu cần
     };
     motobikes: {
         data: any[] | null;
+        bestSelling: ProductDataResponseType[] | null;
     };
     cars_motobikes: {
         data: any[];
@@ -64,7 +103,6 @@ type ProductData = {
     };
     resultOption_OptionValue: ConvertSkusOptionValue_UI[];
     dataSKU: null;
-    globalFilter: globalFilterType;
 };
 
 class ProductObservable {
@@ -75,14 +113,16 @@ class ProductObservable {
     rootStore: RootStore;
     pagination: paginationData = {
         current: 1,
-        pageSize: 100,
+        pageSize: 10,
     };
     data: ProductData = {
         cars: {
             data: [],
+            bestSelling: [], // Thêm trường bestSelling nếu cần
         },
         motobikes: {
             data: [],
+            bestSelling: [], // Thêm trường bestSelling nếu cần
         },
         cars_motobikes: {
             data: [],
@@ -90,24 +130,12 @@ class ProductObservable {
         dataDetail: {
             data: "",
         },
-        globalFilter: {
-            search: "",
-            price_max: null,
-            price_min: null,
-            brand: "",
-            categoryName: "",
-        },
         resultOption_OptionValue: [],
         dataSKU: null,
     };
     constructor(rootStore: RootStore) {
         this.rootStore = rootStore;
-        makeAutoObservable(this);
-
-        this.setStatusMessage = this.setStatusMessage.bind(this);
-        this.clearStatusMessage = this.clearStatusMessage.bind(this);
-        this.getListProduct = this.getListProduct.bind(this);
-        this.getListProductBuyMany = this.getListProductBuyMany.bind(this);
+        makeAutoObservable(this, {}, { autoBind: true });
     }
     setStatusMessage(
         status: number,
@@ -128,7 +156,7 @@ class ProductObservable {
         this.showSuccessMessage = false;
     }
 
-    private validateQuery(query: string | object, type: string): string {
+    private validateQuery(query: string | object): string {
         const parseQuery: paginationData & globalFilterType = {
             ...(typeof query === "string"
                 ? Object.fromEntries(new URLSearchParams(query))
@@ -136,32 +164,49 @@ class ProductObservable {
             ...this.pagination,
         };
 
-        const { search, price_max, price_min, brand, categoryName } =
-            parseQuery;
+        const {
+            search,
+            price_max,
+            price_min,
+            brandID,
+            categoryID,
+            status,
+            type,
+        } = parseQuery;
         const queryParams = new URLSearchParams();
         if (search) queryParams.append("search", search);
         if (price_max) queryParams.append("price_max", price_max.toString());
         if (price_min) queryParams.append("price_min", price_min.toString());
-        if (brand) queryParams.append("brand", brand);
-        if (categoryName) queryParams.append("categoryName", categoryName);
-        else queryParams.append("categoryName", type);
+        if (brandID) queryParams.append("brandID", brandID);
+        if (categoryID) queryParams.append("categoryID", categoryID);
+        if (type) queryParams.append("type", type);
+        if (status !== undefined) {
+            queryParams.append("status", status.toString());
+        }
         queryParams.append("current", parseQuery.current.toString());
         queryParams.append("pageSize", parseQuery.pageSize.toString());
         return queryParams.toString();
     }
 
-    *getListProduct(queryString, type) {
+    *getListProduct(
+        query:
+            | string
+            | (paginationData & globalFilterType)
+            | paginationData
+            | globalFilterType,
+        type: EnumProductStore = EnumProductStore.CAR
+    ) {
         try {
+            const queryString = this.validateQuery(query);
             const response: ResponsePromise = yield ProductAPI.getListProduct(
                 queryString
             );
             const { data, status, message } = response;
             const resData = data?.data;
-
             if (SUCCESS_STATUSES.includes(status)) {
-                if (type === EnumProductType.CARS) {
+                if (type === EnumProductStore.CAR) {
                     this.data.cars.data = resData;
-                } else if (type === EnumProductType.MOTOBIKES) {
+                } else if (type === EnumProductStore.MOTORBIKE) {
                     this.data.motobikes.data = resData;
                 }
                 this.setStatusMessage(200, "", message);
@@ -171,6 +216,29 @@ class ProductObservable {
         } catch (e: any) {
             console.error(e);
             this.setStatusMessage(0, e?.message, "");
+        }
+    }
+
+    *getBestSellingProducts(type: EnumProductStore) {
+        try {
+            const response: ResponsePromise =
+                yield ProductAPI.getBestSellingProducts(type);
+            const { data, status, message } = response;
+            if (SUCCESS_STATUSES.includes(status)) {
+                if (type === EnumProductStore.CAR) {
+                    this.data.cars.bestSelling = data;
+                } else if (type === EnumProductStore.MOTORBIKE) {
+                    this.data.motobikes.bestSelling = data;
+                }
+                this.setStatusMessage(200, "", message);
+            } else {
+                this.setStatusMessage(0, message, "");
+            }
+            return response;
+        } catch (e: any) {
+            console.error(e);
+            this.setStatusMessage(0, e?.message, "");
+            throw e;
         }
     }
 

@@ -31,7 +31,7 @@ const MainMenu = observer(() => {
     ];
 
     return (
-        <div className="">
+        <div className="justify-between items-center">
             {categoryObservable?.data?.categories
                 ?.filter((item) => item.type === headerWithActionsStore?.type)
                 ?.map((parent: CategoryResponseType) => {
@@ -60,15 +60,13 @@ const MainMenu = observer(() => {
                             >
                                 {parent?.name && parent.name.toUpperCase()}
                             </button>
-
                             <div className="absolute left-0 top-full hidden group-hover:block bg-white border rounded shadow-md z-10 min-w-[150px]">
                                 {parent.children.map((child) => {
                                     const redirectedProductType =
                                         parent.type ===
                                         EnumProductStore.MOTORBIKE
-                                            ? "listing-v1?type=motorbike"
-                                            : "listing-v1?type=car";
-
+                                            ? `listing-v1?type=${EnumProductStore.MOTORBIKE}`
+                                            : `listing-v1?type=${EnumProductStore.CAR}`;
                                     return (
                                         <div
                                             key={child.id}

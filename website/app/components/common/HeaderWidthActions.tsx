@@ -39,7 +39,7 @@ export const HeaderWithActions = observer(() => {
     };
 
     return (
-        <div className="header_action dn-992">
+        <div className="header_action xl:!flex lg:!flex md:!hidden sm:!hidden hidden">
             {/* <!-- Left Content --> */}
             <Link href="/" passHref legacyBehavior>
                 <div

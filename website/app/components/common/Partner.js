@@ -3,14 +3,6 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { getAllBrand } from "@/src/api/brand";
 import Link from "next/link";
-// const partners = [
-//   { imgPath: "/images/partners/1.png", delay: 100 },
-//   { imgPath: "/images/partners/2.png", delay: 300 },
-//   { imgPath: "/images/partners/3.png", delay: 500 },
-//   { imgPath: "/images/partners/4.png", delay: 700 },
-//   { imgPath: "/images/partners/5.png", delay: 900 },
-//   { imgPath: "/images/partners/6.png", delay: 1100 },
-// ];
 const Partner = () => {
     const [partners, setPartners] = useState([]);
     useEffect(() => {

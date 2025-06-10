@@ -1,10 +1,10 @@
-import { register } from "module";
-
 const endpoints = {
     product: {
         getListProduct: (query: string) => "/products?" + query,
         getDetailProduct: (id: string) => `/products/${id}`,
         getDetailSKU: (id: string) => `/products/getSku/${id}`,
+        getBestSellingProducts: (query: string) =>
+            `/products/best-selling?${query}`,
     },
     auth: {
         login: "/auth/login",
@@ -102,6 +102,8 @@ const endpoints = {
         getList_Customer_no_voucher: (id) =>
             `/vourchers/customer_no_voucher/${id}`,
         give_customer_voucher: (id) => `/vourchers/give_customer/${id}`,
+        getListVoucher_Of_Customer: () => `user-vourcher/user_voucher`,
+        getVoucher_Of_Customer_ByID: (id) => `user-vourcher/${id}`,
     },
     // type-coucher
     type_voucher: {
@@ -162,7 +164,7 @@ const endpoints = {
     },
     // blog - categories
     blogs: {
-        list: () => `/blogs`,
+        list: (query: string) => `/blogs?${query}`,
         details: (id) => `/blogs/${id}`,
         update: (id) => `/blogs/${id}`,
         delete: (id) => `/blogs/${id}`,
@@ -200,6 +202,10 @@ const endpoints = {
     // zaloPay
     zalo_pay: {
         createZalopayOrder: () => "/zalo-payment/create-order",
+    },
+    // // Payos
+    pay_os: {
+        createPayosOrder: () => "/payos/create-order",
     },
     paymentMethod: {
         list: () => `/payment-method`,
