@@ -135,6 +135,7 @@ import { toCurrency, toMileage } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { EnumProductStore } from "@/src/stores/product.store";
 
 // const filterOptions = [
 //   { value: "*", name: "Tất cả" },
@@ -143,22 +144,8 @@ import { useEffect, useRef, useState } from "react";
 //   { value: "truck", name: "Xe ben" },
 //   { value: "car-specialized", name: "Xe chuyên dụng" },
 // ];
-const EnumProductType = {
-    CARS: "car",
-    MOTOBIKES: "motorbike",
-};
 
-const EnumProductType1 = {
-    CARS: "Xe hơi",
-    MOTOBIKES: "Xe máy điện",
-};
 const FeaturedFilterListing = observer(() => {
-    // const [filter, setFilter] = useState("*");
-
-    // const filteredItems =
-    //   filter === "*"
-    //     ? listingsData.slice(0, 8)
-    //     : listingsData.slice(0, 8).filter((item) => item.tags.includes(filter));
     const filteredItems = [];
     const { productObservable } = useStore();
     const isFetchedRef = useRef(false);
@@ -167,9 +154,8 @@ const FeaturedFilterListing = observer(() => {
         if (isFetchedRef.current) return;
 
         const fetchDataMotobike = async () => {
-            await productObservable.getListProductBuyMany(
-                { type: EnumProductType.CARS },
-                EnumProductType1.CARS
+            await productObservable.getBestSellingProducts(
+                EnumProductStore.CAR
             );
         };
 
@@ -183,15 +169,15 @@ const FeaturedFilterListing = observer(() => {
 
             {/* Tab panes */}
             <div className="row">
-                {productObservable?.data?.cars?.data.map((listing) => (
+                {productObservable?.data?.cars?.bestSelling.map((listing) => (
                     <div className="col-sm-6 col-xl-3" key={listing.id}>
                         <Link
-                            href={`/listing-single-v1/${listing.products.id}`}
+                            href={`/listing-single-v1/${listing.id}`}
                             className="car-listing block text-inherit no-underline"
                         >
                             <div className="car-listing">
                                 <div className="thumb">
-                                    {listing.featured ? (
+                                    {/* {listing.featured ? (
                                         <>
                                             <div className="tag">
                                                 Đã qua sử dụng
@@ -202,8 +188,7 @@ const FeaturedFilterListing = observer(() => {
                                         <>
                                             <div className="tag blue">Mới</div>
                                         </>
-                                    ) : undefined}
-
+                                    ) : undefined} */}
                                     <Image
                                         width={284}
                                         height={183}
@@ -212,10 +197,10 @@ const FeaturedFilterListing = observer(() => {
                                             objectFit: "cover",
                                         }}
                                         priority
-                                        src={listing?.products?.images[0]}
+                                        src={listing.images[0]}
                                         alt={listing.title}
                                     />
-                                    <div className="thmb_cntnt2">
+                                    {/* <div className="thmb_cntnt2">
                                         <ul className="mb0">
                                             <li className="list-inline-item">
                                                 <a
@@ -250,22 +235,24 @@ const FeaturedFilterListing = observer(() => {
                                                 </a>
                                             </li>
                                         </ul>
-                                    </div>
+                                    </div> */}
                                 </div>
                                 <div className="details">
                                     <div className="wrapper">
                                         <h5 className="price">
-                                            {toCurrency(listing.price)}
+                                            {toCurrency(
+                                                listing.skus?.[0]?.price_sold
+                                            )}
                                         </h5>
                                         <h6 className="title">
                                             <Link
-                                                href={`/listing-single-v1/${listing.products.id}`}
+                                                href={`/listing-single-v1/${listing.id}`}
                                             >
-                                                {listing.products.title}
+                                                {listing.title}
                                             </Link>
                                         </h6>
                                     </div>{" "}
-                                    <div className="listing_footer">
+                                    {/* <div className="listing_footer">
                                         <ul className="mb0">
                                             <li className="list-inline-item">
                                                 <span className="flaticon-road-perspective me-2" />
@@ -280,7 +267,7 @@ const FeaturedFilterListing = observer(() => {
                                                 {listing.transmission}
                                             </li>
                                         </ul>
-                                    </div>
+                                    </div> */}
                                 </div>
                             </div>
                         </Link>

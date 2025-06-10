@@ -54,8 +54,8 @@ const MobileMenu = () => {
 
     return (
         <>
-            <div className="stylehome1 h0">
-                <div className="mobile-menu">
+            <div className="stylehome1 h-0">
+                <div className="mobile-menu xl:hidden lg:hidden md:block sm:block">
                     <div className="header stylehome1">
                         <div className="mobile_menu_bar">
                             <a

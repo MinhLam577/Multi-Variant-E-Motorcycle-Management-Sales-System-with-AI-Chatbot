@@ -8,7 +8,6 @@ import Blog from "@/app/components/home/Blog";
 import FeaturedFilterListing from "@/app/components/home/FeaturedFilterListing";
 import Header from "@/app/components/home/Header";
 import Hero from "@/app/components/home/Hero";
-import Category from "@/app/components/home/home-1/Category";
 import SaleBanner from "@/app/components/home/SaleBanner";
 import Link from "next/link";
 import VehicleTypeList from "../components/home/VehicleTypeList";
@@ -23,26 +22,15 @@ const Home_1 = () => {
         <div className="wrapper ovh">
             {/* Main Header Nav */}
             <HeaderWithActions />
-            <Header />
-            {/* End Main Header Nav */}
-
-            {/* Main Header Nav For Mobile */}
-            <MobileMenu />
             {/* End Main Header Nav For Mobile */}
+            {/* Main Header Nav For Mobile */}
+            <Header />
+            <MobileMenu />
 
+            {/* End Main Header Nav */}
             {/* Hero */}
             <Hero />
             {/* End Hero */}
-
-            {/* Car Category */}
-            <section className="car-category mobile_space bgc-f9 pb100">
-                <div className="container">
-                    <div className="row">
-                        <Category />
-                    </div>
-                </div>
-            </section>
-            {/* End Car Cartegory */}
 
             {/* Featured Product  */}
             <section className="featured-product mobile_space">
@@ -89,7 +77,7 @@ const Home_1 = () => {
             {/* End Featured Product  */}
 
             {/* Our Partners */}
-            <section className="our-partner pt0 pb0 ">
+            <section className="our-partner pt0 pb90">
                 <div className="container">
                     <div className="row">
                         <div className="col-lg-6 offset-lg-3">
@@ -111,7 +99,7 @@ const Home_1 = () => {
             {/* End Our Partners */}
 
             {/* Category Product  */}
-            <section className="featured-product">
+            {/* <section className="featured-product">
                 <div className="container">
                     <div className="row justify-content-center">
                         <div className="col-lg-8">
@@ -120,7 +108,6 @@ const Home_1 = () => {
                             </div>
                         </div>
                     </div>
-                    {/* End .row */}
 
                     <div className="row">
                         <div
@@ -131,7 +118,6 @@ const Home_1 = () => {
                             <VehicleTypeList />
                         </div>
                     </div>
-                    {/* End .row */}
 
                     <div className="row mt20">
                         <div className="col-lg-12">
@@ -148,14 +134,12 @@ const Home_1 = () => {
                             </div>
                         </div>
                     </div>
-                    {/* End .row */}
                 </div>
-                {/* End .container */}
-            </section>
+            </section> */}
             {/* End Category Product  */}
 
             {/* Sale Banner  */}
-            <section className="our-blog pb90">
+            <section className="our-blog pb90 pt-0">
                 <div className="container">
                     <div className="row">
                         <div className="col-lg-6 offset-lg-3">
@@ -175,7 +159,7 @@ const Home_1 = () => {
             {/* End Sale Banner  */}
 
             {/* Why Chose us  */}
-            <section className="why-chose pt0 pb90">
+            <section className="why-chose pt0">
                 <div className="container">
                     <div className="row justify-content-center">
                         <div className="col-lg-8">
@@ -192,7 +176,7 @@ const Home_1 = () => {
             {/* Why Chose us  */}
 
             {/* Our Blog */}
-            <section className="our-blog pb90">
+            <section className="our-blog pb90 pt-0">
                 <div className="container">
                     <div className="row">
                         <div className="col-lg-6 offset-lg-3">

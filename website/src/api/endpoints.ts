@@ -1,10 +1,10 @@
-import { register } from "module";
-
 const endpoints = {
     product: {
         getListProduct: (query: string) => "/products?" + query,
         getDetailProduct: (id: string) => `/products/${id}`,
         getDetailSKU: (id: string) => `/products/getSku/${id}`,
+        getBestSellingProducts: (query: string) =>
+            `/products/best-selling?${query}`,
     },
     auth: {
         login: "/auth/login",
