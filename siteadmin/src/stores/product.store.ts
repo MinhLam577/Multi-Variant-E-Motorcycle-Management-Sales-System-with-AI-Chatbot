@@ -50,6 +50,7 @@ export type SkusDetailImportDto = {
     quantity_import: number;
     price_import: number;
     lot_name?: string;
+    name?: string;
 };
 
 export type SkusDetailImportDtoV2 = {
@@ -85,6 +86,7 @@ export type CreateSkusDto = {
     price_compare: number;
     detail_import: SkusDetailImportDto[];
     variant_combinations?: VariantCombinationDto[];
+    lot_name?: string;
 };
 
 export type UpdateProductDto = {

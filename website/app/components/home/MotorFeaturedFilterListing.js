@@ -17,98 +17,104 @@ import { observer } from "mobx-react-lite";
 //   { value: "car-specialized", name: "Xe điện học sinh" },
 // ];
 const EnumProductType = {
-  CARS: "car",
-  MOTOBIKES: "motorbike",
+    CARS: "car",
+    MOTOBIKES: "motorbike",
 };
 
 const EnumProductType1 = {
-  CARS: "Xe hơi",
-  MOTOBIKES: "Xe máy điện",
+    CARS: "Xe hơi",
+    MOTOBIKES: "Xe máy điện",
 };
 
 const MotorFeaturedFilterListing = observer(() => {
-  //   const [filter, setFilter] = useState("*");
+    //   const [filter, setFilter] = useState("*");
 
-  //   const filteredItems =
-  //     filter === "*"
-  //       ? listingsData.slice(0, 8)
-  //       : listingsData.slice(0, 8).filter((item) => item.tags.includes(filter));
-  const { productObservable } = useStore();
-  useEffect(() => {
-    const fetch = async () => {
-      await productObservable.getListProductBuyMany(
-        { type: EnumProductType.MOTOBIKES },
-        EnumProductType1.MOTOBIKES
-      );
-      console.log(productObservable?.data?.motobikes?.data);
-    };
-    fetch();
-  }, []);
+    //   const filteredItems =
+    //     filter === "*"
+    //       ? listingsData.slice(0, 8)
+    //       : listingsData.slice(0, 8).filter((item) => item.tags.includes(filter));
+    const { productObservable } = useStore();
+    useEffect(() => {
+        const fetch = async () => {
+            await productObservable.getListProductBuyMany(
+                { type: EnumProductType.MOTOBIKES },
+                EnumProductType1.MOTOBIKES
+            );
+        };
+        fetch();
+    }, []);
 
-  return (
-    <div className="popular_listing_sliders mb-10">
-      {/* Tab panes */}
-      <div className="row">
-        {productObservable?.data?.motobikes?.data?.length > 0 ? (
-          productObservable?.data?.motobikes?.data.map((listing) => (
-            <div className="col-sm-6 col-xl-3" key={listing.products.id}>
-              <Link
-                href={`/listing-single-v2/${listing.products.id}`}
-                className="block no-underline text-inherit h-full"
-              >
-                <div className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 ease-in-out flex flex-col h-full">
-                  {/* Ảnh sản phẩm với tỷ lệ cố định */}
-                  <div className="relative w-full aspect-[4/3] bg-gray-100 overflow-hidden">
-                    <Image
-                      fill
-                      className="object-cover"
-                      priority
-                      src={listing.products.images[0]}
-                      alt={listing.products.title}
-                    />
+    return (
+        <div className="popular_listing_sliders mb-10">
+            {/* Tab panes */}
+            <div className="row">
+                {productObservable?.data?.motobikes?.data?.length > 0 ? (
+                    productObservable?.data?.motobikes?.data.map((listing) => (
+                        <div
+                            className="col-sm-6 col-xl-3"
+                            key={listing.products.id}
+                        >
+                            <Link
+                                href={`/listing-single-v2/${listing.products.id}`}
+                                className="block no-underline text-inherit h-full"
+                            >
+                                <div className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 ease-in-out flex flex-col h-full">
+                                    {/* Ảnh sản phẩm với tỷ lệ cố định */}
+                                    <div className="relative w-full aspect-[4/3] bg-gray-100 overflow-hidden">
+                                        <Image
+                                            fill
+                                            className="object-cover"
+                                            priority
+                                            src={listing.products.images[0]}
+                                            alt={listing.products.title}
+                                        />
 
-                    {/* Icon ảnh */}
-                    <div className="absolute bottom-2 left-2 flex space-x-2 z-10">
-                      <a
-                        className="text-white bg-black/50 text-xs px-2 py-1 rounded flex items-center gap-1"
-                        href="#"
-                      >
-                        <span className="flaticon-photo-camera" />
-                        <span>{listing.photosCount}</span>
-                      </a>
-                      <a
-                        className="text-white bg-black/50 text-xs px-2 py-1 rounded flex items-center gap-1"
-                        href="#"
-                      >
-                        <span className="flaticon-play-button" />
-                        <span>{listing.videosCount}</span>
-                      </a>
+                                        {/* Icon ảnh */}
+                                        <div className="absolute bottom-2 left-2 flex space-x-2 z-10">
+                                            <a
+                                                className="text-white bg-black/50 text-xs px-2 py-1 rounded flex items-center gap-1"
+                                                href="#"
+                                            >
+                                                <span className="flaticon-photo-camera" />
+                                                <span>
+                                                    {listing.photosCount}
+                                                </span>
+                                            </a>
+                                            <a
+                                                className="text-white bg-black/50 text-xs px-2 py-1 rounded flex items-center gap-1"
+                                                href="#"
+                                            >
+                                                <span className="flaticon-play-button" />
+                                                <span>
+                                                    {listing.videosCount}
+                                                </span>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    {/* Nội dung card */}
+                                    <div className="p-4 flex flex-col flex-1">
+                                        <div className="text-blue-700 font-semibold mb-1">
+                                            Báo giá
+                                        </div>
+
+                                        {/* Tên sản phẩm giới hạn 2 dòng */}
+                                        <div className="text-gray-800 text-sm line-clamp-2">
+                                            {listing.products.title}
+                                        </div>
+                                    </div>
+                                </div>
+                            </Link>
+                        </div>
+                    ))
+                ) : (
+                    <div className="empty">
+                        <a>Sản phẩm trống</a>
                     </div>
-                  </div>
-
-                  {/* Nội dung card */}
-                  <div className="p-4 flex flex-col flex-1">
-                    <div className="text-blue-700 font-semibold mb-1">
-                      Báo giá
-                    </div>
-
-                    {/* Tên sản phẩm giới hạn 2 dòng */}
-                    <div className="text-gray-800 text-sm line-clamp-2">
-                      {listing.products.title}
-                    </div>
-                  </div>
-                </div>
-              </Link>
+                )}
             </div>
-          ))
-        ) : (
-          <div className="empty">
-            <a>Sản phẩm trống</a>
-          </div>
-        )}
-      </div>
-    </div>
-  );
+        </div>
+    );
 });
 
 export default MotorFeaturedFilterListing;

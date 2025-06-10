@@ -91,14 +91,14 @@ export default class BlogsObservable {
         this.createVoucher = this.createVoucher.bind(this);
     }
 
-    *getListBlog() {
+    *getListBlog(current: number = 1, pageSize: number = 10) {
         try {
             this.loading = true;
-            const response = yield getListBlog();
+            const response = yield getListBlog(current, pageSize);
             const { data, status, message } = response;
             const success_status = [200, 201, 204];
             if (success_status.includes(status)) {
-                this.data = data.blogs;
+                this.data = data?.data;
                 this.status = status;
                 this.successMsg = message;
             } else {

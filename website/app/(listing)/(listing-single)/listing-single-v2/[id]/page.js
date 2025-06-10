@@ -82,7 +82,6 @@ const ListingSingleV2 = observer(() => {
         message.success(cartObservable.successMsg);
         router.push("/cart"); // Chuyển hướng tới trang thanh toán
       }
-      console.log(body);
     } else {
       message.error("Bạn chưa chọn màu sắc");
     }
@@ -91,14 +90,12 @@ const ListingSingleV2 = observer(() => {
   const params = useParams();
   const store = useStore();
   const id = params?.id;
-  console.log(id);
   const storeProduct = store.productObservable;
   useEffect(() => {
     const fetchData = async () => {
       if (id && typeof id === "string") {
         try {
           await storeProduct.getDetailProductByID(id);
-          console.log("Fetched product:", storeProduct.data.dataDetail.data);
         } catch (error) {
           console.error("Fetch failed:", error);
         }
@@ -112,10 +109,8 @@ const ListingSingleV2 = observer(() => {
     setSelectedOptionValueId(idItem);
     await storeProduct.getDetailSKU_ByOptionValue(idItem);
 
-    console.log(storeProduct?.data?.dataSKU);
     setSku(storeProduct?.data.dataSKU);
   };
-  console.log(sku);
   return (
     <div className="wrapper">
       <div
