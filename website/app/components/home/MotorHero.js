@@ -35,7 +35,7 @@ const MotorHero = () => {
   };
 
   return (
-    <section className="home-one bg-home1">
+    <section className="xl:!py-0 lg:!py-0 md:!pt-16 xs:!pt-16 !pb-16">
       <div
         className="main-banner-wrapper home3_style"
         style={{ overflow: "hidden" }}

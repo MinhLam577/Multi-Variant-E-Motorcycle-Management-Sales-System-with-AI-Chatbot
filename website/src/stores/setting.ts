@@ -3,6 +3,7 @@ import { ExportOrder, ResponsePromise } from "../api/order";
 import { RootStore } from "./base";
 import voucherApi from "src/api/voucher";
 import RoleApi from "src/api/setting";
+import { IPermission, IRole } from "../api/permission";
 
 export type OrderStatus = {
     key?: string;
@@ -37,33 +38,6 @@ export type orderData = {
     confirm_order_data?: ExportOrder;
 };
 
-export interface IPermission {
-    _id?: string;
-    name?: string;
-    apiPath?: string;
-    method?: string;
-    module?: string;
-
-    createdBy?: string;
-    isDeleted?: boolean;
-    deletedAt?: boolean | null;
-    createdAt?: string;
-    updatedAt?: string;
-}
-
-export interface IRole {
-    id?: string;
-    name: string;
-    description: string;
-    isActive: boolean;
-    permissions: IPermission[] | string[];
-
-    createdBy?: string;
-    isDeleted?: boolean;
-    deletedAt?: boolean | null;
-    createdAt?: string;
-    updatedAt?: string;
-}
 export default class SettingObservable {
     status: number | null = null;
     errorMsg: string | null = null;
