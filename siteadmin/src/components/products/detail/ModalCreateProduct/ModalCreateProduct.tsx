@@ -2825,7 +2825,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
             // kiểm tra sku có detail_import rỗng ko
             Object.entries(detail_import_per_sku).forEach(
                 ([name, detail_import]) => {
-                    if (!detail_import?.length) {
+                    if (!detail_import?.length || detail_import.length === 0) {
                         throw new Error(
                             `Chi tiết nhập kho của biến thể ${name} không hợp lệ`
                         );
