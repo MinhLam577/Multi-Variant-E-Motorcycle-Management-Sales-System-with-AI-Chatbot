@@ -1,7 +1,7 @@
 import endpoints from "./endpoints";
 import apiClient from "./apiClient";
 import { ResponsePromise } from "./order";
-import { EnumProductStore } from "../stores/product.store";
+import { EnumProductStore } from "../stores/productStore";
 const productEndpoints = endpoints.product;
 const ProductAPI: {
     getListProduct: (query: string) => Promise<ResponsePromise>;
@@ -10,6 +10,7 @@ const ProductAPI: {
     getBestSellingProducts: (
         type: EnumProductStore
     ) => Promise<ResponsePromise>;
+    getProductsSortBy: () => Promise<ResponsePromise>;
 } = {
     getListProduct: async (query: string) => {
         return await apiClient.get(productEndpoints.getListProduct(query));
@@ -27,6 +28,9 @@ const ProductAPI: {
         return await apiClient.get(
             productEndpoints.getBestSellingProducts(query)
         );
+    },
+    getProductsSortBy: async (): Promise<ResponsePromise> => {
+        return await apiClient.get(productEndpoints.getProductsSortBy());
     },
 };
 

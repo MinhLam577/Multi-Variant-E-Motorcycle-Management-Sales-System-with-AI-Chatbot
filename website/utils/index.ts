@@ -36,3 +36,12 @@ export const getIdfromNameId = (nameId) => {
   const match = nameId.match(/-id,(\d+)$/); // Tìm ID với định dạng -id,
   return match ? match[1] : null; // Trả về ID nếu tìm thấy, nếu không thì null
 };
+
+export const filterEmptyFields = <T extends Record<string, any>>(obj: T): T => {
+    const cleanedObj = Object.fromEntries(
+        Object.entries(obj).filter(
+            ([, value]) => value !== undefined && value !== null && value !== ""
+        )
+    );
+    return cleanedObj as T;
+};

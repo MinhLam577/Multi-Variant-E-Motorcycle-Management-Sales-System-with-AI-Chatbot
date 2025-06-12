@@ -1,13 +1,25 @@
-import { makeAutoObservable, toJS } from "mobx";
+import { makeAutoObservable } from "mobx";
 import { SUCCESS_STATUSES } from "../constants";
 import { paginationData, RootStore } from "./base";
 import ProductAPI from "src/api/product";
 import { ResponsePromise } from "src/api/order";
-import { EnumProductStore } from "./product.store";
+
+export enum EnumProductSortBy {
+    CREATED_AT_DESC = "createdAtDesc",
+    UPDATED_AT_DESC = "updatedAtDesc",
+    PRICE_ASC = "priceAsc",
+    PRICE_DESC = "priceDesc",
+    BEST_SELLING = "bestSelling",
+}
 
 export enum EnumProductType {
     CARS = "Xe hơi",
     MOTOBIKES = "Xe máy điện",
+}
+
+export enum EnumProductStore {
+    CAR = "car",
+    MOTORBIKE = "motorbike",
 }
 
 export type globalFilterType = {
@@ -18,6 +30,7 @@ export type globalFilterType = {
     categoryID?: string;
     status?: boolean;
     type?: EnumProductStore;
+    sort_by?: EnumProductSortBy;
 };
 
 export type OptionValueResponseType = {
@@ -86,13 +99,26 @@ export type ProductDataResponseType = {
     status?: boolean;
     skus?: SkusDataResponseType[];
 };
+export type ProductType =
+    | {
+          products: ProductDataResponseType;
+          totalSKU: number;
+          totalStock: number;
+      }[]
+    | null;
+
+export type ProductsSortByResponseType = {
+    value: EnumProductSortBy;
+    label: string;
+};
+
 type ProductData = {
     cars: {
-        data: any[] | null;
+        data: ProductType | null;
         bestSelling: ProductDataResponseType[] | null; // Thêm trường bestSelling nếu cần
     };
     motobikes: {
-        data: any[] | null;
+        data: ProductType | null;
         bestSelling: ProductDataResponseType[] | null;
     };
     cars_motobikes: {
@@ -103,6 +129,7 @@ type ProductData = {
     };
     resultOption_OptionValue: ConvertSkusOptionValue_UI[];
     dataSKU: null;
+    product_sort_by: ProductsSortByResponseType[];
 };
 
 class ProductObservable {
@@ -111,6 +138,7 @@ class ProductObservable {
     successMessage: string = null;
     showSuccessMessage: boolean = false;
     rootStore: RootStore;
+    loading: boolean = false;
     pagination: paginationData = {
         current: 1,
         pageSize: 10,
@@ -132,6 +160,7 @@ class ProductObservable {
         },
         resultOption_OptionValue: [],
         dataSKU: null,
+        product_sort_by: [],
     };
     constructor(rootStore: RootStore) {
         this.rootStore = rootStore;
@@ -158,10 +187,12 @@ class ProductObservable {
 
     private validateQuery(query: string | object): string {
         const parseQuery: paginationData & globalFilterType = {
+            ...this.pagination,
             ...(typeof query === "string"
                 ? Object.fromEntries(new URLSearchParams(query))
-                : query),
-            ...this.pagination,
+                : query
+                ? query
+                : {}),
         };
 
         const {
@@ -172,6 +203,7 @@ class ProductObservable {
             categoryID,
             status,
             type,
+            sort_by,
         } = parseQuery;
         const queryParams = new URLSearchParams();
         if (search) queryParams.append("search", search);
@@ -183,6 +215,7 @@ class ProductObservable {
         if (status !== undefined) {
             queryParams.append("status", status.toString());
         }
+        if (sort_by) queryParams.append("sort_by", sort_by);
         queryParams.append("current", parseQuery.current.toString());
         queryParams.append("pageSize", parseQuery.pageSize.toString());
         return queryParams.toString();
@@ -197,6 +230,7 @@ class ProductObservable {
         type: EnumProductStore = EnumProductStore.CAR
     ) {
         try {
+            this.loading = true;
             const queryString = this.validateQuery(query);
             const response: ResponsePromise = yield ProductAPI.getListProduct(
                 queryString
@@ -216,6 +250,8 @@ class ProductObservable {
         } catch (e: any) {
             console.error(e);
             this.setStatusMessage(0, e?.message, "");
+        } finally {
+            this.loading = false;
         }
     }
 
@@ -254,31 +290,6 @@ class ProductObservable {
             if (SUCCESS_STATUSES.includes(status)) {
                 this.data.cars_motobikes.data = resData;
 
-                this.setStatusMessage(200, "", message);
-            } else {
-                this.setStatusMessage(0, message, "");
-            }
-        } catch (e: any) {
-            console.error(e);
-            this.setStatusMessage(0, e?.message, "");
-        }
-    }
-
-    //
-    *getListProductBuyMany(queryString, type) {
-        const queryString1 = new URLSearchParams(queryString).toString();
-        try {
-            const response: ResponsePromise = yield ProductAPI.getListProduct(
-                queryString1
-            );
-            const { data, status, message } = response;
-            const resData = data?.data;
-            if (SUCCESS_STATUSES.includes(status)) {
-                if (type === EnumProductType.CARS) {
-                    this.data.cars.data = resData;
-                } else if (type === EnumProductType.MOTOBIKES) {
-                    this.data.motobikes.data = resData;
-                }
                 this.setStatusMessage(200, "", message);
             } else {
                 this.setStatusMessage(0, message, "");
@@ -356,6 +367,28 @@ class ProductObservable {
             console.error(e);
             this.setStatusMessage(0, e?.message, "");
         }
+    }
+
+    *getProductSortBy() {
+        try {
+            const response: ResponsePromise =
+                yield ProductAPI.getProductsSortBy();
+            const { data, status, message } = response;
+            if (SUCCESS_STATUSES.includes(status)) {
+                this.data.product_sort_by = data;
+                this.setStatusMessage(200, "", message);
+            } else {
+                this.setStatusMessage(0, message, "");
+            }
+        } catch (e: any) {
+            console.error(e);
+            this.setStatusMessage(0, e?.message, "");
+        }
+    }
+
+    setPagination(current: number, pageSize: number) {
+        this.pagination.current = Number(current) || 1;
+        this.pagination.pageSize = Number(pageSize) || 10;
     }
 }
 
