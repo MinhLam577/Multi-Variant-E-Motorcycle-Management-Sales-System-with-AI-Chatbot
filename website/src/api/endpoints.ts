@@ -32,6 +32,7 @@ const endpoints = {
         callBulkCreateCustomer: "/users/callBulkCreateCustomer",
         create: "/customers",
         delete: (id) => `/customers/${id}`,
+        loginGoogle: "/customers/profile",
     },
 
     cars: {
