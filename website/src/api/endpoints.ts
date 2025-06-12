@@ -5,6 +5,7 @@ const endpoints = {
         getDetailSKU: (id: string) => `/products/getSku/${id}`,
         getBestSellingProducts: (query: string) =>
             `/products/best-selling?${query}`,
+        getProductsSortBy: () => `/products/sort-by`,
     },
     auth: {
         login: "/auth/login",
@@ -31,6 +32,7 @@ const endpoints = {
         callBulkCreateCustomer: "/users/callBulkCreateCustomer",
         create: "/customers",
         delete: (id) => `/customers/${id}`,
+        loginGoogle: "/customers/profile",
     },
 
     cars: {
