@@ -106,46 +106,6 @@ const HomeMotorbike = () => {
             </section>
             {/* End Our Partners */}
 
-            {/* Category Product  */}
-            {/* <section className="featured-product">
-                <div className="container">
-                    <div className="row justify-content-center">
-                        <div className="col-lg-8">
-                            <div className="main-title text-center">
-                                <h2>Xe máy nổi bật</h2>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="row">
-                        <div
-                            className="col-lg-12"
-                            data-aos-delay="100"
-                            data-aos="fade-up"
-                        >
-                            <MotorBikeTypeList />
-                        </div>
-                    </div>
-
-                    <div className="row mt20">
-                        <div className="col-lg-12">
-                            <div className="text-center">
-                                <Link
-                                    href="/listing-v1/?type=motorbike"
-                                    className="more_listing"
-                                >
-                                    Xem tất cả
-                                    <span className="icon">
-                                        <span className="fas fa-plus" />
-                                    </span>
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section> */}
-            {/* End Category Product  */}
-
             {/* Sale Banner  */}
             <section className="our-blog pb90 pt-0">
                 <div className="container">

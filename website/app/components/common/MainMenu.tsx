@@ -4,9 +4,9 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useStore } from "@/src/stores";
 import { observer } from "mobx-react-lite";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { EnumProductStore } from "@/src/stores/product.store";
+import { EnumProductStore } from "@/src/stores/productStore";
 import { CategoryResponseType } from "@/src/stores/categories";
 import { headerWithActionsStore } from "./HeaderWidthActions";
 const MainMenu = observer(() => {
@@ -73,7 +73,7 @@ const MainMenu = observer(() => {
                                             className="relative group/submenu"
                                         >
                                             <Link
-                                                href={`/${redirectedProductType}&&categoryID=${child.id}`}
+                                                href={`/${redirectedProductType}&categoryID=${child.id}`}
                                                 className="block px-4 py-2 hover:bg-gray-100 cursor-pointer rounded"
                                             >
                                                 {child.name}
@@ -85,7 +85,7 @@ const MainMenu = observer(() => {
                                                         (sub) => (
                                                             <Link
                                                                 key={sub.id}
-                                                                href={`/${redirectedProductType}&&categoryID=${sub.id}`}
+                                                                href={`/${redirectedProductType}&categoryID=${sub.id}`}
                                                                 className="block px-4 py-2 hover:bg-gray-100 cursor-pointer rounded"
                                                             >
                                                                 {sub.name}

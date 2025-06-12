@@ -1,113 +1,105 @@
 "use client";
-
 import { useStore } from "@/src/stores";
 import { observer } from "mobx-react-lite";
-import { useEffect, useState } from "react";
-import { TreeSelect } from "antd";
-import { getAllCategory } from "@/src/api/categories";
-import { CategoryResponseTypeEnum } from "@/src/stores/categories";
-
+import {
+    Dispatch,
+    SetStateAction,
+    useCallback,
+    useEffect,
+    useState,
+} from "react";
+import { debounce } from "lodash";
+import { globalFilterType } from "@/src/stores/productStore";
 const MainFilter = observer(
     ({
         handleFilterChange,
     }: {
-        handleFilterChange: (filters: {
-            condition?: string;
-            brandID?: string;
-            categoryID?: string;
-        }) => void;
+        handleFilterChange: Dispatch<SetStateAction<globalFilterType>>;
     }) => {
         const store = useStore();
         const StoreBrand = store.brandObservable;
-        const StoreCategory = store.categoryObservable;
-        const [selectedCondition, setSelectedCondition] = useState("");
         const [selectedBrand, setSelectedBrand] = useState("");
-
-        const handleConditionChange = (e) => {
-            const value = e.target.value;
-            setSelectedCondition(value);
-            handleFilterChange({ condition: value }); // hoặc tuỳ xử lý
-        };
-
-        const handleBrandChange = (e) => {
-            const value = e.target.value;
-            setSelectedBrand(value);
-            handleFilterChange({ brandID: value });
-        };
-
-        const handleDeleteAll = () => {};
-        const conditionValues = [
-            "Mới nhất",
-            "Gần đây",
-            "Bán chạy nhất",
-            "Đánh giá cũ",
-        ];
-        const [treeData, setTreeData] = useState([]);
+        const [search, setSearch] = useState("");
+        const debounceInputChange: (
+            value: string,
+            field: "search" | "brandID" | "price_min" | "price_max"
+        ) => void = useCallback(
+            debounce(
+                (
+                    value: string | number | undefined,
+                    field: "search" | "brandID" | "price_min" | "price_max"
+                ) => {
+                    handleFilterChange((prev) => ({
+                        ...prev,
+                        [field]: value,
+                    }));
+                },
+                400
+            ),
+            []
+        );
         useEffect(() => {
-            //fetchCategories();handleData
             handleData();
         }, []);
         const handleData = async () => {
             await StoreBrand.getListBrand({ page: 1, size: 10 });
-
-            // Gọi và xử lý dữ liệu category
-            const res = await getAllCategory(
-                "current=1&pageSize=10&responseType=" +
-                    CategoryResponseTypeEnum.TREE
-            );
-            if (res?.data) {
-                const converted = convertToTreeData(res.data.data);
-                setTreeData(converted);
-            }
         };
-        const convertToTreeData = (data) => {
-            return data?.map((item) => ({
-                title: item.name,
-                value: item.id,
-                children:
-                    item.children?.length > 0
-                        ? convertToTreeData(item.children)
-                        : [],
-            }));
-        };
-
-        const [value, setValue] = useState();
-        // lay ra id category
-        const onChange = (newValue) => {
-            setValue(newValue);
-            handleFilterChange({ categoryID: newValue });
-        };
-        const onPopupScroll = (e) => {};
         return (
             <>
-                {/* Điều kiện */}
-                <div className="col-12 col-sm-4 col-lg-2">
-                    <div className="advance_search_style">
-                        <select
-                            className="form-select show-tick"
-                            value={selectedCondition}
-                            onChange={handleConditionChange}
-                        >
-                            <option value="" disabled hidden>
-                                Điều kiện
-                            </option>
-                            {conditionValues.map((value, i) => (
-                                <option key={value}>{value}</option>
-                            ))}
-                        </select>
+                <div className="col-12 col-sm-4 col-lg-4">
+                    <div className="w-full advance_search_style">
+                        <input
+                            className="h-9 bg-[#fff] text-sm text-[#555] border border-[#ccc] border-solid outline-none px-3 rounded-md w-full"
+                            value={search}
+                            onChange={(e) => {
+                                setSearch(e.target.value);
+                                debounceInputChange(e.target.value, "search");
+                            }}
+                            placeholder="Nhập từ khóa"
+                        />
                     </div>
                 </div>
-                {/* Thương hiệun */}
+                {/* Price min and Price max */}
+
+                <div className="col-12 col-sm-4 col-lg-2">
+                    <div className="advance_search_style">
+                        <input
+                            type="number"
+                            className="form-control !text-sm !h-9"
+                            placeholder="Giá tối thiểu"
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                debounceInputChange(value, "price_min");
+                            }}
+                        />
+                    </div>
+                </div>
+                <div className="col-12 col-sm-4 col-lg-2">
+                    <div className="advance_search_style !text-sm">
+                        <input
+                            type="number"
+                            className="form-control !text-sm !h-9"
+                            placeholder="Giá tối đa"
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                debounceInputChange(value, "price_max");
+                            }}
+                        />
+                    </div>
+                </div>
+
+                {/* Thương hiệu */}
                 <div className="col-12 col-sm-4 col-lg-2">
                     <div className="advance_search_style">
                         <select
-                            className="form-select show-tick"
+                            className="form-select show-tick !h-9"
                             value={selectedBrand}
-                            onChange={handleBrandChange}
+                            onChange={(e) => {
+                                setSelectedBrand(e.target.value);
+                                debounceInputChange(e.target.value, "brandID");
+                            }}
                         >
-                            <option value="" disabled hidden>
-                                Thương hiệu
-                            </option>
+                            <option value="">Tất cả thương hiệu</option>
                             {StoreBrand?.listBrand.map((value) => (
                                 <option key={value.id} value={value.id}>
                                     {value.name}
@@ -116,50 +108,9 @@ const MainFilter = observer(
                         </select>
                     </div>
                 </div>
-
-                {/* Category  */}
-                <div className="w-full sm:w-1/3 lg:w-1/6  mb-4">
-                    <div className="relative">
-                        <TreeSelect
-                            showSearch
-                            style={{
-                                width: "100%",
-                                height: 48,
-                                color: "black",
-                            }} // color cho văn bản
-                            value={value}
-                            dropdownStyle={{ maxHeight: 700, overflow: "auto" }}
-                            placeholder="Danh mục"
-                            allowClear
-                            treeDefaultExpandAll
-                            onChange={onChange}
-                            treeData={treeData}
-                            onPopupScroll={onPopupScroll}
-                            className="w-full h-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
-                        />
-                    </div>
-                </div>
             </>
         );
     }
 );
 
 export default MainFilter;
-// {
-//   label: "Chọn mẫu",
-//   values: ["A3 Sportback", "A4", "A6", "Q5"],
-// },
-// {
-//   filterOptions.map((option, index) => (
-//     <div key={index} className="col-12 col-sm-4 col-lg-2">
-//       <div className="advance_search_style">
-//         <select className="form-select show-tick">
-//           <option>{option.label}</option>
-//           {option.values.map((value, valueIndex) => (
-//             <option key={valueIndex}>{value}</option>
-//           ))}
-//         </select>
-//       </div>
-//     </div>
-//   ));
-// }
