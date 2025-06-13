@@ -6,9 +6,6 @@ import HeaderTop from "@/app/components/common/HeaderTop";
 import MobileMenu from "@/app/components/common/MobileMenu";
 import LoginSignupModal from "@/app/components/common/login-signup";
 import AdvanceFilter from "@/app/components/listing/advance-filter";
-import Pagination from "@/app/components/common/Pagination";
-import CarItems from "@/app/components/listing/listing-map/listing-map-v1/CarItems";
-import ListGridFilter from "@/app/components/listing/ListGridFilter";
 import Map from "@/app/components/common/Map";
 
 // export const metadata = {
@@ -68,29 +65,6 @@ const ListingMapV1 = () => {
                     </div>
                 </div>
             </section>
-
-            {/* <section className="our-listing bgc-f9 pb30-991 inner_page_section_spacing">
-                <div className="container">
-                    <div className="row">
-                        <ListGridFilter data={[]} />
-                    </div>
-
-                    <div className="row">
-                        <CarItems />
-                    </div>
-
-                    <div className="row">
-                        <div className="col-lg-12">
-                            <div className="mbp_pagination mt10">
-                                <Pagination
-                                    queryObject={{ current: 1, pageSize: 10 }}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section> */}
-
             <Footer />
 
             {/* Modal */}

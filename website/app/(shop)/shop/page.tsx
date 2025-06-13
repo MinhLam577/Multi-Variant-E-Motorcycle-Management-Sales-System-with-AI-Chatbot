@@ -88,12 +88,9 @@ const Shop = () => {
                             <div className="row">
                                 <div className="col-lg-12">
                                     <div className="mbp_pagination mt20">
-                                        <Pagination
-                                            queryObject={{
-                                                current: 1,
-                                                pageSize: 10,
-                                            }}
-                                        />
+                                        {/* <Pagination
+                                            
+                                        /> */}
                                     </div>
                                 </div>
                             </div>
