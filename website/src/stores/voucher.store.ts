@@ -72,6 +72,7 @@ export default class VoucherObservable {
     this.rootStore = rootStore;
   }
 
+
   *getListVoucher_of_User() {
     try {
       this.loading = true;

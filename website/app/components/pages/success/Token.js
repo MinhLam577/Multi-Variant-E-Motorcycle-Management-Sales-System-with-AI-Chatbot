@@ -22,6 +22,7 @@ const Token = observer(() => {
           router.push("/");
         } else {
           message.error("Đăng nhập thất bại");
+          router.push("/login");
         }
       } catch (err) {
         console.error("Lỗi khi gọi API", err);

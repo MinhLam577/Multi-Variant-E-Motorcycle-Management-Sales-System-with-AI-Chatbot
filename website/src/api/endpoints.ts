@@ -3,6 +3,8 @@ const endpoints = {
     getListProduct: (query: string) => "/products?" + query,
     getDetailProduct: (id: string) => `/products/${id}`,
     getDetailSKU: (id: string) => `/products/getSku/${id}`,
+    getDetailProduct_user_page_id: (id: string) =>
+      `/products/user-page-id/${id}`,
     getBestSellingProducts: (query: string) =>
       `/products/best-selling?${query}`,
   },
@@ -215,6 +217,7 @@ const endpoints = {
   sku: {
     getDetailImportsById: (id: string) => `/skus/${id}/detail-import`,
     getDetailImportsByIds: () => `/skus/detail-imports-by-ids`,
+    GetSkusByOptionValueIds: () => `/skus/GetSkusByOptionValueIds`,
   },
   // province
   province: {
