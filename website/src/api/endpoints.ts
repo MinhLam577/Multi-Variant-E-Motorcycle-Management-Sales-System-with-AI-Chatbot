@@ -157,12 +157,8 @@ const endpoints = {
     },
 
     // blogs - categories
-    blogcategories: {
-        list: () => `/blog-categories`,
-        details: (id) => `/blog-categories/${id}`,
-        update: (id) => `/blog-categories/${id}`,
-        delete: (id) => `/blog-categories/${id}`,
-        create: () => `/blog-categories`,
+    blogCategories: {
+        list: (query: string) => `/blog-categories?${query}`,
     },
     // blog - categories
     blogs: {
