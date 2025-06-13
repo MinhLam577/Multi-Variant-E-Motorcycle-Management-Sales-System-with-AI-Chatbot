@@ -1,20 +1,16 @@
-import { paginationData } from "@/src/stores/order.store";
-import { globalFilterType } from "@/src/stores/productStore";
+"use client";
+import { useStore } from "@/src/stores";
 import classNames from "classnames";
-import { Dispatch, SetStateAction } from "react";
-
+import { useState } from "react";
 const RANGE = 2;
-
-export interface PaginationProps {
-    setQueryObject: Dispatch<SetStateAction<globalFilterType>>;
-    queryObject: globalFilterType & paginationData;
-}
-const Pagination: React.FC<PaginationProps> = ({
-    setQueryObject,
-    queryObject,
-}) => {
-    const page = Number(queryObject.current) || 1;
-    const pageSize = Number(queryObject.pageSize) || 10;
+const Pagination = () => {
+    const store = useStore();
+    const blogStore = store.blogsObservable;
+    const { current, pageSize } = blogStore.pagination;
+    const page = current;
+    const [currentPage, setCurrentPage] = useState(1);
+    const totalPages = 10;
+    const pages = [];
 
     const renderPagination = () => {
         let dotAfter = false;
@@ -81,11 +77,7 @@ const Pagination: React.FC<PaginationProps> = ({
                 return (
                     <button
                         onClick={() => {
-                            setQueryObject((prev) => ({
-                                ...prev,
-                                current: pageNumber.toString(),
-                                pageSize: pageSize.toString(),
-                            }));
+                            blogStore.setPagination(pageNumber, pageSize);
                         }}
                         key={index}
                         className={classNames(
@@ -101,7 +93,38 @@ const Pagination: React.FC<PaginationProps> = ({
                 );
             });
     };
+
+    const handleClick = (page) => {
+        setCurrentPage(page);
+    };
+
+    for (let i = 1; i <= totalPages; i++) {
+        pages.push(
+            <li
+                role="button"
+                key={i}
+                className={`page-item ${i === currentPage ? "active" : ""}`}
+                onClick={() => handleClick(i)}
+            >
+                <span className="page-link">{i}</span>
+            </li>
+        );
+    }
+
     return (
+        // <ul className="page_navigation">
+        //     <li role="button" className="page-item">
+        //         <span className="page-link">
+        //             <span className="fa fa-arrow-left" />
+        //         </span>
+        //     </li>
+        //     {pages}
+        //     <li role="button" className="page-item">
+        //         <span className="page-link">
+        //             <span className="fa fa-arrow-right" />
+        //         </span>
+        //     </li>
+        // </ul>
         <div className="mt-6 flex flex-wrap justify-center">
             {page === 1 ? (
                 <span className="mx-2 cursor-not-allowed rounded border bg-white/60 px-3 py-2 shadow-sm">
@@ -110,10 +133,7 @@ const Pagination: React.FC<PaginationProps> = ({
             ) : (
                 <button
                     onClick={() => {
-                        setQueryObject((prev) => ({
-                            ...prev,
-                            current: (page - 1).toString(),
-                        }));
+                        blogStore.setPagination(current - 1, pageSize);
                     }}
                     className="mx-2 cursor-pointer rounded border bg-white px-3 py-2 shadow-sm"
                 >
@@ -129,10 +149,7 @@ const Pagination: React.FC<PaginationProps> = ({
             ) : (
                 <button
                     onClick={() => {
-                        setQueryObject((prev) => ({
-                            ...prev,
-                            current: (page + 1).toString(),
-                        }));
+                        blogStore.setPagination(current - 1, pageSize);
                     }}
                     className="mx-2 cursor-pointer rounded border bg-white px-3 py-2 shadow-sm"
                 >

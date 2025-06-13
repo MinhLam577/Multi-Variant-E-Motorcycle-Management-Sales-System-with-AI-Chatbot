@@ -1,22 +1,27 @@
 import { makeAutoObservable, toJS } from "mobx";
 
-import { DateTimeFormat } from "../constants";
-import OrderAPI, { ExportOrder, ResponsePromise } from "../api/order";
 import { RootStore } from "./base";
-import voucherApi from "../api/voucher";
 import { getBlogDetails, getListBlog } from "../api/blog";
+import { filterEmptyFields } from "@/utils";
+import { convertDate, DateTimeFormat } from "../constants";
 
-export type OrderStatus = {
-    key?: string;
+export type BlogResponseType = {
+    id: string;
+    title: string;
+    thumbnail: string;
+    content: string;
+    blogImages: string[];
+    slug: string;
+    blogCategoryId: string;
+    customerId: string;
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string | null;
 };
 
-export type globalFiltersData = {
+export type globalFilterBlogData = {
     search?: string;
-    sortOrder?: string;
-    sortBy?: string;
-    order_status?: string;
-    payment_status?: string;
-    payment_method?: string;
+    blog_category_id?: string;
     created_from?: string;
     created_to?: string;
 };
@@ -30,71 +35,80 @@ export type paginationData = {
     pageSize: number;
 };
 
-interface Voucher {
-    id: string;
-    createdAt: string;
-    updatedAt: string;
-    deletedAt: string | null;
-    voucher_code: string;
-    voucher_name: string;
-    description: string;
-    uses: number;
-    limit: number;
-    max_uses_user: number;
-    discount_amount: string;
-    fixed: boolean;
-    status: string;
-    start_date: string;
-    end_date: string;
-    count_user_get: number;
-}
 export default class BlogsObservable {
     status: number | null = null;
     errorMsg: string | null = null;
     successMsg: string | null = null;
     showSuccessMsg: boolean = false;
     rootStore: RootStore;
-    data = null;
-    dataById = null;
-    typeVoucher: TypeVoucher[] = [];
-    dataDetail: Voucher[] = [];
-    dataListCustomer_no_voucher = [];
-    idVoucher: string = "";
-
-    globalFilters: globalFiltersData = {
-        search: null,
-        sortOrder: null,
-        sortBy: null,
-        order_status: null,
-        payment_status: null,
-        payment_method: null,
-        created_from: null,
-        created_to: null,
-    };
+    data: BlogResponseType[] = null;
+    dataById: BlogResponseType = null;
+    nextData: BlogResponseType[] = null;
+    prevData: BlogResponseType[] = null;
     pagination: paginationData = {
         current: 1,
-        pageSize: 100,
+        pageSize: 10,
     };
     loading: boolean = false;
     isOpenDetail: boolean = false;
+    globalFilter: globalFilterBlogData = {
+        search: undefined,
+        blog_category_id: undefined,
+        created_from: undefined,
+        created_to: undefined,
+    };
     constructor(rootStore: RootStore) {
-        makeAutoObservable(this);
-
+        makeAutoObservable(this, {}, { autoBind: true });
         this.rootStore = rootStore;
-        this.setGlobalFilters = this.setGlobalFilters.bind(this);
-        this.setPagination = this.setPagination.bind(this);
-        this.getListBlog = this.getListBlog.bind(this);
-        this.getVoucherDetail = this.getVoucherDetail.bind(this);
-        this.getListBlogById = this.getListBlogById.bind(this);
-        this.deleteVoucherByID = this.deleteVoucherByID.bind(this);
-        this.getListTypeVoucher = this.getListTypeVoucher.bind(this);
-        this.createVoucher = this.createVoucher.bind(this);
     }
+    private validateQuery(query?: string | object): string {
+        // Xử lý chuyển đổi query string thành object
+        let parsedQuery: globalFilterBlogData & paginationData = {
+            ...(typeof query === "string"
+                ? Object.fromEntries(new URLSearchParams(query.trim()))
+                : query),
+            current: Number(this.pagination.current),
+            pageSize: Number(this.pagination.pageSize),
+        };
 
-    *getListBlog(current: number = 1, pageSize: number = 10) {
+        // Gộp filters và xử lý dữ liệu
+        const filters: paginationData & globalFilterBlogData =
+            filterEmptyFields({
+                ...this.pagination,
+                ...parsedQuery,
+                created_from: parsedQuery?.created_from
+                    ? convertDate(
+                          parsedQuery.created_from,
+                          DateTimeFormat.Date,
+                          DateTimeFormat.TIME_STAMP_POSTGRES
+                      )
+                    : undefined,
+                created_to: parsedQuery?.created_to
+                    ? convertDate(
+                          parsedQuery.created_to,
+                          DateTimeFormat.Date,
+                          DateTimeFormat.TIME_STAMP_POSTGRES
+                      )
+                    : undefined,
+                search: parsedQuery?.search?.trim(),
+            });
+
+        // Tạo query string
+        const queryString = new URLSearchParams(
+            Object.fromEntries(
+                Object.entries(filters).map(([key, value]) => [
+                    key,
+                    String(value),
+                ])
+            )
+        ).toString();
+        return queryString;
+    }
+    *getListBlog(query?: string | object) {
         try {
             this.loading = true;
-            const response = yield getListBlog(current, pageSize);
+            const queryString = this.validateQuery(query);
+            const response = yield getListBlog(queryString);
             const { data, status, message } = response;
             const success_status = [200, 201, 204];
             if (success_status.includes(status)) {
@@ -116,7 +130,7 @@ export default class BlogsObservable {
         }
     }
 
-    *getListBlogById(id) {
+    *getListBlogById(id: string) {
         try {
             this.loading = true;
             const response = yield getBlogDetails(id);
@@ -137,66 +151,25 @@ export default class BlogsObservable {
             this.loading = false;
         }
     }
-    // cập nhật id
-    *setID_ListCustomer_no_voucher(id) {
-        try {
-            this.idVoucher = id;
-            // lấy ra danh sách customer no voucher theo id voucher
-            const response = yield voucherApi.getListCustomer_no_Voucher(id);
-            const { data, status, message } = response;
-            const success_status = [200, 201, 204];
-            if (success_status.includes(status)) {
-                this.dataListCustomer_no_voucher = data;
-            } else {
-                this.errorMsg = Array.isArray(message)
-                    ? message.join(", ")
-                    : message;
-            }
-        } catch (e: any) {
-            console.error(e);
-            this.status = 500;
-            this.errorMsg = e?.message || "Lỗi không xác định";
-        } finally {
-            this.loading = false;
-        }
-    }
 
-    *getVoucherDetail(id: string) {
-        try {
-            this.idVoucher = id;
-            const response: ResponsePromise = yield voucherApi.getById(id);
-            const { data, status, message } = response;
-            const success_status = [200, 201, 204];
-            if (success_status.includes(status)) {
-                this.dataDetail = data;
-            } else {
-                this.status = status;
-                this.errorMsg = message;
-            }
-        } catch (e: any) {
-            console.error(e);
-            this.status = 500;
-            this.errorMsg = e?.message || "Lỗi không xác định";
-        }
-    }
-
-    // danh sách voucher
-
-    *getListTypeVoucher() {
+    *getBlogDetails(id: string) {
         try {
             this.loading = true;
-            const response = yield voucherApi.getListTypeVoucher();
+            const response = yield getBlogDetails(id);
             const { data, status, message } = response;
             const success_status = [200, 201, 204];
+            console.log("getBlogDetails response", toJS(response));
             if (success_status.includes(status)) {
-                this.typeVoucher = data;
+                this.dataById = data;
+                this.status = status;
+                this.successMsg = message;
             } else {
                 this.status = status;
                 this.errorMsg = Array.isArray(message)
                     ? message.join(", ")
                     : message;
             }
-        } catch (e: any) {
+        } catch (e) {
             console.error(e);
             this.status = 500;
             this.errorMsg = e?.message || "Lỗi không xác định";
@@ -204,92 +177,12 @@ export default class BlogsObservable {
             this.loading = false;
         }
     }
-    // * : generator function
-    *deleteVoucherByID(id: string) {
-        try {
-            // gọi một hàm bất đồng bộ (API)
-            const response: ResponsePromise = yield voucherApi.delete(id);
-            const { data, status, message } = response;
-            const success_status = [200, 201, 204];
-            if (success_status.includes(status)) {
-                // ✅ Gọi lại API để refresh data
-                // yield this.getListBlogs();
-                this.status = status;
-                this.successMsg = message;
-            } else {
-                this.status = status;
-                this.errorMsg = message;
-            }
-        } catch (e: any) {
-            console.error(e);
-            this.status = 500;
-            this.errorMsg = e?.message || "Lỗi không xác định";
-        }
-    }
 
-    *createVoucher(body: any) {
-        try {
-            // gọi một hàm bất đồng bộ (API)
-            const response: ResponsePromise = yield voucherApi.create(body);
-            const { data, status, message } = response;
-            const success_status = [200, 201, 204];
-            if (success_status.includes(status)) {
-                // ✅ Gọi lại API để refresh data
-                // yield this.getListBlogs();
-                this.status = status;
-                this.successMsg = message;
-            } else {
-                this.status = status;
-                this.errorMsg = message;
-            }
-        } catch (e: any) {
-            console.error(e);
-            this.status = 500;
-            this.errorMsg = e?.message || "Lỗi không xác định";
-        }
-    }
-
-    *createVoucher_give_Customer(id: string, body: any) {
-        try {
-            // gọi một hàm bất đồng bộ (API)
-            const response: ResponsePromise =
-                yield voucherApi.give_customer_voucher(id, body);
-            const { status, message } = response;
-            const success_status = [200, 201, 204];
-            if (success_status.includes(status)) {
-                yield this.setID_ListCustomer_no_voucher(id);
-                this.status = status;
-                this.successMsg = message;
-            } else {
-                this.status = status;
-                this.errorMsg = message;
-            }
-        } catch (e: any) {
-            console.error(e);
-            this.status = 500;
-            this.errorMsg = e?.message || "Lỗi không xác định";
-        }
-    }
-    *editVoucher(id: string, body: any) {
-        try {
-            // gọi một hàm bất đồng bộ (API)
-            const response = yield voucherApi.update(id, body);
-            const { status, message } = response;
-            const success_status = [200, 201, 204];
-            if (success_status.includes(status)) {
-                // ✅ Gọi lại API để refresh data
-                // yield this.getListBlogs();
-                this.status = status;
-                this.successMsg = message;
-            } else {
-                this.status = status;
-                this.errorMsg = message;
-            }
-        } catch (e: any) {
-            console.error(e);
-            this.status = 500;
-            this.errorMsg = e?.message || "Lỗi không xác định";
-        }
+    setGlobalFilter(filter: globalFilterBlogData) {
+        this.globalFilter = {
+            ...this.globalFilter,
+            ...filter,
+        };
     }
 
     clearMessage() {
@@ -319,13 +212,6 @@ export default class BlogsObservable {
         }
     }
 
-    setGlobalFilters(filters: globalFiltersData) {
-        this.globalFilters = {
-            ...this.globalFilters,
-            ...filters,
-        };
-    }
-
     setPagination(page: number, pageSize: number) {
         if (page < 1 || pageSize < 1) return;
 
@@ -334,5 +220,35 @@ export default class BlogsObservable {
             current: page,
             pageSize: pageSize,
         };
+    }
+
+    setIsOpenDetail(isOpen: boolean) {
+        this.isOpenDetail = isOpen;
+    }
+
+    // Lấy data ở sau current hiện tại
+    get NextDataById() {
+        if (this.dataById) {
+            const currentIndex = this.data?.findIndex(
+                (item) => item.id === this.dataById.id
+            );
+            if (currentIndex !== -1 && currentIndex < this.data.length - 1) {
+                return this.data[currentIndex + 1];
+            }
+        }
+        return null; // Không có phần tử tiếp theo
+    }
+
+    // Lấy data ở trước current hiện tại
+    get PrevDataById() {
+        if (this.dataById) {
+            const currentIndex = this.data?.findIndex(
+                (item) => item.id === this.dataById.id
+            );
+            if (currentIndex > 0) {
+                return this.data[currentIndex - 1];
+            }
+        }
+        return null; // Không có phần tử hiện tại
     }
 }

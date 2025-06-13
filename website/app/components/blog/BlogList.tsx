@@ -1,24 +1,69 @@
 "use client";
-import blogPosts from "@/data/blog";
-import apiClient from "@/src/api/apiClient";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect } from "react";
-import { getListBlog } from "../../../src/api/blog";
 import { useStore } from "@/src/stores";
 import { observer } from "mobx-react-lite";
+import { reaction } from "mobx";
+import { globalFilterBlogData } from "@/src/stores/blog";
+import { paginationData } from "@/src/stores/order.store";
+import { filterEmptyFields } from "@/utils";
+import { formatDate } from "@/src/lib/utils";
 const BlogList = observer(() => {
     const store = useStore();
-    const storeBlog = store.blogsObservable;
-    useEffect(() => {
-        fetchBlogList();
-    }, []);
-    const fetchBlogList = () => {
-        storeBlog.getListBlog();
+    const blogStore = store.blogsObservable;
+    const blogCategoryStore = store.blogCategoryObservable;
+    const scrollToTop = () => {
+        window.scrollTo({
+            top: 350,
+            behavior: "smooth",
+        });
     };
+    const updateUrl = (newParams: globalFilterBlogData & paginationData) => {
+        // Lấy các tham số hiện tại từ URL
+        const newQueryParams = new URLSearchParams(
+            Object.entries(newParams).reduce((acc, [key, value]) => {
+                acc[key] = String(value);
+                return acc;
+            }, {} as Record<string, string>)
+        );
+        window.history.replaceState(null, "", `?${newQueryParams.toString()}`);
+    };
+
+    useEffect(() => {
+        blogCategoryStore.getListBlogCategories();
+    }, []);
+
+    useEffect(() => {
+        const reactionBlog = reaction(
+            () => ({
+                ...blogStore.globalFilter,
+                ...blogStore.pagination,
+            }),
+            (filter) => {
+                // Cập nhật URL với các tham số mới
+                updateUrl(
+                    filterEmptyFields({
+                        ...filter,
+                    })
+                );
+                const query = {
+                    ...filter,
+                };
+                blogStore.getListBlog(query);
+                scrollToTop();
+            },
+            {
+                fireImmediately: true,
+            }
+        );
+        return () => {
+            reactionBlog();
+        };
+    }, []);
     return (
         <>
-            {storeBlog?.data?.map((post) => (
+            {blogStore?.data?.map((post) => (
                 <div
                     key={post.id}
                     className="flex flex-col md:flex-row gap-4 mb-6 border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
@@ -40,15 +85,15 @@ const BlogList = observer(() => {
                             <div className="text-sm text-gray-500 flex flex-wrap gap-x-4 mb-2">
                                 <span className="flex items-center gap-1">
                                     <span className="flaticon-user" />
-                                    {post.author}
+                                    {"admin"}
                                 </span>
                                 <span className="flex items-center gap-1">
                                     <span className="flaticon-chat" />
-                                    {post.numComments} Comments
+                                    {20} Comments
                                 </span>
                                 <span className="flex items-center gap-1">
                                     <span className="flaticon-calendar-1" />
-                                    {post.createdAt}
+                                    {formatDate(post.createdAt)}
                                 </span>
                             </div>
 
@@ -76,4 +121,3 @@ const BlogList = observer(() => {
 });
 
 export default BlogList;
-// <div className="tag">{post.tag}</div>
