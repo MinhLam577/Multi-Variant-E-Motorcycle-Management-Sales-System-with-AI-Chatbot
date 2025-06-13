@@ -21,6 +21,7 @@ import { useParams, useRouter } from "next/navigation";
 // };
 import { observer } from "mobx-react-lite";
 import { message } from "antd";
+import OptionSelector from "@/app/components/listing/listing-single/listing-single-v2/Select_OptionValue";
 const ListingSingleV2 = observer(() => {
   const [sku, setSku] = useState(null);
   const [quantity, setQuantity] = useState(1);
@@ -105,10 +106,38 @@ const ListingSingleV2 = observer(() => {
     fetchData();
   }, [id]);
 
+  // xử lí gửi api lên lấy sku
+
+  // const handleOptionSelect = async (payload) => {
+  //   console.log("Dữ liệu gửi API: ", payload);
+  //   // Ví dụ gọi API:
+  //   // getSkusByOptionValueIds({ optionValues: payload });
+  //   await storeProduct.getDetailSKU_ByOptionValue(payload);
+  //   setSku(storeProduct?.data.dataSKU);
+  // };
+  const handleOptionSelect = async (payload) => {
+    console.log("Payload FE:", payload);
+
+    // Validate dữ liệu
+    if (!Array.isArray(payload) || payload.length === 0) {
+      console.warn("Dữ liệu không hợp lệ:", payload);
+      return;
+    }
+
+    try {
+      // ✅ Gửi đúng định dạng backend yêu cầu: { optionValues: [...] }
+      await storeProduct.GetSkusByOptionValueIds({ optionValues: payload });
+
+      // ✅ Cập nhật kết quả nếu có
+      setSku(storeProduct?.data?.dataSKU);
+    } catch (err) {
+      console.error("Lỗi khi tìm SKU:", err);
+    }
+  };
+
   const handleFindSku = async (idItem) => {
     setSelectedOptionValueId(idItem);
     await storeProduct.getDetailSKU_ByOptionValue(idItem);
-
     setSku(storeProduct?.data.dataSKU);
   };
   return (
@@ -173,23 +202,18 @@ const ListingSingleV2 = observer(() => {
               <ProductGallery selectedOptionValueId={selectedOptionValueId} />
               {/* End Car Gallery */}
 
-              <div className="opening_hour_widgets p30 mt30">
-                <div className="wrapper">
-                  <h4 className="title">Tổng quan</h4>
-                  <OverviewMotor />
-                </div>
-              </div>
               {/* End opening_hour_widgets */}
-
               <div className="listing_single_description mt30">
-                <h4 className="mb30">
-                  Mô tả{" "}
-                  <span className="float-end body-color fz13">ID #9535</span>
+                <h4 className="mb30 font-bold">
+                  Mô tả <span className="float-end body-color fz13"></span>
                 </h4>
-                <DescriptionsMotor />
+                <DescriptionsMotor
+                  description={
+                    storeProduct?.data?.dataDetail?.data?.description
+                  }
+                />
               </div>
               {/* End car descriptions */}
-
               <div className="user_profile_location">
                 <h4 className="title">Địa điểm</h4>
                 <div className="property_sp_map mb40">
@@ -207,7 +231,6 @@ const ListingSingleV2 = observer(() => {
                 </div>
               </div>
               {/* End Location */}
-
               {/* End Motor Specifications */}
             </div>
             <div className="col-lg-5 col-xl-5 space-y-6 text-sm text-gray-700">
@@ -223,8 +246,17 @@ const ListingSingleV2 = observer(() => {
 
               {/* Đánh giá */}
               <div className="flex items-center gap-4 text-sm text-gray-600">
-                <span className="text-yellow-500 font-semibold">4.7 ★</span>
-                <span>3,3k Đánh Giá</span>
+                <span>
+                  <strong>Thương hiệu: </strong>
+                  {storeProduct?.data?.dataDetail?.data?.brand?.name ||
+                    "Không rõ"}
+                </span>
+                {sku?.masku && (
+                  <span>
+                    <strong>Mã sku:</strong> {sku.masku}
+                  </span>
+                )}
+
                 <span>28,6k Đã Bán</span>
               </div>
 
@@ -280,32 +312,14 @@ const ListingSingleV2 = observer(() => {
 
               {/* Chính sách */}
 
-              {/* Màu sắc */}
-              {storeProduct?.data?.resultOption_OptionValue?.map((element) => {
-                return (
-                  <div>
-                    <p className="font-medium mb-2">{element.name}</p>
-                    <div className="flex gap-2 flex-wrap">
-                      {element.option_values.map((item) => {
-                        const isActive = item.id === selectedOptionValueId;
-                        return (
-                          <button
-                            key={item.id}
-                            className={`border px-3 py-1 rounded-full text-xs transition-colors ${
-                              isActive
-                                ? "border-red-500 text-red-500"
-                                : "hover:border-red-500 hover:text-red-500"
-                            }`}
-                            onClick={() => handleFindSku(item.id)}
-                          >
-                            {item.value}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })}
+              {/* Hiển thỉ biến thể : Màu sắc , kích thước */}
+
+              <div className="space-y-6">
+                <OptionSelector
+                  optionValues={storeProduct?.data?.optionValues}
+                  onSelectChange={handleOptionSelect}
+                />
+              </div>
 
               {/* Số lượng */}
               <div className="flex items-center gap-4">
@@ -331,7 +345,7 @@ const ListingSingleV2 = observer(() => {
                   </button>
                 </div>
                 <span className="text-gray-500 text-sm">
-                  {maxQuantity} sản phẩm có sẵn
+                  {sku?.quantity_remaining || 100} sản phẩm có sẵn
                 </span>
               </div>
 
@@ -478,3 +492,40 @@ export default ListingSingleV2;
 //                   Mua 2 & giảm 5%
 //                 </div>
 //               </div>
+
+///
+
+// {
+//   storeProduct?.data?.resultOption_OptionValue?.map((element) => {
+//     return (
+//       <div>
+//         <p className="font-medium mb-2">{element.name}</p>
+//         <div className="flex gap-2 flex-wrap">
+//           {element.option_values.map((item) => {
+//             const isActive = item.id === selectedOptionValueId;
+//             return (
+//               <button
+//                 key={item.id}
+//                 className={`border px-3 py-1 rounded-full text-xs transition-colors ${
+//                   isActive
+//                     ? "border-red-500 text-red-500"
+//                     : "hover:border-red-500 hover:text-red-500"
+//                 }`}
+//                 onClick={() => handleFindSku(item.id)}
+//               >
+//                 {item.value}
+//               </button>
+//             );
+//           })}
+//         </div>
+//       </div>
+//     );
+//   });
+// }
+// <span className="text-yellow-500 font-semibold">4.7 ★</span>
+// <div className="opening_hour_widgets p30 mt30">
+//   <div className="wrapper">
+//     <h4 className="title">Tổng quan</h4>
+//     <OverviewMotor />
+//   </div>
+// </div>;
