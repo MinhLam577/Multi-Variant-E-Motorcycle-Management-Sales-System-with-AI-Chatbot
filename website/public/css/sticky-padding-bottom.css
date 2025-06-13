@@ -1,0 +1,15 @@
+.blogCategory-sticky {
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
+    max-height: calc(
+        100vh - 20px
+    ); /* Giới hạn chiều cao tối đa, trừ đi khoảng cách đáy */
+    overflow-y: auto; /* Cho phép cuộn nếu nội dung dài */
+}
+
+.bottom-offset {
+    bottom: 20px; /* Khoảng cách với đáy khi gần cuối trang */
+    position: sticky;
+    top: auto; /* Bỏ top khi áp dụng bottom */
+}

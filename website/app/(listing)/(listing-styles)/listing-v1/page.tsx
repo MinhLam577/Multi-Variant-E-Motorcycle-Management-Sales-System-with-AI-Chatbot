@@ -12,60 +12,52 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useStore } from "@/src/stores";
 import { paginationData } from "@/src/stores/order.store";
-import { EnumProductStore, globalFilterType } from "@/src/stores/product.store";
-// export const metadata = {
-//   title: "Listing V1 || hongson ",
-// };
+import {
+    EnumProductSortBy,
+    EnumProductStore,
+    globalFilterType,
+} from "@/src/stores/productStore";
+import { filterEmptyFields } from "@/utils";
+import { observer } from "mobx-react-lite";
+import { reaction } from "mobx";
 
-const ListingV1 = () => {
-    const searchParams = useSearchParams(); // Lấy searchParams từ URL
-    const [data, setData] = useState([]);
-    const [queryObject, setQueryObject] = useState({});
+const ListingV1 = observer(() => {
     const store = useStore();
     const storeProduct = store.productObservable;
-    const [type, setType] = useState<EnumProductStore>(EnumProductStore.CAR);
+    const [queryObject, setQueryObject] = useState<
+        globalFilterType & paginationData
+    >({
+        brandID: undefined,
+        categoryID: undefined,
+        search: undefined,
+        price_min: undefined,
+        price_max: undefined,
+        type: undefined,
+        sort_by: EnumProductSortBy.UPDATED_AT_DESC,
+        ...storeProduct.pagination,
+    });
 
+    const searchParams = useSearchParams();
+    const [type, setType] = useState<EnumProductStore>();
     useEffect(() => {
-        if (typeof window !== "undefined") {
-            // Chỉ chạy khi component được mount
-            const params = new URLSearchParams(window.location.search);
-            const typeFromParams = params.get("type");
-            if (typeFromParams) {
-                setType(typeFromParams as EnumProductStore); // Cập nhật type từ query params
-            } else {
-                setType(EnumProductStore.CAR);
-            }
+        const typeFromParams = searchParams.get("type");
+        if (typeFromParams) {
+            setType(typeFromParams as EnumProductStore);
         }
-    }, []);
+    }, [searchParams]);
 
-    // Lắng nghe sự thay đổi của query params và gọi API
     useEffect(() => {
-        // Chuyển đổi searchParams thành đối tượng
-        const queryObject = Object.fromEntries(searchParams.entries());
-
-        // Thêm giá trị mặc định cho current và pageSize nếu không có
-        const updatedQueryObject = {
-            ...queryObject,
-            current: Number(queryObject.current) || 1, // Giá trị mặc định cho current
-            pageSize: Number(queryObject.pageSize) || 10, // Giá trị mặc định cho pageSize
-        };
-        setQueryObject(updatedQueryObject); // Cập nhật đối tượng query
-        // Gọi API với các tham số trong query
-        const params = new URLSearchParams(
-            Object.fromEntries(
-                Object.entries(updatedQueryObject).map(([key, value]) => [
-                    key,
-                    String(value),
-                ])
-            )
-        ).toString();
-        fetchData(params, type); // Gọi API với các tham số trong URL
-    }, [searchParams]); // Chạy lại khi searchParams thay đổi
+        if (type) {
+            setQueryObject((prev) => ({
+                ...prev,
+                type: type,
+            }));
+        }
+    }, [type]);
 
     // Function gọi API
-    const fetchData = async (
+    const fetchProductsData = async (
         query:
-            | string
             | (paginationData & globalFilterType)
             | paginationData
             | globalFilterType,
@@ -73,31 +65,73 @@ const ListingV1 = () => {
     ) => {
         try {
             await storeProduct.getListProduct(query, type);
-            setData(storeProduct?.data?.cars?.data || []);
-            // Xe hơi
         } catch (error) {
             console.error("Error fetching data:", error);
         }
     };
 
-    // Cập nhật URL khi người dùng thay đổi lựa chọn
-    const updateUrl = (newParams) => {
-        const newQueryParams = new URLSearchParams(newParams);
-        window.history.replaceState(null, "", `?${newQueryParams.toString()}`); // Thay đổi URL mà không reload
+    const fetchOtherData = async () => {
+        try {
+            await storeProduct.getProductSortBy();
+        } catch (error) {
+            console.error("Error fetching other data:", error);
+        }
     };
 
-    // Hàm xử lý khi người dùng thay đổi lựa chọn
-    const handleFilterChange = (query) => {
-        const updatedParams = {
-            ...queryObject,
-            ...query, // thêm hoặc ghi đè với query mới
-        };
-        updateUrl(updatedParams); // Cập nhật URL và gọi API tự động
+    // Cập nhật URL khi người dùng thay đổi lựa chọn
+    const updateUrl = (newParams: globalFilterType) => {
+        // Lấy các tham số hiện tại từ URL
+        const newQueryParams = new URLSearchParams(
+            Object.entries(newParams).reduce((acc, [key, value]) => {
+                acc[key] = String(value);
+                return acc;
+            }, {} as Record<string, string>)
+        );
+        window.history.replaceState(null, "", `?${newQueryParams.toString()}`);
     };
+
     const handleClearAllFilters = () => {
-        const clearedParams = { type };
-        updateUrl(clearedParams);
+        setQueryObject({
+            brandID: undefined,
+            categoryID: undefined,
+            search: undefined,
+            price_min: undefined,
+            price_max: undefined,
+            type: type,
+            current: 1,
+            pageSize: 10,
+        });
     };
+
+    const scrollToTop = () => {
+        window.scrollTo({
+            top: 250,
+            behavior: "smooth",
+        });
+    };
+
+    useEffect(() => {
+        if (queryObject.type) {
+            const searchObject = filterEmptyFields(queryObject);
+            updateUrl(searchObject);
+            fetchProductsData(searchObject, type);
+        }
+    }, [queryObject]);
+
+    useEffect(() => {
+        fetchOtherData();
+        const reactionLoading = reaction(
+            () => storeProduct.loading,
+            (loading) => {
+                if (!loading) {
+                    scrollToTop();
+                }
+            }
+        );
+        return () => {
+            reactionLoading();
+        };
+    }, []);
 
     return (
         <div className="wrapper">
@@ -124,10 +158,10 @@ const ListingV1 = () => {
             {/* End Main Header Nav For Mobile */}
 
             {/* Advance_search_menu_sectn*/}
-            <section className="advance_search_menu_sectn bgc-thm2 pt20 pb0 mt70-992 filter-style_two">
+            <section className="advance_search_menu_sectn bgc-thm2 pt20 pb0 mt70-992 filter-style_two z-50 lg:z-0">
                 <div className="container">
                     <AdvanceFilter
-                        handleFilterChange={handleFilterChange}
+                        handleFilterChange={setQueryObject}
                         handleClearAllFilters={handleClearAllFilters}
                     />
                 </div>
@@ -140,7 +174,7 @@ const ListingV1 = () => {
                     <div className="row">
                         <div className="col-xl-12">
                             <div className="breadcrumb_content style2">
-                                {type === "motorbike" ? (
+                                {type === EnumProductStore.MOTORBIKE ? (
                                     <h2 className="breadcrumb_title">
                                         Xe máy điện
                                     </h2>
@@ -171,20 +205,36 @@ const ListingV1 = () => {
                 <div className="container">
                     <div className="row">
                         <ListGridFilter
-                            data={storeProduct?.data?.cars?.data || []}
+                            data={
+                                type === EnumProductStore.CAR
+                                    ? storeProduct?.data?.cars.data
+                                    : storeProduct?.data?.motobikes.data || []
+                            }
+                            setQueryObject={setQueryObject}
+                            queryObject={queryObject}
                         />
                     </div>
                     {/* End .row */}
 
                     <div className="row">
-                        <CarItems data={storeProduct?.data?.cars?.data || []} />
+                        <CarItems
+                            data={
+                                type === EnumProductStore.CAR
+                                    ? storeProduct?.data?.cars.data
+                                    : storeProduct?.data?.motobikes.data || []
+                            }
+                            queryObject={queryObject}
+                        />
                     </div>
                     {/* End .row */}
 
                     <div className="row">
                         <div className="col-lg-12">
                             <div className="mbp_pagination mt10">
-                                <Pagination queryObject={queryObject} />
+                                <Pagination
+                                    setQueryObject={setQueryObject}
+                                    queryObject={queryObject}
+                                />
                             </div>
                         </div>
                     </div>
@@ -212,6 +262,6 @@ const ListingV1 = () => {
         </div>
         // End wrapper
     );
-};
+});
 
 export default ListingV1;

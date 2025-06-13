@@ -62,7 +62,7 @@ const Home_1 = () => {
                                     href="/listing-v1/?type=car"
                                     className="more_listing"
                                 >
-                                    Xem tất cả{" "}
+                                    Xem tất cả
                                     <span className="icon">
                                         <span className="fas fa-plus" />
                                     </span>

@@ -1,6 +1,6 @@
 "use client";
 import { ThemeContext } from "@/app/layout/ThemeContext";
-import { EnumProductStore } from "@/src/stores/product.store";
+import { EnumProductStore } from "@/src/stores/productStore";
 import { makeAutoObservable } from "mobx";
 import { observer } from "mobx-react-lite";
 import Image from "next/image";

@@ -82,9 +82,9 @@ const ListingTabContent = () => {
                     {/* End tab-content */}
 
                     <div className="mbp_pagination mt10">
-                        <Pagination
+                        {/* <Pagination
                             queryObject={{ current: 1, pageSize: 10 }}
-                        />
+                        /> */}
                     </div>
                     {/* Pagination */}
                 </div>
