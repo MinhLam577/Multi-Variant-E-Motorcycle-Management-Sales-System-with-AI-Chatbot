@@ -4,16 +4,14 @@ import HeaderSidebar from "../../components/common/HeaderSidebar";
 import HeaderTop from "../../components/common/HeaderTop";
 import MobileMenu from "../../components/common/MobileMenu";
 import LoginSignupModal from "@/app/components/common/login-signup";
-import FilterHeader from "@/app/components/shop/shop-page/FilterHeader";
-import Sidebar from "@/app/components/shop/shop-page/sidebar";
-import Pagination from "@/app/components/common/Pagination";
-import Products from "@/app/components/shop/shop-page/Products";
-
+import Pagination from "@/app/components/blog/Pagination";
+import Sidebar from "@/app/components/blog/Sidebar";
+import BlogList from "@/app/components/blog/BlogList";
 export const metadata = {
-    title: "Shop || hongson ",
+    title: "Blog List || hongson ",
 };
 
-const Shop = () => {
+const Blog = () => {
     return (
         <div className="wrapper">
             <div
@@ -39,14 +37,13 @@ const Shop = () => {
             {/* End Main Header Nav For Mobile */}
 
             {/* Inner Page Breadcrumb */}
-            <section className="inner_page_breadcrumb style2 bgc-f9">
+            <section className="inner_page_breadcrumb !z-[100] lg:!z-[0]">
                 <div className="container">
                     <div className="row">
                         <div className="col-xl-12">
-                            <div className="breadcrumb_content style2">
-                                <h2 className="breadcrumb_title">Shop</h2>
-                                <p className="subtitle">Shop</p>
-                                <ol className="breadcrumb">
+                            <div className="breadcrumb_content">
+                                <h2 className="breadcrumb_title">Blog</h2>
+                                <ol className="breadcrumb fn-sm">
                                     <li className="breadcrumb-item">
                                         <a href="#">Home</a>
                                     </li>
@@ -54,7 +51,7 @@ const Shop = () => {
                                         className="breadcrumb-item active"
                                         aria-current="page"
                                     >
-                                        Shop
+                                        <a href="#">Blog List</a>
                                     </li>
                                 </ol>
                             </div>
@@ -62,47 +59,34 @@ const Shop = () => {
                     </div>
                 </div>
             </section>
-            {/* End Inner Page Breadcrumb */}
+            {/* Inner Page Breadcrumb */}
 
-            {/* Listing Grid View */}
-            <section className="our-listing pb30-991 bgc-f9 pt0">
+            {/* <!-- Main Blog Post Content --> */}
+            <section className="blog_post_container inner_page_section_spacing">
                 <div className="container">
                     <div className="row">
-                        <FilterHeader />
-                        {/* End .sp_search_content */}
+                        <div className="col-lg-8 col-xl-9">
+                            <BlogList />
+                        </div>
+                        {/* End .col-8 */}
+
+                        <div className="col-lg-4 col-xl-3">
+                            <Sidebar />
+                        </div>
+                        {/* End .col-4 */}
                     </div>
                     {/* End .row */}
 
                     <div className="row">
-                        <div className="col-xl-3 dn-lg">
-                            <Sidebar />
-                        </div>
-                        {/* End .col-xl-3 */}
-
-                        <div className="col-xl-9 pr0">
-                            <div className="row">
-                                <Products />
+                        <div className="col-lg-12">
+                            <div className="mbp_pagination mt20">
+                                <Pagination />
                             </div>
-                            {/* End .row */}
-
-                            <div className="row">
-                                <div className="col-lg-12">
-                                    <div className="mbp_pagination mt20">
-                                        {/* <Pagination
-                                            
-                                        /> */}
-                                    </div>
-                                </div>
-                            </div>
-                            {/* End .row */}
                         </div>
-                        {/* End .col-xl-9 */}
                     </div>
-                    {/* End .row */}
                 </div>
-                {/* End .container */}
             </section>
-            {/* End Listing Grid View */}
+            {/* <!-- Main Blog Post Content --> */}
 
             {/* Our Footer */}
             <Footer />
@@ -125,4 +109,4 @@ const Shop = () => {
     );
 };
 
-export default Shop;
+export default Blog;

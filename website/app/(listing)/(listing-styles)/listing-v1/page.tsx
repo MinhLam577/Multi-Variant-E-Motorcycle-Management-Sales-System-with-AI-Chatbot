@@ -19,7 +19,7 @@ import {
 } from "@/src/stores/productStore";
 import { filterEmptyFields } from "@/utils";
 import { observer } from "mobx-react-lite";
-import { reaction, toJS } from "mobx";
+import { reaction } from "mobx";
 
 const ListingV1 = observer(() => {
     const store = useStore();
@@ -105,7 +105,7 @@ const ListingV1 = observer(() => {
 
     const scrollToTop = () => {
         window.scrollTo({
-            top: 0,
+            top: 250,
             behavior: "smooth",
         });
     };
