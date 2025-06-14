@@ -1,14 +1,23 @@
 "use client";
 import menuItems from "@/data/menuItems";
+import { useStore } from "@/src/stores";
+import { CategoryResponseType } from "@/src/stores/categories";
 import { isParentActive } from "@/utils/isMenuActive";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect } from "react";
 import { Menu, MenuItem, Sidebar, SubMenu } from "react-pro-sidebar";
+import { toJS } from "mobx";
+
+export interface IMenuItems {
+    label: string;
+    path?: string;
+    subMenu?: IMenuItems[];
+}
 
 const MobileMenu = () => {
     const path = usePathname();
-
     const socialLinks = [
         {
             name: "Facebook",
@@ -51,6 +60,68 @@ const MobileMenu = () => {
             text: "Thứ 2 - Thứ 7 8:00 - 18:00",
         },
     ];
+
+    const store = useStore();
+    const { categoryObservable } = store;
+    useEffect(() => {
+        const fetchCategories = async () => {
+            await categoryObservable.getListOrder();
+            console.log("Fetched categories:", getMenuItems());
+        };
+        fetchCategories();
+    }, []);
+
+    const convertCategoriesToMenuItems = (
+        categories: CategoryResponseType[],
+        level: number = 0
+    ): IMenuItems[] => {
+        const menuItems: IMenuItems[] = [];
+        categories.forEach((category) => {
+            const menuItem: IMenuItems = {
+                label: category.name,
+            };
+
+            // Chỉ thêm path ở cấp 3 (level === 2) và không có children
+            if (
+                level === 2 ||
+                !category.children ||
+                category.children.length === 0
+            ) {
+                menuItem.path = `/listing-v1?type=${category.type}&categoryID=${category.id}`;
+            }
+
+            // Nếu có children và chưa vượt quá cấp 3, tiếp tục đệ quy
+            if (
+                category.children &&
+                category.children.length > 0 &&
+                level < 2
+            ) {
+                menuItem.subMenu = convertCategoriesToMenuItems(
+                    category.children,
+                    level + 1
+                );
+            }
+            menuItems.push(menuItem);
+        });
+        return menuItems;
+    };
+
+    const getMenuItems = () => {
+        const defaultMenuItems: IMenuItems[] = [
+            { label: "Giới thiệu", path: "/about-us" },
+            { label: "Khuyến mãi", path: "/khuyen-mai" },
+            { label: "Tin tức", path: "/blog-list" },
+            { label: "Liên hệ", path: "/lien-he" },
+        ];
+        if (categoryObservable.data.categories) {
+            const categories = categoryObservable.data.categories;
+            const categoryMenuItems = convertCategoriesToMenuItems(
+                toJS(categories)
+            );
+            return [...categoryMenuItems, ...defaultMenuItems];
+        }
+        return defaultMenuItems;
+    };
 
     return (
         <>
@@ -124,76 +195,120 @@ const MobileMenu = () => {
                         className="my-custom-class"
                     >
                         <Menu>
-                            {menuItems.map((item, index) => (
-                                <SubMenu
-                                    key={index}
-                                    className={
-                                        isParentActive(item.subMenu, path)
-                                            ? "active"
-                                            : ""
-                                    }
-                                    label={item.label}
-                                >
-                                    {item.subMenu.map((subItem, subIndex) =>
-                                        subItem.subMenu ? (
-                                            <SubMenu
-                                                key={subIndex}
-                                                label={subItem.label}
-                                                className={
-                                                    isParentActive(
-                                                        subItem.subMenu,
-                                                        path
-                                                    )
-                                                        ? "active"
-                                                        : ""
-                                                }
-                                            >
-                                                {subItem.subMenu.map(
-                                                    (
-                                                        nestedItem,
-                                                        nestedIndex
-                                                    ) => (
+                            {getMenuItems()?.length &&
+                                getMenuItems().map((item, index) => {
+                                    return item.subMenu?.length ? (
+                                        <SubMenu
+                                            key={index}
+                                            className={
+                                                isParentActive(
+                                                    item?.subMenu,
+                                                    path
+                                                )
+                                                    ? "active"
+                                                    : ""
+                                            }
+                                            label={
+                                                item.label
+                                                    ?.charAt(0)
+                                                    ?.toUpperCase() +
+                                                item.label
+                                                    ?.toLowerCase()
+                                                    ?.slice(1)
+                                            }
+                                        >
+                                            {item?.subMenu?.map(
+                                                (subItem, subIndex) =>
+                                                    subItem.subMenu ? (
+                                                        <SubMenu
+                                                            key={subIndex}
+                                                            label={
+                                                                subItem.label
+                                                            }
+                                                            className={
+                                                                isParentActive(
+                                                                    subItem.subMenu,
+                                                                    path
+                                                                )
+                                                                    ? "active"
+                                                                    : ""
+                                                            }
+                                                        >
+                                                            {subItem.subMenu.map(
+                                                                (
+                                                                    nestedItem,
+                                                                    nestedIndex
+                                                                ) => (
+                                                                    <MenuItem
+                                                                        key={
+                                                                            nestedIndex
+                                                                        }
+                                                                        component={
+                                                                            <Link
+                                                                                className={
+                                                                                    nestedItem.path ==
+                                                                                    path
+                                                                                        ? "active"
+                                                                                        : ""
+                                                                                }
+                                                                                href={
+                                                                                    nestedItem.path
+                                                                                }
+                                                                            />
+                                                                        }
+                                                                    >
+                                                                        {
+                                                                            nestedItem.label
+                                                                        }
+                                                                    </MenuItem>
+                                                                )
+                                                            )}
+                                                        </SubMenu>
+                                                    ) : (
                                                         <MenuItem
-                                                            key={nestedIndex}
+                                                            key={subIndex}
                                                             component={
                                                                 <Link
                                                                     className={
-                                                                        nestedItem.path ==
+                                                                        subItem.path ==
                                                                         path
                                                                             ? "active"
                                                                             : ""
                                                                     }
                                                                     href={
-                                                                        nestedItem.path
+                                                                        subItem.path
                                                                     }
                                                                 />
                                                             }
                                                         >
-                                                            {nestedItem.label}
+                                                            {subItem.label}
                                                         </MenuItem>
                                                     )
-                                                )}
-                                            </SubMenu>
-                                        ) : (
-                                            <MenuItem
-                                                key={subIndex}
-                                                component={
-                                                    <Link
-                                                        className={
-                                                            subItem.path == path
-                                                                ? "active"
-                                                                : ""
-                                                        }
-                                                        href={subItem.path}
-                                                    />
-                                                }
-                                            >
-                                                {subItem.label}
-                                            </MenuItem>
-                                        )
-                                    )}
-                                </SubMenu>
-                            ))}
+                                            )}
+                                        </SubMenu>
+                                    ) : (
+                                        <MenuItem
+                                            key={index}
+                                            component={
+                                                <Link
+                                                    className={
+                                                        item.path == path
+                                                            ? "active"
+                                                            : ""
+                                                    }
+                                                    href={item.path}
+                                                />
+                                            }
+                                        >
+                                            {item.label
+                                                ?.charAt(0)
+                                                ?.toUpperCase() +
+                                                item.label
+                                                    ?.toLowerCase()
+                                                    ?.slice(1)}
+                                        </MenuItem>
+                                    );
+                                })}
                         </Menu>
                     </Sidebar>
                     {/* mobile menu items end */}
