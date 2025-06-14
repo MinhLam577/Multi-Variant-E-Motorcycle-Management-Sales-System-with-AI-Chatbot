@@ -36,11 +36,6 @@ const Header = observer(() => {
             handleSearch();
         }
     };
-    // const onSearch = (value) => {
-    //   // Nếu bạn muốn bao cả dấu ngoặc kép như yêu cầu: "Xe ô tô"
-    //   const encodedValue = encodeURIComponent(`${value}`);
-    //   router.push(`/listing-v1?search=${encodedValue}`);
-    // };
     const [user, setUser] = useState("");
 
     const store = useStore();
@@ -85,14 +80,14 @@ const Header = observer(() => {
                         {/* Menu bên trái */}
                         <ul
                             id="respMenu"
-                            className="w-1/2 flex"
+                            className="w-auto flex"
                             data-menu-style="horizontal"
                         >
                             <MainMenu />
                         </ul>
                         {/* Phần bên phải: Search, Cart, Avatar/User */}
-                        <div className="flex gap-4 text-xl text-white w-1/2 justify-end">
-                            <div className="flex items-center border-b text-white py-1 w-full max-w-sm">
+                        <div className="flex gap-4 text-xl text-white justify-end ml-auto max-w-full w-1/3 xl:w-1/4">
+                            <div className="flex items-center border-b text-white flex-grow max-w-sm w-full">
                                 <span className="text-lg text-white mr-2">
                                     <i className="fas fa-search"></i>
                                 </span>
@@ -105,7 +100,6 @@ const Header = observer(() => {
                                     className="w-full outline-none border-none bg-transparent text-white text-sm placeholder:text-sm"
                                 />
                             </div>
-
                             {!user && (
                                 <PopoverCart
                                     cart={
@@ -146,7 +140,7 @@ const Header = observer(() => {
                                     }
                                 />
                             ) : (
-                                <div className="flex gap-1 items-center">
+                                <div className="flex gap-2 items-center">
                                     <Link
                                         href="/login"
                                         className="cursor-pointer text-[15px] w-20 text-white text-center "

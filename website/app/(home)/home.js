@@ -10,7 +10,6 @@ import Header from "@/app/components/home/Header";
 import Hero from "@/app/components/home/Hero";
 import SaleBanner from "@/app/components/home/SaleBanner";
 import Link from "next/link";
-import VehicleTypeList from "../components/home/VehicleTypeList";
 
 export const metadata = {
     title: "Salon Ô Tô Hồng Sơn | Mua Bán Xe Hơi Uy Tín & Chất Lượng",
@@ -33,7 +32,7 @@ const Home_1 = () => {
             {/* End Hero */}
 
             {/* Featured Product  */}
-            <section className="featured-product mobile_space">
+            <section className="featured-product">
                 <div className="container">
                     <div className="row justify-content-center">
                         <div className="col-lg-8">
@@ -97,46 +96,6 @@ const Home_1 = () => {
                 </div>
             </section>
             {/* End Our Partners */}
-
-            {/* Category Product  */}
-            {/* <section className="featured-product">
-                <div className="container">
-                    <div className="row justify-content-center">
-                        <div className="col-lg-8">
-                            <div className="main-title text-center">
-                                <h2>Cách loại xe</h2>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="row">
-                        <div
-                            className="col-lg-12"
-                            data-aos-delay="100"
-                            data-aos="fade-up"
-                        >
-                            <VehicleTypeList />
-                        </div>
-                    </div>
-
-                    <div className="row mt20">
-                        <div className="col-lg-12">
-                            <div className="text-center">
-                                <Link
-                                    href="/listing-v1/?type=car"
-                                    className="more_listing"
-                                >
-                                    Xem tất cả{" "}
-                                    <span className="icon">
-                                        <span className="fas fa-plus" />
-                                    </span>
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section> */}
-            {/* End Category Product  */}
 
             {/* Sale Banner  */}
             <section className="our-blog pb90 pt-0">
