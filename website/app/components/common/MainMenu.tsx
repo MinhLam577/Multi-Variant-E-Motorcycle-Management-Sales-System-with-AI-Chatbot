@@ -13,7 +13,6 @@ const MainMenu = observer(() => {
     const store = useStore();
     const { categoryObservable } = store;
     const pathname = usePathname();
-    // const path = usePathname();
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -24,8 +23,6 @@ const MainMenu = observer(() => {
     const router = useRouter();
     const staticItems = [
         { id: "s1", name: "GIỚI THIỆU", href: "/about-us" },
-        { id: "s2", name: "KHUYẾN MÃI", href: "/khuyen-mai" },
-        { id: "s3", name: "CỬA HÀNG", href: "/cua-hang" },
         { id: "s4", name: "TIN TỨC", href: "/blog-list" },
         { id: "s6", name: "LIÊN HỆ", href: "/lien-he" },
     ];

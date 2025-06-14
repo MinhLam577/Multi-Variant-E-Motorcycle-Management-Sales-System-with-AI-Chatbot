@@ -1,6 +1,9 @@
+"use client";
 import Link from "next/link";
 import MainMenu from "./MainMenu";
 import Image from "next/image";
+import { headerWithActionsStore } from "./HeaderWidthActions";
+import { EnumProductStore } from "@/src/stores/productStore";
 
 const DefaultHeader = () => {
     return (
@@ -16,7 +19,15 @@ const DefaultHeader = () => {
                             <span className="icon-bar" />
                         </button>
                     </div>
-                    <Link href="/" className="navbar_brand float-start dn-md">
+                    <Link
+                        href="/"
+                        onClick={() => {
+                            headerWithActionsStore.setType(
+                                EnumProductStore.CAR
+                            );
+                        }}
+                        className="navbar_brand float-start dn-md"
+                    >
                         <Image
                             width={140}
                             height={45}
