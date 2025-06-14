@@ -1,11 +1,11 @@
 "use client";
 import { ThemeContext } from "@/app/layout/ThemeContext";
 import { EnumProductStore } from "@/src/stores/productStore";
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, reaction } from "mobx";
 import { observer } from "mobx-react-lite";
 import Image from "next/image";
 import Link from "next/link";
-import { useContext } from "react";
+import { use, useContext, useEffect } from "react";
 
 class HeaderWithActionsStore {
     type: EnumProductStore = EnumProductStore.CAR;
@@ -38,6 +38,26 @@ export const HeaderWithActions = observer(() => {
         headerWithActionsStore.setType(EnumProductStore.MOTORBIKE);
     };
 
+    useEffect(() => {
+        const dispose = reaction(
+            () => headerWithActionsStore.type,
+            (type) => {
+                if (type === EnumProductStore.CAR) {
+                    onChangeTheme("primary-car");
+                } else if (type === EnumProductStore.MOTORBIKE) {
+                    onChangeTheme("primary-bike");
+                }
+            },
+            {
+                fireImmediately: true,
+            }
+        );
+
+        return () => {
+            dispose();
+        };
+    }, []);
+
     return (
         <div className="header_action xl:!flex lg:!flex md:!hidden sm:!hidden hidden">
             {/* <!-- Left Content --> */}
@@ -63,7 +83,7 @@ export const HeaderWithActions = observer(() => {
 
             {/* <!-- Center Logo --> */}
             <div className="flex justify-center items-center">
-                <Link href="/">
+                <Link href="/" onClick={handleLeftClick}>
                     <img
                         src="/images/logo.png"
                         alt="header-logo"

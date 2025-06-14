@@ -5,12 +5,13 @@ import ModalVoucher from "./modalVoucher/modalVoucher";
 import { observer } from "mobx-react-lite";
 import { useStore } from "@/src/stores";
 
-const VoucherSection = observer(( {storeVoucher} : any ) => {
+const VoucherSection = observer(({ storeVoucher }: any) => {
   const store = useStore();
   // const storeVoucher = store.voucherObservable;
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const showModal = () => {
+  const showModal = async () => {
+    // await storeVoucher.getListVoucher_of_User();
     setIsModalOpen(true);
   };
   console.log(storeVoucher.data);

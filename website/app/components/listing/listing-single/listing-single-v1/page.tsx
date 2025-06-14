@@ -7,7 +7,6 @@ import { toCurrency } from "@/utils";
 import BreadCrumb from "../BreadCrumb";
 import ProductGallery from "./ProductGallery";
 import { Descriptions } from "antd";
-import Overview from "../Overview";
 import Features from "../Features";
 import Map from "@/app/components/common/Map";
 import SellerDetail from "../sidebar/SellerDetail";
@@ -21,12 +20,12 @@ import React, { useEffect, useState } from "react";
 
 import { useParams } from "next/navigation";
 import { observer } from "mobx-react-lite";
-import { ConvertSkusOptionValue_UI } from "@/src/stores/productStore";
+import OptionSelector from "../listing-single-v2/Select_OptionValue";
 const ListingSingle = observer(() => {
     const [sku, setSku] = useState(null);
     const [selectedOptionValueId, setSelectedOptionValueId] = useState(null);
     const [showModal, setShowModal] = useState(false);
-
+    const [activeTab, setActiveTab] = useState("description");
     const params = useParams();
     const store = useStore();
     const id = params?.id;
@@ -49,6 +48,28 @@ const ListingSingle = observer(() => {
         setSelectedOptionValueId(idItem);
         await storeProduct.getDetailSKU_ByOptionValue(idItem);
         setSku(storeProduct?.data.dataSKU);
+    };
+
+    const handleOptionSelect = async (payload) => {
+        console.log("Payload FE:", payload);
+
+        // Validate dữ liệu
+        if (!Array.isArray(payload) || payload.length === 0) {
+            console.warn("Dữ liệu không hợp lệ:", payload);
+            return;
+        }
+
+        try {
+            // ✅ Gửi đúng định dạng backend yêu cầu: { optionValues: [...] }
+            await storeProduct.GetSkusByOptionValueIds({
+                optionValues: payload,
+            });
+
+            // ✅ Cập nhật kết quả nếu có
+            setSku(storeProduct?.data?.dataSKU);
+        } catch (err) {
+            console.error("Lỗi khi tìm SKU:", err);
+        }
     };
 
     return (
@@ -87,7 +108,7 @@ const ListingSingle = observer(() => {
                         <div className="col-lg-7 col-xl-8">
                             <div className="single_page_heading_content">
                                 <div className="car_single_content_wrapper">
-                                    <ul className="car_info mb20-md">
+                                    {/*<ul className="car_info mb20-md">
                                         <li className="list-inline-item">
                                             <a href="#">MỚI</a>
                                         </li>
@@ -103,7 +124,7 @@ const ListingSingle = observer(() => {
                                                 13102
                                             </a>
                                         </li>
-                                    </ul>
+                                    </ul>*/}
                                     <h2 className="title">
                                         {
                                             storeProduct.data.dataDetail.data
@@ -125,7 +146,7 @@ const ListingSingle = observer(() => {
                         <div className="col-lg-5 col-xl-4">
                             <div className="single_page_heading_content text-start text-lg-end">
                                 <div className="price_content">
-                                    <div className="price mt60 mb10 mt10-md">
+                                    <div className="price mt-4 mb-4 ">
                                         <h3>{toCurrency(null)}</h3>
                                     </div>
                                 </div>
@@ -146,7 +167,7 @@ const ListingSingle = observer(() => {
                                         role="tablist"
                                     >
                                         <button
-                                            className="nav-link"
+                                            className="nav-link active"
                                             id="nav-description-tab"
                                             data-bs-toggle="tab"
                                             data-bs-target="#nav-description"
@@ -156,17 +177,18 @@ const ListingSingle = observer(() => {
                                         >
                                             Mô tả
                                         </button>
-                                        <button
-                                            className="nav-link active"
-                                            id="nav-overview-tab"
-                                            data-bs-toggle="tab"
-                                            data-bs-target="#nav-overview"
-                                            role="tab"
-                                            aria-controls="nav-overview"
-                                            aria-selected="false"
-                                        >
-                                            Tổng quan
-                                        </button>
+
+                                        {/* <button
+                      className="nav-link active"
+                      //   id="nav-overview-tab"
+                      data-bs-toggle="tab"
+                      data-bs-target="#nav-overview"
+                      role="tab"
+                      aria-controls="nav-overview"
+                      aria-selected="true"
+                    >
+                      Tổng quan
+                    </button> */}
                                         <button
                                             className="nav-link"
                                             id="nav-features-tab"
@@ -207,7 +229,7 @@ const ListingSingle = observer(() => {
                                         id="nav-tabContent"
                                     >
                                         <div
-                                            className="tab-pane fade"
+                                            className="tab-pane fade show active"
                                             id="nav-description"
                                             role="tabpanel"
                                             aria-labelledby="nav-description-tab"
@@ -235,29 +257,25 @@ const ListingSingle = observer(() => {
                                         </div>
                                         {/* End description tabcontent */}
 
-                                        <div
-                                            className="tab-pane fade show active"
-                                            id="nav-overview"
-                                            role="tabpanel"
-                                            aria-labelledby="nav-overview-tab"
-                                        >
-                                            <div className="opening_hour_widgets p30 bdr_none pl0 pr0">
-                                                <div className="wrapper">
-                                                    <h4 className="title">
-                                                        Tổng quan
-                                                    </h4>
-                                                    <Overview
-                                                        specifications={
-                                                            storeProduct?.data
-                                                                ?.dataDetail
-                                                                ?.data
-                                                                .specifications
-                                                        }
-                                                    />
-                                                </div>
-                                            </div>
-                                            {/* End opening_hour_widgets */}
-                                        </div>
+                                        {/* <div
+                      className="tab-pane fade "
+                      id="nav-overview"
+                      role="tabpanel"
+                      aria-labelledby="nav-overview-tab"
+                    >
+                      <div className="opening_hour_widgets p30 bdr_none pl0 pr0">
+                        <div className="wrapper">
+                          <h4 className="title">Tổng quan</h4>
+                          <Overview
+                            specifications={
+                              storeProduct?.data?.dataDetail?.data
+                                .specifications
+                            }
+                          />
+                        </div>
+                      </div>
+                      {/* End opening_hour_widgets */}
+                                        {/* </div> */}
                                         {/* End overview tabcontent */}
 
                                         <div
@@ -376,41 +394,40 @@ const ListingSingle = observer(() => {
                                     })()}
                                 </div>
                             </div>
-                            {storeProduct?.data?.resultOption_OptionValue?.map(
-                                (element: ConvertSkusOptionValue_UI, index) => (
-                                    <React.Fragment key={element.id || index}>
-                                        <h4 className="mb30 mt30">
-                                            {element.name}
-                                        </h4>
-                                        <div className="offer_btns">
-                                            {element.option_values.map(
-                                                (item) => {
-                                                    const isActive =
-                                                        item.id ===
-                                                        selectedOptionValueId;
-                                                    return (
-                                                        <button
-                                                            key={item.id}
-                                                            className={`btn  ofr_btn1 mt0 mb20  border px-3 py-1 rounded-full text-xs transition-colors ${
-                                                                isActive
-                                                                    ? "border-red-500 text-red-500"
-                                                                    : "hover:border-red-500 hover:text-red-500"
-                                                            }`}
-                                                            onClick={() =>
-                                                                handleFindSku(
-                                                                    item.id
-                                                                )
-                                                            }
-                                                        >
-                                                            {item.value}
-                                                        </button>
-                                                    );
-                                                }
-                                            )}
-                                        </div>
-                                    </React.Fragment>
-                                )
-                            )}
+                            {/* {storeProduct?.data?.resultOption_OptionValue?.map(
+                (element: ConvertSkusOptionValue_UI, index) => (
+                  <React.Fragment key={element.id || index}>
+                    <h4 className="mb30 mt30">{element.name}</h4>
+                    <div className="offer_btns">
+                      {element.option_values.map((item) => {
+                        const isActive = item.id === selectedOptionValueId;
+                        return (
+                          <button
+                            key={item.id}
+                            className={`btn  ofr_btn1 mt0 mb20  border px-3 py-1 rounded-full text-xs transition-colors ${
+                              isActive
+                                ? "border-red-500 text-red-500"
+                                : "hover:border-red-500 hover:text-red-500"
+                            }`}
+                            onClick={() => handleFindSku(item.id)}
+                          >
+                            {item.value}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </React.Fragment>
+                )
+              )} */}
+
+                            <div className="space-y-6 my-3">
+                                <OptionSelector
+                                    optionValues={
+                                        storeProduct?.data?.optionValues as any
+                                    }
+                                    onSelectChange={handleOptionSelect}
+                                />
+                            </div>
 
                             <div className="offer_btns">
                                 <div className="text-end">

@@ -1,11 +1,15 @@
+import { formatCurrency } from "@/utils";
 import { Modal } from "antd";
-import React from "react";
+import React, { useState } from "react";
 interface ModalDeliveryProps {
   isModalOpen: boolean;
   handleOk: () => void;
   handleCancel: () => void;
   setIsModalOpen?: (value: boolean) => void; // Nếu bạn định dùng sau này
   title: string;
+  listDelivery: any[];
+  selectedDelivery;
+  setSelectedDelivery;
 }
 export default function ModalDelivery({
   isModalOpen,
@@ -13,6 +17,9 @@ export default function ModalDelivery({
   handleCancel,
   setIsModalOpen,
   title,
+  listDelivery,
+  selectedDelivery,
+  setSelectedDelivery,
 }: ModalDeliveryProps) {
   return (
     <div>
@@ -27,22 +34,40 @@ export default function ModalDelivery({
           <h3 className="text-gray-500 uppercase text-sm font-medium mb-3">
             PHƯƠNG THỨC VẬN CHUYỂN LIÊN KẾT VỚI Ô Tô Hồng Sơn
           </h3>
+          {listDelivery.map((element) => {
+            const isSelected = element.id === selectedDelivery;
+            console.log(selectedDelivery);
+            return (
+              <div
+                key={element.id}
+                className={`border rounded-md p-3 flex justify-between items-start mb-2 cursor-pointer ${
+                  isSelected
+                    ? "border-orange-400 bg-orange-50"
+                    : "border-gray-200"
+                }`}
+                onClick={() => setSelectedDelivery(element.id)}
+              >
+                <div className="flex flex-col space-y-1">
+                  <span className="text-base font-medium text-gray-800">
+                    {element.name}
+                  </span>
+                  <span className="text-sm text-gray-800">
+                    {formatCurrency(element.fee)}
+                  </span>
+                  <div className="text-green-600 text-sm flex items-center">
+                    🚚 {" " + element.description}
+                  </div>
+                </div>
 
-          <div className="border border-orange-200 rounded-md p-4 flex justify-between items-start ">
-            <div className="flex flex-col space-y-1">
-              <span className="text-base font-medium text-gray-800">Nhanh</span>
-              <span className="text-sm text-gray-800">₫22.200</span>
-              <div className="text-green-600 text-sm flex items-center">
-                🚚 Đảm bảo nhận hàng từ{" "}
-                <strong className="mx-1">9 Tháng 6</strong> -{" "}
-                <strong className="ml-1">12 Tháng 6</strong>
+                {isSelected && (
+                  <div className="text-orange-500 text-xl font-bold">✔</div>
+                )}
+                {!isSelected && (
+                  <div className="text-white text-xl font-bold"></div>
+                )}
               </div>
-              <p className="text-xs text-gray-500 mt-1">
-                Nhận Voucher trị giá <strong>₫15.000</strong> nếu đơn hàng được
-                giao đến bạn sau ngày <strong>12 Tháng 6 2025</strong>.
-              </p>
-            </div>
-          </div>
+            );
+          })}
         </div>
       </Modal>
     </div>

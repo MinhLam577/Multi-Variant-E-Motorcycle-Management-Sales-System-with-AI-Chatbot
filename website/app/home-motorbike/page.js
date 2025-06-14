@@ -42,7 +42,7 @@ const HomeMotorbike = () => {
             {/* End Hero */}
 
             {/* Featured Product  */}
-            <section className="car-category mobile_space">
+            <section className="car-category">
                 <div className="container">
                     <div className="row justify-content-center">
                         <div className="col-lg-8">

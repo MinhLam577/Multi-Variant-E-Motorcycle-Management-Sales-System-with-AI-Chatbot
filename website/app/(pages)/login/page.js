@@ -40,7 +40,7 @@ const LogIn = () => {
             {/*  SigIn */}
             <section className="our-log bgc-f9">
                 <div className="container">
-                    <div className="row">
+                    <div className="row relative mt-8 lg:mt-0 z-[100]">
                         <div className="col-md-6 col-lg-6 offset-xl-1 col-xl-5">
                             <div className="login_form mt60-sm">
                                 <h2 className="title">Sign in</h2>
@@ -58,7 +58,7 @@ const LogIn = () => {
                         {/* End .col */}
 
                         <div className="col-md-6 col-lg-5 offset-xl-1 col-xl-5">
-                            <div className="login_with">
+                            <div className="login_with !mt-0 !pl-0 md:!pl-[30px] border-none">
                                 <h2 className="title">Connect With Social</h2>
                                 <SocialLogin />
                             </div>

@@ -20,6 +20,7 @@ import {
 import { filterEmptyFields } from "@/utils";
 import { observer } from "mobx-react-lite";
 import { reaction } from "mobx";
+import { headerWithActionsStore } from "@/app/components/common/HeaderWidthActions";
 
 const ListingV1 = observer(() => {
     const store = useStore();
@@ -52,6 +53,7 @@ const ListingV1 = observer(() => {
                 ...prev,
                 type: type,
             }));
+            headerWithActionsStore.setType(type);
         }
     }, [type]);
 

@@ -45,7 +45,7 @@ const Blog = () => {
                                 <h2 className="breadcrumb_title">Blog</h2>
                                 <ol className="breadcrumb fn-sm">
                                     <li className="breadcrumb-item">
-                                        <a href="#">Home</a>
+                                        <a href="/">Home</a>
                                     </li>
                                     <li
                                         className="breadcrumb-item active"
