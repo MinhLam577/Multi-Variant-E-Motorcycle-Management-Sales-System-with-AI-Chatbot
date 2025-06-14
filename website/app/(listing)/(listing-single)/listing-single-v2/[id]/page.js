@@ -22,36 +22,64 @@ import { useParams, useRouter } from "next/navigation";
 import { observer } from "mobx-react-lite";
 import { message } from "antd";
 import OptionSelector from "@/app/components/listing/listing-single/listing-single-v2/Select_OptionValue";
+import QuantityExceedModal from "@/app/components/modal/modal.quantity.Cart_DetailProduct";
 const ListingSingleV2 = observer(() => {
   const [sku, setSku] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [selectedOptionValueId, setSelectedOptionValueId] = useState(null);
-  const maxQuantity = 3118;
+  const [selectedPayload, setSelectedPayload] = useState(null);
+
+  // mobx
+  const store = useStore();
+  const storeAccount = store.accountObservable;
+  // modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+  // kiểm tra chọn đủ thuộc tính giá trị chưa
+  const [allSelected, setAllSelected] = useState(false);
   const { cartObservable } = useStore();
   const router = useRouter();
   const handleQuantityChange = (e) => {
     const value = e.target.value;
+
     // Cho phép người dùng xoá hết (rỗng) => không bị NaN
+    const remaining = sku?.quantity_remaining || 100;
+
     if (value === "") {
       setQuantity("");
       return;
     }
 
     const num = parseInt(value);
-    if (!isNaN(num) && num > 0 && num <= maxQuantity) {
+    if (!isNaN(num) && num > 0 && num <= remaining) {
       setQuantity(num);
+    } else if (num > remaining) {
+      setQuantity(remaining);
     }
   };
 
   const increaseQuantity = () => {
-    setQuantity((prev) => (prev < maxQuantity ? prev + 1 : prev));
+    const remaining = sku?.quantity_remaining;
+    setQuantity((prev) => (prev < remaining ? prev + 1 : prev));
   };
 
   const decreaseQuantity = () => {
     setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
   };
   const handleAddCart = async () => {
-    if (sku) {
+    if (
+      sku &&
+      allSelected &&
+      (quantity + storeProduct?.data?.dataSKU?.cart_item[0]?.quantity || 0) <=
+        sku?.quantity_remaining
+    ) {
       const body = {
         cart_item: {
           quantity: quantity,
@@ -59,17 +87,32 @@ const ListingSingleV2 = observer(() => {
         },
       };
       await cartObservable.PostCart_ByBuyNow(body);
+      await storeProduct.GetSkusByOptionValueIdsAlreadyLogin({
+        optionValues: selectedPayload,
+      });
       if (
         cartObservable.successMsg == "Thêm sản phẩm vào giỏ hàng thành công"
       ) {
         message.success(cartObservable.successMsg);
       }
+    } else if (
+      (sku &&
+        allSelected &&
+        quantity + storeProduct?.data?.dataSKU?.cart_item[0]?.quantity) ||
+      0 > sku?.quantity_remaining
+    ) {
+      showModal();
     } else {
-      message.error("Bạn chưa chọn màu sắc");
+      message.error("Vui lòng chọn phân loại hàng");
     }
   };
   const handleAddCart_BuyNow = async () => {
-    if (sku) {
+    if (
+      sku &&
+      allSelected &&
+      (quantity + storeProduct?.data?.dataSKU?.cart_item[0]?.quantity || 0) <=
+        sku?.quantity_remaining
+    ) {
       const body = {
         cart_item: {
           quantity: quantity,
@@ -77,19 +120,28 @@ const ListingSingleV2 = observer(() => {
         },
       };
       await cartObservable.PostCart_ByBuyNow(body);
+      await storeProduct.GetSkusByOptionValueIdsAlreadyLogin({
+        optionValues: selectedPayload,
+      });
+
       if (
         cartObservable.successMsg == "Thêm sản phẩm vào giỏ hàng thành công"
       ) {
         message.success(cartObservable.successMsg);
         router.push("/cart"); // Chuyển hướng tới trang thanh toán
       }
+    } else if (
+      (sku &&
+        allSelected &&
+        quantity + storeProduct?.data?.dataSKU?.cart_item[0]?.quantity) ||
+      0 > sku?.quantity_remaining
+    ) {
+      showModal();
     } else {
-      message.error("Bạn chưa chọn màu sắc");
+      message.error("Vui lòng chọn phân loại hàng");
     }
   };
-
   const params = useParams();
-  const store = useStore();
   const id = params?.id;
   const storeProduct = store.productObservable;
   useEffect(() => {
@@ -97,6 +149,7 @@ const ListingSingleV2 = observer(() => {
       if (id && typeof id === "string") {
         try {
           await storeProduct.getDetailProductByID(id);
+          await storeAccount.getAccount();
         } catch (error) {
           console.error("Fetch failed:", error);
         }
@@ -105,16 +158,6 @@ const ListingSingleV2 = observer(() => {
 
     fetchData();
   }, [id]);
-
-  // xử lí gửi api lên lấy sku
-
-  // const handleOptionSelect = async (payload) => {
-  //   console.log("Dữ liệu gửi API: ", payload);
-  //   // Ví dụ gọi API:
-  //   // getSkusByOptionValueIds({ optionValues: payload });
-  //   await storeProduct.getDetailSKU_ByOptionValue(payload);
-  //   setSku(storeProduct?.data.dataSKU);
-  // };
   const handleOptionSelect = async (payload) => {
     console.log("Payload FE:", payload);
 
@@ -123,23 +166,34 @@ const ListingSingleV2 = observer(() => {
       console.warn("Dữ liệu không hợp lệ:", payload);
       return;
     }
-
+    // 👉 Lưu payload vào state
+    setSelectedPayload(payload);
     try {
-      // ✅ Gửi đúng định dạng backend yêu cầu: { optionValues: [...] }
-      await storeProduct.GetSkusByOptionValueIds({ optionValues: payload });
+      const idCustomer = storeAccount.account?.userId;
+      if (idCustomer) {
+        // ✅ Gửi đúng định dạng backend yêu cầu: { optionValues: [...] }
+        await storeProduct.GetSkusByOptionValueIdsAlreadyLogin({
+          optionValues: payload,
+        });
 
-      // ✅ Cập nhật kết quả nếu có
-      setSku(storeProduct?.data?.dataSKU);
+        // ✅ Cập nhật kết quả nếu có
+        setSku(storeProduct?.data?.dataSKU);
+        console.log(storeProduct?.data?.dataSKU.cart_item[0].quantity);
+      } else {
+        // ✅ Gửi đúng định dạng backend yêu cầu: { optionValues: [...] }
+        await storeProduct.GetSkusByOptionValueIdsNoneLogin({
+          optionValues: payload,
+        });
+        // ✅ Cập nhật kết quả nếu có
+        setSku(storeProduct?.data?.dataSKU);
+        console.log(storeProduct?.data?.dataSKU.cart_item[0].quantity);
+        alert(storeProduct?.data?.dataSKU);
+      }
     } catch (err) {
       console.error("Lỗi khi tìm SKU:", err);
     }
   };
-
-  const handleFindSku = async (idItem) => {
-    setSelectedOptionValueId(idItem);
-    await storeProduct.getDetailSKU_ByOptionValue(idItem);
-    setSku(storeProduct?.data.dataSKU);
-  };
+  // };
   return (
     <div className="wrapper">
       <div
@@ -151,19 +205,15 @@ const ListingSingleV2 = observer(() => {
         <HeaderSidebar />
       </div>
       {/* Sidebar Panel End */}
-
       {/* header top */}
       <HeaderTop />
       {/* End header top */}
-
       {/* Main Header Nav */}
       <DefaultHeader />
       {/* End Main Header Nav */}
-
       {/* Main Header Nav For Mobile */}
       <MobileMenu />
       {/* End Main Header Nav For Mobile */}
-
       {/* Agent Single Grid View */}
       <section className="our-agent-single bgc-f9 pb90 mt70-992 pt30">
         <div className="container">
@@ -253,11 +303,17 @@ const ListingSingleV2 = observer(() => {
                 </span>
                 {sku?.masku && (
                   <span>
-                    <strong>Mã sku:</strong> {sku.masku}
+                    <strong>Mã sku:</strong> {sku?.masku}
                   </span>
                 )}
 
-                <span>28,6k Đã Bán</span>
+                <span>
+                  {`Đã Bán ${
+                    sku?.quantity_sold ||
+                    storeProduct?.data?.dataDetail?.data?.totalSold ||
+                    0
+                  }`}{" "}
+                </span>
               </div>
 
               {/* Giá */}
@@ -318,6 +374,7 @@ const ListingSingleV2 = observer(() => {
                 <OptionSelector
                   optionValues={storeProduct?.data?.optionValues}
                   onSelectChange={handleOptionSelect}
+                  setAllSelected={setAllSelected}
                 />
               </div>
 
@@ -345,7 +402,7 @@ const ListingSingleV2 = observer(() => {
                   </button>
                 </div>
                 <span className="text-gray-500 text-sm">
-                  {sku?.quantity_remaining || 100} sản phẩm có sẵn
+                  {sku?.quantity_remaining || storeProduct?.data?.dataDetail?.data?.totalStock} sản phẩm có sẵn
                 </span>
               </div>
 
@@ -386,7 +443,6 @@ const ListingSingleV2 = observer(() => {
         {/* End .container */}
       </section>
       {/* End Agent Single Grid View */}
-
       {/* Car For Rent */}
       <section className="car-for-rent bb1">
         <div className="container">
@@ -427,11 +483,9 @@ const ListingSingleV2 = observer(() => {
         {/* End .container */}
       </section>
       {/* End Car For Rent */}
-
       {/* Our Footer */}
       <Footer />
       {/* End Our Footer */}
-
       {/* Modal */}
       <div
         className="sign_up_modal modal fade"
@@ -444,6 +498,16 @@ const ListingSingleV2 = observer(() => {
         <LoginSignupModal />
       </div>
       {/* End Modal */}
+      <QuantityExceedModal
+        showModal={showModal}
+        handleOk={handleOk}
+        setIsModalOpen={setIsModalOpen}
+        isModalOpen={isModalOpen}
+        quantity_Limit={
+          storeProduct?.data?.dataSKU?.cart_item[0]?.quantity || 0
+        }
+      />
+      ;
     </div>
     // End wrapper
   );

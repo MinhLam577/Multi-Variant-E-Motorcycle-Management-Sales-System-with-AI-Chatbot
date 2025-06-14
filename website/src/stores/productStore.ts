@@ -419,13 +419,33 @@ class ProductObservable {
       this.setStatusMessage(0, e?.message, "");
     }
   }
-  *GetSkusByOptionValueIds(optionValuesPayload: {
+  *GetSkusByOptionValueIdsNoneLogin(optionValuesPayload: {
     optionValues: { option_value_ids: string[] }[];
   }) {
     try {
-      const { data, status, message } = yield SkusAPI.GetSkusByOptionValueIds(
-        optionValuesPayload
-      );
+      const { data, status, message } =
+        yield SkusAPI.GetSkusByOptionValueIdsNoneLogin(optionValuesPayload);
+      console.log(data[0]);
+
+      if (SUCCESS_STATUSES.includes(status)) {
+        this.data.dataSKU = data[0];
+        console.log(this.data.dataSKU);
+        this.setStatusMessage(200, "", message);
+      } else {
+        this.setStatusMessage(0, message, "");
+      }
+    } catch (error) {
+      console.error("Lỗi khi gọi GetSkusByOptionValueIds:", error);
+      this.setStatusMessage(0, "Lỗi gọi API", "");
+    }
+  }
+
+  *GetSkusByOptionValueIdsAlreadyLogin(optionValuesPayload: {
+    optionValues: { option_value_ids: string[] }[];
+  }) {
+    try {
+      const { data, status, message } =
+        yield SkusAPI.GetSkusByOptionValueIdsAlreadyLogin(optionValuesPayload);
       console.log(data[0]);
 
       if (SUCCESS_STATUSES.includes(status)) {
