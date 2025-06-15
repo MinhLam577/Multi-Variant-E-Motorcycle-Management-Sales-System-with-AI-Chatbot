@@ -62,11 +62,11 @@ const MobileMenu = () => {
     ];
 
     const store = useStore();
-    const { categoryObservable } = store;
+    const { categoryObservable, blogCategoryObservable } = store;
     useEffect(() => {
         const fetchCategories = async () => {
             await categoryObservable.getListOrder();
-            console.log("Fetched categories:", getMenuItems());
+            await blogCategoryObservable.getListBlogCategories();
         };
         fetchCategories();
     }, []);
