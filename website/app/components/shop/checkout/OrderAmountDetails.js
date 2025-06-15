@@ -47,7 +47,6 @@ const OrderAmountDetails = observer(({ listDataSelected }) => {
   const store = useStore();
   const storeDelivery = store.deliveryObservable;
   const storeVoucher = store.voucherObservable;
-  console.log(storeVoucher?.dataDetail?.voucher?.discount_amount);
   const subtotal = listDataSelected.reduce(
     (sum, item) => sum + item.skus.price_sold * item.quantity,
     0
