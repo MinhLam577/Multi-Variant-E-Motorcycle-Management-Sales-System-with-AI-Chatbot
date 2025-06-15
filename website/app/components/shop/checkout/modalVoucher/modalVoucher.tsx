@@ -22,10 +22,7 @@ const ModalVoucher = observer((prop: Props) => {
     const [selectedVoucherID, setSelectedVoucherID] = useState("");
     const { setIsModalOpen, isModalOpen, showModal } = prop;
 
-    console.log(prop.listVoucher_User);
     const handleOk = async () => {
-        console.log(selectedCode);
-        console.log(selectedVoucherID);
         setIsModalOpen(false);
         setSelectedCode("");
         await storeVoucher.getUser_Voucher_Detail(selectedVoucherID);
@@ -38,8 +35,6 @@ const ModalVoucher = observer((prop: Props) => {
     };
 
     const handleApply = () => {
-        console.log(selectedCode);
-        console.log(selectedVoucherID);
         setIsModalOpen(false);
         setSelectedCode("");
     };

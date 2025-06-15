@@ -158,7 +158,6 @@ export default class BlogsObservable {
             const response = yield getBlogDetails(id);
             const { data, status, message } = response;
             const success_status = [200, 201, 204];
-            console.log("getBlogDetails response", toJS(response));
             if (success_status.includes(status)) {
                 this.dataById = data;
                 this.status = status;

@@ -22,6 +22,8 @@ import { useParams } from "next/navigation";
 import { observer } from "mobx-react-lite";
 import OptionSelector from "../listing-single-v2/Select_OptionValue";
 const ListingSingle = observer(() => {
+    // kiểm tra chọn đủ thuộc tính giá trị chưa
+    const [allSelected, setAllSelected] = useState(false);
     const [sku, setSku] = useState(null);
     const [selectedOptionValueId, setSelectedOptionValueId] = useState(null);
     const [showModal, setShowModal] = useState(false);
@@ -51,8 +53,6 @@ const ListingSingle = observer(() => {
     };
 
     const handleOptionSelect = async (payload) => {
-        console.log("Payload FE:", payload);
-
         // Validate dữ liệu
         if (!Array.isArray(payload) || payload.length === 0) {
             console.warn("Dữ liệu không hợp lệ:", payload);
@@ -421,12 +421,16 @@ const ListingSingle = observer(() => {
               )} */}
 
                             <div className="space-y-6 my-3">
-                                <OptionSelector
-                                    optionValues={
-                                        storeProduct?.data?.optionValues as any
-                                    }
-                                    onSelectChange={handleOptionSelect}
-                                />
+                                <div className="space-y-6">
+                                    <OptionSelector
+                                        optionValues={
+                                            storeProduct?.data
+                                                ?.optionValues as any
+                                        }
+                                        onSelectChange={handleOptionSelect}
+                                        setAllSelected={setAllSelected}
+                                    />
+                                </div>
                             </div>
 
                             <div className="offer_btns">
