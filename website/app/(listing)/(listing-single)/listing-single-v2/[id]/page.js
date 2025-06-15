@@ -159,6 +159,7 @@ const ListingSingleV2 = observer(() => {
     fetchData();
   }, [id]);
   const handleOptionSelect = async (payload) => {
+    console.log(allSelected);
     console.log("Payload FE:", payload);
 
     // Validate dữ liệu
@@ -178,7 +179,7 @@ const ListingSingleV2 = observer(() => {
 
         // ✅ Cập nhật kết quả nếu có
         setSku(storeProduct?.data?.dataSKU);
-        console.log(storeProduct?.data?.dataSKU.cart_item[0].quantity);
+        console.log(storeProduct?.data?.dataSKU?.cart_item[0]?.quantity);
       } else {
         // ✅ Gửi đúng định dạng backend yêu cầu: { optionValues: [...] }
         await storeProduct.GetSkusByOptionValueIdsNoneLogin({
@@ -186,7 +187,7 @@ const ListingSingleV2 = observer(() => {
         });
         // ✅ Cập nhật kết quả nếu có
         setSku(storeProduct?.data?.dataSKU);
-        console.log(storeProduct?.data?.dataSKU.cart_item[0].quantity);
+        console.log(storeProduct?.data?.dataSKU?.cart_item[0]?.quantity);
         alert(storeProduct?.data?.dataSKU);
       }
     } catch (err) {
@@ -402,7 +403,9 @@ const ListingSingleV2 = observer(() => {
                   </button>
                 </div>
                 <span className="text-gray-500 text-sm">
-                  {sku?.quantity_remaining || storeProduct?.data?.dataDetail?.data?.totalStock} sản phẩm có sẵn
+                  {sku?.quantity_remaining ||
+                    storeProduct?.data?.dataDetail?.data?.totalStock}{" "}
+                  sản phẩm có sẵn
                 </span>
               </div>
 

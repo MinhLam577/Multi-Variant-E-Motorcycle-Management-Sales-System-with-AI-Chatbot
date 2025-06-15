@@ -29,6 +29,6 @@
         "**/*.tsx",
         "app/components/pages/chatbot/page.js",
         "build/types/**/*.ts"
-    ],
+, "app/components/listing/listing-single/listing-single-v1/page.js"    ],
     "exclude": ["node_modules"]
 }

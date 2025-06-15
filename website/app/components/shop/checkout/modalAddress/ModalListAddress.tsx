@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button, message, Modal } from "antd";
 // import UpdateAddress from "../../Account/address/component/updateAddressRecieve/UpdateAddress";
 import { Divider } from "antd";
+import AddressModalCheckoutCreate from "./AddressModalCheckOut_Create";
 // import AddressForm from "../../Account/address/component/createAddress/CreateAddress";
 // import ModalAddAddress from "./ModalAddAddress";
 
@@ -37,22 +38,13 @@ const ModalListAddress = ({
     setOpenListAddress(false);
   };
   const handleCancel = () => {
-    // setValue(+valueAddress);
     const defaultAddress = getAddress.find((addr) => addr.is_default);
     if (defaultAddress) {
       setSelectedAddressId(defaultAddress.id);
     }
     setOpenListAddress(false);
   };
-  // const handleUpdateAddress = (e) => {
-  //   setValue(e.target.value);
-  // };
-  const [value, setValue] = useState();
-  // useEffect(() => {
-  //   if (valueAddress) {
-  //     setValue(valueAddress);
-  //   }
-  // }, [valueAddress]);
+  const [value, setValue] = useState();;
   const handleCancel1 = () => {
     setOpenListAddress(false);
   };
@@ -163,6 +155,13 @@ const ModalListAddress = ({
           </div>
         </div>
       </Modal>
+
+      <AddressModalCheckoutCreate
+        openModalCreate={isModalOpen2}
+        setOpenModalCreate={setIsModalOpen2}
+        fetchUser={storeAddress?.data?.listAddress}
+        userID={idCustomer}
+      />
     </>
   );
 };

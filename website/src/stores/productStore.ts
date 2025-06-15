@@ -444,13 +444,14 @@ class ProductObservable {
     optionValues: { option_value_ids: string[] }[];
   }) {
     try {
+      console.log(optionValuesPayload);
       const { data, status, message } =
         yield SkusAPI.GetSkusByOptionValueIdsAlreadyLogin(optionValuesPayload);
-      console.log(data[0]);
+      console.log(data?.[0]);
 
       if (SUCCESS_STATUSES.includes(status)) {
-        this.data.dataSKU = data[0];
-        console.log(this.data.dataSKU);
+        this.data.dataSKU = data?.[0];
+        console.log(this.data?.dataSKU);
         this.setStatusMessage(200, "", message);
       } else {
         this.setStatusMessage(0, message, "");
