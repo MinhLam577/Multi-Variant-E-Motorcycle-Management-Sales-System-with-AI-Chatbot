@@ -54,7 +54,7 @@ class EMotorbikeObservable {
             this.detail = data?.product;
             this.status = RequestStatus.FETCH_DETAIL_SUCCESS;
         } catch (error) {
-            console.log("errorerror", error);
+            console.log("error", error);
             this.status = RequestStatus.FETCH_DETAIL_FAILED;
         }
     }
@@ -75,7 +75,7 @@ class EMotorbikeObservable {
             // this.detail = data?.product;
             this.status = RequestStatus.FETCH_DETAIL_SUCCESS;
         } catch (error) {
-            console.log("errorerror", error);
+            console.log("error", error);
             this.status = RequestStatus.FETCH_DETAIL_FAILED;
         }
     }

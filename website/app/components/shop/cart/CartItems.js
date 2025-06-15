@@ -7,6 +7,7 @@ import { debounce } from "lodash";
 import { useCallback, useEffect } from "react";
 import { Empty } from "antd";
 import { formatCurrency } from "@/utils";
+import QuantityExceedModal from "../../modal/modal.quantity.Cart_DetailProduct";
 const CartItems = ({
   cartListObserver,
   selectedItems,
@@ -16,6 +17,18 @@ const CartItems = ({
 }) => {
   const [cartItems, setCartItems] = useState([]);
   const [tempQuantities, setTempQuantities] = useState({});
+  const [quantity_Limit, setQuantityLimit] = useState("");
+  // modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
   const handleDeleteItem = async (itemId) => {
     await cartObservable.deleteCartByID(itemId);
     if (cartObservable.status == 200) {
@@ -31,17 +44,32 @@ const CartItems = ({
       [itemId]: value,
     }));
   };
-  const handleQuantityBlur = async (itemId) => {
+
+  const handleQuantityBlur = async (itemId, skus_quantity_remaining) => {
+    // alert(skus_quantity_remaining);
     const inputVal = Number(tempQuantities[itemId]);
     const quantity = isNaN(inputVal) || inputVal < 1 ? 1 : inputVal;
 
-    const item = cartListObserver.find((i) => i.id === itemId);
-    await cartObservable.UpdateQuantityCart(itemId, { quantity: quantity });
-    setTempQuantities((prev) => {
-      const copy = { ...prev };
-      delete copy[itemId];
-      return copy;
-    });
+    // const item = cartListObserver.find((i) => i.id === itemId);
+    if (quantity > skus_quantity_remaining) {
+      setQuantityLimit(skus_quantity_remaining);
+      showModal();
+      await cartObservable.UpdateQuantityCart(itemId, {
+        quantity: skus_quantity_remaining,
+      });
+      setTempQuantities((prev) => {
+        const copy = { ...prev };
+        delete copy[itemId];
+        return copy;
+      });
+    } else {
+      await cartObservable.UpdateQuantityCart(itemId, { quantity: quantity });
+      setTempQuantities((prev) => {
+        const copy = { ...prev };
+        delete copy[itemId];
+        return copy;
+      });
+    }
   };
 
   // Cập nhật cartItems khi cartList thay đổi
@@ -69,16 +97,19 @@ const CartItems = ({
   // };
 
   const handleCheckboxChange = async (itemId) => {
-    const prevSelected = await cartObservable.getSelectedItems(); // 🟢 Lấy giá trị cũ từ observable
-
+    const prevSelected = await cartObservable.getSelectedItems(); // 🟢 Lấy giá trị cũ từ observable , giá trị đã chọn trước đó
+    console.log(prevSelected);
     let newSelected;
     if (prevSelected.includes(itemId)) {
       newSelected = prevSelected.filter((id) => id !== itemId);
     } else {
       newSelected = [...prevSelected, itemId];
     }
+    // mảng selected[] đã chọn mới nhất
+    console.log(newSelected);
 
-    cartObservable.setSelectedItems(newSelected); // 🟢 Cập nhật lại
+    await cartObservable.setSelectedItems(newSelected); // 🟢 Cập nhật lại
+    console.log(cartObservable.listDataSelected);
 
     // Cập nhật state local nếu cần
     setSelectedAllItems(newSelected.length === cartListObserver.length);
@@ -146,7 +177,9 @@ const CartItems = ({
               onChange={(e) =>
                 handleTempQuantityChange(item.id, e.target.value)
               }
-              onBlur={() => handleQuantityBlur(item.id)}
+              onBlur={() =>
+                handleQuantityBlur(item.id, item.skus.skus_quantity_remaining)
+              }
             />
           </td>
           <td>
@@ -170,34 +203,17 @@ const CartItems = ({
           </td>
         </tr>
       ))}
+
+      <QuantityExceedModal
+        showModal={showModal}
+        handleOk={handleOk}
+        setIsModalOpen={setIsModalOpen}
+        isModalOpen={isModalOpen}
+        type="cart"
+        quantity_Limit={quantity_Limit}
+      />
     </>
   );
 };
 
 export default CartItems;
-// onClick={() => handleDeleteItem(item.id)}
-// {item.skus.name}
-// {
-//   id: 1,
-//   imageSrc: "/images/shop/cart1.png",
-//   title: "Silver Heinz Ketchup 350 ml",
-//   price: "$298",
-//   quantity: 4,
-//   total: "$1,298",
-// },
-// {
-//   id: 2,
-//   imageSrc: "/images/shop/cart2.png",
-//   title: "Silver Heinz Ketchup 350 ml",
-//   price: "$298",
-//   quantity: 4,
-//   total: "$1,298",
-// },
-// {
-//   id: 3,
-//   imageSrc: "/images/shop/cart3.png",
-//   title: "Silver Heinz Ketchup 350 ml",
-//   price: "$298",
-//   quantity: 4,
-//   total: "$1,298",
-// },

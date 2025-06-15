@@ -38,15 +38,15 @@ const LogIn = () => {
             {/* End Main Header Nav For Mobile */}
 
             {/*  SigIn */}
-            <section className="our-log bgc-f9">
+            <section className="our-log bgc-f9 !pt-14">
                 <div className="container">
-                    <div className="row relative mt-8 lg:mt-0 z-[100]">
-                        <div className="col-md-6 col-lg-6 offset-xl-1 col-xl-5">
+                    <div className="row relative mt-0 md:max-lg:!mt-12 lg:mt-0 flex flex-col md:flex-row z-[100]">
+                        <div className="col-md-6 col-lg-6 offset-xl-1 col-xl-5 flex-1 !mr-0 sm:max-xl:!mr-[100px]">
                             <div className="login_form mt60-sm">
                                 <h2 className="title">Sign in</h2>
                                 <p className="text-sm">
                                     <span className="text-sm text-gray-500 mr-1">
-                                        Are you new a dealer?
+                                        Are you a new a dealer?
                                     </span>
                                     <Link href="/signup" className="text-base">
                                         Sign up.
@@ -57,8 +57,8 @@ const LogIn = () => {
                         </div>
                         {/* End .col */}
 
-                        <div className="col-md-6 col-lg-5 offset-xl-1 col-xl-5">
-                            <div className="login_with !mt-0 !pl-0 md:!pl-[30px] border-none">
+                        <div className="col-md-6 col-lg-5 offset-xl-1 col-xl-5 flex-1 md:border-l border-gray-200 border-solid !pl-4 md:!pl-[100px]">
+                            <div className="login_with !mt-0 border-none !pl-0">
                                 <h2 className="title">Connect With Social</h2>
                                 <SocialLogin />
                             </div>

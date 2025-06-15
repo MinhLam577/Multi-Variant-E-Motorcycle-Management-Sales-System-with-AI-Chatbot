@@ -2,18 +2,19 @@ import React, { useEffect, useState } from "react";
 import { Button, message, Modal } from "antd";
 // import UpdateAddress from "../../Account/address/component/updateAddressRecieve/UpdateAddress";
 import { Divider } from "antd";
+import AddressModalCheckoutCreate from "./AddressModalCheckOut_Create";
 // import AddressForm from "../../Account/address/component/createAddress/CreateAddress";
 // import ModalAddAddress from "./ModalAddAddress";
 
 const ModalListAddress = ({
-  OpenListAddress,
-  setOpenListAddress,
-  getAddress,
-  title,
-  storeAddress,
-  idCustomer,
-  // valueAddress,
-  // setValueAddress,
+    OpenListAddress,
+    setOpenListAddress,
+    getAddress,
+    title,
+    storeAddress,
+    idCustomer,
+    // valueAddress,
+    // setValueAddress,
 }) => {
   const [isModalOpen2, setIsModalOpen2] = useState(false);
   const [selectedAddressId, setSelectedAddressId] = useState<
@@ -37,84 +38,88 @@ const ModalListAddress = ({
     setOpenListAddress(false);
   };
   const handleCancel = () => {
-    // setValue(+valueAddress);
     const defaultAddress = getAddress.find((addr) => addr.is_default);
     if (defaultAddress) {
       setSelectedAddressId(defaultAddress.id);
     }
     setOpenListAddress(false);
   };
-  // const handleUpdateAddress = (e) => {
-  //   setValue(e.target.value);
-  // };
-  const [value, setValue] = useState();
-  // useEffect(() => {
-  //   if (valueAddress) {
-  //     setValue(valueAddress);
-  //   }
-  // }, [valueAddress]);
+  const [value, setValue] = useState();;
   const handleCancel1 = () => {
     setOpenListAddress(false);
   };
 
-  // Gán mặc định khi modal mở
-  useEffect(() => {
-    const defaultAddress = getAddress.find((addr) => addr.is_default);
-    if (defaultAddress) {
-      setSelectedAddressId(defaultAddress.id);
-    }
-  }, [getAddress]);
-  return (
-    <>
-      <Modal
-        title={title}
-        open={OpenListAddress}
-        centered
-        footer={null}
-        maskClosable={false}
-        onOk={handleOk}
-        onCancel={handleCancel1}
-      >
+    // Gán mặc định khi modal mở
+    useEffect(() => {
+        const defaultAddress = getAddress.find((addr) => addr.is_default);
+        if (defaultAddress) {
+            setSelectedAddressId(defaultAddress.id);
+        }
+    }, [getAddress]);
+    return (
         <>
-          {getAddress.map((element) => {
-            return (
-              <>
-                <div className="flex flex-col md:flex-row mt-3  ">
-                  <div className="w-[80%]">
-                    <div className="my-2 flex items-center gap-2 ">
-                      <input
-                        type="radio"
-                        className=" w-4 h-4 border border-gray-300 rounded-full"
-                        value={element.id}
-                        checked={selectedAddressId === element.id}
-                        onChange={(e) => {
-                          setSelectedAddressId(e.target.value);
-                        }}
-                      />
-                      <span className="font-bold">{element.receiver_name}</span>
-                      <span className="mx-2">|</span>
-                      <span>{element.receiver_phone}</span>
-                    </div>
-                    <div className="my-2">
-                      {element.street +
-                        " , " +
-                        element.ward +
-                        " , " +
-                        element.district +
-                        " , " +
-                        element.province}
-                    </div>
-                    <span
-                      className={`mt-2 rounded-sm px-1 py-[4px] text-xs font-medium   ${
-                        element.is_default ? "text-[#CE4712] bg-[#FFE0C7]" : ""
-                      } `}
-                    >
-                      {element.is_default ? "Mặc định" : ""}
-                    </span>
-                  </div>
-                  <div className="w-[20%]  ">
-                    <div className="flex flex-grow justify-end gap-x-5 items-center">
-                      {/* <UpdateAddress
+            <Modal
+                title={title}
+                open={OpenListAddress}
+                centered
+                footer={null}
+                maskClosable={false}
+                onOk={handleOk}
+                onCancel={handleCancel1}
+            >
+                <>
+                    {getAddress.map((element) => {
+                        return (
+                            <>
+                                <div className="flex flex-col md:flex-row mt-3  ">
+                                    <div className="w-[80%]">
+                                        <div className="my-2 flex items-center gap-2 ">
+                                            <input
+                                                type="radio"
+                                                className=" w-4 h-4 border border-gray-300 rounded-full"
+                                                value={element.id}
+                                                checked={
+                                                    selectedAddressId ===
+                                                    element.id
+                                                }
+                                                onChange={(e) => {
+                                                    setSelectedAddressId(
+                                                        e.target.value
+                                                    );
+                                                }}
+                                            />
+                                            <span className="font-bold">
+                                                {element.receiver_name}
+                                            </span>
+                                            <span className="mx-2">|</span>
+                                            <span>
+                                                {element.receiver_phone}
+                                            </span>
+                                        </div>
+                                        <div className="my-2">
+                                            {element.street +
+                                                " , " +
+                                                element.ward +
+                                                " , " +
+                                                element.district +
+                                                " , " +
+                                                element.province}
+                                        </div>
+                                        <span
+                                            className={`mt-2 rounded-sm px-1 py-[4px] text-xs font-medium   ${
+                                                element.is_default
+                                                    ? "text-[#CE4712] bg-[#FFE0C7]"
+                                                    : ""
+                                            } `}
+                                        >
+                                            {element.is_default
+                                                ? "Mặc định"
+                                                : ""}
+                                        </span>
+                                    </div>
+                                    <div className="w-[20%]  ">
+                                        <div className="flex flex-grow justify-end gap-x-5 items-center">
+                                            {/* <UpdateAddress
                           receiver_address_id={+element.receiver_address_id}
                         /> */}
                     </div>
@@ -163,6 +168,13 @@ const ModalListAddress = ({
           </div>
         </div>
       </Modal>
+
+      <AddressModalCheckoutCreate
+        openModalCreate={isModalOpen2}
+        setOpenModalCreate={setIsModalOpen2}
+        fetchUser={storeAddress?.data?.listAddress}
+        userID={idCustomer}
+      />
     </>
   );
 };

@@ -65,12 +65,10 @@ const OrderHistory = observer(() => {
         const fetchData = async () => {
             await AccountStore.getAccount(); // chờ lấy account trước
             const account = AccountStore.account;
-            // console.log(account);
             await StoreOrder.getListOrder({ customer_id: account?.id }); // ví dụ dùng account để truyền query
 
             const urlParams = new URLSearchParams(window.location.search);
             const status = urlParams.get("status");
-            console.log(status);
             if (status === "PAID") {
                 notification.success({
                     message: "Thanh toán thành công",
@@ -87,7 +85,6 @@ const OrderHistory = observer(() => {
         fetchData();
     }, []);
 
-    // console.log(data)
     const [dataAll, setDataAll] = useState([]);
     // Đảm bảo khi StoreOrder.data.orders thay đổi, dữ liệu được cập nhật
     // useEffect(() => {

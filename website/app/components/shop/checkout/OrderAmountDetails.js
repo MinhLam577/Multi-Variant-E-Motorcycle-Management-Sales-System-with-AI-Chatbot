@@ -47,7 +47,6 @@ const OrderAmountDetails = observer(({ listDataSelected }) => {
   const store = useStore();
   const storeDelivery = store.deliveryObservable;
   const storeVoucher = store.voucherObservable;
-  console.log(storeVoucher?.dataDetail?.voucher?.discount_amount);
   const subtotal = listDataSelected.reduce(
     (sum, item) => sum + item.skus.price_sold * item.quantity,
     0
@@ -67,9 +66,9 @@ const OrderAmountDetails = observer(({ listDataSelected }) => {
     return sum + itemTotal + fee - discountAmount;
   }, 0);
 
-  
   // tiền giảm voucher
-  const calculatePercentDiscount = (percent, total) => formatCurrency((percent / 100) * total);
+  const calculatePercentDiscount = (percent, total) =>
+    formatCurrency((percent / 100) * total);
 
   return (
     <ul className="divide-y divide-gray-200 text-sm text-gray-700">
@@ -109,13 +108,13 @@ const OrderAmountDetails = observer(({ listDataSelected }) => {
           {storeVoucher.dataDetail ? (
             <span className="text-orange-600">
               -{" "}
-              {storeVoucher.dataDetail.voucher.fixed
+              {storeVoucher?.dataDetail?.voucher?.fixed
                 ? calculatePercentDiscount(
-                    storeVoucher?.dataDetail?.voucher?.discount_amount,
+                    storeVoucher?.dataDetail?.voucher?.discount_amount || 0,
                     subtotal
-                  ) 
+                  )
                 : formatCurrency(
-                    storeVoucher.dataDetail.voucher.discount_amount
+                    storeVoucher?.dataDetail?.voucher?.discount_amount || 0
                   )}
             </span>
           ) : (
