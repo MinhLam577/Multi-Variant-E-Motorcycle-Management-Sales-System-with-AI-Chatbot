@@ -61,7 +61,7 @@ const ListingSingle = observer(() => {
 
         try {
             // ✅ Gửi đúng định dạng backend yêu cầu: { optionValues: [...] }
-            await storeProduct.GetSkusByOptionValueIds({
+            await storeProduct.GetSkusByOptionValueIdsAlreadyLogin({
                 optionValues: payload,
             });
 

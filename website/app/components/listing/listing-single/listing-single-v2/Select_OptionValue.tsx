@@ -11,13 +11,15 @@ interface OptionGroup {
 
 // Props truyền vào component
 interface Props {
-    optionValues?: OptionGroup[]; // Dữ liệu các nhóm thuộc tính
-    onSelectChange?: (payload: { option_value_ids: string[] }[]) => void; // Hàm callback khi chọn đủ
+  optionValues?: OptionGroup[]; // Dữ liệu các nhóm thuộc tính
+  onSelectChange?: (payload: { option_value_ids: string[] }[]) => void; // Hàm callback khi chọn đủ
+  setAllSelected: any;
 }
 
 const OptionSelector: React.FC<Props> = ({
-    optionValues = [], // Mặc định là mảng rỗng nếu không có
-    onSelectChange,
+  optionValues = [], // Mặc định là mảng rỗng nếu không có
+  onSelectChange,
+  setAllSelected,
 }) => {
     // Mảng lưu index lựa chọn của từng nhóm (null nếu chưa chọn)
     const [selectedIndexes, setSelectedIndexes] = useState<(number | null)[]>(
@@ -44,19 +46,19 @@ const OptionSelector: React.FC<Props> = ({
 
         setSelectedIndexes(updated); // Cập nhật state
 
-        // Kiểm tra nếu đã chọn đầy đủ tất cả các nhóm
-        const allSelected = updated.every((idx) => idx !== null);
-
-        // Nếu đầy đủ thì format dữ liệu và gọi callback
-        if (allSelected && onSelectChange) {
-            const formattedPayload = optionValues.map((group, idx) => {
-                const selectedIdx = updated[idx]!; // Dấu ! để chắc chắn không null
-                const ids = group.values[selectedIdx][1]; // Lấy mảng id
-                return { option_value_ids: ids };
-            });
-            onSelectChange(formattedPayload);
-        }
-    };
+    // Kiểm tra nếu đã chọn đầy đủ tất cả các nhóm
+    const allSelected = updated.every((idx) => idx !== null);
+    setAllSelected(allSelected);
+    // Nếu đầy đủ thì format dữ liệu và gọi callback
+    if (allSelected && onSelectChange) {
+      const formattedPayload = optionValues.map((group, idx) => {
+        const selectedIdx = updated[idx]!; // Dấu ! để chắc chắn không null
+        const ids = group.values[selectedIdx][1]; // Lấy mảng id
+        return { option_value_ids: ids };
+      });
+      onSelectChange(formattedPayload);
+    }
+  };
 
     return (
         <div className="space-y-6">

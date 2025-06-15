@@ -214,8 +214,12 @@ const endpoints = {
   sku: {
     getDetailImportsById: (id: string) => `/skus/${id}/detail-import`,
     getDetailImportsByIds: () => `/skus/detail-imports-by-ids`,
-    GetSkusByOptionValueIds: () => `/skus/GetSkusByOptionValueIds`,
+    GetSkusByOptionValueIdsAlreadyLogin: () =>
+      `/skus/GetSkusByOptionValueIdsAlreadyLogin`,
+    GetSkusByOptionValueIdsNoneLogin: () =>
+      `/skus/GetSkusByOptionValueIdsNoneLogin`,
   },
+
   // province
   province: {
     list: `/province`,
