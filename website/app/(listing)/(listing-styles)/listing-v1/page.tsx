@@ -186,7 +186,7 @@ const ListingV1 = observer(() => {
 
                                 <ol className="breadcrumb fn-sm mt15-sm">
                                     <li className="breadcrumb-item">
-                                        <a href="#">Home</a>
+                                        <a href="/">Home</a>
                                     </li>
                                     <li
                                         className="breadcrumb-item active"

@@ -83,7 +83,7 @@ export default class CartObservable {
         orderId: null,
         payment_method: null,
         order_url: null,
-    checkoutUrl: null,
+        checkoutUrl: null,
     };
     constructor(rootStore: RootStore) {
         makeAutoObservable(this);
@@ -98,7 +98,7 @@ export default class CartObservable {
         this.getItemCarts_Checkout = this.getItemCarts_Checkout.bind(this);
         this.BuyAgain_InOrder = this.BuyAgain_InOrder.bind(this);
         this.clearSelectedCart = this.clearSelectedCart.bind(this);
-    this.checkoutByPayos = this.checkoutByPayos.bind(this);
+        this.checkoutByPayos = this.checkoutByPayos.bind(this);
     }
 
     *getListCart() {
@@ -203,34 +203,34 @@ export default class CartObservable {
             this.loading = false;
         }
     }
-  *checkoutByPayos(orderID) {
-    try {
-      this.loading = true;
-      const response = yield apiClient.post(
-        endpoints.pay_os.createPayosOrder(),
-        orderID
-      );
-      const { data, status, message } = response;
-      console.log(data);
-      const success_status = [200, 201, 204];
-      if (success_status.includes(status)) {
-        // lấy id cart
-        this.dataOrder.checkoutUrl = data.checkoutUrl;
-        console.log(data.checkoutUrl);
-        this.status = status;
-        this.successMsg = message;
-      } else {
-        this.status = status;
-        this.errorMsg = Array.isArray(message) ? message.join(", ") : message;
-      }
-    } catch (e: any) {
-      console.error(e);
-      this.status = 500;
-      this.errorMsg = e?.message || "Lỗi không xác định";
-    } finally {
-      this.loading = false;
+    *checkoutByPayos(orderID) {
+        try {
+            this.loading = true;
+            const response = yield apiClient.post(
+                endpoints.pay_os.createPayosOrder(),
+                orderID
+            );
+            const { data, status, message } = response;
+            const success_status = [200, 201, 204];
+            if (success_status.includes(status)) {
+                // lấy id cart
+                this.dataOrder.checkoutUrl = data.checkoutUrl;
+                this.status = status;
+                this.successMsg = message;
+            } else {
+                this.status = status;
+                this.errorMsg = Array.isArray(message)
+                    ? message.join(", ")
+                    : message;
+            }
+        } catch (e: any) {
+            console.error(e);
+            this.status = 500;
+            this.errorMsg = e?.message || "Lỗi không xác định";
+        } finally {
+            this.loading = false;
+        }
     }
-  }
     *BuyAgain_InOrder(body) {
         try {
             this.loading = true;
