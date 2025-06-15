@@ -35,6 +35,7 @@ const endpoints = {
     create: "/customers",
     delete: (id) => `/customers/${id}`,
     loginGoogle: "/customers/profile",
+    changePassword_inProfile: "/customers/changePassword",
   },
 
   cars: {
