@@ -528,7 +528,7 @@ const ListingSingleV2 = observer(() => {
                 setIsModalOpen={setIsModalOpen}
                 isModalOpen={isModalOpen}
                 quantity_Limit={
-                    storeProduct?.data?.dataSKU?.cart_item[0]?.quantity || 0
+                    storeProduct?.data?.dataSKU?.cart_item?.[0]?.quantity || 0
                 }
             />
             ;
@@ -538,82 +538,3 @@ const ListingSingleV2 = observer(() => {
 });
 
 export default ListingSingleV2;
-// <div>
-//                 <p className="font-medium mb-1">An Tâm Mua Sắm Cùng Shopee</p>
-//                 <div className="flex items-center gap-2 text-sm text-gray-700">
-//                   <svg
-//                     className="w-4 h-4 text-red-500"
-//                     fill="none"
-//                     viewBox="0 0 24 24"
-//                     stroke="currentColor"
-//                   >
-//                     <path
-//                       strokeLinecap="round"
-//                       strokeLinejoin="round"
-//                       strokeWidth={2}
-//                       d="M12 11c0 1.105-.895 2-2 2s-2-.895-2-2 .895-2 2-2 2 .895 2 2zM5 13l1 6h12l1-6M12 3l1 4H8l1-4h3z"
-//                     />
-//                   </svg>
-//                   Trả hàng miễn phí 15 ngày · Bảo hiểm Thiệt hại sản phẩm
-//                 </div>
-//               </div>
-// <div>
-//                 <p className="font-medium mb-2">Mã Giảm Giá Của Shop</p>
-//                 <div className="flex gap-2 flex-wrap">
-//                   {["Giảm 10%", "Giảm ₫10k", "Giảm ₫3k", "Giảm ₫5k"].map(
-//                     (item, i) => (
-//                       <span
-//                         key={i}
-//                         className="bg-pink-100 text-red-500 px-3 py-1 rounded-full text-xs font-medium"
-//                       >
-//                         {item}
-//                       </span>
-//                     )
-//                   )}
-//                 </div>
-//               </div>
-
-//               {/* Combo khuyến mãi */}
-//               <div>
-//                 <p className="font-medium mb-1">Combo Khuyến Mãi</p>
-//                 <div className="inline-block border border-red-500 text-red-500 px-3 py-1 rounded-full text-xs font-medium">
-//                   Mua 2 & giảm 5%
-//                 </div>
-//               </div>
-
-///
-
-// {
-//   storeProduct?.data?.resultOption_OptionValue?.map((element) => {
-//     return (
-//       <div>
-//         <p className="font-medium mb-2">{element.name}</p>
-//         <div className="flex gap-2 flex-wrap">
-//           {element.option_values.map((item) => {
-//             const isActive = item.id === selectedOptionValueId;
-//             return (
-//               <button
-//                 key={item.id}
-//                 className={`border px-3 py-1 rounded-full text-xs transition-colors ${
-//                   isActive
-//                     ? "border-red-500 text-red-500"
-//                     : "hover:border-red-500 hover:text-red-500"
-//                 }`}
-//                 onClick={() => handleFindSku(item.id)}
-//               >
-//                 {item.value}
-//               </button>
-//             );
-//           })}
-//         </div>
-//       </div>
-//     );
-//   });
-// }
-// <span className="text-yellow-500 font-semibold">4.7 ★</span>
-// <div className="opening_hour_widgets p30 mt30">
-//   <div className="wrapper">
-//     <h4 className="title">Tổng quan</h4>
-//     <OverviewMotor />
-//   </div>
-// </div>;
