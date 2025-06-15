@@ -9,10 +9,8 @@ import MobileMenu from "@/app/components/common/MobileMenu";
 import BreadCrumb from "@/app/components/listing/listing-single/BreadCrumb";
 import DescriptionsMotor from "@/app/components/listing/listing-single/DescriptionsMotor";
 import ProductGallery from "@/app/components/listing/listing-single/listing-single-v2/ProductGallery";
-import OverviewMotor from "@/app/components/listing/listing-single/OverviewMotor";
 import ReleatedMotor from "@/app/components/listing/listing-single/ReleatedMotor";
 import { useStore } from "@/src/stores";
-import { toCurrency } from "@/utils";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -77,7 +75,7 @@ const ListingSingleV2 = observer(() => {
         if (
             sku &&
             allSelected &&
-            (quantity + storeProduct?.data?.dataSKU?.cart_item[0]?.quantity ||
+            (quantity + storeProduct?.data?.dataSKU?.cart_item?.[0]?.quantity ||
                 0) <= sku?.quantity_remaining
         ) {
             const body = {
@@ -100,7 +98,7 @@ const ListingSingleV2 = observer(() => {
             (sku &&
                 allSelected &&
                 quantity +
-                    storeProduct?.data?.dataSKU?.cart_item[0]?.quantity) ||
+                    storeProduct?.data?.dataSKU?.cart_item?.[0]?.quantity) ||
             0 > sku?.quantity_remaining
         ) {
             showModal();
@@ -112,7 +110,7 @@ const ListingSingleV2 = observer(() => {
         if (
             sku &&
             allSelected &&
-            (quantity + storeProduct?.data?.dataSKU?.cart_item[0]?.quantity ||
+            (quantity + storeProduct?.data?.dataSKU?.cart_item?.[0]?.quantity ||
                 0) <= sku?.quantity_remaining
         ) {
             const body = {
@@ -137,7 +135,7 @@ const ListingSingleV2 = observer(() => {
             (sku &&
                 allSelected &&
                 quantity +
-                    storeProduct?.data?.dataSKU?.cart_item[0]?.quantity) ||
+                    storeProduct?.data?.dataSKU?.cart_item?.[0]?.quantity) ||
             0 > sku?.quantity_remaining
         ) {
             showModal();
@@ -187,7 +185,6 @@ const ListingSingleV2 = observer(() => {
                 });
                 // ✅ Cập nhật kết quả nếu có
                 setSku(storeProduct?.data?.dataSKU);
-                alert(storeProduct?.data?.dataSKU);
             }
         } catch (err) {
             console.error("Lỗi khi tìm SKU:", err);
