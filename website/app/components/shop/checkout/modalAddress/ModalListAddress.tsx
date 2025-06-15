@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button, message, Modal } from "antd";
 // import UpdateAddress from "../../Account/address/component/updateAddressRecieve/UpdateAddress";
 import { Divider } from "antd";
+import AddressModalCheckoutCreate from "./AddressModalCheckOut_Create";
 // import AddressForm from "../../Account/address/component/createAddress/CreateAddress";
 // import ModalAddAddress from "./ModalAddAddress";
 
@@ -15,45 +16,38 @@ const ModalListAddress = ({
     // valueAddress,
     // setValueAddress,
 }) => {
-    const [isModalOpen2, setIsModalOpen2] = useState(false);
-    const [selectedAddressId, setSelectedAddressId] = useState<
-        string | undefined
-    >();
-    const handleOk = async () => {
-        // setValueAddress(+value);
-        const { id } = getAddress.find((addr) => addr.is_default);
-        if (selectedAddressId !== id) {
-            // goi api ở đây
-            await storeAddress.updateAddressDefaultCustomer(
-                idCustomer,
-                selectedAddressId
-            );
-            if (storeAddress.status == 200) {
-                message.success(storeAddress.successMsg);
-            }
-        }
-        setOpenListAddress(false);
-    };
-    const handleCancel = () => {
-        // setValue(+valueAddress);
-        const defaultAddress = getAddress.find((addr) => addr.is_default);
-        if (defaultAddress) {
-            setSelectedAddressId(defaultAddress.id);
-        }
-        setOpenListAddress(false);
-    };
-    // const handleUpdateAddress = (e) => {
-    //   setValue(e.target.value);
-    // };
-    const [value, setValue] = useState();
-    // useEffect(() => {
-    //   if (valueAddress) {
-    //     setValue(valueAddress);
-    //   }
-    // }, [valueAddress]);
-    const handleCancel1 = () => {
-        setOpenListAddress(false);
-    };
+  const [isModalOpen2, setIsModalOpen2] = useState(false);
+  const [selectedAddressId, setSelectedAddressId] = useState<
+    string | undefined
+  >();
+  const handleOk = async () => {
+    // setValueAddress(+value);
+    const { id } = getAddress.find((addr) => addr.is_default);
+    console.log(id + "" + selectedAddressId);
+    if (selectedAddressId !== id) {
+      console.log(selectedAddressId);
+      // goi api ở đây
+      await storeAddress.updateAddressDefaultCustomer(
+        idCustomer,
+        selectedAddressId
+      );
+      if (storeAddress.status == 200) {
+        message.success(storeAddress.successMsg);
+      }
+    }
+    setOpenListAddress(false);
+  };
+  const handleCancel = () => {
+    const defaultAddress = getAddress.find((addr) => addr.is_default);
+    if (defaultAddress) {
+      setSelectedAddressId(defaultAddress.id);
+    }
+    setOpenListAddress(false);
+  };
+  const [value, setValue] = useState();;
+  const handleCancel1 = () => {
+    setOpenListAddress(false);
+  };
 
     // Gán mặc định khi modal mở
     useEffect(() => {
@@ -128,56 +122,60 @@ const ModalListAddress = ({
                                             {/* <UpdateAddress
                           receiver_address_id={+element.receiver_address_id}
                         /> */}
-                                        </div>
-                                    </div>
-                                </div>
-                                <Divider />
-                            </>
-                        );
-                    })}
-                </>
-                <div className=" flex gap-x-10 justify-between ">
-                    <div className="font-bold flex gap-x-2 justify-center items-center">
-                        Thêm địa chỉ
-                        <div
-                            className="text-white  "
-                            onClick={() => {
-                                setIsModalOpen2(true);
-                            }}
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth="1.5"
-                                stroke="currentColor"
-                                className="size-6 bg-[#1A51A2] rounded-full"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                                />
-                            </svg>
-                        </div>
                     </div>
-                    <div className="flex gap-2">
-                        <button
-                            className="px-3 py-2 bg-blue rounded-lg"
-                            onClick={handleCancel}
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            className="px-3 py-2 bg-blue rounded-lg"
-                            onClick={handleOk}
-                        >
-                            Lưu
-                        </button>
-                    </div>
+                  </div>
                 </div>
-            </Modal>
+                <Divider />
+              </>
+            );
+          })}
         </>
-    );
+        <div className=" flex gap-x-10 justify-between ">
+          <div className="font-bold flex gap-x-2 justify-center items-center">
+            Thêm địa chỉ
+            <div
+              className="text-white  "
+              onClick={() => {
+                setIsModalOpen2(true);
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="size-6 bg-[#1A51A2] rounded-full"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                />
+              </svg>
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <button
+              className="px-3 py-2 bg-blue rounded-lg"
+              onClick={handleCancel}
+            >
+              Cancel
+            </button>
+            <button className="px-3 py-2 bg-blue rounded-lg" onClick={handleOk}>
+              Lưu
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      <AddressModalCheckoutCreate
+        openModalCreate={isModalOpen2}
+        setOpenModalCreate={setIsModalOpen2}
+        fetchUser={storeAddress?.data?.listAddress}
+        userID={idCustomer}
+      />
+    </>
+  );
 };
 export default ModalListAddress;

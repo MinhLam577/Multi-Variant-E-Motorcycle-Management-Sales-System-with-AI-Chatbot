@@ -44,7 +44,7 @@ const CartItems = ({
       [itemId]: value,
     }));
   };
-  
+
   const handleQuantityBlur = async (itemId, skus_quantity_remaining) => {
     // alert(skus_quantity_remaining);
     const inputVal = Number(tempQuantities[itemId]);
@@ -97,16 +97,19 @@ const CartItems = ({
   // };
 
   const handleCheckboxChange = async (itemId) => {
-    const prevSelected = await cartObservable.getSelectedItems(); // 🟢 Lấy giá trị cũ từ observable
-
+    const prevSelected = await cartObservable.getSelectedItems(); // 🟢 Lấy giá trị cũ từ observable , giá trị đã chọn trước đó
+    console.log(prevSelected);
     let newSelected;
     if (prevSelected.includes(itemId)) {
       newSelected = prevSelected.filter((id) => id !== itemId);
     } else {
       newSelected = [...prevSelected, itemId];
     }
+    // mảng selected[] đã chọn mới nhất
+    console.log(newSelected);
 
-    cartObservable.setSelectedItems(newSelected); // 🟢 Cập nhật lại
+    await cartObservable.setSelectedItems(newSelected); // 🟢 Cập nhật lại
+    console.log(cartObservable.listDataSelected);
 
     // Cập nhật state local nếu cần
     setSelectedAllItems(newSelected.length === cartListObserver.length);
