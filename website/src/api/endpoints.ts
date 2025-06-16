@@ -23,20 +23,20 @@ const endpoints = {
         contactPrice: "auth/contact",
     },
 
-    customers: {
-        details: (id) => `/customers/${id}`,
-        update: (id) => `/customers/${id}`,
-        setRole: (id) => `/customers/${id}`,
-        changePassword: (id) => `/customers/${id}`,
-        uploadAvatar: "/customers/upload",
-        list: (page, limit) => `customers/?page=${page}&limit=${limit}`,
-        // tạo thông qua import file
-        callBulkCreateCustomer: "/users/callBulkCreateCustomer",
-        create: "/customers",
-        delete: (id) => `/customers/${id}`,
-        loginGoogle: "/customers/profile",
-    },
-
+  customers: {
+    details: (id) => `/customers/${id}`,
+    update: (id) => `/customers/${id}`,
+    setRole: (id) => `/customers/${id}`,
+    changePassword: (id) => `/customers/${id}`,
+    uploadAvatar: "/customers/upload",
+    list: (page, limit) => `customers/?page=${page}&limit=${limit}`,
+    // tạo thông qua import file
+    callBulkCreateCustomer: "/users/callBulkCreateCustomer",
+    create: "/customers",
+    delete: (id) => `/customers/${id}`,
+    loginGoogle: "/customers/profile",
+    changePassword_inProfile: "/customers/changePassword",
+  },
     cars: {
         list: (page, size) => `/products?current=${page}&pageSize=${size}`,
         details: (id) => `/cars/${id}`,
