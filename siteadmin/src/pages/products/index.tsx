@@ -13,7 +13,7 @@ import {
 import ProductHeader from "src/components/products/ProductHeader";
 import CustomizeTab from "src/components/common/CustomizeTab";
 import { reaction, toJS } from "mobx";
-import { generateUUIDV4, urlToBase64 } from "src/utils";
+import { generateUUIDV4 } from "src/utils";
 import { CategoryResponseType } from "src/stores/categories.store";
 import ModalCreateProduct, {
     IFormListRowData,

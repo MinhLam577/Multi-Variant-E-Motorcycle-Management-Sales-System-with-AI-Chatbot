@@ -3,7 +3,7 @@ import GroupActionButton from "../../components/GroupActionButton";
 import TableComponent from "../../containers/TableComponent";
 import { Button } from "antd";
 import { useStore } from "../../stores";
-import { ALL_PERMISSIONS } from "../../constants/permissions";
+import { ALL_MODULES, ALL_PERMISSIONS } from "../../constants/permissions";
 import { useEffect, useState } from "react";
 
 const getColumnsConfig = ({
@@ -75,6 +75,7 @@ const getColumnsConfig = ({
                         handleUpdate={canUpdate ? handleEditCategories : ""}
                         handleDelete={canDelete ? handleDeleteCategories : ""}
                         item={item}
+                        moduleName={ALL_MODULES.CATEGORIES}
                     />
                 );
             },

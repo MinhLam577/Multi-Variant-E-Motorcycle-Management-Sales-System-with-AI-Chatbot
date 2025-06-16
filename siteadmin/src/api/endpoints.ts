@@ -137,7 +137,7 @@ const endpoints = {
 
     //permission
     permission: {
-        list: (page, size) => `/permission?current=${page}&pageSize=${size}`,
+        list: (query: string) => `/permission?${query}`,
         details: (id) => `/permission/${id}`,
         update: (id) => `/permission/${id}`,
         delete: (id) => `/permission/${id}`,
@@ -241,6 +241,10 @@ const endpoints = {
         create: () => `/cart`,
         upload: "/cart/upload-image",
         uploads: "/cart/upload-images",
+    },
+
+    permissionModule: {
+        list: () => `/Permissions_Modules`,
     },
 };
 

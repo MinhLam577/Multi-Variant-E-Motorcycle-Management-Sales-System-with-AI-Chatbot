@@ -1,43 +1,51 @@
 import { action, makeObservable, observable } from "mobx";
 import secureLocalStorage from "react-secure-storage";
 import apiClient from "../api/apiClient";
-import endpoints from "../api/endpoints.ts";
+import endpoints from "../api/endpoints";
 import { keyStorageAccount } from "../constants";
+import { paginationData, RootStore } from "./base";
+import { getErrorMessage } from "src/utils";
 
 class UserObservable {
     roles = null;
     me = null;
-    status = null; // Thêm dòng này để trạng thái có thể theo dõ
-    rootStore = null; // Thêm rootStore để lưu trữ tham chiếu
-    constructor(rootStore) {
+    status = null;
+    rootStore: RootStore = null;
+    errorMsg: string = "";
+    account = null;
+    pagination: paginationData = {
+        current: 1,
+        pageSize: 10,
+    };
+    constructor(rootStore: RootStore) {
         makeObservable(this, {
-            getMe: action.bound, //marks a method as an action that will modify the state. Giữ ngữ cảnh của this:
-            me: observable, // lưu trữ state, theo dõi sự thay đổi ,me thay đổi, component sẽ tự động render lại!
-            status: observable, // Cần khai báo trạng thái là observable
-            updateUserProfile: action.bound, //// được bind với instance
+            // getMe: action.bound,
+            me: observable,
+            status: observable,
+            updateUserProfile: action.bound,
         });
-        this.rootStore = rootStore; // Gán rootStore
+        this.rootStore = rootStore;
     }
 
-    async getMe(userId) {
-        this.status = "submitting";
-        try {
-            const { data, status } = await apiClient.get(
-                endpoints.user.me(userId)
-            );
+    // async getMe(userId: string) {
+    //     this.status = "submitting";
+    //     try {
+    //         const { data, status } = await apiClient.get(
+    //             endpoints.user.me(userId)
+    //         );
 
-            if (status !== 200) {
-                this.status = "fetchFailed";
-                this.errorMsg = "Email hoặc mật khẩu không đúng!";
-                return;
-            }
-            this.me = data;
-            this.status = "fetchSuccess";
-        } catch (error) {
-            this.status = "fetchFailed";
-            this.errorMsg = error?.message;
-        }
-    }
+    //         if (status !== 200) {
+    //             this.status = "fetchFailed";
+    //             this.errorMsg = "Email hoặc mật khẩu không đúng!";
+    //             return;
+    //         }
+    //         this.me = data;
+    //         this.status = "fetchSuccess";
+    //     } catch (error) {
+    //         this.status = "fetchFailed";
+    //         this.errorMsg = error?.message;
+    //     }
+    // }
 
     async updateUserProfile(dto, userId) {
         this.status = "submitting";
@@ -74,8 +82,12 @@ class UserObservable {
             this.status = "updateSuccess";
         } catch (error) {
             console.log("error", error);
+            const errorMessage = getErrorMessage(
+                error,
+                "Cập nhật thông tin người dùng thất bại"
+            );
             this.status = "updateFailed";
-            this.errorMsg = error?.message;
+            this.errorMsg = errorMessage;
         }
     }
 

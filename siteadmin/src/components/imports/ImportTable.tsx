@@ -5,11 +5,12 @@ import React from "react";
 import { useStore } from "src/stores";
 import { observer } from "mobx-react-lite";
 import { ImportResponseType } from "src/stores/imports.store";
-import GroupActionButton from "../../components/GroupActionButton";
+import GroupActionButton from "../GroupActionButton";
 import {
     processWithModals,
     ProcessModalName,
 } from "../../containers/processWithModals.js";
+import { ALL_MODULES } from "src/constants/permissions";
 
 interface ImportTableProps {
     data: ImportResponseType[];
@@ -97,6 +98,7 @@ const ImportTable: React.FC<ImportTableProps> = ({
                             }}
                             handleUpdate={handleUpdate}
                             item={item}
+                            moduleName={ALL_MODULES.IMPORT}
                         />
                     );
                 },

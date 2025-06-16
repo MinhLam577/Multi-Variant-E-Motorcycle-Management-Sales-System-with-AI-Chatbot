@@ -23,6 +23,8 @@ import OrderObservable, {
 import SkusObservable from "../../stores/skus.store";
 import { CreateDetailExport, ExportOrder } from "src/api/order.api";
 import { useStore } from "src/stores";
+import Access from "src/access/access";
+import { ALL_PERMISSIONS } from "src/constants/permissions";
 export const OrderDetailMode = {
     View: 1,
     Edit: 2,
@@ -281,34 +283,44 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
                     </h2>
                     <div className="flex gap-2">
                         <CustomizeButton>
-                            <Button onClick={onPrint}>In hóa đơn</Button>
-                            <Button
-                                onClick={() => {
-                                    const orderDetailStatus:
-                                        | string
-                                        | undefined =
-                                        order_store.data.order_detail
-                                            ?.order_status;
-                                    const status: number | undefined =
-                                        EnumOrderStatusesValue[
-                                            orderDetailStatus
-                                        ];
-                                    if (
-                                        status ===
-                                        EnumOrderStatusesValue.PENDING
-                                    ) {
-                                        set_open_export_order(true);
-                                    } else {
-                                        store.setStatusMessage(
-                                            400,
-                                            "Chỉ có thể xác nhận khi đơn hàng đang ở trạng thái chờ xử lí",
-                                            ""
-                                        );
-                                    }
-                                }}
+                            <Access
+                                permission={ALL_PERMISSIONS.ORDERS.PRINT_ORDER}
+                                hideChildren
                             >
-                                Xác nhận đơn
-                            </Button>
+                                <Button onClick={onPrint}>In hóa đơn</Button>
+                            </Access>
+                            <Access
+                                permission={ALL_PERMISSIONS.ORDERS.CONFIRM}
+                                hideChildren
+                            >
+                                <Button
+                                    onClick={() => {
+                                        const orderDetailStatus:
+                                            | string
+                                            | undefined =
+                                            order_store.data.order_detail
+                                                ?.order_status;
+                                        const status: number | undefined =
+                                            EnumOrderStatusesValue[
+                                                orderDetailStatus
+                                            ];
+                                        if (
+                                            status ===
+                                            EnumOrderStatusesValue.PENDING
+                                        ) {
+                                            set_open_export_order(true);
+                                        } else {
+                                            store.setStatusMessage(
+                                                400,
+                                                "Chỉ có thể xác nhận khi đơn hàng đang ở trạng thái chờ xử lí",
+                                                ""
+                                            );
+                                        }
+                                    }}
+                                >
+                                    Xác nhận đơn
+                                </Button>
+                            </Access>
                         </CustomizeButton>
                     </div>
                 </div>
@@ -342,22 +354,32 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
                         >
                             Cập nhật trạng thái
                         </Button>
-                        <Button
-                            onClick={() => {
-                                setTypeOpenReasonModal("failed_delivery");
-                                setOpenReasonModal(true);
-                            }}
+                        <Access
+                            permission={ALL_PERMISSIONS.ORDERS.FAIL_DELIVERY}
+                            hideChildren
                         >
-                            Giao thất bại
-                        </Button>
-                        <Button
-                            onClick={() => {
-                                setTypeOpenReasonModal("cancel");
-                                setOpenReasonModal(true);
-                            }}
+                            <Button
+                                onClick={() => {
+                                    setTypeOpenReasonModal("failed_delivery");
+                                    setOpenReasonModal(true);
+                                }}
+                            >
+                                Giao thất bại
+                            </Button>
+                        </Access>
+                        <Access
+                            permission={ALL_PERMISSIONS.ORDERS.CANCEL}
+                            hideChildren
                         >
-                            Hủy đơn
-                        </Button>
+                            <Button
+                                onClick={() => {
+                                    setTypeOpenReasonModal("cancel");
+                                    setOpenReasonModal(true);
+                                }}
+                            >
+                                Hủy đơn
+                            </Button>
+                        </Access>
                     </CustomizeButton>
                 </div>
                 <ModalConfirmReason

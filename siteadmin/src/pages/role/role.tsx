@@ -12,8 +12,6 @@ import { useStore } from "src/stores";
 import { observer } from "mobx-react-lite";
 import AdminBreadCrumb from "src/components/common/AdminBreadCrumb";
 import { getBreadcrumbItems } from "src/containers/layout";
-import UserSearch from "src/components/users/UserSearch";
-import CustomizeTab from "src/components/common/CustomizeTab";
 
 const RolePage = observer(() => {
     const [openModal, setOpenModal] = useState<boolean>(false);
@@ -175,20 +173,6 @@ const RolePage = observer(() => {
         }
 
         return temp;
-    };
-
-    const handleSearchFormRender = (form: any) => {
-        return (
-            <div className="flex gap-4">
-                <form.Item name="name" label="Tên vai trò">
-                    <input
-                        type="text"
-                        placeholder="Nhập tên vai trò"
-                        className="ant-input"
-                    />
-                </form.Item>
-            </div>
-        );
     };
 
     return (

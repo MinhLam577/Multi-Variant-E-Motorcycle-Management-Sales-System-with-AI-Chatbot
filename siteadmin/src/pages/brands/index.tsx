@@ -23,6 +23,8 @@ import {
 import BaseAPI from "src/api/base";
 import "./index.css";
 import { UploadChangeParam } from "antd/lib/upload";
+import Access from "src/access/access";
+import { ALL_PERMISSIONS } from "src/constants/permissions";
 
 const BrandsPage = () => {
     const [globalFilters, setGlobalFilters] =
@@ -266,20 +268,22 @@ const BrandsPage = () => {
                     items={getBreadcrumbItems(location.pathname)}
                 />
 
-                <div className="flex gap-2">
-                    <Button
-                        type="primary"
-                        icon={<PlusCircleOutlined />}
-                        onClick={() => {
-                            createForm.resetFields();
-                            setOpenModalCreate(true);
-                        }}
-                        size="large"
-                        className="!rounded-none"
-                    >
-                        Tạo mới
-                    </Button>
-                </div>
+                <Access permission={ALL_PERMISSIONS.BRANDS.CREATE} hideChildren>
+                    <div className="flex gap-2">
+                        <Button
+                            type="primary"
+                            icon={<PlusCircleOutlined />}
+                            onClick={() => {
+                                createForm.resetFields();
+                                setOpenModalCreate(true);
+                            }}
+                            size="large"
+                            className="!rounded-none"
+                        >
+                            Tạo mới
+                        </Button>
+                    </div>
+                </Access>
             </div>
             <div className="w-full flex flex-col gap-4 bg-[var(--content-table-background-color)] rounded-md px-4 pb-4 my-6 animate-slideUp">
                 <CustomizeTab

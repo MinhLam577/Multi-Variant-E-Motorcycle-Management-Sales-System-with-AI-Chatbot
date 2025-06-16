@@ -5,25 +5,24 @@ import { useAuth } from "../contexts/AuthProvider";
 import AppLayout from "./layout";
 
 const ProtectedRoute = ({ children }) => {
-  const { user } = useAuth();
-  if (!user?.access_token) return <Navigate to="/login" replace />;
+    const { user } = useAuth();
+    if (!user?.access_token) return <Navigate to="/login" replace />;
 
-  const allowedRoles = [
-    UserRoleConstant.admin,
-    UserRoleConstant.Staff,
-    // UserRoleConstant.USER,
-    UserRoleConstant.warehouse_manager,
-    UserRoleConstant.delivery_staff,
-  ];
+    const allowedRoles = [
+        UserRoleConstant.admin,
+        UserRoleConstant.Staff,
+        UserRoleConstant.warehouse_manager,
+        UserRoleConstant.delivery_staff,
+    ];
 
-  if (!allowedRoles.includes(user?.Roles))
-    return <Navigate to="/Forbidden" replace />;
+    if (!allowedRoles.includes(user?.Roles))
+        return <Navigate to="/Forbidden" replace />;
 
-  return <AppLayout>{children}</AppLayout>;
+    return <AppLayout>{children}</AppLayout>;
 };
 
 ProtectedRoute.propTypes = {
-  children: PropTypes.node.isRequired,
+    children: PropTypes.node.isRequired,
 };
 
 export default ProtectedRoute;

@@ -1,79 +1,72 @@
-// import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-// import { IPermission } from "@/types/backend";
-// import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { ActionType, ProColumns } from "@ant-design/pro-components";
-import { Button, Popconfirm, Space, message, notification } from "antd";
+import {
+    Button,
+    Popconfirm,
+    Space,
+    message,
+    notification,
+    ConfigProvider,
+} from "antd";
+import viVN from "antd/lib/locale/vi_VN";
 import { useState, useRef, useEffect } from "react";
-import dayjs from "dayjs";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
-import { IPermission } from "src/types/backend";
 import { colorMethod } from "src/constants/until";
-
-// import { callDeletePermission } from "@/config/api";
 import queryString from "query-string";
 import DataTable from "src/components/data-table";
 import apiClient from "src/api/apiClient";
 import endpoints from "src/api/endpoints";
 import ModalPermission from "src/components/setting/permission/modal.permission";
 import ViewDetailPermission from "src/components/setting/permission/view.permission";
-import { set } from "mobx";
 import { ALL_PERMISSIONS } from "src/constants/permissions";
 import Access from "src/access/access";
 import { useStore } from "src/stores";
 import { observer } from "mobx-react-lite";
 import AdminBreadCrumb from "src/components/common/AdminBreadCrumb";
 import { getBreadcrumbItems } from "src/containers/layout";
-// import { fetchPermission } from "@/redux/slice/permissionSlide";
-// import ViewDetailPermission from "@/components/admin/permission/view.permission";
-// import ModalPermission from "@/components/admin/permission/modal.permission";
-// import { colorMethod } from "@/config/utils";
-// import Access from "@/components/share/access";
-// import { ALL_PERMISSIONS } from "@/config/permissions";
+import { toJS } from "mobx";
+import { PermissionResponseType } from "src/stores/permission.store";
 
 const PermissionPage = observer(() => {
     const [openModal, setOpenModal] = useState<boolean>(false);
-    const [dataInit, setDataInit] = useState<IPermission | null>(null);
+    const [dataInit, setDataInit] = useState<PermissionResponseType | null>(
+        null
+    );
     const [openViewDetail, setOpenViewDetail] = useState<boolean>(false);
     const tableRef = useRef<ActionType | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
 
-    const [permissions, setPermission] = useState([]);
+    // const [permissions, setPermission] = useState([]);
     const handleDeletePermission = async (_id: string | undefined) => {
         if (_id) {
             const res = await apiClient.delete(
                 endpoints.permission.delete(_id)
             );
-            //  const res = await callDeletePermission(_id);
             if (res && res.data) {
                 message.success("Xóa Permission thành công");
-                // reloadTable();
-                fetchPermissions();
             } else {
                 notification.error({
                     message: "Có lỗi xảy ra",
-                    // description: res.message,
                 });
             }
         }
     };
     const Store = useStore();
     const roleStore = Store.settingObservable;
+    const permissionStore = Store.permissionObservable;
     const meta = roleStore.meta;
     useEffect(() => {
-        fetchPermissions();
+        fetchPermissions({
+            ...permissionStore.pagination,
+        });
     }, []);
-    const fetchPermissions = async () => {
+    const fetchPermissions = async (query: object) => {
         try {
             setLoading(true);
-            const { data } = await apiClient.get(
-                endpoints.permission.list("", "")
-            );
+            await permissionStore.getListPermission({
+                ...permissionStore.pagination,
+                ...query,
+            });
             setLoading(false);
-            if (data) {
-                setPermission(data);
-            } else {
-                message.error("Lỗi khi không lấy dữ liệu permission được");
-            }
         } catch (error) {
             message.error("Lỗi khi lấy dữ liệu permission");
         }
@@ -82,35 +75,23 @@ const PermissionPage = observer(() => {
         tableRef?.current?.reload();
     };
 
-    const columns: ProColumns<IPermission>[] = [
-        {
-            title: "Id",
-            dataIndex: "id",
-            width: 250,
-            render: (text, record, index, action) => {
-                return (
-                    <a
-                        href="#"
-                        onClick={() => {
-                            setOpenViewDetail(true);
-                            setDataInit(record);
-                        }}
-                    >
-                        {record.id}
-                    </a>
-                );
-            },
-            hideInSearch: true,
-        },
+    const columns: ProColumns<PermissionResponseType>[] = [
         {
             title: "Name",
             dataIndex: "name",
             sorter: true,
+            search: {
+                transform: (value) => ({ search: value }),
+            },
         },
         {
             title: "API",
             dataIndex: "path",
             sorter: true,
+
+            search: {
+                transform: (value) => ({ search: value }),
+            },
         },
         {
             title: "Method",
@@ -135,31 +116,9 @@ const PermissionPage = observer(() => {
             title: "Module",
             dataIndex: "module",
             sorter: true,
+            search: true,
         },
-        {
-            title: "CreatedAt",
-            dataIndex: "createdAt",
-            width: 200,
-            sorter: true,
-            render: (text, record, index, action) => {
-                return (
-                    <>{dayjs(record.createdAt).format("DD-MM-YYYY HH:mm:ss")}</>
-                );
-            },
-            hideInSearch: true,
-        },
-        {
-            title: "UpdatedAt",
-            dataIndex: "updatedAt",
-            width: 200,
-            sorter: true,
-            render: (text, record, index, action) => {
-                return (
-                    <>{dayjs(record.updatedAt).format("DD-MM-YYYY HH:mm:ss")}</>
-                );
-            },
-            hideInSearch: true,
-        },
+
         {
             title: "Actions",
             hideInSearch: true,
@@ -184,7 +143,10 @@ const PermissionPage = observer(() => {
                         description={
                             "Bạn có chắc chắn muốn xóa permission này ?"
                         }
-                        onConfirm={() => handleDeletePermission(entity.id)}
+                        onConfirm={() => {
+                            handleDeletePermission(entity.id);
+                            reloadTable();
+                        }}
                         okText="Xác nhận"
                         cancelText="Hủy"
                     >
@@ -203,7 +165,6 @@ const PermissionPage = observer(() => {
     ];
 
     const buildQuery = (params: any, sort: any, filter: any) => {
-        console.log(params);
         const clone = { ...params };
         if (clone.name) clone.name = `/${clone.name}/i`;
         if (clone.apiPath) clone.apiPath = `/${clone.apiPath}/i`;
@@ -248,6 +209,22 @@ const PermissionPage = observer(() => {
         return temp;
     };
 
+    const fetchPermissionsQuery = async (params) => {
+        const { current = 1, pageSize = 10, ...filters } = params;
+        await fetchPermissions({
+            current,
+            pageSize,
+            ...filters,
+        });
+        return {
+            data: toJS(permissionStore.data),
+            success: true,
+            total: meta.total,
+            current: meta.current,
+            pageSize: meta.pageSize,
+        };
+    };
+
     return (
         <section className="w-full">
             <div className="flex justify-between items-center animate-slideDown">
@@ -258,55 +235,59 @@ const PermissionPage = observer(() => {
             </div>
             <div className="w-full animate-slideUp my-6">
                 <Access permission={ALL_PERMISSIONS.PERMISSIONS.GET_PAGINATE}>
-                    <div className="test">
-                        <DataTable<IPermission>
-                            actionRef={tableRef}
-                            headerTitle="Danh sách Permissions (Quyền Hạn)"
-                            rowKey="_id"
-                            loading={loading}
-                            columns={columns}
-                            dataSource={permissions}
-                            scroll={{ x: true, y: 300 }}
-                            rowSelection={false}
-                            search={false}
-                            // goi api
-                            // request={async (params, sort, filter): Promise<any> => {
-                            //   const query = buildQuery(params, sort, filter);
-                            //   console.log(params);
-                            //   console.log(params.current, params.pageSize);
-                            //   roleStore.setMeta(params.current, params.pageSize);
-                            //   console.log(query);
-                            // }}
-                            pagination={{
-                                current: meta.current,
-                                pageSize: meta.pageSize,
-                                showSizeChanger: true,
-                                total: meta.total,
-                                onChange: (page, pageSize) => {
-                                    roleStore.setMeta(page, pageSize); // cập nhật MobX store
-                                },
-                                showTotal: (total, range) => {
+                    <div className="PermissionTable">
+                        <ConfigProvider locale={viVN}>
+                            <DataTable<PermissionResponseType>
+                                actionRef={tableRef}
+                                headerTitle="Danh sách Permissions (Quyền Hạn)"
+                                rowKey="id"
+                                loading={loading}
+                                columns={columns}
+                                dataSource={permissionStore.data}
+                                scroll={{ x: true, y: 300 }}
+                                rowSelection={false}
+                                request={fetchPermissionsQuery}
+                                search={{
+                                    labelWidth: "auto",
+                                    span: 24,
+                                    filterType: "light",
+                                    defaultCollapsed: false,
+                                }}
+                                pagination={{
+                                    current: meta.current,
+                                    pageSize: meta.pageSize,
+                                    showSizeChanger: true,
+                                    total: meta.total,
+                                    onChange: (page, pageSize) => {
+                                        roleStore.setMeta(page, pageSize);
+                                        permissionStore.setPagination({
+                                            current: page,
+                                            pageSize: pageSize,
+                                        });
+                                    },
+                                    showTotal: (total, range) => {
+                                        return (
+                                            <div>
+                                                {" "}
+                                                {range[0]}-{range[1]} trên{" "}
+                                                {total} rows
+                                            </div>
+                                        );
+                                    },
+                                }}
+                                toolBarRender={(_action, _rows): any => {
                                     return (
-                                        <div>
-                                            {" "}
-                                            {range[0]}-{range[1]} trên {total}{" "}
-                                            rows
-                                        </div>
+                                        <Button
+                                            icon={<PlusOutlined />}
+                                            type="primary"
+                                            onClick={() => setOpenModal(true)}
+                                        >
+                                            Thêm mới
+                                        </Button>
                                     );
-                                },
-                            }}
-                            toolBarRender={(_action, _rows): any => {
-                                return (
-                                    <Button
-                                        icon={<PlusOutlined />}
-                                        type="primary"
-                                        onClick={() => setOpenModal(true)}
-                                    >
-                                        Thêm mới
-                                    </Button>
-                                );
-                            }}
-                        />
+                                }}
+                            />
+                        </ConfigProvider>
                     </div>
                 </Access>
             </div>
@@ -332,18 +313,3 @@ const PermissionPage = observer(() => {
 });
 
 export default PermissionPage;
-// lấy data sau khi gọi api
-// pagination={{
-//   current: 1,
-//   pageSize: 10,
-//   showSizeChanger: true,
-//   total: 10,
-//   showTotal: (total, range) => {
-//     return (
-//       <div>
-//         {" "}
-//         {range[0]}-{range[1]} trên {total} rows
-//       </div>
-//     );
-//   },
-// }}
