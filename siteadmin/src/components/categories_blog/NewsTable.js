@@ -10,6 +10,7 @@ import {
 import TableComponent from "../../containers/TableComponent";
 import apiClient from "../../api/apiClient";
 import endpoints from "../../api/endpoints.ts";
+import { ALL_MODULES } from "../../constants/permissions.ts";
 
 const getColumnsConfig = ({
     handleUpdateNews,
@@ -23,13 +24,9 @@ const getColumnsConfig = ({
             key: "name",
             render: (value, item) => {
                 return (
-                    <Button
-                        type="link"
-                        className="custom-antd-btn-ellipsis-content !p-0"
-                        onClick={() => handleViewNews(item)}
-                    >
+                    <span className="custom-antd-btn-ellipsis-content !p-0">
                         {value}
-                    </Button>
+                    </span>
                 );
             },
             ellipsis: true,
@@ -58,7 +55,8 @@ const getColumnsConfig = ({
                     <GroupActionButton
                         item={item}
                         handleDelete={handleDeleteNews}
-                        handleUpdate={handleUpdateNews}
+                        handleUpdate={handleViewNews}
+                        moduleName={ALL_MODULES.BLOGCATEGORY}
                     />
                 );
             },

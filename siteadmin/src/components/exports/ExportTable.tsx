@@ -4,12 +4,13 @@ import TableComponent from "../../containers/TableComponent";
 import React from "react";
 import { useStore } from "src/stores";
 import { observer } from "mobx-react-lite";
-import GroupActionButton from "../../components/GroupActionButton";
+import GroupActionButton from "../GroupActionButton";
 import {
     processWithModals,
     ProcessModalName,
 } from "../../containers/processWithModals.js";
 import { ExportResponseType } from "src/stores/exports.store";
+import { ALL_MODULES } from "src/constants/permissions";
 
 interface ExportPageProps {
     data: ExportResponseType[];
@@ -99,6 +100,7 @@ const ExportPage: React.FC<ExportPageProps> = ({
                             }}
                             handleUpdate={handleUpdate}
                             item={item}
+                            moduleName={ALL_MODULES.EXPORT}
                         />
                     );
                 },

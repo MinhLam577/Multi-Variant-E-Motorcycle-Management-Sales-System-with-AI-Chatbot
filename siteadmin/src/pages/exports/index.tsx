@@ -2,6 +2,7 @@ import { Button } from "antd";
 import { toJS } from "mobx";
 import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
+import Access from "src/access/access";
 import AdminBreadCrumb from "src/components/common/AdminBreadCrumb";
 import CustomizeTab from "src/components/common/CustomizeTab";
 import ModalCreateExport from "src/components/exports/detail/ModalCreateExport";
@@ -9,6 +10,7 @@ import ModalUpdateExport from "src/components/exports/detail/ModalUpdateExport";
 import ExportSearch from "src/components/exports/ExportSearch";
 import ExportTable from "src/components/exports/ExportTable";
 import { SelectType } from "src/components/products/detail/ModalCreateProduct/ModalCreateProduct";
+import { ALL_PERMISSIONS } from "src/constants/permissions";
 import { getBreadcrumbItems } from "src/containers/layout";
 import { useStore } from "src/stores";
 import {
@@ -195,16 +197,21 @@ const ExportPage: React.FC<ExportPageProps> = () => {
                         description="Thông tin chi tiết về danh sách các đợt xuất hàng"
                         items={[...getBreadcrumbItems(location.pathname)]}
                     />
-                    <Button
-                        type="primary"
-                        size="large"
-                        className="!rounded-none"
-                        onClick={() => {
-                            setOpenCreateModal(true);
-                        }}
+                    <Access
+                        permission={ALL_PERMISSIONS.EXPORT.CREATE}
+                        hideChildren
                     >
-                        Tạo phiếu xuất hàng
-                    </Button>
+                        <Button
+                            type="primary"
+                            size="large"
+                            className="!rounded-none"
+                            onClick={() => {
+                                setOpenCreateModal(true);
+                            }}
+                        >
+                            Tạo phiếu xuất hàng
+                        </Button>
+                    </Access>
                 </div>
             </div>
             <div className="w-full mt-4 mb-6 flex flex-col gap-4 px-4 pb-4 border border-gray-200 rounded-lg bg-white shadow-sm animate-slideUp">

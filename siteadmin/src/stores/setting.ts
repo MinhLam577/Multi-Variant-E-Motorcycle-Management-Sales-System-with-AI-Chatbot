@@ -79,18 +79,9 @@ export default class SettingObservable {
     loading: boolean = false;
     isOpenDetail: boolean = false;
     constructor(rootStore: RootStore) {
-        makeAutoObservable(this);
+        makeAutoObservable(this, {}, { autoBind: true });
 
         this.rootStore = rootStore;
-        this.setGlobalFilters = this.setGlobalFilters.bind(this);
-        this.setPagination = this.setPagination.bind(this);
-        this.getListRole = this.getListRole.bind(this);
-        this.fetchRoleById = this.fetchRoleById.bind(this);
-        this.deleteRoleByID = this.deleteRoleByID.bind(this);
-        this.createVoucher = this.createVoucher.bind(this);
-        this.editRole = this.editRole.bind(this);
-        this.resetSingleRole = this.resetSingleRole.bind(this);
-        this.setMeta = this.setMeta.bind(this);
     }
 
     *getListRole() {
@@ -123,7 +114,6 @@ export default class SettingObservable {
         try {
             this.idRole = id;
             const response: ResponsePromise = yield RoleApi.getById(id);
-            console.log(response);
             const { data, status, message } = response;
             const success_status = [200, 201, 204];
             if (success_status.includes(status)) {
@@ -145,7 +135,6 @@ export default class SettingObservable {
             // gọi một hàm bất đồng bộ (API)
             const response: ResponsePromise = yield RoleApi.delete(id);
             const { data, status, message } = response;
-            console.log(response);
             const success_status = [200, 201, 204];
             if (success_status.includes(status)) {
                 // ✅ Gọi lại API để refresh data
@@ -168,7 +157,6 @@ export default class SettingObservable {
             // gọi một hàm bất đồng bộ (API)
             const response: ResponsePromise = yield voucherApi.create(body);
             const { data, status, message } = response;
-            console.log(response);
             const success_status = [200, 201, 204];
             if (success_status.includes(status)) {
                 // ✅ Gọi lại API để refresh data
@@ -191,7 +179,6 @@ export default class SettingObservable {
             // gọi một hàm bất đồng bộ (API)
             const response = yield RoleApi.update(id, body);
             const { status, message } = response;
-            console.log(response);
             const success_status = [200, 201, 204];
             if (success_status.includes(status)) {
                 // ✅ Gọi lại API để refresh data
@@ -271,6 +258,5 @@ export default class SettingObservable {
             current: page,
             pageSize: pageSize,
         };
-        console.log(page, pageSize);
     }
 }

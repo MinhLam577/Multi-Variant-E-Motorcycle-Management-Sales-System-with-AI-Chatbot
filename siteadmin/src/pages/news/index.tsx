@@ -1,9 +1,8 @@
 import { PlusOutlined } from "@ant-design/icons";
-import { Button, Col, message, Row } from "antd";
-import { useContext, useEffect, useState } from "react";
+import { Button, message } from "antd";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import NewsTable from "../../components/news/NewsTable";
-import { GlobalContext } from "../../contexts/global";
 import apiClient from "../../api/apiClient";
 import endpoints from "../../api/endpoints";
 import AdminBreadCrumb from "../../components/common/AdminBreadCrumb";

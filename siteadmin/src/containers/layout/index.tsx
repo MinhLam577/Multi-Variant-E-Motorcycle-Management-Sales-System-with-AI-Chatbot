@@ -156,13 +156,14 @@ const AppLayout = (props) => {
             )
         );
 
-        if (hasPermission(ALL_PERMISSIONS.USERS.GET_PAGINATE)) {
+        if (hasPermission(ALL_PERMISSIONS.USER.GET_PAGINATE)) {
             items.push(
                 getSideMenuItem("Nhân viên", "2", <UserOutlined />, null, () =>
                     navigate("/users")
                 )
             );
         }
+
         if (hasPermission(ALL_PERMISSIONS.CUSTOMERS.GET_PAGINATE)) {
             items.push(
                 getSideMenuItem(
@@ -186,11 +187,17 @@ const AppLayout = (props) => {
             );
         }
 
-        items.push(
-            getSideMenuItem("Biến thể", "24", <ClusterOutlined />, null, () =>
-                navigate("/variants")
-            )
-        );
+        if (hasPermission(ALL_PERMISSIONS.SKUS.GET_PAGINATE)) {
+            items.push(
+                getSideMenuItem(
+                    "Biến thể",
+                    "24",
+                    <ClusterOutlined />,
+                    null,
+                    () => navigate("/variants")
+                )
+            );
+        }
 
         if (hasPermission(ALL_PERMISSIONS.CATEGORIES.GET_PAGINATE)) {
             items.push(
@@ -228,18 +235,6 @@ const AppLayout = (props) => {
             );
         }
 
-        // if (hasPermission(ALL_PERMISSIONS.ROLES.GET_PAGINATE)) {
-        //     items.push(
-        //         getSideMenuItem(
-        //             "Thông báo",
-        //             "15",
-        //             <NotificationOutlined />,
-        //             null,
-        //             () => navigate("/notifications")
-        //         )
-        //     );
-        // }
-
         if (hasPermission(ALL_PERMISSIONS.VOURCHERS.GET_PAGINATE)) {
             items.push(
                 getSideMenuItem("Voucher", "16", <GiftOutlined />, null, () =>
@@ -255,21 +250,29 @@ const AppLayout = (props) => {
                 )
             );
         }
-        items.push(
-            getSideMenuItem(
-                "Nhãn hàng cung cấp",
-                "25",
-                <SolutionOutlined />,
-                null,
-                () => navigate("/brands")
-            )
-        );
+        if (hasPermission(ALL_PERMISSIONS.BRANDS.GET_PAGINATE)) {
+            items.push(
+                getSideMenuItem(
+                    "Nhãn hàng cung cấp",
+                    "25",
+                    <SolutionOutlined />,
+                    null,
+                    () => navigate("/brands")
+                )
+            );
+        }
 
-        items.push(
-            getSideMenuItem("Nhập kho", "22", <ImportOutlined />, null, () =>
-                navigate("/import")
-            )
-        );
+        if (hasPermission(ALL_PERMISSIONS.IMPORT.GET_PAGINATE)) {
+            items.push(
+                getSideMenuItem(
+                    "Nhập kho",
+                    "22",
+                    <ImportOutlined />,
+                    null,
+                    () => navigate("/import")
+                )
+            );
+        }
 
         if (hasPermission(ALL_PERMISSIONS.EXPORT.GET_PAGINATE)) {
             items.push(

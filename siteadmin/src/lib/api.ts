@@ -1,7 +1,5 @@
-import axios, { AxiosResponse, AxiosRequestConfig } from "axios";
-// import { useSession } from 'next-auth/react';
+import axios, { AxiosRequestConfig } from "axios";
 import { tokenUtils } from "./utils";
-// import { tokenUtils } from './utils';
 
 export const axiosInstance = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_URL, // Đặt URL backend của bạn
@@ -26,7 +24,6 @@ axiosInstance.interceptors.request.use(
             // const cookies = cookie.parse(config.headers.cookie);
             // config.headers["Authorization"] = cookies[AUTH_STORAGE_KEYS.ACCESS_TOKEN] || null;
         }
-        // config.headers["Authorization"] = `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIwZDBlMTZiLWI2M2ItNDBmMC1iY2FkLWNlMjgwNjk0MDRjNiIsInVzZXJuYW1lIjpudWxsLCJyb2xlIjoidXNlciIsIndhbGxldEFkZHJlc3MiOiIweDk0NmEwQTYyZTE4NmExMjI5OGZENENiYjIzNUVGZTc3MDMzM2YxQzQiLCJpYXQiOjE3NDEwMTk4MjMsImV4cCI6MTc0MTYyNDYyM30.c7pcHMFZARJCBQyMZ3UWzKk1TS6uj7S3Kn2ynONiUFc`;
 
         if (config.data instanceof FormData) {
             config.headers["Content-Type"] = "multipart/form-data";

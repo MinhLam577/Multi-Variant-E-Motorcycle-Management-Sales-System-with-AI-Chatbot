@@ -1,0 +1,1365 @@
+{
+  "status": 200,
+  "message": "Thành công",
+  "data": {
+    "APP": {
+      "GETHELLO": {
+        "method": "GET",
+        "path": "/",
+        "module": "APP"
+      },
+      "GETPERMISSIONSMODULES": {
+        "method": "GET",
+        "path": "/api/v1/Permissions_Modules",
+        "module": "APP"
+      }
+    },
+    "AUTH": {
+      "HANDLELOGIN": {
+        "method": "POST",
+        "path": "/api/v1/auth/login",
+        "module": "AUTH"
+      },
+      "HANDLELOGINADMIN": {
+        "method": "POST",
+        "path": "/api/v1/auth/admin/login",
+        "module": "AUTH"
+      },
+      "HANDLEGETACCOUNTADMIN": {
+        "method": "POST",
+        "path": "/api/v1/auth/admin/getAccount",
+        "module": "AUTH"
+      },
+      "HANDLEREFRESHTOKEN": {
+        "method": "GET",
+        "path": "/api/v1/auth/refresh",
+        "module": "AUTH"
+      },
+      "REGISTER": {
+        "method": "POST",
+        "path": "/api/v1/auth/register",
+        "module": "AUTH"
+      },
+      "CHECKCODE": {
+        "method": "POST",
+        "path": "/api/v1/auth/check-code",
+        "module": "AUTH"
+      },
+      "RETRYACTIVE": {
+        "method": "POST",
+        "path": "/api/v1/auth/retry-active",
+        "module": "AUTH"
+      },
+      "RETRYPASSWORD": {
+        "method": "POST",
+        "path": "/api/v1/auth/retryPassword",
+        "module": "AUTH"
+      },
+      "CHANGEPASSWORD": {
+        "method": "POST",
+        "path": "/api/v1/auth/change-password",
+        "module": "AUTH"
+      },
+      "RETRYPASSWORDADMIN": {
+        "method": "POST",
+        "path": "/api/v1/auth/admin/retryPassword",
+        "module": "AUTH"
+      },
+      "CHANGEPASSƯORDADMIN": {
+        "method": "POST",
+        "path": "/api/v1/auth/admin/change-password",
+        "module": "AUTH"
+      },
+      "GOOGLELOGIN": {
+        "method": "GET",
+        "path": "/api/v1/auth/google",
+        "module": "AUTH"
+      },
+      "GOOGLECALLBACK": {
+        "method": "GET",
+        "path": "/api/v1/auth/google/callback",
+        "module": "AUTH"
+      },
+      "FACEBOOKLOGIN": {
+        "method": "GET",
+        "path": "/api/v1/auth/facebook",
+        "module": "AUTH"
+      },
+      "FACEBOOKLOGINREDIRECT": {
+        "method": "GET",
+        "path": "/api/v1/auth/facebook/redirect",
+        "module": "AUTH"
+      },
+      "SENDMAILADMIN": {
+        "method": "POST",
+        "path": "/api/v1/auth/contact",
+        "module": "AUTH"
+      }
+    },
+    "USER": {
+      "UPLOADIMAGE": {
+        "method": "POST",
+        "path": "/api/v1/users/create/uploadImage",
+        "module": "USER"
+      },
+      "CREATE": {
+        "method": "POST",
+        "path": "/api/v1/users",
+        "module": "USER"
+      },
+      "GETALLUSER": {
+        "method": "GET",
+        "path": "/api/v1/users",
+        "module": "USER"
+      },
+      "UPLOADAVATAR": {
+        "method": "POST",
+        "path": "/api/v1/users/upload",
+        "module": "USER"
+      },
+      "UPDATE": {
+        "method": "PATCH",
+        "path": "/api/v1/users/{id}",
+        "module": "USER"
+      },
+      "DELETE": {
+        "method": "DELETE",
+        "path": "/api/v1/users/{id}",
+        "module": "USER"
+      },
+      "GETUSERBYID": {
+        "method": "GET",
+        "path": "/api/v1/users/{id}",
+        "module": "USER"
+      },
+      "UPDATEROLE": {
+        "method": "PATCH",
+        "path": "/api/v1/users/{id}/role",
+        "module": "USER"
+      },
+      "CREATEMANYUSER": {
+        "method": "POST",
+        "path": "/api/v1/users/callBulkCreateUser",
+        "module": "USER"
+      }
+    },
+    "CUSTOMERS": {
+      "GETPROFILE": {
+        "method": "GET",
+        "path": "/api/v1/customers/profile",
+        "module": "CUSTOMERS"
+      },
+      "UPLOADAVATAR": {
+        "method": "POST",
+        "path": "/api/v1/customers/upload",
+        "module": "CUSTOMERS"
+      },
+      "UPDATE": {
+        "method": "PATCH",
+        "path": "/api/v1/customers/{id}",
+        "module": "CUSTOMERS"
+      },
+      "DELETE": {
+        "method": "DELETE",
+        "path": "/api/v1/customers/{id}",
+        "module": "CUSTOMERS"
+      },
+      "GETUSERBYID": {
+        "method": "GET",
+        "path": "/api/v1/customers/{id}",
+        "module": "CUSTOMERS"
+      },
+      "FINDALLCUSTOMER": {
+        "method": "GET",
+        "path": "/api/v1/customers",
+        "module": "CUSTOMERS"
+      },
+      "CREATECUSTOMER": {
+        "method": "POST",
+        "path": "/api/v1/customers",
+        "module": "CUSTOMERS"
+      }
+    },
+    "REVIEW": {
+      "CREATE": {
+        "method": "POST",
+        "path": "/api/v1/review",
+        "module": "REVIEW"
+      },
+      "FINDALL": {
+        "method": "GET",
+        "path": "/api/v1/review",
+        "module": "REVIEW"
+      },
+      "FINDONE": {
+        "method": "GET",
+        "path": "/api/v1/review/{id}",
+        "module": "REVIEW"
+      },
+      "UPDATE": {
+        "method": "PATCH",
+        "path": "/api/v1/review/{id}",
+        "module": "REVIEW"
+      },
+      "REMOVE": {
+        "method": "DELETE",
+        "path": "/api/v1/review/{id}",
+        "module": "REVIEW"
+      },
+      "UPLOADIMAGES": {
+        "method": "POST",
+        "path": "/api/v1/review/upload-images",
+        "module": "REVIEW"
+      },
+      "REMOVEHARDREVIEW": {
+        "method": "DELETE",
+        "path": "/api/v1/review/hard-delete/{id}",
+        "module": "REVIEW"
+      }
+    },
+    "BLOG": {
+      "FINDALL": {
+        "method": "GET",
+        "path": "/api/v1/blogs",
+        "module": "BLOG"
+      },
+      "CREATE": {
+        "method": "POST",
+        "path": "/api/v1/blogs",
+        "module": "BLOG"
+      },
+      "GETIMAGESFROMFOLDER": {
+        "method": "GET",
+        "path": "/api/v1/blogs/images/folder",
+        "module": "BLOG"
+      },
+      "GETIMAGEBYPUBLICID": {
+        "method": "GET",
+        "path": "/api/v1/blogs/images/public-id",
+        "module": "BLOG"
+      },
+      "FINDONEBYID": {
+        "method": "GET",
+        "path": "/api/v1/blogs/{id}",
+        "module": "BLOG"
+      },
+      "UPDATE": {
+        "method": "PUT",
+        "path": "/api/v1/blogs/{id}",
+        "module": "BLOG"
+      },
+      "REMOVE": {
+        "method": "DELETE",
+        "path": "/api/v1/blogs/{id}",
+        "module": "BLOG"
+      },
+      "UPLOADIMAGE": {
+        "method": "POST",
+        "path": "/api/v1/blogs/upload-image",
+        "module": "BLOG"
+      },
+      "UPLOADIMAGES": {
+        "method": "POST",
+        "path": "/api/v1/blogs/upload-images",
+        "module": "BLOG"
+      }
+    },
+    "CATEGORY": {
+      "CREATE": {
+        "method": "POST",
+        "path": "/api/v1/categories",
+        "module": "CATEGORY"
+      },
+      "FINDALL": {
+        "method": "GET",
+        "path": "/api/v1/categories",
+        "module": "CATEGORY"
+      },
+      "FINDALLACTIVE": {
+        "method": "GET",
+        "path": "/api/v1/categories/active",
+        "module": "CATEGORY"
+      },
+      "FINDONE": {
+        "method": "GET",
+        "path": "/api/v1/categories/{id}",
+        "module": "CATEGORY"
+      },
+      "UPDATECATEGORY": {
+        "method": "PATCH",
+        "path": "/api/v1/categories/{id}",
+        "module": "CATEGORY"
+      },
+      "DELETECATEGORY": {
+        "method": "DELETE",
+        "path": "/api/v1/categories/{id}",
+        "module": "CATEGORY"
+      },
+      "FINDONEBYNAME": {
+        "method": "GET",
+        "path": "/api/v1/categories/name/{name}",
+        "module": "CATEGORY"
+      },
+      "SOFTDELETE": {
+        "method": "PATCH",
+        "path": "/api/v1/categories/{id}/soft-delete",
+        "module": "CATEGORY"
+      },
+      "RESTORE": {
+        "method": "PATCH",
+        "path": "/api/v1/categories/{id}/restore",
+        "module": "CATEGORY"
+      }
+    },
+    "PRODUCTS": {
+      "GETENUMPRODUCTSORTBY": {
+        "method": "GET",
+        "path": "/api/v1/products/sort-by",
+        "module": "PRODUCTS"
+      },
+      "GETBESTSELLINGPRODUCTS": {
+        "method": "GET",
+        "path": "/api/v1/products/best-selling",
+        "module": "PRODUCTS"
+      },
+      "CREATEPRODUCTVARIANT": {
+        "method": "POST",
+        "path": "/api/v1/products",
+        "module": "PRODUCTS"
+      },
+      "FINDALLPRODUCTBYSEARCH": {
+        "method": "GET",
+        "path": "/api/v1/products",
+        "module": "PRODUCTS"
+      },
+      "GETPRODUCTSTOCKBYID": {
+        "method": "GET",
+        "path": "/api/v1/products/{id}/stock",
+        "module": "PRODUCTS"
+      },
+      "FINDONE": {
+        "method": "GET",
+        "path": "/api/v1/products/{id}",
+        "module": "PRODUCTS"
+      },
+      "UPDATE": {
+        "method": "PUT",
+        "path": "/api/v1/products/{id}",
+        "module": "PRODUCTS"
+      },
+      "REMOVE": {
+        "method": "DELETE",
+        "path": "/api/v1/products/{id}",
+        "module": "PRODUCTS"
+      },
+      "SOFTDELETE": {
+        "method": "DELETE",
+        "path": "/api/v1/products/{id}/soft",
+        "module": "PRODUCTS"
+      },
+      "RESTORE": {
+        "method": "PATCH",
+        "path": "/api/v1/products/{id}/restore",
+        "module": "PRODUCTS"
+      },
+      "GETACTIVEPRODUCTS": {
+        "method": "GET",
+        "path": "/api/v1/products/active",
+        "module": "PRODUCTS"
+      },
+      "UPLOADIMAGE1": {
+        "method": "POST",
+        "path": "/api/v1/products/upload",
+        "module": "PRODUCTS"
+      },
+      "UPLOADMULTIPLEFILES": {
+        "method": "POST",
+        "path": "/api/v1/products/upload/multipleImage",
+        "module": "PRODUCTS"
+      },
+      "FINDONESKU": {
+        "method": "GET",
+        "path": "/api/v1/products/getSku/{id}",
+        "module": "PRODUCTS"
+      },
+      "SENDMAILADMIN": {
+        "method": "POST",
+        "path": "/api/v1/products/contact",
+        "module": "PRODUCTS"
+      },
+      "GETPRODUCTUSERPAGEID": {
+        "method": "GET",
+        "path": "/api/v1/products/user-page-id/{id}",
+        "module": "PRODUCTS"
+      }
+    },
+    "SKUS": {
+      "FINDALL": {
+        "method": "GET",
+        "path": "/api/v1/skus",
+        "module": "SKUS"
+      },
+      "CREATESKUS": {
+        "method": "POST",
+        "path": "/api/v1/skus",
+        "module": "SKUS"
+      },
+      "FINDONE": {
+        "method": "GET",
+        "path": "/api/v1/skus/{id}",
+        "module": "SKUS"
+      },
+      "UPDATE": {
+        "method": "PATCH",
+        "path": "/api/v1/skus/{id}",
+        "module": "SKUS"
+      },
+      "REMOVE": {
+        "method": "DELETE",
+        "path": "/api/v1/skus/{id}",
+        "module": "SKUS"
+      },
+      "FINDDETAILIMPORTBYSKUID": {
+        "method": "GET",
+        "path": "/api/v1/skus/{id}/detail-import",
+        "module": "SKUS"
+      },
+      "FINDDETAILIMPORTBYSKUIDS": {
+        "method": "POST",
+        "path": "/api/v1/skus/detail-imports-by-ids",
+        "module": "SKUS"
+      },
+      "GETSKUSBYOPTIONVALUEALREADYLOGINIDS": {
+        "method": "POST",
+        "path": "/api/v1/skus/GetSkusByOptionValueIdsAlreadyLogin",
+        "module": "SKUS"
+      },
+      "GETSKUSBYOPTIONVALUENONELOGINIDS": {
+        "method": "POST",
+        "path": "/api/v1/skus/GetSkusByOptionValueIdsNoneLogin",
+        "module": "SKUS"
+      }
+    },
+    "OPTION": {
+      "CREATE": {
+        "method": "POST",
+        "path": "/api/v1/option",
+        "module": "OPTION"
+      },
+      "FINDALL": {
+        "method": "GET",
+        "path": "/api/v1/option",
+        "module": "OPTION"
+      },
+      "FINDONE": {
+        "method": "GET",
+        "path": "/api/v1/option/{id}",
+        "module": "OPTION"
+      },
+      "UPDATE": {
+        "method": "PATCH",
+        "path": "/api/v1/option/{id}",
+        "module": "OPTION"
+      },
+      "REMOVE": {
+        "method": "DELETE",
+        "path": "/api/v1/option/{id}",
+        "module": "OPTION"
+      }
+    },
+    "WAREHOUSE": {
+      "CREATE": {
+        "method": "POST",
+        "path": "/api/v1/warehouse",
+        "module": "WAREHOUSE"
+      },
+      "FINDALL": {
+        "method": "GET",
+        "path": "/api/v1/warehouse",
+        "module": "WAREHOUSE"
+      },
+      "FINDONE": {
+        "method": "GET",
+        "path": "/api/v1/warehouse/{id}",
+        "module": "WAREHOUSE"
+      },
+      "UPDATE": {
+        "method": "PATCH",
+        "path": "/api/v1/warehouse/{id}",
+        "module": "WAREHOUSE"
+      },
+      "REMOVE": {
+        "method": "DELETE",
+        "path": "/api/v1/warehouse/{id}",
+        "module": "WAREHOUSE"
+      }
+    },
+    "IMPORT": {
+      "FINDALL": {
+        "method": "GET",
+        "path": "/api/v1/import",
+        "module": "IMPORT"
+      },
+      "FINDONE": {
+        "method": "GET",
+        "path": "/api/v1/import/{id}",
+        "module": "IMPORT"
+      },
+      "REMOVE": {
+        "method": "DELETE",
+        "path": "/api/v1/import/{id}",
+        "module": "IMPORT"
+      }
+    },
+    "DETAILIMPORT": {
+      "CREATE": {
+        "method": "POST",
+        "path": "/api/v1/detail-import",
+        "module": "DETAILIMPORT"
+      },
+      "FINDALL": {
+        "method": "GET",
+        "path": "/api/v1/detail-import",
+        "module": "DETAILIMPORT"
+      },
+      "FINDONE": {
+        "method": "GET",
+        "path": "/api/v1/detail-import/{id}",
+        "module": "DETAILIMPORT"
+      },
+      "UPDATE": {
+        "method": "PATCH",
+        "path": "/api/v1/detail-import/{id}",
+        "module": "DETAILIMPORT"
+      },
+      "REMOVE": {
+        "method": "DELETE",
+        "path": "/api/v1/detail-import/{id}",
+        "module": "DETAILIMPORT"
+      },
+      "UPDATEREMAININGQUANTITY": {
+        "method": "POST",
+        "path": "/api/v1/detail-import/update-remaining-quantity",
+        "module": "DETAILIMPORT"
+      },
+      "UPDATESOLDQUANTITY": {
+        "method": "PATCH",
+        "path": "/api/v1/detail-import/{id}/update-sold-quantity",
+        "module": "DETAILIMPORT"
+      }
+    },
+    "OPTIONVALUE": {
+      "CREATE": {
+        "method": "POST",
+        "path": "/api/v1/option-value",
+        "module": "OPTIONVALUE"
+      },
+      "FINDALL": {
+        "method": "GET",
+        "path": "/api/v1/option-value",
+        "module": "OPTIONVALUE"
+      },
+      "FINDONEBYIDPRODUCT": {
+        "method": "GET",
+        "path": "/api/v1/option-value/ByIdProduct/{id}",
+        "module": "OPTIONVALUE"
+      }
+    },
+    "BRAND": {
+      "CONVERTURLTOBASE64": {
+        "method": "GET",
+        "path": "/api/v1/brand/convert-url-to-base64",
+        "module": "BRAND"
+      },
+      "CREATE": {
+        "method": "POST",
+        "path": "/api/v1/brand",
+        "module": "BRAND"
+      },
+      "FINDALL": {
+        "method": "GET",
+        "path": "/api/v1/brand",
+        "module": "BRAND"
+      },
+      "FINDONE": {
+        "method": "GET",
+        "path": "/api/v1/brand/{id}",
+        "module": "BRAND"
+      },
+      "UPDATE": {
+        "method": "PATCH",
+        "path": "/api/v1/brand/{id}",
+        "module": "BRAND"
+      },
+      "REMOVE": {
+        "method": "DELETE",
+        "path": "/api/v1/brand/{id}",
+        "module": "BRAND"
+      },
+      "UPLOADIMAGE": {
+        "method": "POST",
+        "path": "/api/v1/brand/upload",
+        "module": "BRAND"
+      },
+      "UPDATETHUMBNAIL": {
+        "method": "PATCH",
+        "path": "/api/v1/brand/{id}/upload",
+        "module": "BRAND"
+      }
+    },
+    "BRANCH": {
+      "CREATE": {
+        "method": "POST",
+        "path": "/api/v1/branch",
+        "module": "BRANCH"
+      },
+      "FINDALL": {
+        "method": "GET",
+        "path": "/api/v1/branch",
+        "module": "BRANCH"
+      },
+      "FINDONE": {
+        "method": "GET",
+        "path": "/api/v1/branch/{id}",
+        "module": "BRANCH"
+      },
+      "UPDATE": {
+        "method": "PATCH",
+        "path": "/api/v1/branch/{id}",
+        "module": "BRANCH"
+      },
+      "REMOVE": {
+        "method": "DELETE",
+        "path": "/api/v1/branch/{id}",
+        "module": "BRANCH"
+      },
+      "UPLOADIMAGE": {
+        "method": "POST",
+        "path": "/api/v1/branch/upload",
+        "module": "BRANCH"
+      },
+      "UPDATETHUMBNAIL": {
+        "method": "PATCH",
+        "path": "/api/v1/branch/{id}/upload",
+        "module": "BRANCH"
+      }
+    },
+    "ZALOPAYMENT": {
+      "CREATEORDER": {
+        "method": "POST",
+        "path": "/api/v1/zalo-payment/create-order",
+        "module": "ZALOPAYMENT"
+      },
+      "HANDLECALLBACK": {
+        "method": "POST",
+        "path": "/api/v1/zalo-payment/callback",
+        "module": "ZALOPAYMENT"
+      },
+      "CHECKORDERSTATUS": {
+        "method": "POST",
+        "path": "/api/v1/zalo-payment/check-zalopay-payment-status/{id}",
+        "module": "ZALOPAYMENT"
+      }
+    },
+    "ORDER": {
+      "CREATE": {
+        "method": "POST",
+        "path": "/api/v1/order",
+        "module": "ORDER"
+      },
+      "FINDALLORDER": {
+        "method": "GET",
+        "path": "/api/v1/order",
+        "module": "ORDER"
+      },
+      "CREATEORDERFROMCART": {
+        "method": "POST",
+        "path": "/api/v1/order/create-from-cartItem",
+        "module": "ORDER"
+      },
+      "GETALLORDERSTATUS": {
+        "method": "GET",
+        "path": "/api/v1/order/order-status",
+        "module": "ORDER"
+      },
+      "GETALLPAYMENTSTATUS": {
+        "method": "GET",
+        "path": "/api/v1/order/payment-status",
+        "module": "ORDER"
+      },
+      "FINDONEORDER": {
+        "method": "GET",
+        "path": "/api/v1/order/{id}",
+        "module": "ORDER"
+      },
+      "REMOVE": {
+        "method": "DELETE",
+        "path": "/api/v1/order/{id}",
+        "module": "ORDER"
+      },
+      "UPDATEORDER": {
+        "method": "PUT",
+        "path": "/api/v1/order/{id}",
+        "module": "ORDER"
+      },
+      "GETORDERBYCUSTOMERID": {
+        "method": "GET",
+        "path": "/api/v1/order/{id}/customer",
+        "module": "ORDER"
+      },
+      "UPDATEORDERSTATUS": {
+        "method": "PATCH",
+        "path": "/api/v1/order/{id}/status",
+        "module": "ORDER"
+      },
+      "CONFIRMORDER": {
+        "method": "PATCH",
+        "path": "/api/v1/order/confirm",
+        "module": "ORDER"
+      },
+      "CANCELORDER": {
+        "method": "PATCH",
+        "path": "/api/v1/order/{id}/cancel",
+        "module": "ORDER"
+      },
+      "UPDATESPECIALORDERSTATUS": {
+        "method": "PATCH",
+        "path": "/api/v1/order/{id}/failed-delivery",
+        "module": "ORDER"
+      },
+      "GETREVENUEPROFITSTATICS": {
+        "method": "POST",
+        "path": "/api/v1/order/revenue-profit-statics",
+        "module": "ORDER"
+      },
+      "GETTOTALREVENUEPROFITSTATICS": {
+        "method": "POST",
+        "path": "/api/v1/order/total-revenue-profit-statics",
+        "module": "ORDER"
+      },
+      "GETORDERSTATUSSTATICSBYYEAR": {
+        "method": "POST",
+        "path": "/api/v1/order/order-status-statics",
+        "module": "ORDER"
+      }
+    },
+    "EXPORT": {
+      "CREATE": {
+        "method": "POST",
+        "path": "/api/v1/export",
+        "module": "EXPORT"
+      },
+      "FINDALL": {
+        "method": "GET",
+        "path": "/api/v1/export",
+        "module": "EXPORT"
+      },
+      "FINDONE": {
+        "method": "GET",
+        "path": "/api/v1/export/{id}",
+        "module": "EXPORT"
+      },
+      "UPDATEEXPORT": {
+        "method": "PATCH",
+        "path": "/api/v1/export/{id}",
+        "module": "EXPORT"
+      },
+      "REMOVE": {
+        "method": "DELETE",
+        "path": "/api/v1/export/{id}",
+        "module": "EXPORT"
+      },
+      "CREATEEXPORTORDER": {
+        "method": "POST",
+        "path": "/api/v1/export/Order",
+        "module": "EXPORT"
+      },
+      "CREATEMULTIPLEEXPORT": {
+        "method": "POST",
+        "path": "/api/v1/export/Orders",
+        "module": "EXPORT"
+      }
+    },
+    "PAYOS": {
+      "CREATEORDER": {
+        "method": "POST",
+        "path": "/api/v1/payos/create-order",
+        "module": "PAYOS"
+      },
+      "CANCELORDER": {
+        "method": "POST",
+        "path": "/api/v1/payos/cancel-order/{id}",
+        "module": "PAYOS"
+      },
+      "CONFIRMWEBHOOK": {
+        "method": "POST",
+        "path": "/api/v1/payos/confirm-webhook",
+        "module": "PAYOS"
+      },
+      "HANDLEWEBHOOK": {
+        "method": "POST",
+        "path": "/api/v1/payos/webhook-url",
+        "module": "PAYOS"
+      },
+      "CHECKPAYOSPAYMENTSTATUS": {
+        "method": "POST",
+        "path": "/api/v1/payos/check-payos-payment-status/{id}",
+        "module": "PAYOS"
+      }
+    },
+    "PAYMENTMETHODOPTION": {
+      "CREATE": {
+        "method": "POST",
+        "path": "/api/v1/payment-method-option",
+        "module": "PAYMENTMETHODOPTION"
+      },
+      "FINDALL": {
+        "method": "GET",
+        "path": "/api/v1/payment-method-option",
+        "module": "PAYMENTMETHODOPTION"
+      },
+      "FINDONEBYNAME": {
+        "method": "GET",
+        "path": "/api/v1/payment-method-option/name/{name}",
+        "module": "PAYMENTMETHODOPTION"
+      },
+      "FINDONE": {
+        "method": "GET",
+        "path": "/api/v1/payment-method-option/{id}",
+        "module": "PAYMENTMETHODOPTION"
+      },
+      "UPDATE": {
+        "method": "POST",
+        "path": "/api/v1/payment-method-option/{id}",
+        "module": "PAYMENTMETHODOPTION"
+      },
+      "REMOVE": {
+        "method": "DELETE",
+        "path": "/api/v1/payment-method-option/{id}",
+        "module": "PAYMENTMETHODOPTION"
+      }
+    },
+    "ORDERPAYMENTMETHODOPTION": {
+      "CREATE": {
+        "method": "POST",
+        "path": "/api/v1/order-payment-method-option",
+        "module": "ORDERPAYMENTMETHODOPTION"
+      },
+      "UPDATE": {
+        "method": "PUT",
+        "path": "/api/v1/order-payment-method-option/{id}",
+        "module": "ORDERPAYMENTMETHODOPTION"
+      },
+      "FINDONE": {
+        "method": "GET",
+        "path": "/api/v1/order-payment-method-option/{id}",
+        "module": "ORDERPAYMENTMETHODOPTION"
+      },
+      "FINDONEBYORDERIDANDPAYMENTMETHODOPTIONID": {
+        "method": "GET",
+        "path": "/api/v1/order-payment-method-option/order/{orderId}/payment-method-option/{paymentMethodOptionId}",
+        "module": "ORDERPAYMENTMETHODOPTION"
+      }
+    },
+    "CONVERSATION": {
+      "CREATE": {
+        "method": "POST",
+        "path": "/api/v1/conversation",
+        "module": "CONVERSATION"
+      },
+      "FINDALL": {
+        "method": "GET",
+        "path": "/api/v1/conversation",
+        "module": "CONVERSATION"
+      },
+      "FINDONE": {
+        "method": "GET",
+        "path": "/api/v1/conversation/{id}",
+        "module": "CONVERSATION"
+      },
+      "UPDATE": {
+        "method": "PATCH",
+        "path": "/api/v1/conversation/{id}",
+        "module": "CONVERSATION"
+      },
+      "REMOVE": {
+        "method": "DELETE",
+        "path": "/api/v1/conversation/{id}",
+        "module": "CONVERSATION"
+      }
+    },
+    "MESSAGE": {
+      "CREATE": {
+        "method": "POST",
+        "path": "/api/v1/message",
+        "module": "MESSAGE"
+      },
+      "FINDALL": {
+        "method": "GET",
+        "path": "/api/v1/message",
+        "module": "MESSAGE"
+      },
+      "FINDONE": {
+        "method": "GET",
+        "path": "/api/v1/message/{id}",
+        "module": "MESSAGE"
+      },
+      "UPDATE": {
+        "method": "PATCH",
+        "path": "/api/v1/message/{id}",
+        "module": "MESSAGE"
+      },
+      "REMOVE": {
+        "method": "DELETE",
+        "path": "/api/v1/message/{id}",
+        "module": "MESSAGE"
+      }
+    },
+    "VOURCHERS": {
+      "CREATE": {
+        "method": "POST",
+        "path": "/api/v1/vourchers",
+        "module": "VOURCHERS"
+      },
+      "FINDALL": {
+        "method": "GET",
+        "path": "/api/v1/vourchers",
+        "module": "VOURCHERS"
+      },
+      "FINDONE": {
+        "method": "GET",
+        "path": "/api/v1/vourchers/{id}",
+        "module": "VOURCHERS"
+      },
+      "UPDATE": {
+        "method": "PATCH",
+        "path": "/api/v1/vourchers/{id}",
+        "module": "VOURCHERS"
+      },
+      "REMOVE": {
+        "method": "DELETE",
+        "path": "/api/v1/vourchers/{id}",
+        "module": "VOURCHERS"
+      },
+      "CREATEVOUCHER": {
+        "method": "POST",
+        "path": "/api/v1/vourchers/give_customer/{id}",
+        "module": "VOURCHERS"
+      },
+      "GETLISTCUSTOMER": {
+        "method": "GET",
+        "path": "/api/v1/vourchers/customer_no_voucher/{id}",
+        "module": "VOURCHERS"
+      }
+    },
+    "CART": {
+      "CREATE": {
+        "method": "POST",
+        "path": "/api/v1/cart",
+        "module": "CART"
+      },
+      "FINDALL": {
+        "method": "GET",
+        "path": "/api/v1/cart",
+        "module": "CART"
+      },
+      "CLEARCART": {
+        "method": "DELETE",
+        "path": "/api/v1/cart",
+        "module": "CART"
+      },
+      "UPDATE": {
+        "method": "PATCH",
+        "path": "/api/v1/cart/{id}",
+        "module": "CART"
+      },
+      "REMOVE": {
+        "method": "DELETE",
+        "path": "/api/v1/cart/{id}",
+        "module": "CART"
+      },
+      "REMOVECARTITEMBYID": {
+        "method": "DELETE",
+        "path": "/api/v1/cart/cartItem/{id}",
+        "module": "CART"
+      }
+    },
+    "CARTITEM": {
+      "CREATE": {
+        "method": "POST",
+        "path": "/api/v1/cart-item",
+        "module": "CARTITEM"
+      },
+      "FINDALL": {
+        "method": "GET",
+        "path": "/api/v1/cart-item",
+        "module": "CARTITEM"
+      },
+      "FINDONE": {
+        "method": "GET",
+        "path": "/api/v1/cart-item/{id}",
+        "module": "CARTITEM"
+      },
+      "UPDATE": {
+        "method": "PATCH",
+        "path": "/api/v1/cart-item/{id}",
+        "module": "CARTITEM"
+      },
+      "REMOVE": {
+        "method": "DELETE",
+        "path": "/api/v1/cart-item/{id}",
+        "module": "CARTITEM"
+      }
+    },
+    "USERVOURCHER": {
+      "CREATE": {
+        "method": "POST",
+        "path": "/api/v1/user-vourcher",
+        "module": "USERVOURCHER"
+      },
+      "FINDALL": {
+        "method": "GET",
+        "path": "/api/v1/user-vourcher",
+        "module": "USERVOURCHER"
+      },
+      "FIND": {
+        "method": "GET",
+        "path": "/api/v1/user-vourcher/user_voucher",
+        "module": "USERVOURCHER"
+      },
+      "FINDONE": {
+        "method": "GET",
+        "path": "/api/v1/user-vourcher/{id}",
+        "module": "USERVOURCHER"
+      },
+      "UPDATE": {
+        "method": "PATCH",
+        "path": "/api/v1/user-vourcher/{id}",
+        "module": "USERVOURCHER"
+      },
+      "REMOVE": {
+        "method": "DELETE",
+        "path": "/api/v1/user-vourcher/{id}",
+        "module": "USERVOURCHER"
+      }
+    },
+    "TYPEVOUCHER": {
+      "CREATE": {
+        "method": "POST",
+        "path": "/api/v1/type-voucher",
+        "module": "TYPEVOUCHER"
+      },
+      "FINDALL": {
+        "method": "GET",
+        "path": "/api/v1/type-voucher",
+        "module": "TYPEVOUCHER"
+      },
+      "FINDONE": {
+        "method": "GET",
+        "path": "/api/v1/type-voucher/{id}",
+        "module": "TYPEVOUCHER"
+      },
+      "UPDATE": {
+        "method": "PATCH",
+        "path": "/api/v1/type-voucher/{id}",
+        "module": "TYPEVOUCHER"
+      },
+      "REMOVE": {
+        "method": "DELETE",
+        "path": "/api/v1/type-voucher/{id}",
+        "module": "TYPEVOUCHER"
+      }
+    },
+    "PERMISSION": {
+      "CREATE": {
+        "method": "POST",
+        "path": "/api/v1/permission",
+        "module": "PERMISSION"
+      },
+      "FINDALL": {
+        "method": "GET",
+        "path": "/api/v1/permission",
+        "module": "PERMISSION"
+      },
+      "CREATEMANYPERMISSIONS": {
+        "method": "POST",
+        "path": "/api/v1/permission/createArray",
+        "module": "PERMISSION"
+      },
+      "FINDONE": {
+        "method": "GET",
+        "path": "/api/v1/permission/{id}",
+        "module": "PERMISSION"
+      },
+      "UPDATE": {
+        "method": "PATCH",
+        "path": "/api/v1/permission/{id}",
+        "module": "PERMISSION"
+      },
+      "REMOVE": {
+        "method": "DELETE",
+        "path": "/api/v1/permission/{id}",
+        "module": "PERMISSION"
+      }
+    },
+    "ROLE": {
+      "CREATE": {
+        "method": "POST",
+        "path": "/api/v1/role",
+        "module": "ROLE"
+      },
+      "FINDALL": {
+        "method": "GET",
+        "path": "/api/v1/role",
+        "module": "ROLE"
+      },
+      "FINDONE": {
+        "method": "GET",
+        "path": "/api/v1/role/{id}",
+        "module": "ROLE"
+      },
+      "UPDATE": {
+        "method": "PATCH",
+        "path": "/api/v1/role/{id}",
+        "module": "ROLE"
+      },
+      "REMOVE": {
+        "method": "DELETE",
+        "path": "/api/v1/role/{id}",
+        "module": "ROLE"
+      },
+      "DELETEROLE": {
+        "method": "DELETE",
+        "path": "/api/v1/role/delete_role_permision/{id}",
+        "module": "ROLE"
+      },
+      "UPDATEPERMISSION": {
+        "method": "PUT",
+        "path": "/api/v1/role/update_role_permission/{id}",
+        "module": "ROLE"
+      }
+    },
+    "RECEIVEADDRESS": {
+      "CREATE": {
+        "method": "POST",
+        "path": "/api/v1/receive-address",
+        "module": "RECEIVEADDRESS"
+      },
+      "FINDALL": {
+        "method": "GET",
+        "path": "/api/v1/receive-address",
+        "module": "RECEIVEADDRESS"
+      },
+      "UPDATE": {
+        "method": "PUT",
+        "path": "/api/v1/receive-address/{id}",
+        "module": "RECEIVEADDRESS"
+      },
+      "GETRECEIVEADDRESSBYID": {
+        "method": "GET",
+        "path": "/api/v1/receive-address/{id}",
+        "module": "RECEIVEADDRESS"
+      },
+      "REMOVE": {
+        "method": "DELETE",
+        "path": "/api/v1/receive-address/{id}",
+        "module": "RECEIVEADDRESS"
+      },
+      "SETDEFAULTRECEIVEADDRESS": {
+        "method": "PATCH",
+        "path": "/api/v1/receive-address/{id}/default",
+        "module": "RECEIVEADDRESS"
+      },
+      "GETRECEIVEADDRESSBYCUSTOMERID": {
+        "method": "GET",
+        "path": "/api/v1/receive-address/customer/{customerId}",
+        "module": "RECEIVEADDRESS"
+      },
+      "GETDEFAULTRECEIVEADDRESSBYCUSTOMERID": {
+        "method": "GET",
+        "path": "/api/v1/receive-address/customer/{customerId}/default",
+        "module": "RECEIVEADDRESS"
+      }
+    },
+    "SPECIFICATION": {
+      "CREATE": {
+        "method": "POST",
+        "path": "/api/v1/specification",
+        "module": "SPECIFICATION"
+      },
+      "FINDALL": {
+        "method": "GET",
+        "path": "/api/v1/specification",
+        "module": "SPECIFICATION"
+      },
+      "FINDBYPRODUCTID": {
+        "method": "GET",
+        "path": "/api/v1/specification/{productId}",
+        "module": "SPECIFICATION"
+      }
+    },
+    "BLOGCATEGORIES": {
+      "FINDALL": {
+        "method": "GET",
+        "path": "/api/v1/blog-categories",
+        "module": "BLOGCATEGORIES"
+      },
+      "CREATE": {
+        "method": "POST",
+        "path": "/api/v1/blog-categories",
+        "module": "BLOGCATEGORIES"
+      },
+      "FINDONE": {
+        "method": "GET",
+        "path": "/api/v1/blog-categories/{id}",
+        "module": "BLOGCATEGORIES"
+      },
+      "UPDATE": {
+        "method": "PUT",
+        "path": "/api/v1/blog-categories/{id}",
+        "module": "BLOGCATEGORIES"
+      },
+      "REMOVE": {
+        "method": "DELETE",
+        "path": "/api/v1/blog-categories/{id}",
+        "module": "BLOGCATEGORIES"
+      }
+    },
+    "DELIVERYMETHOD": {
+      "CREATE": {
+        "method": "POST",
+        "path": "/api/v1/delivery-method",
+        "module": "DELIVERYMETHOD"
+      },
+      "FINDALL": {
+        "method": "GET",
+        "path": "/api/v1/delivery-method",
+        "module": "DELIVERYMETHOD"
+      },
+      "UPDATE": {
+        "method": "PUT",
+        "path": "/api/v1/delivery-method/{id}",
+        "module": "DELIVERYMETHOD"
+      },
+      "FINDONE": {
+        "method": "GET",
+        "path": "/api/v1/delivery-method/{id}",
+        "module": "DELIVERYMETHOD"
+      },
+      "REMOVE": {
+        "method": "DELETE",
+        "path": "/api/v1/delivery-method/{id}",
+        "module": "DELIVERYMETHOD"
+      }
+    },
+    "PROVINCE": {
+      "GETALLPROVINCES": {
+        "method": "GET",
+        "path": "/api/v1/province",
+        "module": "PROVINCE"
+      }
+    },
+    "DISTRICT": {
+      "GETALLDISTRICTS": {
+        "method": "GET",
+        "path": "/api/v1/district",
+        "module": "DISTRICT"
+      }
+    },
+    "WARD": {
+      "GETALLWARD": {
+        "method": "GET",
+        "path": "/api/v1/ward",
+        "module": "WARD"
+      }
+    },
+    "PAYMENTMETHOD": {
+      "CREATE": {
+        "method": "POST",
+        "path": "/api/v1/payment-method",
+        "module": "PAYMENTMETHOD"
+      },
+      "GETALLPAYMENTMETHODS": {
+        "method": "GET",
+        "path": "/api/v1/payment-method",
+        "module": "PAYMENTMETHOD"
+      },
+      "UPDATE": {
+        "method": "PUT",
+        "path": "/api/v1/payment-method/{id}",
+        "module": "PAYMENTMETHOD"
+      },
+      "GETPAYMENTMETHODBYID": {
+        "method": "GET",
+        "path": "/api/v1/payment-method/{id}",
+        "module": "PAYMENTMETHOD"
+      },
+      "GETALLPAYMENTMETHODNAMES": {
+        "method": "GET",
+        "path": "/api/v1/payment-method/payment-method-name",
+        "module": "PAYMENTMETHOD"
+      }
+    },
+    "ORDERDETAIL": {
+      "CREATE": {
+        "method": "POST",
+        "path": "/api/v1/order-detail",
+        "module": "ORDERDETAIL"
+      }
+    },
+    "DELIVERYSTATUS": {
+      "CREATE": {
+        "method": "POST",
+        "path": "/api/v1/delivery-status",
+        "module": "DELIVERYSTATUS"
+      },
+      "FINDALL": {
+        "method": "GET",
+        "path": "/api/v1/delivery-status",
+        "module": "DELIVERYSTATUS"
+      },
+      "FINDONE": {
+        "method": "GET",
+        "path": "/api/v1/delivery-status/{id}",
+        "module": "DELIVERYSTATUS"
+      },
+      "UPDATE": {
+        "method": "PATCH",
+        "path": "/api/v1/delivery-status/{id}",
+        "module": "DELIVERYSTATUS"
+      },
+      "REMOVE": {
+        "method": "DELETE",
+        "path": "/api/v1/delivery-status/{id}",
+        "module": "DELIVERYSTATUS"
+      }
+    },
+    "IMAGESVIDEOS": {
+      "CREATE": {
+        "method": "POST",
+        "path": "/api/v1/images-videos",
+        "module": "IMAGESVIDEOS"
+      },
+      "FINDALL": {
+        "method": "GET",
+        "path": "/api/v1/images-videos",
+        "module": "IMAGESVIDEOS"
+      },
+      "FINDONE": {
+        "method": "GET",
+        "path": "/api/v1/images-videos/{id}",
+        "module": "IMAGESVIDEOS"
+      },
+      "UPDATE": {
+        "method": "PATCH",
+        "path": "/api/v1/images-videos/{id}",
+        "module": "IMAGESVIDEOS"
+      },
+      "REMOVE": {
+        "method": "DELETE",
+        "path": "/api/v1/images-videos/{id}",
+        "module": "IMAGESVIDEOS"
+      }
+    }
+  }
+}

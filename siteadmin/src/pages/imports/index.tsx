@@ -48,6 +48,8 @@ import { filterEmptyFields, generateUUIDV4 } from "src/utils";
 import { FormInstance } from "antd/lib";
 import TextArea from "antd/es/input/TextArea";
 import { SelectType } from "src/components/products/detail/ModalCreateProduct/ModalCreateProduct";
+import Access from "src/access/access";
+import { ALL_PERMISSIONS } from "src/constants/permissions";
 
 interface ImportPageProps {}
 
@@ -1047,16 +1049,21 @@ const ImportPage: React.FC<ImportPageProps> = () => {
                         description="Thông tin chi tiết về danh sách các đợt nhập hàng"
                         items={[...getBreadcrumbItems(location.pathname)]}
                     />
-                    <Button
-                        type="primary"
-                        size="large"
-                        className="!rounded-none"
-                        onClick={() => {
-                            setOpenModal(true);
-                        }}
+                    <Access
+                        permission={ALL_PERMISSIONS.IMPORT.CREATE}
+                        hideChildren
                     >
-                        Tạo phiếu nhập hàng
-                    </Button>
+                        <Button
+                            type="primary"
+                            size="large"
+                            className="!rounded-none"
+                            onClick={() => {
+                                setOpenModal(true);
+                            }}
+                        >
+                            Tạo phiếu nhập hàng
+                        </Button>
+                    </Access>
                 </div>
             </div>
             <div className="w-full mt-4 mb-6 flex flex-col gap-4 px-4 pb-4 border border-gray-200 rounded-lg bg-white shadow-sm animate-slideUp">

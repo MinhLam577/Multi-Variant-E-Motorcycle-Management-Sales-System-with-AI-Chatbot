@@ -24,6 +24,8 @@ import { useStore } from "src/stores";
 import { observer } from "mobx-react-lite";
 import CustomizeTab from "src/components/common/CustomizeTab";
 import { getErrorMessage } from "src/utils";
+import Access from "src/access/access";
+import { ALL_PERMISSIONS } from "src/constants/permissions";
 const User = () => {
     const navigate = useNavigate();
     const store = useStore();
@@ -142,18 +144,23 @@ const User = () => {
                     items={[...getBreadcrumbItems(location.pathname)]}
                 />
                 <div className="flex justify-end items-center">
-                    <Button
-                        icon={<CloudUploadOutlined />}
-                        type="primary"
-                        style={{
-                            backgroundColor: "green",
-                            borderColor: "green",
-                            marginRight: 8,
-                        }}
-                        onClick={() => setOpenModalImport(true)}
+                    <Access
+                        permission={ALL_PERMISSIONS.USER.CREATE}
+                        hideChildren={true}
                     >
-                        Import
-                    </Button>
+                        <Button
+                            icon={<CloudUploadOutlined />}
+                            type="primary"
+                            style={{
+                                backgroundColor: "green",
+                                borderColor: "green",
+                                marginRight: 8,
+                            }}
+                            onClick={() => setOpenModalImport(true)}
+                        >
+                            Import
+                        </Button>
+                    </Access>
 
                     <CSVLink
                         data={dataFile}
@@ -167,13 +174,18 @@ const User = () => {
                             Export
                         </Button>
                     </CSVLink>
-                    <Button
-                        type="primary"
-                        icon={<PlusOutlined />}
-                        onClick={() => setOpenModalCreate(true)}
+                    <Access
+                        permission={ALL_PERMISSIONS.USER.CREATE}
+                        hideChildren={true}
                     >
-                        Tạo mới
-                    </Button>
+                        <Button
+                            type="primary"
+                            icon={<PlusOutlined />}
+                            onClick={() => setOpenModalCreate(true)}
+                        >
+                            Tạo mới
+                        </Button>
+                    </Access>
                 </div>
             </div>
             <div className="w-full my-6 flex flex-col gap-4 px-4 pb-4 border border-gray-200 rounded-lg bg-white shadow-sm animate-slideUp">

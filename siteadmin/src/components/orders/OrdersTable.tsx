@@ -1,15 +1,12 @@
-import { CopyOutlined } from "@ant-design/icons";
-import { Button, Tag, message } from "antd";
-import moment from "moment";
-import { useNavigate } from "react-router";
-import {
-    DateTimeFormat,
-    EnumOrderColorStatuses,
-    EnumOrderStatuses,
-} from "../../constants";
+import { CopyOutlined, EditOutlined } from "@ant-design/icons";
+import { Button, Tag, Tooltip, message } from "antd";
+import { EnumOrderColorStatuses, EnumOrderStatuses } from "../../constants";
 import TableComponent from "src/containers/TableComponent";
 import { formatVNDMoney } from "../../utils";
 import { useStore } from "src/stores";
+import GroupActionButton from "../GroupActionButton";
+import { ALL_MODULES, ALL_PERMISSIONS } from "src/constants/permissions";
+import Access from "src/access/access";
 
 const handleCopy = (text) => {
     navigator.clipboard.writeText(text);
@@ -24,20 +21,9 @@ export const getOrderColumnsConfig = ({ handleViewOrders }) => {
             key: "id",
             render: (_, record) => (
                 <div className="flex items-center gap-2">
-                    {handleViewOrders ? (
-                        <Button
-                            type="link"
-                            className="!p-0 whitespace-normal"
-                            key={record.id}
-                            onClick={() => {
-                                handleViewOrders(record.id);
-                            }}
-                        >
-                            {record.id}
-                        </Button>
-                    ) : (
-                        <span className="font-semibold">{record.id}</span>
-                    )}
+                    <span className="!p-0 whitespace-normal" key={record.id}>
+                        {record.id}
+                    </span>
                     <CopyOutlined
                         onClick={() => {
                             handleCopy(record.id);
@@ -45,7 +31,7 @@ export const getOrderColumnsConfig = ({ handleViewOrders }) => {
                     />
                 </div>
             ),
-            width: 140,
+            width: "20%",
         },
         {
             title: "Khách hàng",
@@ -59,7 +45,7 @@ export const getOrderColumnsConfig = ({ handleViewOrders }) => {
                 </div>
             ),
             ellipsis: true,
-            width: 140,
+            width: "20%",
         },
         {
             title: "Thông tin nhận hàng",
@@ -104,7 +90,7 @@ export const getOrderColumnsConfig = ({ handleViewOrders }) => {
                 </>
             ),
             ellipsis: true,
-            width: 150,
+            width: "25%",
         },
         {
             title: "Tổng tiền",
@@ -114,7 +100,7 @@ export const getOrderColumnsConfig = ({ handleViewOrders }) => {
                 <>{formatVNDMoney(record.total_price) + "đ"}</>
             ),
             ellipsis: true,
-            width: 120,
+            width: "10%",
         },
         {
             title: "Trạng thái đơn hàng",
@@ -126,16 +112,31 @@ export const getOrderColumnsConfig = ({ handleViewOrders }) => {
                 </Tag>
             ),
             ellipsis: true,
-            width: 150,
+            width: "15%",
         },
         {
-            title: "Ngày tạo",
-            dataIndex: "createdAt",
-            key: "createdAt",
-            render: (createdAt) =>
-                moment(createdAt).format(DateTimeFormat.TimeStamp),
-            ellipsis: true,
-            width: 120,
+            title: "Thao tác",
+            dataIndex: "action",
+            key: "action",
+            render: (_value, item) => {
+                return (
+                    <div className="flex gap-x-4 ">
+                        <Access
+                            permission={ALL_PERMISSIONS.ORDERS.UPDATE}
+                            hideChildren
+                        >
+                            <Tooltip title="Cât nhật đơn hàng">
+                                <Button
+                                    variant="link"
+                                    icon={<EditOutlined />}
+                                    onClick={() => handleViewOrders(item.id)}
+                                />
+                            </Tooltip>
+                        </Access>
+                    </div>
+                );
+            },
+            width: "10%",
         },
     ];
 };
@@ -149,8 +150,9 @@ const OrdersTable = ({ handleViewOrders, data }) => {
                 data={data}
                 observableName={order_store.constructor.name}
                 loading={order_store.loading}
-                getColumnsConfig={getOrderColumnsConfig}
-                handleViewOrders={handleViewOrders}
+                getColumnsConfig={() => {
+                    return getOrderColumnsConfig({ handleViewOrders });
+                }}
                 scroll={{ y: "180px" }}
             />
         </>
