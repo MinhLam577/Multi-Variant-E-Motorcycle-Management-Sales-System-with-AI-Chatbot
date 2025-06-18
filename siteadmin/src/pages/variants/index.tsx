@@ -231,7 +231,7 @@ const VariantsPage = () => {
             });
             setOpenModalUpdate(true);
         } catch (e) {
-            console.log(e);
+            console.error("Error converting skus response to form:", e);
             const errorMessage = getErrorMessage(
                 e,
                 "Đã có lỗi xảy ra trong quá trình cập nhật biến thể"

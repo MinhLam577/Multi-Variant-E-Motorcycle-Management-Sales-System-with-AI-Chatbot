@@ -1110,16 +1110,6 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                         try {
                                             onSuccess?.("Thành công", file);
                                         } catch (error) {
-                                            const errorrMsg =
-                                                error instanceof Error
-                                                    ? error.message
-                                                    : "có lỗi xảy ra khi xử lí request ảnh";
-                                            store.setStatusMessage(
-                                                500,
-                                                errorrMsg,
-                                                "",
-                                                false
-                                            );
                                             onError?.(error as Error);
                                         }
                                     }}

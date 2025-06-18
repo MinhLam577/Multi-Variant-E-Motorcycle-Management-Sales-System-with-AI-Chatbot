@@ -86,9 +86,7 @@ const Login = () => {
         });
     };
 
-    const onFinishFailed = (errorInfo) => {
-        console.log("Failed:", errorInfo);
-    };
+    const onFinishFailed = (errorInfo) => {};
 
     return (
         <LoginScreen

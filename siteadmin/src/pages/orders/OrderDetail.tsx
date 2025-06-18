@@ -25,6 +25,7 @@ import { CreateDetailExport, ExportOrder } from "src/api/order.api";
 import { useStore } from "src/stores";
 import Access from "src/access/access";
 import { ALL_PERMISSIONS } from "src/constants/permissions";
+import { getErrorMessage } from "src/utils";
 export const OrderDetailMode = {
     View: 1,
     Edit: 2,
@@ -171,14 +172,14 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
             set_current_status(newStatus);
             setIsError(isError);
         } catch (e: any) {
-            console.error(e);
+            console.error("Error handling current status:", e);
             set_current_status(EnumOrderStatusesValue.PENDING);
             setIsError(true);
-            store.setStatusMessage(
-                500,
-                e?.message || "Lỗi khi cập nhật trạng thái đơn hàng",
-                ""
+            const errorMessage = getErrorMessage(
+                e,
+                "Lỗi khi cập nhật trạng thái đơn hàng"
             );
+            store.setStatusMessage(500, errorMessage, "");
         }
     };
 
@@ -241,12 +242,12 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
             const res = await order_store.confirmOrder(data);
             return !!res;
         } catch (e: any) {
-            console.error(e);
-            store.setStatusMessage(
-                500,
-                e?.message || "Lỗi khi xác nhận và lưu xuất đơn hàng",
-                ""
+            console.error("Error confirming and saving export order:", e);
+            const errorMessage = getErrorMessage(
+                e,
+                "Lỗi khi xác nhận và lưu xuất đơn hàng"
             );
+            store.setStatusMessage(500, errorMessage, "");
         }
     };
 

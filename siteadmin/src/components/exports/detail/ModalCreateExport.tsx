@@ -136,12 +136,6 @@ const ModalCreateExport: React.FC<ModalCreateExportProps> = ({
             }
         } catch (error) {
             console.error("Failed to fetch detail imports:", error);
-            store.setStatusMessage(
-                500,
-                "Lỗi trong quá trình lấy dữ liệu, vui long thử lại sau",
-                "",
-                false
-            );
         }
     };
 
@@ -599,7 +593,6 @@ const ModalCreateExport: React.FC<ModalCreateExportProps> = ({
                 order_details: DetailExportTableType;
             } = await createExportForm.validateFields();
             const { note, order_details } = values;
-            console.log("values", values);
             if (!order_details) {
                 store.setStatusMessage(
                     500,

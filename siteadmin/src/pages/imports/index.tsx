@@ -44,7 +44,7 @@ import {
     SearchOutlined,
 } from "@ant-design/icons";
 import { toJS } from "mobx";
-import { filterEmptyFields, generateUUIDV4 } from "src/utils";
+import { filterEmptyFields, generateUUIDV4, getErrorMessage } from "src/utils";
 import { FormInstance } from "antd/lib";
 import TextArea from "antd/es/input/TextArea";
 import { SelectType } from "src/components/products/detail/ModalCreateProduct/ModalCreateProduct";
@@ -269,7 +269,10 @@ const ImportPage: React.FC<ImportPageProps> = () => {
             }
         } catch (e: any) {
             console.error("Lỗi khi tạo phiếu nhập hàng", e);
-            const errorMessage = e?.message || "Vui lòng nhập đầy đủ thông tin";
+            const errorMessage = getErrorMessage(
+                e,
+                "Có lỗi xảy ra khi tạo phiếu nhập hàng"
+            );
             store.setStatusMessage(500, errorMessage, "", false);
         }
     };
@@ -967,9 +970,10 @@ const ImportPage: React.FC<ImportPageProps> = () => {
                 });
             }
         } catch (e: any) {
-            const errorMessage =
-                e?.message ||
-                "Có lỗi xảy ra trong quá trình xóa phiếu nhập hàng, vui lòng thử lại sau";
+            const errorMessage = getErrorMessage(
+                e,
+                "Xóa phiếu nhập hàng thất bại"
+            );
             store.setStatusMessage(500, errorMessage, "", false);
         }
     };
@@ -1035,8 +1039,10 @@ const ImportPage: React.FC<ImportPageProps> = () => {
                 });
             }
         } catch (error: any) {
-            const errorMessage =
-                error?.response?.data?.message || "Lỗi không xác định";
+            const errorMessage = getErrorMessage(
+                error,
+                "Cập nhật phiếu nhập hàng thất bại"
+            );
             store.setStatusMessage(500, errorMessage, "", false);
         }
     };

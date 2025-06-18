@@ -53,8 +53,6 @@ axiosInstance.interceptors.response.use(
             !originalRequest._retry
         ) {
             originalRequest._retry = true;
-            // const refreshToken = tokenUtils.getRefreshToken();
-            console.log("Refreshing access token...");
 
             try {
                 // const response = await axiosInstance.get(
