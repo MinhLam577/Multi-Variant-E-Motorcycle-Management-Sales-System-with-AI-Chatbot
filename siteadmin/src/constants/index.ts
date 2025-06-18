@@ -122,39 +122,41 @@ export const EnumOrderStatuses = {
     PENDING: "ĐANG CHỜ",
     CONFIRMED: "ĐÃ XÁC NHẬN",
     EXPORTED: "ĐÃ XUẤT KHO",
+    HAND_OVERED: "ĐÃ BÀN GIAO",
     DELIVERING: "ĐANG VẬN CHUYỂN",
     SHIPPING: "ĐANG GIAO HÀNG",
     DELIVERED: "GIAO THÀNH CÔNG",
     CANCELLED: "HỦY ĐƠN",
-    // RETURNED: "TRẢ HÀNG",
     FAILED_DELIVERY: "GIAO THẤT BẠI",
 };
 
 export const EnumOrderSteps = {
-    PENDING: "ĐẶT HÀNG",
+    PENDING: "Đang XỬ LÍ",
     CONFIRMED: "ĐÃ XÁC NHẬN",
     EXPORTED: "ĐÃ XUẤT KHO",
+    HAND_OVERED: "ĐÃ BÀN GIAO",
     DELIVERING: "VẬN CHUYỂN",
     SHIPPING: "GIAO HÀNG",
 };
 
 export enum EnumOrderStatusesValue {
     All = null as any,
-    PENDING = 0,
-    CONFIRMED = 1,
-    EXPORTED = 2,
-    DELIVERING = 3,
-    SHIPPING = 4,
-    DELIVERED = 5,
-    FAILED_DELIVERY = 6,
-    RETURNED = 7,
-    CANCELED = -1,
+    CANCELLED = -1, // Đã hủy đơn hàng
+    PENDING = 0, // Đang chờ xử lí
+    CONFIRMED = 1, // Đã xác nhận đơn hàng và chờ hàng xuất kho
+    EXPORTED = 2, // Đã xuất kho thành công và chuẩn bị bàn giao cho đơn vị vận chuyển
+    HAND_OVERED = 3, // Đã bàn giao hàng cho đơn vị vận chuyển
+    DELIVERING = 4, // Đang vận chuyển hàng từ nơi xa về gần nơi của khách hàng
+    SHIPPING = 5, // Hàng đã đến gần khách và đang trong quá trình giao trực tiếp
+    DELIVERED = 6, // Đã giao hàng thành công
+    FAILED_DELIVERY = 7, // Giao hàng thất bại
 }
 
 export const EnumOrderColorStatuses = {
     PENDING: "rgb(2,132,199)",
     CONFIRMED: "#003eb3",
     EXPORTED: "#389e0d",
+    HAND_OVERED: "#fadb14",
     DELIVERING: "#876800",
     SHIPPING: "#006d75",
     DELIVERED: "rgb(5,150,105)",
@@ -168,13 +170,29 @@ export const PaymentStatus = {
     PAID: "ĐÃ THANH TOÁN",
     FAILED: "THẤT BẠI",
     REFUNDED: "ĐÃ HOÀN TIỀN",
+    CANCELLED: "ĐÃ HỦY",
+    PROCESSING: "ĐANG XỬ LÝ",
+    EXPIRED: "ĐÃ HẾT HẠN",
 };
+
+export enum payment_status {
+    FAILED = -1,
+    PENDING = 0,
+    PAID = 1,
+    REFUNDED = 2,
+    CANCELLED = 3,
+    PROCESSING = 4,
+    EXPIRED = 5,
+}
 
 export const EnumPaymentStatusColors = {
     PENDING: "rgb(2 132 199)",
     PAID: "rgb(34 197 94)",
     FAILED: "rgb(239 68 68)",
     REFUNDED: "rgb(249 115 22)",
+    CANCELLED: "rgb(156 163 175)",
+    PROCESSING: "rgb(245 158 11)",
+    EXPIRED: "rgb(156 163 175)",
 };
 
 export const NewsStatus = {

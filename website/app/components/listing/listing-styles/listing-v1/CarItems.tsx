@@ -41,99 +41,103 @@ const CarItems: React.FC<ICarItemsProps> = ({ data, queryObject }) => {
     };
     return (
         <>
-            {getDataToRender().map((listing) => (
-                <div
-                    className="col-sm-6 col-lg-4 col-xl-3"
-                    key={listing.products.id}
-                >
-                    {/* Kiểm tra kiểu sản phẩm và thay đổi đường dẫn */}
-                    <Link
-                        href={
-                            listing.products.type === "car"
-                                ? `/listing-single-v1/${listing.products.id}`
-                                : `/listing-single-v2/${listing.products.id}`
-                        }
+            {getDataToRender()
+                .filter((p) => p.products.status === true)
+                .map((listing) => (
+                    <div
+                        className="col-sm-6 col-lg-4 col-xl-3"
+                        key={listing.products.id}
                     >
-                        <div className="car-listing">
-                            <div className="thumb">
-                                {listing.products?.id && (
-                                    <Link
-                                        href={
-                                            listing.products.type === "car"
-                                                ? `/listing-single-v1/${listing.products.id}`
-                                                : `/listing-single-v2/${listing.products.id}`
-                                        }
-                                    >
-                                        <Image
-                                            width={284}
-                                            height={183}
-                                            className="w-full h-[183px] object-cover"
-                                            priority
-                                            src={listing.products.images[0]}
-                                            alt={listing.products.title}
-                                        />
-                                    </Link>
-                                )}
-                            </div>
-
-                            <div className="details">
-                                <div className="wrapper flex flex-col justify-between space-y-3">
-                                    <h5 className="price text-xl font-semibold text-green-600 flex-grow">
-                                        {(() => {
-                                            if (
-                                                !listing?.products?.skus ||
-                                                !Array.isArray(
-                                                    listing.products.skus
-                                                )
-                                            ) {
-                                                return "Liên hệ";
+                        {/* Kiểm tra kiểu sản phẩm và thay đổi đường dẫn */}
+                        <Link
+                            href={
+                                listing.products.type === "car"
+                                    ? `/listing-single-v1/${listing.products.id}`
+                                    : `/listing-single-v2/${listing.products.id}`
+                            }
+                        >
+                            <div className="car-listing">
+                                <div className="thumb">
+                                    {listing.products?.id && (
+                                        <Link
+                                            href={
+                                                listing.products.type === "car"
+                                                    ? `/listing-single-v1/${listing.products.id}`
+                                                    : `/listing-single-v2/${listing.products.id}`
                                             }
-                                            const validPrices =
-                                                listing.products.skus
-                                                    .map(
-                                                        (s) =>
-                                                            (s?.price_sold &&
-                                                                Number(
-                                                                    s.price_sold
-                                                                )) ||
-                                                            null
-                                                    )
-                                                    .filter(
-                                                        (p) =>
-                                                            typeof p ===
-                                                                "number" &&
-                                                            !isNaN(p)
-                                                    );
-                                            return validPrices.length
-                                                ? toCurrency(
-                                                      Math.min(...validPrices)
-                                                  )
-                                                : "Liên hệ";
-                                        })()}
-                                    </h5>
-                                    <div className="flex flex-col justify-between">
-                                        <h6 className="title text-base font-medium text-gray-800 hover:text-blue-600 transition line-clamp-2 flex-grow h-12">
-                                            {listing.products?.id && (
-                                                <Link
-                                                    href={
-                                                        listing.products
-                                                            .type === "car"
-                                                            ? `/listing-single-v1/${listing.products.id}`
-                                                            : `/listing-single-v2/${listing.products.id}`
-                                                    }
-                                                >
-                                                    {listing.products.title}
-                                                </Link>
-                                            )}
-                                        </h6>
-                                    </div>
+                                        >
+                                            <Image
+                                                width={284}
+                                                height={183}
+                                                className="w-full h-[183px] object-cover"
+                                                priority
+                                                src={listing.products.images[0]}
+                                                alt={listing.products.title}
+                                            />
+                                        </Link>
+                                    )}
                                 </div>
-                                {/* End wrapper */}
+
+                                <div className="details">
+                                    <div className="wrapper flex flex-col justify-between space-y-3">
+                                        <h5 className="price text-xl font-semibold text-green-600 flex-grow">
+                                            {(() => {
+                                                if (
+                                                    !listing?.products?.skus ||
+                                                    !Array.isArray(
+                                                        listing.products.skus
+                                                    )
+                                                ) {
+                                                    return "Liên hệ";
+                                                }
+                                                const validPrices =
+                                                    listing.products.skus
+                                                        .map(
+                                                            (s) =>
+                                                                (s?.price_sold &&
+                                                                    Number(
+                                                                        s.price_sold
+                                                                    )) ||
+                                                                null
+                                                        )
+                                                        .filter(
+                                                            (p) =>
+                                                                typeof p ===
+                                                                    "number" &&
+                                                                !isNaN(p)
+                                                        );
+                                                return validPrices.length
+                                                    ? toCurrency(
+                                                          Math.min(
+                                                              ...validPrices
+                                                          )
+                                                      )
+                                                    : "Liên hệ";
+                                            })()}
+                                        </h5>
+                                        <div className="flex flex-col justify-between">
+                                            <h6 className="title text-base font-medium text-gray-800 hover:text-blue-600 transition line-clamp-2 flex-grow h-12">
+                                                {listing.products?.id && (
+                                                    <Link
+                                                        href={
+                                                            listing.products
+                                                                .type === "car"
+                                                                ? `/listing-single-v1/${listing.products.id}`
+                                                                : `/listing-single-v2/${listing.products.id}`
+                                                        }
+                                                    >
+                                                        {listing.products.title}
+                                                    </Link>
+                                                )}
+                                            </h6>
+                                        </div>
+                                    </div>
+                                    {/* End wrapper */}
+                                </div>
                             </div>
-                        </div>
-                    </Link>
-                </div>
-            ))}
+                        </Link>
+                    </div>
+                ))}
         </>
     );
 };

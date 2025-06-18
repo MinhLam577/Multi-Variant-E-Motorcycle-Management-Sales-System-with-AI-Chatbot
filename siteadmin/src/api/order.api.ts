@@ -23,7 +23,14 @@ const OrderAPI: {
     getOrderDetail: (id: string) => Promise<ResponsePromise>;
     getOrderStatus: () => Promise<ResponsePromise>;
     updateOrderStatus: (id: string) => Promise<ResponsePromise>;
-    confirmOrder: (data: ExportOrder) => Promise<ResponsePromise>;
+
+    // confirmOrder: (data: ExportOrder) => Promise<ResponsePromise>;
+    confirmOrder: (id: string) => Promise<ResponsePromise>;
+    exportOrder: (id: string) => Promise<ResponsePromise>;
+    handOverOrder: (id: string) => Promise<ResponsePromise>;
+    deliverOrder: (id: string) => Promise<ResponsePromise>;
+    shipOrder: (id: string) => Promise<ResponsePromise>;
+    shipSuccess: (id: string) => Promise<ResponsePromise>;
     cancelOrder: (id: string, reason?: string) => Promise<ResponsePromise>;
     failedDelivery: (id: string, reason?: string) => Promise<ResponsePromise>;
     returnOrder: (id: string, reason?: string) => Promise<ResponsePromise>;
@@ -40,20 +47,18 @@ const OrderAPI: {
     getOrderStatus: async () => await apiClient.get(orderEndpoints.getStatus()),
     updateOrderStatus: async (id: string) =>
         await apiClient.patch(orderEndpoints.updateOrderStatus(id)),
-    confirmOrder: async (data: ExportOrder) => {
-        const { note, ...res } = data;
-        const saveData: ExportOrder = {
-            ...res,
-        };
-        if (note) {
-            saveData.note = note;
-        }
-
-        return await apiClient.patch(
-            orderEndpoints.confirmOrder(),
-            JSON.stringify(saveData)
-        );
-    },
+    confirmOrder: async (id: string) =>
+        await apiClient.patch(orderEndpoints.confirmOrder(id)),
+    exportOrder: async (id: string) =>
+        await apiClient.patch(orderEndpoints.exportOrder(id)),
+    handOverOrder: async (id: string) =>
+        await apiClient.patch(orderEndpoints.handOverOrder(id)),
+    deliverOrder: async (id: string) =>
+        await apiClient.patch(orderEndpoints.deliveryOrder(id)),
+    shipOrder: async (id: string) =>
+        await apiClient.patch(orderEndpoints.shipOrder(id)),
+    shipSuccess: async (id: string) =>
+        await apiClient.patch(orderEndpoints.shipSuccess(id)),
     cancelOrder: async (id: string, reason?: string) => {
         if (reason) {
             return await apiClient.patch(
@@ -104,3 +109,18 @@ const OrderAPI: {
 };
 
 export default OrderAPI;
+
+// confirmOrder: async (data: ExportOrder) => {
+//     const { note, ...res } = data;
+//     const saveData: ExportOrder = {
+//         ...res,
+//     };
+//     if (note) {
+//         saveData.note = note;
+//     }
+
+//     return await apiClient.patch(
+//         orderEndpoints.confirmOrder(),
+//         JSON.stringify(saveData)
+//     );
+// },

@@ -122,17 +122,17 @@ const ListingV1 = observer(() => {
 
     useEffect(() => {
         fetchOtherData();
-        const reactionLoading = reaction(
-            () => storeProduct.loading,
-            (loading) => {
-                if (!loading) {
-                    scrollToTop();
-                }
-            }
-        );
-        return () => {
-            reactionLoading();
-        };
+        // const reactionLoading = reaction(
+        //     () => storeProduct.loading,
+        //     (loading) => {
+        //         if (!loading) {
+        //             scrollToTop();
+        //         }
+        //     }
+        // );
+        // return () => {
+        //     reactionLoading();
+        // };
     }, []);
 
     return (

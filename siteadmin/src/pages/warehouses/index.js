@@ -182,7 +182,10 @@ const WareHouses = () => {
                     description="Thông tin danh sách kho"
                     items={[...getBreadcrumbItems(location.pathname)]}
                 />
-                <Access permission={ALL_PERMISSIONS.WAREHOUSE.CREATE}>
+                <Access
+                    permission={ALL_PERMISSIONS.WAREHOUSE.CREATE}
+                    hideChildren
+                >
                     <Button
                         type="primary"
                         icon={<PlusOutlined />}

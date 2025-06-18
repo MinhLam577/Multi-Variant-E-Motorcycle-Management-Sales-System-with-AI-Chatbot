@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { Navigate } from "react-router";
-import { UserRoleConstant } from "../constants";
+import { RoleEnum, UserRoleConstant } from "../constants";
 import { useAuth } from "../contexts/AuthProvider";
 import AppLayout from "./layout";
 
@@ -9,10 +9,10 @@ const ProtectedRoute = ({ children }) => {
     if (!user?.access_token) return <Navigate to="/login" replace />;
 
     const allowedRoles = [
-        UserRoleConstant.admin,
-        UserRoleConstant.Staff,
-        UserRoleConstant.warehouse_manager,
-        UserRoleConstant.delivery_staff,
+        RoleEnum.ADMIN,
+        RoleEnum.STAFF,
+        RoleEnum.WAREHOUSE_MANAGER,
+        RoleEnum.DELIVERY_STAFF,
     ];
 
     if (!allowedRoles.includes(user?.Roles))

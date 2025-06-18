@@ -85,7 +85,6 @@ const ListingSingle = observer(() => {
         // ✅ Cập nhật kết quả nếu có
         setSku(storeProduct?.data?.dataSKU);
         //  console.log(storeProduct?.data?.dataSKU?.cart_item[0]?.quantity);
-        alert(storeProduct?.data?.dataSKU);
       }
     } catch (err) {
       console.error("Lỗi khi tìm SKU:", err);

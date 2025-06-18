@@ -38,7 +38,6 @@ const Login = () => {
                 setIsLoading(true);
                 break;
             }
-
             case "loginSuccess": {
                 auth.loginAction();
                 break;
