@@ -91,7 +91,7 @@ const getColumnsConfig = ({
                 return (
                     <>
                         <Access
-                            permission={ALL_PERMISSIONS.USERS.DELETE}
+                            permission={ALL_PERMISSIONS.USER.DELETE}
                             hideChildren
                         >
                             <span
@@ -117,7 +117,7 @@ const getColumnsConfig = ({
                             </span>
                         </Access>
                         <Access
-                            permission={ALL_PERMISSIONS.USERS.UPDATE}
+                            permission={ALL_PERMISSIONS.USER.UPDATE}
                             hideChildren
                         >
                             <EditTwoTone
@@ -158,12 +158,6 @@ const UserTable: React.FC<IUserTableProps> = ({
         )(() => {});
     };
 
-    // const handleDeleteUser = (id: string) => {
-    //     processWithModals(ProcessModalName.ConfirmCustomContent)(
-    //         "Xác nhận",
-    //         "Bạn có chắc chắn ngưng hoạt động của người dùng này?"
-    //     )(() => {});
-    // };
     const hanleAddressUser = (item) => {
         navigate(`/users/${item}/address`, { replace: true });
     };

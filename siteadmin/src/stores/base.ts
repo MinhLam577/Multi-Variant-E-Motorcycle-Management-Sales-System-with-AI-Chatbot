@@ -1,9 +1,7 @@
-import AccountObservable from "./account";
+import AccountObservable from "./account.store";
 import BrandObservable from "./brand.store";
-import LoginObservable from "./login";
-import EMotorbikeObservable from "./motorbike";
+import LoginObservable from "./login.store";
 import ProductObservable from "./product.store";
-import UploadImageObservable from "./uploadImage";
 import OrderObservable from "./order.store";
 import PaymentMethodObservable from "./paymentMethod";
 import SkusObservable from "./skus.store";
@@ -17,7 +15,8 @@ import OptionObservable from "./options.store";
 import UserStaffObservable from "./user.store";
 import ImportObservable from "./imports.store";
 import ExportObservable from "./exports.store";
-import UserObservable from "../stores/user.js";
+import UserObservable from "../stores/user";
+import PermissionObservable from "./permission.store";
 export interface MessageStore {
     status?: number;
     errorMsg?: string;
@@ -35,6 +34,7 @@ export type paginationData = {
     current: number;
     pageSize: number;
 };
+
 export class RootStore implements MessageStore {
     @observable status: number = null;
     @observable errorMsg: string = null;
@@ -48,20 +48,20 @@ export class RootStore implements MessageStore {
     optionObservable: OptionObservable;
     paymentMethodObservable: PaymentMethodObservable;
     orderObservable: OrderObservable;
-    accountObservable: AccountObservable;
+    accountObservable: typeof AccountObservable;
     loginObservable: LoginObservable;
-    uploadImageObservable: UploadImageObservable;
     brandObservable: BrandObservable;
     productObservable: ProductObservable;
-    motorbikeObservable: EMotorbikeObservable;
     skusObservable: SkusObservable;
     voucherObservable: VoucherObservable;
     settingObservable: SettingObservable;
     categoriesObservable: CategoriesObservable;
     warehouseObservable: WarehouseObservable;
     userObservable: UserObservable;
+    permissionObservable: PermissionObservable;
     constructor() {
         makeObservable(this);
+        this.permissionObservable = new PermissionObservable(this);
         this.userObservable = new UserObservable(this);
         this.exportObservable = new ExportObservable(this);
         this.importObservable = new ImportObservable(this);
@@ -74,10 +74,8 @@ export class RootStore implements MessageStore {
         this.orderObservable = new OrderObservable(this);
         this.accountObservable = AccountObservable;
         this.loginObservable = new LoginObservable(this);
-        this.uploadImageObservable = new UploadImageObservable(this);
         this.brandObservable = new BrandObservable(this);
         this.productObservable = new ProductObservable(this);
-        this.motorbikeObservable = new EMotorbikeObservable(this);
         this.voucherObservable = new VoucherObservable(this);
         this.settingObservable = new SettingObservable(this);
     }

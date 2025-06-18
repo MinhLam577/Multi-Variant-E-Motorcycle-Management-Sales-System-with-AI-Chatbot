@@ -91,19 +91,19 @@ const getColumnsConfig = ({ hanleDeleteNews, handleUpdateNews }) => {
                 return (
                     <div className="flex items-start justify-start h-16">
                         <div className="flex items-center justify-start">
-                            <Popconfirm
-                                placement="leftTop"
-                                title={"Xác nhận xóa tin tức này"}
-                                description={
-                                    "Bạn có chắc chắn muốn xóa tin tức này ?"
-                                }
-                                onConfirm={() => hanleDeleteNews(item.id)}
-                                okText="Xác nhận"
-                                cancelText="Hủy"
+                            <Access
+                                permission={ALL_PERMISSIONS.BLOGS.DELETE}
+                                hideChildren
                             >
-                                <Access
-                                    permission={ALL_PERMISSIONS.BLOGS.DELETE}
-                                    hideChildren
+                                <Popconfirm
+                                    placement="leftTop"
+                                    title={"Xác nhận xóa tin tức này"}
+                                    description={
+                                        "Bạn có chắc chắn muốn xóa tin tức này ?"
+                                    }
+                                    onConfirm={() => hanleDeleteNews(item.id)}
+                                    okText="Xác nhận"
+                                    cancelText="Hủy"
                                 >
                                     <span
                                         style={{
@@ -114,8 +114,8 @@ const getColumnsConfig = ({ hanleDeleteNews, handleUpdateNews }) => {
                                     >
                                         <DeleteTwoTone twoToneColor="#ff4d4f" />
                                     </span>
-                                </Access>
-                            </Popconfirm>
+                                </Popconfirm>
+                            </Access>
 
                             <Access
                                 permission={ALL_PERMISSIONS.BLOGS.UPDATE}

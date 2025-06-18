@@ -19,15 +19,15 @@ export default function Setting() {
             navigate: "/setting/profile",
         },
         {
-            title: "Nhân viên",
-            description: "Tạo, phân quyền và quản lý nhân viên",
+            title: "Phân quyền",
+            description: "Tạo, phân quyền người dùng và quản lý quyền truy cập",
             icon: <SolutionOutlined />,
             active: true,
             navigate: "/setting/permission",
         },
         {
             title: "Vai trò",
-            description: "Tạo, phân quyền và quản lý vai trò của cửa hàng",
+            description: "Tạo, phân quyền và quản lý vai trò của người dùng",
             icon: <UserSwitchOutlined />,
             active: true,
             navigate: "/setting/role",

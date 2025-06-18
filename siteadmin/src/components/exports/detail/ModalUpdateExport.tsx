@@ -278,7 +278,6 @@ const ModalUpdateExport: React.FC<ModalUpdateExportProps> = ({
             if (!skus_ids || skus_ids.length === 0) return [];
             await skus_store.getDetailImportsByIds(skus_ids);
             const data = toJS(skus_store.data.detail_imports);
-            console.log("data", data);
             if (data.length > 0) {
                 setSkusDetailImportData((prev) => {
                     const newMap = new Map(prev);

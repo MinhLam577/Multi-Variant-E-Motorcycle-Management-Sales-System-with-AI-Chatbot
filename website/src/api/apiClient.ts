@@ -1,7 +1,6 @@
 import axios from "axios";
 import secureLocalStorage from "react-secure-storage";
 import { keyStorageAccount } from "../constants/index";
-// import { AccountObservable } from "../stores/account";
 import endpoints from "./endpoints";
 import { AccountObservable } from "../stores/account";
 

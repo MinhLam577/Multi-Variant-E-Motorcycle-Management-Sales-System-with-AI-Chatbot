@@ -3,28 +3,29 @@ import {
     ProFormSelect,
     ProFormText,
 } from "@ant-design/pro-components";
-import { Col, Form, Row, message, notification } from "antd";
+import { Col, Form, Row, message } from "antd";
 import { isMobile } from "react-device-detect";
-// import { callCreatePermission, callUpdatePermission } from "@/config/api";
-import { IPermission } from "src/types/backend";
 import { ALL_MODULES } from "src/constants/permissions";
 import apiClient from "src/api/apiClient";
 import endpoints from "src/api/endpoints";
+import { useStore } from "src/stores";
+import { PermissionResponseType } from "src/stores/permission.store";
 
 interface IProps {
     openModal: boolean;
     setOpenModal: (v: boolean) => void;
-    dataInit?: IPermission | null;
+    dataInit?: PermissionResponseType | null;
     setDataInit: (v: any) => void;
     reloadTable: () => void;
-    fetchPermissions: () => Promise<void>;
+    fetchPermissions: (query: object) => Promise<void>;
 }
 
 const ModalPermission = (props: IProps) => {
     const { openModal, setOpenModal, reloadTable, dataInit, setDataInit } =
         props;
     const [form] = Form.useForm();
-
+    const store = useStore();
+    const permissionStore = store.permissionObservable;
     const submitPermission = async (valuesForm: any) => {
         const { name, path, method, module } = valuesForm;
         if (dataInit?.id) {
@@ -45,7 +46,9 @@ const ModalPermission = (props: IProps) => {
 
                 if (res.data) {
                     message.success(res.data.message);
-                    props.fetchPermissions();
+                    props.fetchPermissions({
+                        ...permissionStore.pagination,
+                    });
                     handleReset();
                     reloadTable();
                 } else {
@@ -74,7 +77,9 @@ const ModalPermission = (props: IProps) => {
                     message.success("Thêm mới permission thành công");
                     handleReset();
                     reloadTable();
-                    props.fetchPermissions();
+                    props.fetchPermissions({
+                        ...permissionStore.pagination,
+                    });
                 } else {
                     message.error("Có lỗi xảy ra khi thêm permission");
                 }
@@ -109,7 +114,6 @@ const ModalPermission = (props: IProps) => {
                     afterClose: () => handleReset(),
                     destroyOnClose: true,
                     width: isMobile ? "100%" : 900,
-                    // keyboard: false,
                     maskClosable: false,
                     okText: <>{dataInit?.id ? "Cập nhật" : "Tạo mới"}</>,
                     cancelText: "Hủy",
@@ -175,6 +179,7 @@ const ModalPermission = (props: IProps) => {
                             name="module"
                             label="Thuộc Module"
                             valueEnum={ALL_MODULES}
+                            showSearch
                             placeholder="Please select a module"
                             rules={[
                                 {

@@ -15,6 +15,8 @@ import CustomizeModal from "src/components/common/CustomizeModal";
 import { ProductDataResponseType } from "src/stores/product.store";
 import { getErrorMessage, urlToBase64 } from "src/utils";
 import { useLocation } from "react-router";
+import { ALL_PERMISSIONS } from "src/constants/permissions";
+import Access from "src/access/access";
 
 export type OptionValueOfProductType = {
     id: string;
@@ -229,7 +231,7 @@ const VariantsPage = () => {
             });
             setOpenModalUpdate(true);
         } catch (e) {
-            console.log(e);
+            console.error("Error converting skus response to form:", e);
             const errorMessage = getErrorMessage(
                 e,
                 "Đã có lỗi xảy ra trong quá trình cập nhật biến thể"
@@ -257,16 +259,21 @@ const VariantsPage = () => {
                         description="Thông tin chi tiết về danh sách các biến thể sản phẩm"
                         items={[...getBreadcrumbItems(location.pathname)]}
                     />
-                    <Button
-                        type="primary"
-                        size="large"
-                        className="!rounded-none"
-                        onClick={() => {
-                            setOpenModalSelectProduct(true);
-                        }}
+                    <Access
+                        permission={ALL_PERMISSIONS.SKUS.CREATE}
+                        hideChildren
                     >
-                        Tạo biến thể
-                    </Button>
+                        <Button
+                            type="primary"
+                            size="large"
+                            className="!rounded-none"
+                            onClick={() => {
+                                setOpenModalSelectProduct(true);
+                            }}
+                        >
+                            Tạo biến thể
+                        </Button>
+                    </Access>
                 </div>
             </div>
             <div className="w-full mt-4 mb-6 flex flex-col gap-4 px-4 pb-4 border border-gray-200 rounded-lg bg-white shadow-sm animate-slideUp">

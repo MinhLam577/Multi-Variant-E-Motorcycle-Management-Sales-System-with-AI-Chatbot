@@ -32,7 +32,7 @@ export default function ModalChatBox() {
             setIsLoading(true);
             try {
                 const response = await fetch(
-                    "https://nguyenvanhuyn8n.app.n8n.cloud/webhook/71bc1b76-7c2b-4f16-b54a-6abb092ef0c6",
+                    process.env.NEXT_PUBLIC_CHATBOT_API_BASE_URL,
                     {
                         method: "POST",
                         headers: {

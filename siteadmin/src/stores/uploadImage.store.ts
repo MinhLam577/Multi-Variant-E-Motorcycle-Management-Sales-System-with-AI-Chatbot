@@ -1,11 +1,11 @@
 import { action, makeObservable, observable } from "mobx";
-import secureLocalStorage from "react-secure-storage";
 import apiClient from "../api/apiClient";
-import { keyStorageAccount } from "../constants";
 
 class UploadImageObservable {
     roles = null;
     urlResource = null;
+    status: string = null;
+    errorMsg: string = "";
     constructor() {
         makeObservable(this, {
             updateImageGetUrl: action.bound,
@@ -34,13 +34,7 @@ class UploadImageObservable {
             return data;
         } catch (error) {
             this.status = "uploadFailed";
-            this.errorMsg = error?.message;
         }
-    }
-
-    clearAccount() {
-        secureLocalStorage.removeItem(keyStorageAccount);
-        this.account = null;
     }
 }
 

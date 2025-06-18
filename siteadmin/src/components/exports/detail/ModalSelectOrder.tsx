@@ -1,12 +1,9 @@
 import { observer } from "mobx-react-lite";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import CustomizeModal from "src/components/common/CustomizeModal";
 import OrderSearch from "src/components/orders/OrderSearch";
-import OrdersTable, {
-    getOrderColumnsConfig,
-} from "src/components/orders/OrdersTable";
-import OrderStatusSearch from "src/components/orders/OrderStatusSearch";
-import { EnumOrderStatuses } from "src/constants";
+import { getOrderColumnsConfig } from "src/components/orders/OrdersTable";
+import { EnumOrderStatuses, PaymentStatus } from "src/constants";
 import TableComponent from "src/containers/TableComponent";
 import { useStore } from "src/stores";
 import { convertDate } from "src/utils";
@@ -42,57 +39,70 @@ const ModalSelectOrder: React.FC<ModalSelectOrderProps> = ({
         if (!Array.isArray(filteredData)) {
             filteredData = [];
         }
-        filteredData = filteredData.filter((order) => {
-            // Điều kiện status
-            const statusMatch =
-                !status || status === "All" || order.order_status === status;
-            const orderFilter =
-                orderSelected?.length && orderSelected.length > 0
-                    ? !orderSelected.includes(order.id)
-                    : true;
-            // Điều kiện search
-            const searchMatch =
-                !globalFilters?.search ||
-                order.id === globalFilters.search ||
-                order.customer.username
-                    .toLowerCase()
-                    .includes(globalFilters.search.toLowerCase()) ||
-                order.customer.email
-                    .toLowerCase()
-                    .includes(globalFilters.search.toLowerCase()) ||
-                order.customer.id === globalFilters.search;
+        filteredData = filteredData
+            .filter((order) => {
+                // Loại bỏ đơn hàng nào mà khác cod mà chưa trả tiền
+                if (
+                    order?.payment_method?.name?.toUpperCase() !== "COD" &&
+                    order?.payment_status !== PaymentStatus.PAID
+                ) {
+                    return false;
+                }
+                return true;
+            })
+            .filter((order) => {
+                // Điều kiện status
+                const statusMatch =
+                    !status ||
+                    status === "All" ||
+                    order.order_status === status;
+                const orderFilter =
+                    orderSelected?.length && orderSelected.length > 0
+                        ? !orderSelected.includes(order.id)
+                        : true;
+                // Điều kiện search
+                const searchMatch =
+                    !globalFilters?.search ||
+                    order.id === globalFilters.search ||
+                    order.customer.username
+                        .toLowerCase()
+                        .includes(globalFilters.search.toLowerCase()) ||
+                    order.customer.email
+                        .toLowerCase()
+                        .includes(globalFilters.search.toLowerCase()) ||
+                    order.customer.id === globalFilters.search;
 
-            const matchPaymentMethod =
-                !globalFilters?.payment_method ||
-                order.payment_method.name.toLowerCase() ===
-                    globalFilters?.payment_method?.toLowerCase();
+                const matchPaymentMethod =
+                    !globalFilters?.payment_method ||
+                    order.payment_method.name.toLowerCase() ===
+                        globalFilters?.payment_method?.toLowerCase();
 
-            const matchPaymentStatus =
-                !globalFilters?.payment_status ||
-                order.payment_status.toLowerCase() ===
-                    globalFilters?.payment_status?.toLowerCase();
+                const matchPaymentStatus =
+                    !globalFilters?.payment_status ||
+                    order.payment_status.toLowerCase() ===
+                        globalFilters?.payment_status?.toLowerCase();
 
-            const createdFrom = globalFilters?.created_from
-                ? convertDate(globalFilters?.created_from)
-                : null;
-            const createdTo = globalFilters?.created_to
-                ? convertDate(globalFilters?.created_to)
-                : null;
+                const createdFrom = globalFilters?.created_from
+                    ? convertDate(globalFilters?.created_from)
+                    : null;
+                const createdTo = globalFilters?.created_to
+                    ? convertDate(globalFilters?.created_to)
+                    : null;
 
-            const matchDate =
-                !(createdFrom && createdTo) ||
-                (order.createdAt >= createdFrom &&
-                    order.createdAt <= createdTo);
+                const matchDate =
+                    !(createdFrom && createdTo) ||
+                    (order.createdAt >= createdFrom &&
+                        order.createdAt <= createdTo);
 
-            return (
-                statusMatch &&
-                searchMatch &&
-                matchPaymentMethod &&
-                matchPaymentStatus &&
-                matchDate &&
-                orderFilter
-            );
-        });
+                return (
+                    statusMatch &&
+                    searchMatch &&
+                    matchPaymentMethod &&
+                    matchPaymentStatus &&
+                    matchDate &&
+                    orderFilter
+                );
+            });
         setFilterData(filteredData);
     }, [
         orderStore.data?.order_status_selected,

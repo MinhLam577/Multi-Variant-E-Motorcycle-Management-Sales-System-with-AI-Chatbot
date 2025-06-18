@@ -55,8 +55,6 @@ const ProductsDetail = ({ mode }) => {
         branches: [],
     });
 
-    console.log("settingData", settingData);
-
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {}, []);

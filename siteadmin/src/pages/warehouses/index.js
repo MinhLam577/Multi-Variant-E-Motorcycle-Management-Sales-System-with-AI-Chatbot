@@ -1,5 +1,7 @@
 import {
     DeleteOutlined,
+    EditOutlined,
+    EditTwoTone,
     PlusOutlined,
     PushpinOutlined,
 } from "@ant-design/icons";
@@ -18,6 +20,8 @@ import endpoints from "../../api/endpoints.ts";
 import AdminBreadCrumb from "../../components/common/AdminBreadCrumb.tsx";
 import { getBreadcrumbItems } from "../../containers/layout/index.tsx";
 import CustomizeTab from "../../components/common/CustomizeTab.tsx";
+import Access from "../../access/access.tsx";
+import { ALL_PERMISSIONS } from "../../constants/permissions.ts";
 
 const WareHouses = () => {
     const navigate = useNavigate();
@@ -56,7 +60,7 @@ const WareHouses = () => {
     const handleDeleteProducts = (id) => {
         processWithModals(ProcessModalName.ConfirmCustomContent)(
             "Xác nhận",
-            "Bạn chắc chắn muốn xóa danh mục này?"
+            "Bạn chắc chắn muốn xóa kho hàng này?"
         )(() => removeCategory(id));
     };
 
@@ -65,7 +69,7 @@ const WareHouses = () => {
         if (data) {
             message.success("Xóa kho thành công!");
             const data1 = await apiClient.get(endpoints.warehouse.list());
-            setData(data1.data); // Đồng bộ dữ liệu
+            setData(data1.data);
         }
     };
 
@@ -102,13 +106,9 @@ const WareHouses = () => {
                     return (
                         <div className="flex items-center gap-4">
                             <span>
-                                <Button
-                                    type="link"
-                                    className="items-center justify-start p-0"
-                                    onClick={() => handleViewWareHouse(item)}
-                                >
+                                <span className="items-center justify-start p-0">
                                     {value}
-                                </Button>
+                                </span>
                             </span>
                             {item?.isDefault && (
                                 <span>
@@ -151,14 +151,6 @@ const WareHouses = () => {
                 render: (_value, item) => {
                     return (
                         <div className="flex gap-x-4 ">
-                            <Tooltip title="Đặt làm mặc định">
-                                <Button
-                                    icon={<PushpinOutlined />}
-                                    onClick={() =>
-                                        handleStatusProducts(item, !item.status)
-                                    }
-                                />
-                            </Tooltip>
                             <Tooltip title="Xoá địa chỉ">
                                 <Button
                                     variant="danger"
@@ -166,6 +158,13 @@ const WareHouses = () => {
                                     onClick={() =>
                                         handleDeleteProducts(item.id)
                                     }
+                                />
+                            </Tooltip>
+                            <Tooltip title="Cât nhật địa chỉ">
+                                <Button
+                                    variant="link"
+                                    icon={<EditOutlined />}
+                                    onClick={() => handleViewWareHouse(item)}
                                 />
                             </Tooltip>
                         </div>
@@ -183,15 +182,17 @@ const WareHouses = () => {
                     description="Thông tin danh sách kho"
                     items={[...getBreadcrumbItems(location.pathname)]}
                 />
-                <Button
-                    type="primary"
-                    icon={<PlusOutlined />}
-                    onClick={handleAddCategories}
-                    size="large"
-                    className="!rounded-none"
-                >
-                    Tạo mới
-                </Button>
+                <Access permission={ALL_PERMISSIONS.WAREHOUSE.CREATE}>
+                    <Button
+                        type="primary"
+                        icon={<PlusOutlined />}
+                        onClick={handleAddCategories}
+                        size="large"
+                        className="!rounded-none"
+                    >
+                        Tạo mới
+                    </Button>
+                </Access>
             </div>
             <div className="w-full my-6 flex flex-col gap-4 px-4 pb-4 border border-gray-200 rounded-lg bg-white shadow-sm animate-slideUp">
                 <CustomizeTab

@@ -10,6 +10,7 @@ import {
     ProcessModalName,
     processWithModals,
 } from "../../containers/processWithModals.js";
+import { ALL_MODULES } from "src/constants/permissions";
 export interface IBrandsTableProps {
     data: BrandResponseType[];
     handleDeleteBrands: (id: string) => void;
@@ -96,6 +97,7 @@ const BrandsTable: React.FC<IBrandsTableProps> = ({
                             }}
                             handleUpdate={handleEditBrands}
                             item={item}
+                            moduleName={ALL_MODULES.BRANDS}
                         />
                     );
                 },

@@ -2,7 +2,7 @@ import { observer } from "mobx-react-lite";
 import TableComponent from "src/containers/TableComponent";
 import { useStore } from "src/stores";
 import { SkusResponseType } from "src/stores/skus.store";
-import GroupActionButton from "src/components/GroupActionButton";
+import GroupActionButton from "../GroupActionButton";
 import {
     processWithModals,
     ProcessModalName,
@@ -10,6 +10,7 @@ import {
 import { DetailImportResponseType } from "src/stores/imports.store";
 import { Image, Tooltip } from "antd";
 import { getErrorMessage } from "src/utils";
+import { ALL_MODULES } from "src/constants/permissions";
 interface VariantTableProps {
     data: SkusResponseType[];
     handleUpdateSkus?: (item: SkusResponseType) => void;
@@ -154,6 +155,7 @@ const VariantTable: React.FC<VariantTableProps> = ({
                             }}
                             handleUpdate={handleUpdate}
                             item={item}
+                            moduleName={ALL_MODULES.SKUS}
                         />
                     );
                 },

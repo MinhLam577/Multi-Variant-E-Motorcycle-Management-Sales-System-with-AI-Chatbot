@@ -1,7 +1,7 @@
 import axios from "axios";
 import secureLocalStorage from "react-secure-storage";
 import { keyStorageAccount } from "../constants";
-import { AccountObservable } from "../stores/account";
+import { AccountObservable } from "../stores/account.store";
 import endpoints from "./endpoints";
 let isRefreshing = false;
 let refreshSubscribers = [];
@@ -133,7 +133,7 @@ const refreshToken = async () => {
 
 const checkLogout = async () => {
     await secureLocalStorage.removeItem(keyStorageAccount);
-    // window.location.href = "/login";
+    window.location.href = "/login";
 };
 
 apiClient.interceptors.response.use(handleSuccess, handleError);

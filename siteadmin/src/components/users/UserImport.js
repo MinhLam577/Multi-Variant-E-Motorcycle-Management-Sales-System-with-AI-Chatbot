@@ -38,7 +38,6 @@ const UserImport = (props) => {
             const { status } = info.file;
             if (status !== "uploading") {
                 // lúc delete
-                console.log(info.file, info.fileList);
 
                 if (info.fileList && info.fileList.length > 0) {
                     // lấy ra file dựa vào fileList
@@ -49,11 +48,9 @@ const UserImport = (props) => {
                     reader.onload = function (e) {
                         const data = new Uint8Array(reader.result);
                         const workbook = XLSX.read(data, { type: "array" });
-                        console.log(workbook);
                         // Lấy tên sheet đầu tiên workbook.SheetNames[0]
                         // Lấy dữ liệu của sheet đó
                         const sheet = workbook.Sheets[workbook.SheetNames[0]];
-                        console.log(sheet);
                         // Chuyển đổi dữ liệu sheet thành JSON
                         // const json = XLSX.utils.sheet_to_json(sheet);
                         // đọc ngược lại mã nguồn để biết header
@@ -87,8 +84,6 @@ const UserImport = (props) => {
                             }
                         });
 
-                        console.log(json);
-
                         if (Array.isArray(json) && json.length > 0) {
                             setDataExcel(json);
                         }
@@ -96,7 +91,6 @@ const UserImport = (props) => {
                 }
             }
             if (status === "done") {
-                console.log(info.file, info.fileList);
                 message.success(
                     `${info.file.name} file uploaded successfully.`
                 );
@@ -104,9 +98,7 @@ const UserImport = (props) => {
                 message.error(`${info.file.name} file upload failed.`);
             }
         },
-        onDrop(e) {
-            console.log("Dropped files", e.dataTransfer.files);
-        },
+        onDrop(e) {},
     };
 
     const handleSubmit = async () => {
@@ -118,7 +110,6 @@ const UserImport = (props) => {
             endpoints.user.callBulkCreateUser,
             data
         );
-        console.log(res);
         if (res?.data) {
             notification.success({
                 description: `Success: ${res.data.successCount}, Error: ${res.data.errorCount}`,
@@ -128,7 +119,6 @@ const UserImport = (props) => {
             setOpenModalImport(false);
             props.fetchUser();
         } else {
-            console.log(res);
             notification.error({
                 description: res.message,
                 message: "Đã có lỗi xảy ra",

@@ -35,6 +35,8 @@ import { filterEmptyFields, getErrorMessage } from "src/utils";
 import apiClient from "src/api/apiClient";
 import endpoints from "src/api/endpoints";
 import { useNavigate } from "react-router";
+import Access from "src/access/access";
+import { ALL_PERMISSIONS } from "src/constants/permissions";
 const { RangePicker } = DatePicker;
 
 const filterTheme = {
@@ -359,8 +361,7 @@ class OverviewStore {
                     selectType
                 );
                 this.setDateRange(start_date, end_date);
-            },
-            { fireImmediately: true }
+            }
         );
     }
     setSelectType(selectType: EnumTypeOfTimeStatistics) {
@@ -637,11 +638,7 @@ const Overview = observer(() => {
             const data = response?.data?.result || [];
             overviewStore.setCustomers(data?.length || 0);
         } catch (err) {
-            const errorMessage = getErrorMessage(
-                err,
-                "Không thể lấy dữ liệu khách hàng"
-            );
-            store.setStatusMessage(500, errorMessage, "", false);
+            console.error("Error fetching customers:", err);
         }
     };
 
@@ -661,7 +658,7 @@ const Overview = observer(() => {
                 err,
                 "Không thể lấy dữ liệu đơn hàng"
             );
-            store.setStatusMessage(500, errorMessage, "", false);
+            console.error("Error fetching orders:", errorMessage);
         }
     };
 
@@ -681,7 +678,7 @@ const Overview = observer(() => {
                 err,
                 "Không thể lấy dữ liệu sản phẩm"
             );
-            store.setStatusMessage(500, errorMessage, "", false);
+            console.error("Error fetching products:", errorMessage);
         }
     };
 
@@ -701,7 +698,7 @@ const Overview = observer(() => {
                 err,
                 "Không thể lấy dữ liệu nhà cung cấp"
             );
-            store.setStatusMessage(500, errorMessage, "", false);
+            console.error("Error fetching suppliers:", errorMessage);
         }
     };
 
@@ -738,7 +735,7 @@ const Overview = observer(() => {
                 err,
                 "Không thể lấy dữ liệu đơn hàng"
             );
-            store.setStatusMessage(500, errorMessage, "", false);
+            console.error("Error fetching order overview:", errorMessage);
         }
     };
 
@@ -753,7 +750,7 @@ const Overview = observer(() => {
                 err,
                 "Không thể lấy dữ liệu tổng quan"
             );
-            store.setStatusMessage(500, errorMessage, "", false);
+            console.error("Error fetching static data:", errorMessage);
         }
     };
 
@@ -772,7 +769,7 @@ const Overview = observer(() => {
                 err,
                 "Không thể lấy dữ liệu tổng quan"
             );
-            store.setStatusMessage(500, errorMessage, "", false);
+            console.error("Error fetching data:", errorMessage);
         } finally {
             overviewStore.setShowSkeleton(false);
         }
@@ -796,495 +793,521 @@ const Overview = observer(() => {
     }
     return (
         <section className="w-full select-none overview__section">
-            <Skeleton
-                loading={overviewStore.showSkeleton}
-                active
-                paragraph={{ rows: 16 }}
-                title={true}
-            >
-                <header className="flex justify-between items-center w-full animate-slideLeftToRight">
-                    <AdminBreadCrumb
-                        description="Một chút tổng quan về dữ liệu của hệ thống"
-                        items={[...getBreadcrumbItems(location.pathname)]}
-                    />
-                    <div className="flex gap-8 w-full justify-end">
-                        <ConfigProvider theme={filterTheme}>
-                            <>
-                                <DatePicker
-                                    picker="year"
-                                    showNow={true}
-                                    className="w-[13.438rem] h-12"
-                                    suffixIcon={
-                                        <ArrowDown2 size="14" color="#1D242E" />
-                                    }
-                                    allowClear={false}
-                                    placeholder={"Chọn năm"}
-                                    disabledDate={disabledFutureDate}
-                                    value={
-                                        overviewStore.year
-                                            ? dayjs(
-                                                  overviewStore.year.toString()
-                                              )
-                                            : dayjs()
-                                    }
-                                    format={"YYYY"}
-                                    onChange={(_, dateString) => {
-                                        if (!dateString)
-                                            overviewStore.setYear(
-                                                dayjs().year()
-                                            );
-                                        else {
-                                            overviewStore.setYear(
-                                                Number(dateString)
-                                            );
-                                        }
-                                    }}
-                                />
-                            </>
-                        </ConfigProvider>
-                    </div>
-                </header>
-                <div className="my-6 w-full flex flex-col gap-6">
-                    <div className="flex w-full items-center gap-8 animate-slideRightToLeft">
-                        <div className="w-[20%] border border-solid border-[#01A768] rounded-md overflow-hidden flex flex-col">
-                            <div className="bg-[#ffffff] flex justify-stretch items-center gap-2 flex-col py-4">
-                                <Profile2User
-                                    className="text-[#01A768]"
-                                    size={30}
-                                />
-                                <span className="font-bold text-[1.25rem] text-[#1D242E]">
-                                    {`${convertAmountToUnit(overviewStore.customers || 0)}`}
-                                </span>
-                                <h2 className="font-medium text-sm text-[#1D242E]">
-                                    Total Customer
-                                </h2>
-                            </div>
-                            <button
-                                type="button"
-                                className="w-full bg-[rgb(1,167,104,0.3)] flex items-center justify-center gap-[0.625rem] grow cursor-pointer py-1"
-                                style={{
-                                    border: "none",
-                                    borderTop: "1px solid #01A768",
-                                }}
-                                onClick={() => {
-                                    navigate("/customer", { replace: true });
-                                }}
-                            >
-                                <span className="text-xs text-[#1D242E]">
-                                    View Detail
-                                </span>
-                                <span className="text-xs font-bold text-[#1D242E]">
-                                    {">>>"}
-                                </span>
-                            </button>
-                        </div>
-                        <div className="w-[20%] border border-solid border-[#817AF3] rounded-md overflow-hidden flex flex-col">
-                            <div className="bg-[#ffffff] flex justify-stretch items-center gap-2 flex-col py-4">
-                                <Bill className="text-[#817AF3]" size={30} />
-                                <span className="font-bold text-[1.25rem] text-[#1D242E]">
-                                    {`${convertAmountToUnit(overviewStore.orders || 0)}`}
-                                </span>
-                                <h2 className="font-medium text-sm text-[#1D242E]">
-                                    Total Order
-                                </h2>
-                            </div>
-                            <button
-                                type="button"
-                                className="w-full bg-[rgb(129,122,243,0.3)] flex items-center justify-center gap-[0.625rem] grow cursor-pointer py-1"
-                                style={{
-                                    border: "none",
-                                    borderTop: "1px solid #c8c6f3",
-                                }}
-                                onClick={() => {
-                                    navigate("/orders", { replace: true });
-                                }}
-                            >
-                                <span className="text-xs text-[#1D242E]">
-                                    View Detail
-                                </span>
-                                <span className="text-xs font-bold text-[#1D242E]">
-                                    {">>>"}
-                                </span>
-                            </button>
-                        </div>
-                        <div className="w-[20%] border border-solid border-[#03A9F5] rounded-md overflow-hidden flex flex-col">
-                            <div className="bg-[#ffffff] flex justify-stretch items-center gap-2 flex-col py-4">
-                                <ArchiveBox
-                                    className="text-[#03A9F5]"
-                                    size={30}
-                                />
-                                <span className="font-bold text-[1.25rem] text-[#1D242E]">
-                                    {`${convertAmountToUnit(overviewStore.products || 0)}`}
-                                </span>
-                                <h2 className="font-medium text-sm text-[#1D242E]">
-                                    Total Products
-                                </h2>
-                            </div>
-                            <button
-                                type="button"
-                                className="w-full bg-[rgb(3,169,245,0.3)] flex items-center justify-center gap-[0.625rem] grow cursor-pointer py-1"
-                                style={{
-                                    border: "none",
-                                    borderTop: "1px solid #03A9F5",
-                                }}
-                                onClick={() => {
-                                    navigate("/products", { replace: true });
-                                }}
-                            >
-                                <span className="text-xs text-[#1D242E]">
-                                    View Detail
-                                </span>
-                                <span className="text-xs font-bold text-[#1D242E]">
-                                    {">>>"}
-                                </span>
-                            </button>
-                        </div>
-                        <div className="w-[20%] border border-solid border-[#F0483E] rounded-md overflow-hidden flex flex-col">
-                            <div className="bg-[#ffffff] flex justify-stretch items-center gap-2 flex-col py-4">
-                                <DollarCircle
-                                    className="text-[#F0483E]"
-                                    size={30}
-                                />
-                                <span className="font-bold text-[1.25rem] text-[#1D242E]">
-                                    {`${convertAmountToUnit(overviewStore.totalRevenue || 0)}+`}
-                                </span>
-                                <h2 className="font-medium text-sm text-[#1D242E]">
-                                    Total Revenue
-                                </h2>
-                            </div>
-                            <button
-                                className="w-full bg-[rgb(240,72,62,0.3)] flex items-center justify-center gap-[0.625rem] grow cursor-pointer py-1"
-                                style={{
-                                    border: "none",
-                                    borderTop: "1px solid #F0483E",
-                                }}
-                                onClick={() => {
-                                    document
-                                        .getElementById("earning__report")
-                                        .scrollIntoView({
-                                            behavior: "smooth",
-                                        });
-                                }}
-                            >
-                                View detail
-                                <span className="text-xs font-bold text-[#1D242E]">
-                                    <ArrowDown size={15} />
-                                </span>
-                            </button>
-                        </div>
-                        <div className="w-[20%] border border-solid border-[#DBA362] rounded-md overflow-hidden flex flex-col">
-                            <div className="bg-[#ffffff] flex justify-stretch items-center gap-2 flex-col py-4">
-                                <UserAdd className="text-[#DBA362]" size={30} />
-                                <span className="font-bold text-[1.25rem] text-[#1D242E]">
-                                    {`${convertAmountToUnit(overviewStore.suppliers || 0)}`}
-                                </span>
-                                <h2 className="font-medium text-sm text-[#1D242E]">
-                                    Total Suppliers
-                                </h2>
-                            </div>
-                            <button
-                                type="button"
-                                className="w-full bg-[rgb(219,163,98,0.2)] flex items-center justify-center gap-[0.625rem] grow cursor-pointer py-1"
-                                style={{
-                                    border: "none",
-                                    borderTop: "1px solid #DBA362",
-                                }}
-                                onClick={() => {
-                                    navigate("/brands", { replace: true });
-                                }}
-                            >
-                                <span className="text-xs text-[#1D242E]">
-                                    View Detail
-                                </span>
-                                <span className="text-xs font-bold text-[#1D242E]">
-                                    {">>>"}
-                                </span>
-                            </button>
-                        </div>
-                    </div>
-                    <div className="w-full flex gap-8">
-                        <div
-                            className="flex flex-col w-[calc(60%+1rem)] bg-[#ffffff] rounded-xl border border-solid border-[rgb(29,36,46,0.3)]"
-                            id="earning__report"
-                        >
-                            <div className="flex items-center justify-between w-full px-5 pt-5 rounded-xl">
-                                <h2 className="text-lg font-semibold text-gray-700">
-                                    Earning Reports
-                                </h2>
-                                <div className="flex w-max">
-                                    <ConfigProvider
-                                        theme={{
-                                            ...filterTheme,
-                                            token: {
-                                                ...filterTheme.token,
-                                                colorTextPlaceholder:
-                                                    "rgb(24,50,83)",
-                                                colorTextDisabled:
-                                                    "rgb(156 163 175)",
-                                                colorBorder: "#D0D3D9",
-                                                borderRadius: 4,
-                                            },
-                                        }}
-                                    >
-                                        <Select
-                                            options={[
-                                                {
-                                                    label: "Tháng",
-                                                    value: EnumTypeOfTimeStatistics.MONTH,
-                                                },
-                                                {
-                                                    label: "Ngày",
-                                                    value: EnumTypeOfTimeStatistics.DAY,
-                                                },
-                                            ]}
-                                            className="h-12 w-28 mr-4"
-                                            defaultValue={
-                                                EnumTypeOfTimeStatistics.MONTH
-                                            }
-                                            onChange={(value) => {
-                                                overviewStore.setSelectType(
-                                                    value
-                                                );
-                                            }}
-                                            suffixIcon={
-                                                <ArrowDown2
-                                                    size="14"
-                                                    color="#1D242E"
-                                                />
-                                            }
-                                        />
-                                        {overviewStore.selectType ===
-                                        EnumTypeOfTimeStatistics.DAY ? (
-                                            <RangePicker
-                                                className="h-12 w-60"
-                                                suffixIcon={
-                                                    <ArrowDown2
-                                                        size="14"
-                                                        color="#1D242E"
-                                                    />
-                                                }
-                                                format={"DD/MM/YYYY"}
-                                                showNow={true}
-                                                allowClear={false}
-                                                value={
-                                                    overviewStore.start_date &&
-                                                    overviewStore.end_date &&
-                                                    dayjs(
-                                                        overviewStore.start_date
-                                                    ).isValid() &&
-                                                    dayjs(
-                                                        overviewStore.end_date
-                                                    ).isValid()
-                                                        ? [
-                                                              dayjs(
-                                                                  overviewStore.start_date
-                                                              ),
-                                                              dayjs(
-                                                                  overviewStore.end_date
-                                                              ),
-                                                          ]
-                                                        : [
-                                                              dayjs().startOf(
-                                                                  "month"
-                                                              ),
-                                                              dayjs().endOf(
-                                                                  "month"
-                                                              ),
-                                                          ]
-                                                }
-                                                placement="bottomRight"
-                                                disabledDate={
-                                                    disabledSameMonthDate
-                                                }
-                                                onChange={(_, dateString) => {
-                                                    const [from, to] =
-                                                        dateString;
-                                                    if (!from || !to) {
-                                                        const currentDate =
-                                                            dayjs();
-                                                        const startOfMonth =
-                                                            currentDate.startOf(
-                                                                "month"
-                                                            );
-                                                        const endOfMonth =
-                                                            currentDate.endOf(
-                                                                "month"
-                                                            );
-                                                        overviewStore.setDateRange(
-                                                            startOfMonth.format(
-                                                                "YYYY-MM-DD"
-                                                            ),
-                                                            endOfMonth.format(
-                                                                "YYYY-MM-DD"
-                                                            )
-                                                        );
-                                                    } else {
-                                                        const fromFormatted =
-                                                            dayjs(
-                                                                from,
-                                                                "DD/MM/YYYY"
-                                                            ).format(
-                                                                "YYYY-MM-DD"
-                                                            );
-                                                        const toFormatted =
-                                                            dayjs(
-                                                                to,
-                                                                "DD/MM/YYYY"
-                                                            ).format(
-                                                                "YYYY-MM-DD"
-                                                            );
-                                                        overviewStore.setDateRange(
-                                                            fromFormatted,
-                                                            toFormatted
-                                                        );
-                                                    }
-                                                }}
+            <Access permission={ALL_PERMISSIONS.DASHBOARD.GET_PAGINATE}>
+                <Skeleton
+                    loading={overviewStore.showSkeleton}
+                    active
+                    paragraph={{ rows: 16 }}
+                    title={true}
+                >
+                    <header className="flex justify-between items-center w-full animate-slideLeftToRight">
+                        <AdminBreadCrumb
+                            description="Một chút tổng quan về dữ liệu của hệ thống"
+                            items={[...getBreadcrumbItems(location.pathname)]}
+                        />
+                        <div className="flex gap-8 w-full justify-end">
+                            <ConfigProvider theme={filterTheme}>
+                                <>
+                                    <DatePicker
+                                        picker="year"
+                                        showNow={true}
+                                        className="w-[13.438rem] h-12"
+                                        suffixIcon={
+                                            <ArrowDown2
+                                                size="14"
+                                                color="#1D242E"
                                             />
-                                        ) : (
-                                            <RangePicker
-                                                picker="month"
-                                                className="h-12 w-60"
+                                        }
+                                        allowClear={false}
+                                        placeholder={"Chọn năm"}
+                                        disabledDate={disabledFutureDate}
+                                        value={
+                                            overviewStore.year
+                                                ? dayjs(
+                                                      overviewStore.year.toString()
+                                                  )
+                                                : dayjs()
+                                        }
+                                        format={"YYYY"}
+                                        onChange={(_, dateString) => {
+                                            if (!dateString)
+                                                overviewStore.setYear(
+                                                    dayjs().year()
+                                                );
+                                            else {
+                                                overviewStore.setYear(
+                                                    Number(dateString)
+                                                );
+                                            }
+                                        }}
+                                    />
+                                </>
+                            </ConfigProvider>
+                        </div>
+                    </header>
+                    <div className="my-6 w-full flex flex-col gap-6">
+                        <div className="flex w-full items-center gap-8 animate-slideRightToLeft">
+                            <div className="w-[20%] border border-solid border-[#01A768] rounded-md overflow-hidden flex flex-col">
+                                <div className="bg-[#ffffff] flex justify-stretch items-center gap-2 flex-col py-4">
+                                    <Profile2User
+                                        className="text-[#01A768]"
+                                        size={30}
+                                    />
+                                    <span className="font-bold text-[1.25rem] text-[#1D242E]">
+                                        {`${convertAmountToUnit(overviewStore.customers || 0)}`}
+                                    </span>
+                                    <h2 className="font-medium text-sm text-[#1D242E]">
+                                        Total Customer
+                                    </h2>
+                                </div>
+                                <button
+                                    type="button"
+                                    className="w-full bg-[rgb(1,167,104,0.3)] flex items-center justify-center gap-[0.625rem] grow cursor-pointer py-1"
+                                    style={{
+                                        border: "none",
+                                        borderTop: "1px solid #01A768",
+                                    }}
+                                    onClick={() => {
+                                        navigate("/customer", {
+                                            replace: true,
+                                        });
+                                    }}
+                                >
+                                    <span className="text-xs text-[#1D242E]">
+                                        View Detail
+                                    </span>
+                                    <span className="text-xs font-bold text-[#1D242E]">
+                                        {">>>"}
+                                    </span>
+                                </button>
+                            </div>
+                            <div className="w-[20%] border border-solid border-[#817AF3] rounded-md overflow-hidden flex flex-col">
+                                <div className="bg-[#ffffff] flex justify-stretch items-center gap-2 flex-col py-4">
+                                    <Bill
+                                        className="text-[#817AF3]"
+                                        size={30}
+                                    />
+                                    <span className="font-bold text-[1.25rem] text-[#1D242E]">
+                                        {`${convertAmountToUnit(overviewStore.orders || 0)}`}
+                                    </span>
+                                    <h2 className="font-medium text-sm text-[#1D242E]">
+                                        Total Order
+                                    </h2>
+                                </div>
+                                <button
+                                    type="button"
+                                    className="w-full bg-[rgb(129,122,243,0.3)] flex items-center justify-center gap-[0.625rem] grow cursor-pointer py-1"
+                                    style={{
+                                        border: "none",
+                                        borderTop: "1px solid #c8c6f3",
+                                    }}
+                                    onClick={() => {
+                                        navigate("/orders", { replace: true });
+                                    }}
+                                >
+                                    <span className="text-xs text-[#1D242E]">
+                                        View Detail
+                                    </span>
+                                    <span className="text-xs font-bold text-[#1D242E]">
+                                        {">>>"}
+                                    </span>
+                                </button>
+                            </div>
+                            <div className="w-[20%] border border-solid border-[#03A9F5] rounded-md overflow-hidden flex flex-col">
+                                <div className="bg-[#ffffff] flex justify-stretch items-center gap-2 flex-col py-4">
+                                    <ArchiveBox
+                                        className="text-[#03A9F5]"
+                                        size={30}
+                                    />
+                                    <span className="font-bold text-[1.25rem] text-[#1D242E]">
+                                        {`${convertAmountToUnit(overviewStore.products || 0)}`}
+                                    </span>
+                                    <h2 className="font-medium text-sm text-[#1D242E]">
+                                        Total Products
+                                    </h2>
+                                </div>
+                                <button
+                                    type="button"
+                                    className="w-full bg-[rgb(3,169,245,0.3)] flex items-center justify-center gap-[0.625rem] grow cursor-pointer py-1"
+                                    style={{
+                                        border: "none",
+                                        borderTop: "1px solid #03A9F5",
+                                    }}
+                                    onClick={() => {
+                                        navigate("/products", {
+                                            replace: true,
+                                        });
+                                    }}
+                                >
+                                    <span className="text-xs text-[#1D242E]">
+                                        View Detail
+                                    </span>
+                                    <span className="text-xs font-bold text-[#1D242E]">
+                                        {">>>"}
+                                    </span>
+                                </button>
+                            </div>
+                            <div className="w-[20%] border border-solid border-[#F0483E] rounded-md overflow-hidden flex flex-col">
+                                <div className="bg-[#ffffff] flex justify-stretch items-center gap-2 flex-col py-4">
+                                    <DollarCircle
+                                        className="text-[#F0483E]"
+                                        size={30}
+                                    />
+                                    <span className="font-bold text-[1.25rem] text-[#1D242E]">
+                                        {`${convertAmountToUnit(overviewStore.totalRevenue || 0)}+`}
+                                    </span>
+                                    <h2 className="font-medium text-sm text-[#1D242E]">
+                                        Total Revenue
+                                    </h2>
+                                </div>
+                                <button
+                                    className="w-full bg-[rgb(240,72,62,0.3)] flex items-center justify-center gap-[0.625rem] grow cursor-pointer py-1"
+                                    style={{
+                                        border: "none",
+                                        borderTop: "1px solid #F0483E",
+                                    }}
+                                    onClick={() => {
+                                        document
+                                            .getElementById("earning__report")
+                                            .scrollIntoView({
+                                                behavior: "smooth",
+                                            });
+                                    }}
+                                >
+                                    View detail
+                                    <span className="text-xs font-bold text-[#1D242E]">
+                                        <ArrowDown size={15} />
+                                    </span>
+                                </button>
+                            </div>
+                            <div className="w-[20%] border border-solid border-[#DBA362] rounded-md overflow-hidden flex flex-col">
+                                <div className="bg-[#ffffff] flex justify-stretch items-center gap-2 flex-col py-4">
+                                    <UserAdd
+                                        className="text-[#DBA362]"
+                                        size={30}
+                                    />
+                                    <span className="font-bold text-[1.25rem] text-[#1D242E]">
+                                        {`${convertAmountToUnit(overviewStore.suppliers || 0)}`}
+                                    </span>
+                                    <h2 className="font-medium text-sm text-[#1D242E]">
+                                        Total Suppliers
+                                    </h2>
+                                </div>
+                                <button
+                                    type="button"
+                                    className="w-full bg-[rgb(219,163,98,0.2)] flex items-center justify-center gap-[0.625rem] grow cursor-pointer py-1"
+                                    style={{
+                                        border: "none",
+                                        borderTop: "1px solid #DBA362",
+                                    }}
+                                    onClick={() => {
+                                        navigate("/brands", { replace: true });
+                                    }}
+                                >
+                                    <span className="text-xs text-[#1D242E]">
+                                        View Detail
+                                    </span>
+                                    <span className="text-xs font-bold text-[#1D242E]">
+                                        {">>>"}
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                        <div className="w-full flex gap-8">
+                            <div
+                                className="flex flex-col w-[calc(60%+1rem)] bg-[#ffffff] rounded-xl border border-solid border-[rgb(29,36,46,0.3)]"
+                                id="earning__report"
+                            >
+                                <div className="flex items-center justify-between w-full px-5 pt-5 rounded-xl">
+                                    <h2 className="text-lg font-semibold text-gray-700">
+                                        Earning Reports
+                                    </h2>
+                                    <div className="flex w-max">
+                                        <ConfigProvider
+                                            theme={{
+                                                ...filterTheme,
+                                                token: {
+                                                    ...filterTheme.token,
+                                                    colorTextPlaceholder:
+                                                        "rgb(24,50,83)",
+                                                    colorTextDisabled:
+                                                        "rgb(156 163 175)",
+                                                    colorBorder: "#D0D3D9",
+                                                    borderRadius: 4,
+                                                },
+                                            }}
+                                        >
+                                            <Select
+                                                options={[
+                                                    {
+                                                        label: "Tháng",
+                                                        value: EnumTypeOfTimeStatistics.MONTH,
+                                                    },
+                                                    {
+                                                        label: "Ngày",
+                                                        value: EnumTypeOfTimeStatistics.DAY,
+                                                    },
+                                                ]}
+                                                className="h-12 w-28 mr-4"
+                                                defaultValue={
+                                                    EnumTypeOfTimeStatistics.MONTH
+                                                }
+                                                onChange={(value) => {
+                                                    overviewStore.setSelectType(
+                                                        value
+                                                    );
+                                                }}
                                                 suffixIcon={
                                                     <ArrowDown2
                                                         size="14"
                                                         color="#1D242E"
                                                     />
                                                 }
-                                                disabledDate={
-                                                    disabledSameMonthYear
-                                                }
-                                                format={"MM/YYYY"}
-                                                showNow={true}
-                                                allowClear={false}
-                                                placement="bottomRight"
-                                                value={
-                                                    overviewStore.start_date &&
-                                                    overviewStore.end_date &&
-                                                    dayjs(
-                                                        overviewStore.start_date
-                                                    ).isValid() &&
-                                                    dayjs(
-                                                        overviewStore.end_date
-                                                    ).isValid()
-                                                        ? [
-                                                              dayjs(
-                                                                  overviewStore.start_date
-                                                              ),
-                                                              dayjs(
-                                                                  overviewStore.end_date
-                                                              ),
-                                                          ]
-                                                        : [
-                                                              dayjs().startOf(
-                                                                  "month"
-                                                              ),
-                                                              dayjs().endOf(
-                                                                  "month"
-                                                              ),
-                                                          ]
-                                                }
-                                                onChange={(_, dateString) => {
-                                                    const [from, to] =
-                                                        dateString;
-                                                    if (!from || !to) {
-                                                        const currentDate =
-                                                            dayjs();
-                                                        const startOfMonth =
-                                                            currentDate.startOf(
-                                                                "month"
-                                                            );
-                                                        const endOfMonth =
-                                                            currentDate.endOf(
-                                                                "month"
-                                                            );
-                                                        overviewStore.setDateRange(
-                                                            startOfMonth.format(
-                                                                "YYYY-MM-DD"
-                                                            ),
-                                                            endOfMonth.format(
-                                                                "YYYY-MM-DD"
-                                                            )
-                                                        );
-                                                    } else {
-                                                        // Chuyển đổi MM/YYYY thành YYYY-MM-DD (đầu và cuối tháng)
-                                                        const fromFormatted =
-                                                            dayjs(
-                                                                from,
-                                                                "MM/YYYY"
-                                                            )
-                                                                .startOf(
-                                                                    "month"
-                                                                )
-                                                                .format(
-                                                                    "YYYY-MM-DD"
-                                                                );
-                                                        const toFormatted =
-                                                            dayjs(to, "MM/YYYY")
-                                                                .endOf("month")
-                                                                .format(
-                                                                    "YYYY-MM-DD"
-                                                                );
-                                                        overviewStore.setDateRange(
-                                                            fromFormatted,
-                                                            toFormatted
-                                                        );
+                                            />
+                                            {overviewStore.selectType ===
+                                            EnumTypeOfTimeStatistics.DAY ? (
+                                                <RangePicker
+                                                    className="h-12 w-60"
+                                                    suffixIcon={
+                                                        <ArrowDown2
+                                                            size="14"
+                                                            color="#1D242E"
+                                                        />
                                                     }
-                                                }}
+                                                    format={"DD/MM/YYYY"}
+                                                    showNow={true}
+                                                    allowClear={false}
+                                                    value={
+                                                        overviewStore.start_date &&
+                                                        overviewStore.end_date &&
+                                                        dayjs(
+                                                            overviewStore.start_date
+                                                        ).isValid() &&
+                                                        dayjs(
+                                                            overviewStore.end_date
+                                                        ).isValid()
+                                                            ? [
+                                                                  dayjs(
+                                                                      overviewStore.start_date
+                                                                  ),
+                                                                  dayjs(
+                                                                      overviewStore.end_date
+                                                                  ),
+                                                              ]
+                                                            : [
+                                                                  dayjs().startOf(
+                                                                      "month"
+                                                                  ),
+                                                                  dayjs().endOf(
+                                                                      "month"
+                                                                  ),
+                                                              ]
+                                                    }
+                                                    placement="bottomRight"
+                                                    disabledDate={
+                                                        disabledSameMonthDate
+                                                    }
+                                                    onChange={(
+                                                        _,
+                                                        dateString
+                                                    ) => {
+                                                        const [from, to] =
+                                                            dateString;
+                                                        if (!from || !to) {
+                                                            const currentDate =
+                                                                dayjs();
+                                                            const startOfMonth =
+                                                                currentDate.startOf(
+                                                                    "month"
+                                                                );
+                                                            const endOfMonth =
+                                                                currentDate.endOf(
+                                                                    "month"
+                                                                );
+                                                            overviewStore.setDateRange(
+                                                                startOfMonth.format(
+                                                                    "YYYY-MM-DD"
+                                                                ),
+                                                                endOfMonth.format(
+                                                                    "YYYY-MM-DD"
+                                                                )
+                                                            );
+                                                        } else {
+                                                            const fromFormatted =
+                                                                dayjs(
+                                                                    from,
+                                                                    "DD/MM/YYYY"
+                                                                ).format(
+                                                                    "YYYY-MM-DD"
+                                                                );
+                                                            const toFormatted =
+                                                                dayjs(
+                                                                    to,
+                                                                    "DD/MM/YYYY"
+                                                                ).format(
+                                                                    "YYYY-MM-DD"
+                                                                );
+                                                            overviewStore.setDateRange(
+                                                                fromFormatted,
+                                                                toFormatted
+                                                            );
+                                                        }
+                                                    }}
+                                                />
+                                            ) : (
+                                                <RangePicker
+                                                    picker="month"
+                                                    className="h-12 w-60"
+                                                    suffixIcon={
+                                                        <ArrowDown2
+                                                            size="14"
+                                                            color="#1D242E"
+                                                        />
+                                                    }
+                                                    disabledDate={
+                                                        disabledSameMonthYear
+                                                    }
+                                                    format={"MM/YYYY"}
+                                                    showNow={true}
+                                                    allowClear={false}
+                                                    placement="bottomRight"
+                                                    value={
+                                                        overviewStore.start_date &&
+                                                        overviewStore.end_date &&
+                                                        dayjs(
+                                                            overviewStore.start_date
+                                                        ).isValid() &&
+                                                        dayjs(
+                                                            overviewStore.end_date
+                                                        ).isValid()
+                                                            ? [
+                                                                  dayjs(
+                                                                      overviewStore.start_date
+                                                                  ),
+                                                                  dayjs(
+                                                                      overviewStore.end_date
+                                                                  ),
+                                                              ]
+                                                            : [
+                                                                  dayjs().startOf(
+                                                                      "month"
+                                                                  ),
+                                                                  dayjs().endOf(
+                                                                      "month"
+                                                                  ),
+                                                              ]
+                                                    }
+                                                    onChange={(
+                                                        _,
+                                                        dateString
+                                                    ) => {
+                                                        const [from, to] =
+                                                            dateString;
+                                                        if (!from || !to) {
+                                                            const currentDate =
+                                                                dayjs();
+                                                            const startOfMonth =
+                                                                currentDate.startOf(
+                                                                    "month"
+                                                                );
+                                                            const endOfMonth =
+                                                                currentDate.endOf(
+                                                                    "month"
+                                                                );
+                                                            overviewStore.setDateRange(
+                                                                startOfMonth.format(
+                                                                    "YYYY-MM-DD"
+                                                                ),
+                                                                endOfMonth.format(
+                                                                    "YYYY-MM-DD"
+                                                                )
+                                                            );
+                                                        } else {
+                                                            // Chuyển đổi MM/YYYY thành YYYY-MM-DD (đầu và cuối tháng)
+                                                            const fromFormatted =
+                                                                dayjs(
+                                                                    from,
+                                                                    "MM/YYYY"
+                                                                )
+                                                                    .startOf(
+                                                                        "month"
+                                                                    )
+                                                                    .format(
+                                                                        "YYYY-MM-DD"
+                                                                    );
+                                                            const toFormatted =
+                                                                dayjs(
+                                                                    to,
+                                                                    "MM/YYYY"
+                                                                )
+                                                                    .endOf(
+                                                                        "month"
+                                                                    )
+                                                                    .format(
+                                                                        "YYYY-MM-DD"
+                                                                    );
+                                                            overviewStore.setDateRange(
+                                                                fromFormatted,
+                                                                toFormatted
+                                                            );
+                                                        }
+                                                    }}
+                                                />
+                                            )}
+                                        </ConfigProvider>
+                                    </div>
+                                </div>
+                                <div className="px-5 pt-5 rounded-xl w-full flex justify-center flex-col">
+                                    <ReactApexChart
+                                        options={overviewStore.earningOptions}
+                                        series={overviewStore.earningSeries}
+                                        width={"100%"}
+                                        height={350}
+                                        type="line"
+                                    />
+                                </div>
+                            </div>
+                            <div className="flex items-center flex-col bg-[#ffffff] rounded-xl w-[40%] border border-solid border-[rgb(29,36,46,0.3)]">
+                                <div className="flex items-center justify-between w-full px-5 pt-5 rounded-xl">
+                                    <h2 className="text-lg font-semibold text-gray-700">
+                                        Order Status
+                                    </h2>
+                                </div>
+                                <div className="relative w-full p-5">
+                                    <div className="gap-4 w-full relative">
+                                        {overviewStore.orderPieSeries.length ===
+                                            0 ||
+                                        overviewStore.orderPieSeries.every(
+                                            (value) => value === 0
+                                        ) ? (
+                                            <div className="flex items-center justify-center w-full h-full">
+                                                <Empty
+                                                    description="Không có dữ liệu"
+                                                    className="h-64 flex flex-col items-center justify-center"
+                                                    image={
+                                                        Empty.PRESENTED_IMAGE_SIMPLE
+                                                    }
+                                                />
+                                            </div>
+                                        ) : (
+                                            <Chart
+                                                options={
+                                                    overviewStore.orderPieOptions
+                                                }
+                                                series={
+                                                    overviewStore.orderPieSeries
+                                                }
+                                                type="pie"
+                                                width={"100%"}
                                             />
                                         )}
-                                    </ConfigProvider>
-                                </div>
-                            </div>
-                            <div className="px-5 pt-5 rounded-xl w-full flex justify-center flex-col">
-                                <ReactApexChart
-                                    options={overviewStore.earningOptions}
-                                    series={overviewStore.earningSeries}
-                                    width={"100%"}
-                                    height={350}
-                                    type="line"
-                                />
-                            </div>
-                        </div>
-                        <div className="flex items-center flex-col bg-[#ffffff] rounded-xl w-[40%] border border-solid border-[rgb(29,36,46,0.3)]">
-                            <div className="flex items-center justify-between w-full px-5 pt-5 rounded-xl">
-                                <h2 className="text-lg font-semibold text-gray-700">
-                                    Order Status
-                                </h2>
-                            </div>
-                            <div className="relative w-full p-5">
-                                <div className="gap-4 w-full relative">
-                                    {overviewStore.orderPieSeries.length ===
-                                        0 ||
-                                    overviewStore.orderPieSeries.every(
-                                        (value) => value === 0
-                                    ) ? (
-                                        <div className="flex items-center justify-center w-full h-full">
-                                            <Empty
-                                                description="Không có dữ liệu"
-                                                className="h-64 flex flex-col items-center justify-center"
-                                                image={
-                                                    Empty.PRESENTED_IMAGE_SIMPLE
-                                                }
-                                            />
-                                        </div>
-                                    ) : (
-                                        <Chart
-                                            options={
-                                                overviewStore.orderPieOptions
-                                            }
-                                            series={
-                                                overviewStore.orderPieSeries
-                                            }
-                                            type="pie"
-                                            width={"100%"}
-                                        />
-                                    )}
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </Skeleton>
+                </Skeleton>
+            </Access>
         </section>
     );
 });

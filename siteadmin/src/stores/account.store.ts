@@ -1,16 +1,11 @@
 import { Base64 } from "js-base64";
-import {
-    action,
-    makeAutoObservable,
-    makeObservable,
-    observable,
-    runInAction,
-} from "mobx";
+import { makeAutoObservable, runInAction, toJS } from "mobx";
 import secureLocalStorage from "react-secure-storage";
 import { keyStorageAccount } from "../constants";
+import { PermissionResponseType } from "./permission.store";
 
 export class AccountObservable {
-    loadingAccount = true;
+    loadingAccount: boolean = true;
     account = null;
 
     constructor() {
@@ -21,7 +16,7 @@ export class AccountObservable {
         await this.getAccount();
     }
     // Hàm kiểm tra quyền
-    async checkPermission(permission) {
+    checkPermission(permission: PermissionResponseType) {
         return this.account.permissions.find(
             (item) =>
                 item.path === permission.path &&
@@ -38,8 +33,6 @@ export class AccountObservable {
             runInAction(() => {
                 this.account = data;
             });
-
-            // xí về check
             return data;
         } catch (e) {
             console.error("Error setting account:", e);
@@ -52,10 +45,12 @@ export class AccountObservable {
             const dataEncoded = secureLocalStorage.getItem(keyStorageAccount);
             if (!dataEncoded) return null;
 
-            const value = Base64.decode(dataEncoded);
+            const value = Base64.decode(dataEncoded as string);
             const jsonValue = JSON.parse(value);
 
-            this.account = jsonValue;
+            runInAction(() => {
+                this.account = jsonValue;
+            });
 
             return jsonValue;
         } catch (e) {
@@ -66,14 +61,13 @@ export class AccountObservable {
 
     async clearAccount() {
         secureLocalStorage.removeItem(keyStorageAccount);
-
         runInAction(() => {
             this.account = null;
         });
     }
 
     get permissions() {
-        return this.account?.permissions || [];
+        return toJS(this.account?.permissions || []);
     }
 }
 

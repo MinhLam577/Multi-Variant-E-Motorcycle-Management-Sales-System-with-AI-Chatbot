@@ -9,6 +9,7 @@ import { Status, StatusColor } from "src/constants";
 import { observer } from "mobx-react-lite";
 import { Breakpoint } from "antd/lib";
 import { productTableFilterDataType } from "src/pages/products";
+import { ALL_MODULES } from "src/constants/permissions";
 const { useBreakpoint } = Grid;
 
 interface IGetColumnsConfigProps {
@@ -99,13 +100,9 @@ const getColumnsConfig = ({
                             />
                         </div>
                         <div>
-                            <Button
-                                type="link"
-                                className="items-center justify-start p-0"
-                                onClick={() => handleViewProducts(item)}
-                            >
+                            <span className="items-center justify-start p-0">
                                 {value}
-                            </Button>
+                            </span>
                         </div>
                     </div>
                 );
@@ -179,7 +176,9 @@ const getColumnsConfig = ({
                     <GroupActionButton
                         handleDelete={handleDeleteProducts}
                         handleRestore={handleRestoreProducts}
+                        handleUpdate={handleEditProducts}
                         item={item}
+                        moduleName={ALL_MODULES.PRODUCTS}
                     />
                 );
             },

@@ -9,6 +9,7 @@ const BaseAPI: {
         folder?: string
     ) => Promise<ResponseImage[] | ResponseFailure>;
     convertUrlToBase64: (url: string) => Promise<string>;
+    getAllPermissionsModule: () => Promise<any>;
 } = {
     login: (username, password) => {
         return apiClient
@@ -67,6 +68,21 @@ const BaseAPI: {
         } catch (e) {
             console.error("Error converting URL to Base64:", e);
             throw new Error("Error converting URL to Base64");
+        }
+    },
+
+    getAllPermissionsModule: async () => {
+        try {
+            const response = await apiClient.get(
+                endpoints.permissionModule.list()
+            );
+            if (response.status !== 200) {
+                throw new Error("Failed to fetch permissions modules");
+            }
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching permissions modules:", error);
+            throw new Error("Error fetching permissions modules");
         }
     },
 };

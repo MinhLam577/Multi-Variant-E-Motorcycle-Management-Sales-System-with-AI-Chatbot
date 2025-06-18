@@ -155,9 +155,6 @@ const ModalCreateVariant: React.FC<ModalCreateVariantProps> = ({
         []
     );
     const handleFormValuesChange = (changeValues: any, allValues: any) => {
-        console.log("allValues", allValues);
-        console.log("allValuesForm", defaultForm.getFieldsValue(true));
-
         const priceSold = Number(allValues["price_sold"] ?? 0);
         const priceImport = Number(allValues["price_import"] ?? 0);
         if (

@@ -254,7 +254,6 @@ export const urlToBase64 = async (
         // Kiểm tra MIME type
         const contentType = response.headers.get("content-type");
         if (!contentType || !contentType.startsWith("image/")) {
-            console.log(`Phản hồi không phải ảnh: ${contentType}`);
             throw new Error(`Phản hồi không phải ảnh: ${contentType}`);
         }
 

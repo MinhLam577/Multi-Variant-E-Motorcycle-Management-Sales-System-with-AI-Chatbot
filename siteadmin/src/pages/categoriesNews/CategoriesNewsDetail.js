@@ -18,6 +18,8 @@ import apiClient from "../../api/apiClient";
 import endpoints from "../../api/endpoints.ts";
 import AdminBreadCrumb from "../../components/common/AdminBreadCrumb.tsx";
 import { getBreadcrumbItems } from "../../containers/layout/index.tsx";
+import Access from "../../access/access.tsx";
+import { ALL_PERMISSIONS } from "../../constants/permissions.ts";
 
 export const NewsDetailMode = {
     View: 1,
@@ -309,9 +311,16 @@ const CategoriesNewsDetail = ({ mode }) => {
                                         {getButtonEditText()}
                                     </Button>
                                     <Divider type="vertical" />
-                                    <Button onClick={handleViewBlog}>
-                                        {getButtonViewBlogText()}
-                                    </Button>
+                                    <Access
+                                        permission={
+                                            ALL_PERMISSIONS.BLOGS.GET_PAGINATE
+                                        }
+                                        hideChildren
+                                    >
+                                        <Button onClick={handleViewBlog}>
+                                            {getButtonViewBlogText()}
+                                        </Button>
+                                    </Access>
                                 </>
                             ) : (
                                 <>

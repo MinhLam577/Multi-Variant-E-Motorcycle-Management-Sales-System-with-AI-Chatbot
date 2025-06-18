@@ -2,30 +2,42 @@ import { PlusCircleOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import { getBreadcrumbItems } from "src/containers/layout";
 import AdminBreadCrumb from "../common/AdminBreadCrumb";
+import Access from "src/access/access";
+import { ALL_PERMISSIONS } from "src/constants/permissions";
 
 interface ProductHeaderProps {
     onCreateNew: (event: React.MouseEvent<HTMLElement>) => void;
     className?: string;
 }
 
-const ProductHeader: React.FC<ProductHeaderProps> = ({ onCreateNew, className }) => {
+const ProductHeader: React.FC<ProductHeaderProps> = ({
+    onCreateNew,
+    className,
+}) => {
     return (
-        <div className={`flex justify-between items-center mb-4 ${className ? className : ""}`}>
+        <div
+            className={`flex justify-between items-center mb-4 ${className ? className : ""}`}
+        >
             <AdminBreadCrumb
                 description="Thông tin chi tiết về danh sách sản phẩm"
                 items={getBreadcrumbItems(location.pathname)}
             />
-            <div className="flex gap-2">
-                <Button
-                    type="primary"
-                    icon={<PlusCircleOutlined />}
-                    onClick={onCreateNew}
-                    size="large"
-                    className="!rounded-none"
-                >
-                    Tạo sản phẩm
-                </Button>
-            </div>
+            <Access
+                permission={ALL_PERMISSIONS.PRODUCTS.CREATE}
+                hideChildren={true}
+            >
+                <div className="flex gap-2">
+                    <Button
+                        type="primary"
+                        icon={<PlusCircleOutlined />}
+                        onClick={onCreateNew}
+                        size="large"
+                        className="!rounded-none"
+                    >
+                        Tạo sản phẩm
+                    </Button>
+                </div>
+            </Access>
         </div>
     );
 };

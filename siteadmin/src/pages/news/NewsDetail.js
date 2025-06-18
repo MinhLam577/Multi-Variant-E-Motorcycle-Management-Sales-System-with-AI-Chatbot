@@ -68,7 +68,6 @@ const NewsDetail = ({ mode }) => {
             const response = await apiClient.get(
                 endpoints.blogs.details(idblog)
             );
-            console.log("Blog detail:", response.data);
             if (response.data) {
                 const arrThumbnail = [
                     {
@@ -222,7 +221,6 @@ const NewsDetail = ({ mode }) => {
     };
 
     const handleFormFinish = (values) => {
-        console.log(">>> check values: ", values);
         const { thumbnail, id, ...data } = values;
         data.thumbnail = dataThumbnail[0]?.name || "";
         data.blogCategoryId = idblogcategory;
@@ -256,7 +254,6 @@ const NewsDetail = ({ mode }) => {
         } else if (mode === NewsDetailMode.Edit) {
             processWithModals(ProcessModalName.ConfirmUpdateNews)(async () => {
                 try {
-                    console.log("DTO gửi đi:", dto);
                     const response = await apiClient.put(
                         endpoints.blogs.update(id),
                         dto
@@ -363,9 +360,7 @@ const NewsDetail = ({ mode }) => {
                     onFinishFailed={() => {
                         message.error("Vui lòng kiểm tra lại thông tin!");
                     }}
-                    onValuesChange={(changeValue, value) => {
-                        console.log("onValuesChange", changeValue);
-                    }}
+                    onValuesChange={(changeValue, value) => {}}
                 >
                     <Form.Item name="id" hidden>
                         <Input />

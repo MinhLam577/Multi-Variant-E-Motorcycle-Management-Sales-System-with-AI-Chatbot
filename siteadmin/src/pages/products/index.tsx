@@ -13,7 +13,7 @@ import {
 import ProductHeader from "src/components/products/ProductHeader";
 import CustomizeTab from "src/components/common/CustomizeTab";
 import { reaction, toJS } from "mobx";
-import { generateUUIDV4, urlToBase64 } from "src/utils";
+import { generateUUIDV4, getErrorMessage } from "src/utils";
 import { CategoryResponseType } from "src/stores/categories.store";
 import ModalCreateProduct, {
     IFormListRowData,
@@ -221,8 +221,11 @@ const Products = () => {
         try {
             createProductForm.submit();
         } catch (e) {
-            const errorMessage =
-                e instanceof Error ? e.message : "Có lỗi xảy ra";
+            console.error("Error when submitting create product form:", e);
+            const errorMessage = getErrorMessage(
+                e,
+                "Có lỗi xảy ra khi tạo sản phẩm"
+            );
             store.setStatusMessage(400, errorMessage, "");
         }
     };
@@ -305,10 +308,11 @@ const Products = () => {
             setIsOpenUpdateProductModal(true);
             setInitialData(product);
         } catch (e) {
-            const errorMsg =
-                e instanceof Error
-                    ? e.message
-                    : "Có lỗi xảy ra trong quá trình view hoặc update sản phẩm";
+            console.error("Error fetching product details:", e);
+            const errorMsg = getErrorMessage(
+                e,
+                "Có lỗi xảy ra khi lấy thông tin sản phẩm"
+            );
             store.setStatusMessage(500, errorMsg, "", false);
         }
     };
@@ -316,8 +320,11 @@ const Products = () => {
         try {
             updateProductForm.submit();
         } catch (e) {
-            const errorMessage =
-                e instanceof Error ? e.message : "Có lỗi xảy ra";
+            console.error("Error when submitting update product form:", e);
+            const errorMessage = getErrorMessage(
+                e,
+                "Có lỗi xảy ra khi cập nhật sản phẩm"
+            );
             store.setStatusMessage(400, errorMessage, "");
         }
     };
@@ -340,10 +347,11 @@ const Products = () => {
                 fetchOnlyProducts();
             }
         } catch (e) {
-            const errorMsg =
-                e instanceof Error
-                    ? e.message
-                    : "Có lỗi xảy ra trong quá trình xóa sản phẩm";
+            console.error("Error deleting product:", e);
+            const errorMsg = getErrorMessage(
+                e,
+                "Có lỗi xảy ra khi xóa sản phẩm"
+            );
             store.setStatusMessage(500, errorMsg, "");
         }
     };
@@ -362,10 +370,10 @@ const Products = () => {
             }
         } catch (e) {
             console.error("Error storing product:", e);
-            const errorMsg =
-                e instanceof Error
-                    ? e.message
-                    : "Có lỗi xảy ra trong quá trình lưu sản phẩm";
+            const errorMsg = getErrorMessage(
+                e,
+                "Có lỗi xảy ra khi phục hồi sản phẩm"
+            );
             store.setStatusMessage(500, errorMsg, "");
         }
     };

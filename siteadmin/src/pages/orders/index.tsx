@@ -7,7 +7,7 @@ import OrderDetail from "./OrderDetail";
 import { useStore } from "../../stores";
 import { observer } from "mobx-react-lite";
 import OrderStatusSearch from "../../components/orders/OrderStatusSearch";
-import { convertDate } from "../../utils";
+import { convertDate, getErrorMessage } from "../../utils";
 import AdminBreadCrumb from "src/components/common/AdminBreadCrumb";
 import { getBreadcrumbItems } from "src/containers/layout";
 import CustomizeTab from "src/components/common/CustomizeTab";
@@ -30,12 +30,7 @@ const Orders = () => {
             ]);
             setFilterData(orderStore.data?.orders);
         } catch (e: any) {
-            console.log(e);
-            store.setStatusMessage(
-                500,
-                e?.message || "Có lỗi xảy ra khi fetch danh sách order.",
-                ""
-            );
+            console.error("Error fetching data for order page:", e);
         }
     };
 
@@ -112,11 +107,12 @@ const Orders = () => {
             await orderStore.getOrderDetail(id);
             orderStore.setOpenDetail(true);
         } catch (e: any) {
-            store.setStatusMessage(
-                500,
-                e?.message || "Có lỗi xảy ra khi view order.",
-                ""
+            console.error("Error viewing order:", e);
+            const errorMessage = getErrorMessage(
+                e,
+                "Không thể xem chi tiết đơn hàng."
             );
+            store.setStatusMessage(500, errorMessage, "");
         }
     };
 
@@ -124,12 +120,12 @@ const Orders = () => {
         try {
             await orderStore.updateOrderStatus(id);
         } catch (e: any) {
-            console.log(e);
-            store.setStatusMessage(
-                500,
-                e?.message || "Có lỗi xảy ra khi cật nhật trạng thái order.",
-                ""
+            console.log("Error updating order status:", e);
+            const errorMessage = getErrorMessage(
+                e,
+                "Không thể cập nhật trạng thái đơn hàng."
             );
+            store.setStatusMessage(500, errorMessage, "");
         }
     };
 
@@ -137,12 +133,9 @@ const Orders = () => {
         try {
             await orderStore.cancelOrder(id, reason);
         } catch (e: any) {
-            console.log(e);
-            store.setStatusMessage(
-                500,
-                e?.message || "Có lỗi xảy ra khi hủy đơn hàng",
-                ""
-            );
+            console.log("Error canceling order:", e);
+            const errorMessage = getErrorMessage(e, "Không thể hủy đơn hàng.");
+            store.setStatusMessage(500, errorMessage, "");
         }
     };
 
@@ -150,12 +143,12 @@ const Orders = () => {
         try {
             await orderStore.failedDelivery(id, reason);
         } catch (e: any) {
-            console.log(e);
-            store.setStatusMessage(
-                500,
-                e?.message || "Có lỗi xảy ra khi xử lí đơn hàng giao thất bại.",
-                ""
+            console.log("Error handling failed delivery:", e);
+            const errorMessage = getErrorMessage(
+                e,
+                "Không thể xử lí đơn hàng giao thất bại."
             );
+            store.setStatusMessage(500, errorMessage, "");
         }
     };
 
@@ -167,13 +160,13 @@ const Orders = () => {
                         description="Thông tin chi tiết về danh sách đơn hàng"
                         items={[...getBreadcrumbItems(location.pathname)]}
                     />
-                    <Button
+                    {/* <Button
                         type="primary"
                         size="large"
                         className="!rounded-none"
                     >
                         Xuất excel
-                    </Button>
+                    </Button> */}
                 </div>
                 <OrderStatusSearch
                     order_status={orderStore?.data?.order_status}
