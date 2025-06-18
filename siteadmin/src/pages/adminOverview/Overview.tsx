@@ -638,11 +638,7 @@ const Overview = observer(() => {
             const data = response?.data?.result || [];
             overviewStore.setCustomers(data?.length || 0);
         } catch (err) {
-            const errorMessage = getErrorMessage(
-                err,
-                "Không thể lấy dữ liệu khách hàng"
-            );
-            store.setStatusMessage(500, errorMessage, "", false);
+            console.error("Error fetching customers:", err);
         }
     };
 
@@ -662,7 +658,7 @@ const Overview = observer(() => {
                 err,
                 "Không thể lấy dữ liệu đơn hàng"
             );
-            store.setStatusMessage(500, errorMessage, "", false);
+            console.error("Error fetching orders:", errorMessage);
         }
     };
 
@@ -682,7 +678,7 @@ const Overview = observer(() => {
                 err,
                 "Không thể lấy dữ liệu sản phẩm"
             );
-            store.setStatusMessage(500, errorMessage, "", false);
+            console.error("Error fetching products:", errorMessage);
         }
     };
 
@@ -702,7 +698,7 @@ const Overview = observer(() => {
                 err,
                 "Không thể lấy dữ liệu nhà cung cấp"
             );
-            store.setStatusMessage(500, errorMessage, "", false);
+            console.error("Error fetching suppliers:", errorMessage);
         }
     };
 
@@ -739,7 +735,7 @@ const Overview = observer(() => {
                 err,
                 "Không thể lấy dữ liệu đơn hàng"
             );
-            store.setStatusMessage(500, errorMessage, "", false);
+            console.error("Error fetching order overview:", errorMessage);
         }
     };
 
@@ -754,7 +750,7 @@ const Overview = observer(() => {
                 err,
                 "Không thể lấy dữ liệu tổng quan"
             );
-            store.setStatusMessage(500, errorMessage, "", false);
+            console.error("Error fetching static data:", errorMessage);
         }
     };
 
@@ -773,7 +769,7 @@ const Overview = observer(() => {
                 err,
                 "Không thể lấy dữ liệu tổng quan"
             );
-            store.setStatusMessage(500, errorMessage, "", false);
+            console.error("Error fetching data:", errorMessage);
         } finally {
             overviewStore.setShowSkeleton(false);
         }

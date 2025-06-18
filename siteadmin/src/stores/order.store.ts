@@ -196,9 +196,11 @@ export default class OrderObservable {
                     : message;
             }
         } catch (e: any) {
-            console.error(e);
-            this.rootStore.status = 500;
-            this.rootStore.errorMsg = e?.message || "Lỗi không xác định";
+            const errorMessage = getErrorMessage(
+                e,
+                "Không thể lấy danh sách đơn hàng"
+            );
+            console.error("Error fetching orders:", errorMessage);
         } finally {
             this.loading = false;
         }

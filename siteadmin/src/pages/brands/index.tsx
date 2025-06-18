@@ -253,10 +253,7 @@ const BrandsPage = () => {
         setPreviewVisible(true);
     };
 
-    const handleFormValueChange = (changeValues: any, allValues: any) => {
-        console.log("allValues", allValues);
-        console.log("changeValues", changeValues);
-    };
+    const handleFormValueChange = (changeValues: any, allValues: any) => {};
 
     return (
         <section className="w-full">

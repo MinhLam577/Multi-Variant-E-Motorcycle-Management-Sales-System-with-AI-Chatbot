@@ -5,65 +5,64 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
 const RichTextEditor = ({ ...props }) => {
-  const quillRef = useRef();
+    const quillRef = useRef();
 
-  const validateImage = async (file) => {
-    const isImage = file.type.indexOf("image/") === 0;
-    if (!isImage) {
-      message.error("Tệp tải lên không phải file ảnh!");
-    }
-
-    const isLt5M = file.size / 1024 / 1024 < 5;
-    if (!isLt5M) {
-      message.error("Dung lượng ảnh không được lớn hơn 5MB!");
-    }
-    return isImage && isLt5M;
-  };
-
-  const uploadFiles = async (file, editor) => {};
-
-  const isDisableEditing = () => {
-    return props?.disabled || props?.readOnly;
-  };
-
-  async () => {
-    if (!isDisableEditing()) {
-      const editor = quillRef.current.getEditor();
-      const input = document.createElement("input");
-
-      input.setAttribute("type", "file");
-      input.setAttribute("accept", "image/*");
-      input.click();
-
-      input.onchange = async () => {
-        var file = input.files[0];
-        if (validateImage(file)) {
-          await uploadFiles(file, editor);
-        } else {
-          console.log("Not a image type.");
+    const validateImage = async (file) => {
+        const isImage = file.type.indexOf("image/") === 0;
+        if (!isImage) {
+            message.error("Tệp tải lên không phải file ảnh!");
         }
-      };
-    }
-  };
-  const modules = {
-    toolbar: {
-      container: [
-        [{ header: [1, 2, 3, 4, 5, 6, false] }],
-        ["bold", "italic", "underline"],
-        [{ list: "ordered" }, { list: "bullet" }],
-        [{ align: [] }],
-        ["link", "image", "video"],
-        ["clean"],
-        [{ color: [] }],
-      ],
-    },
-  };
-  return (
-    <ReactQuill {...props} ref={quillRef} theme="snow" modules={modules} />
-  );
+
+        const isLt5M = file.size / 1024 / 1024 < 5;
+        if (!isLt5M) {
+            message.error("Dung lượng ảnh không được lớn hơn 5MB!");
+        }
+        return isImage && isLt5M;
+    };
+
+    const uploadFiles = async (file, editor) => {};
+
+    const isDisableEditing = () => {
+        return props?.disabled || props?.readOnly;
+    };
+
+    async () => {
+        if (!isDisableEditing()) {
+            const editor = quillRef.current.getEditor();
+            const input = document.createElement("input");
+
+            input.setAttribute("type", "file");
+            input.setAttribute("accept", "image/*");
+            input.click();
+
+            input.onchange = async () => {
+                var file = input.files[0];
+                if (validateImage(file)) {
+                    await uploadFiles(file, editor);
+                } else {
+                }
+            };
+        }
+    };
+    const modules = {
+        toolbar: {
+            container: [
+                [{ header: [1, 2, 3, 4, 5, 6, false] }],
+                ["bold", "italic", "underline"],
+                [{ list: "ordered" }, { list: "bullet" }],
+                [{ align: [] }],
+                ["link", "image", "video"],
+                ["clean"],
+                [{ color: [] }],
+            ],
+        },
+    };
+    return (
+        <ReactQuill {...props} ref={quillRef} theme="snow" modules={modules} />
+    );
 };
 RichTextEditor.propTypes = {
-  disabled: PropTypes.bool,
-  readOnly: PropTypes.bool,
+    disabled: PropTypes.bool,
+    readOnly: PropTypes.bool,
 };
 export default RichTextEditor;

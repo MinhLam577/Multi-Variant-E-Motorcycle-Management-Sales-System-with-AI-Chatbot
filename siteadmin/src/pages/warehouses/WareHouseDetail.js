@@ -44,7 +44,6 @@ const formItemLayout = {
 
 const WareHouseDetail = ({ mode }) => {
     const { id } = useParams();
-    console.log(mode);
     useEffect(() => {
         if (id) {
             const getWarehouseByid = async (id) => {
@@ -180,7 +179,6 @@ const WareHouseDetail = ({ mode }) => {
     const handleFormFinish = async (values) => {
         // gọi api chỉnh sửa
         if (mode == 3) {
-            console.log(values);
             const data = await apiClient.patch(
                 endpoints.warehouse.update(id),
                 values
@@ -194,7 +192,6 @@ const WareHouseDetail = ({ mode }) => {
                 endpoints.warehouse.create(),
                 values
             );
-            console.log(data);
             if (data) {
                 message.success("Tạo thành công");
                 navigate(`/warehouse`, { replace: true });

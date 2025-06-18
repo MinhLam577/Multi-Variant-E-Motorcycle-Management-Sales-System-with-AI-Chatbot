@@ -18,9 +18,6 @@ const OrderStatusSearch: React.FC<IOrderStatusSearchProps> = ({
     };
     const [button_focus, set_button_focus] = useState(false);
     const [status_selected, set_status_selected] = useState("All");
-    useEffect(() => {
-        console.log("order_status", toJS(order_status));
-    }, [order_status]);
     return (
         <div className="flex flex-wrap justify-between items-center gap-y-4 mt-2">
             {order_status?.map((status) => {
