@@ -1,9 +1,14 @@
+import { toJS } from "mobx";
 import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
 import CustomizeModal from "src/components/common/CustomizeModal";
 import OrderSearch from "src/components/orders/OrderSearch";
 import { getOrderColumnsConfig } from "src/components/orders/OrdersTable";
-import { EnumOrderStatuses, PaymentStatus } from "src/constants";
+import {
+    EnumOrderStatuses,
+    EnumOrderStatusesValue,
+    PaymentStatus,
+} from "src/constants";
 import TableComponent from "src/containers/TableComponent";
 import { useStore } from "src/stores";
 import { convertDate } from "src/utils";
@@ -28,12 +33,15 @@ const ModalSelectOrder: React.FC<ModalSelectOrderProps> = ({
     const [filterData, setFilterData] = useState([]);
 
     useEffect(() => {
-        orderStore.setOrderStatusSelected(Object.keys(EnumOrderStatuses)[1]);
+        orderStore.getListOrder({
+            ...orderStore.pagination,
+            order_status: EnumOrderStatusesValue.CONFIRMED,
+        });
     }, []);
     useEffect(() => {
-        const status = orderStore.data?.order_status_selected;
+        // const status = orderStore.data?.order_status_selected;
         const globalFilters = orderStore.globalFilters;
-        let filteredData = orderStore.data?.orders || [];
+        let filteredData = toJS(orderStore.data?.orders || []);
 
         // Kiểm tra dữ liệu đầu vào
         if (!Array.isArray(filteredData)) {
@@ -41,10 +49,10 @@ const ModalSelectOrder: React.FC<ModalSelectOrderProps> = ({
         }
         filteredData = filteredData
             .filter((order) => {
-                // Loại bỏ đơn hàng nào mà khác cod mà chưa trả tiền
                 if (
-                    order?.payment_method?.name?.toUpperCase() !== "COD" &&
-                    order?.payment_status !== PaymentStatus.PAID
+                    (order?.payment_method?.name?.toUpperCase() !== "COD" &&
+                        order?.payment_status !== PaymentStatus.PAID) ||
+                    order?.order_status !== EnumOrderStatuses.CONFIRMED
                 ) {
                     return false;
                 }
@@ -103,13 +111,8 @@ const ModalSelectOrder: React.FC<ModalSelectOrderProps> = ({
                     orderFilter
                 );
             });
-        setFilterData(filteredData);
-    }, [
-        orderStore.data?.order_status_selected,
-        orderStore.data?.orders,
-        orderStore.globalFilters,
-        orderSelected,
-    ]);
+        setFilterData([...filteredData]);
+    }, [orderStore.data?.orders, orderStore.globalFilters]);
     const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
     const handleRowSelection = (selectedRowKeys: string[]) => {
         const filterSelectedRowKeys = selectedRowKeys.filter((item) => {
@@ -145,7 +148,7 @@ const ModalSelectOrder: React.FC<ModalSelectOrderProps> = ({
                 />
 
                 <TableComponent
-                    data={filterData || []}
+                    data={orderStore.data.orders || []}
                     observableName={orderStore.constructor.name}
                     loading={false}
                     getColumnsConfig={getOrderColumnsConfig}

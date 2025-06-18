@@ -129,6 +129,81 @@ const Orders = () => {
         }
     };
 
+    const handleConfirmOrderStatus = async (id: string) => {
+        try {
+            await orderStore.confirmOrder(id);
+        } catch (e: any) {
+            console.log("Error confirming order:", e);
+            const errorMessage = getErrorMessage(
+                e,
+                "Không thể xác nhận đơn hàng."
+            );
+            store.setStatusMessage(500, errorMessage, "");
+        }
+    };
+
+    const handleExportOrderStatus = async (id: string) => {
+        try {
+            await orderStore.exportOrder(id);
+        } catch (e: any) {
+            console.log("Error exporting order:", e);
+            const errorMessage = getErrorMessage(e, "Không thể xuất đơn hàng.");
+            store.setStatusMessage(500, errorMessage, "");
+        }
+    };
+
+    const handleHandoverOrderStatus = async (id: string) => {
+        try {
+            await orderStore.handOverOrder(id);
+        } catch (e: any) {
+            console.log("Error handing over order:", e);
+            const errorMessage = getErrorMessage(
+                e,
+                "Không thể bàn giao đơn hàng."
+            );
+            store.setStatusMessage(500, errorMessage, "");
+        }
+    };
+
+    const handleDeliverOrderStatus = async (id: string) => {
+        try {
+            await orderStore.deliverOrder(id);
+        } catch (e: any) {
+            console.log("Error handing over order:", e);
+            const errorMessage = getErrorMessage(
+                e,
+                "Không thể cật nhật trạng thái vận chuyển hàng."
+            );
+            store.setStatusMessage(500, errorMessage, "");
+        }
+    };
+
+    const handleShipOrderStatus = async (id: string) => {
+        try {
+            await orderStore.shipOrder(id);
+        } catch (e: any) {
+            console.log("Error shipping order:", e);
+            const errorMessage = getErrorMessage(
+                e,
+                "Không thể cập nhật trạng thái giao hàng."
+            );
+            store.setStatusMessage(500, errorMessage, "");
+        }
+    };
+
+    const handleShipSuccessOrderStatus = async (id: string) => {
+        try {
+            await orderStore.shipSuccess(id);
+        } catch (e: any) {
+            console.log("Error shipping success order:", e);
+            const errorMessage = getErrorMessage(
+                e,
+                "Không thể cập nhật trạng thái giao hàng thành công."
+            );
+            store.setStatusMessage(500, errorMessage, "");
+        }
+    };
+
     const handleCancelOrderStatus = async (id: string, reason?: string) => {
         try {
             await orderStore.cancelOrder(id, reason);
@@ -241,6 +316,24 @@ const Orders = () => {
                                             }
                                             handleFailedDelivery={
                                                 handleFailedDelivery
+                                            }
+                                            handleConfirmOrderStatus={
+                                                handleConfirmOrderStatus
+                                            }
+                                            handleExportOrderStatus={
+                                                handleExportOrderStatus
+                                            }
+                                            handleHandoverOrderStatus={
+                                                handleHandoverOrderStatus
+                                            }
+                                            handleDeliverOrderStatus={
+                                                handleDeliverOrderStatus
+                                            }
+                                            handleShipOrderStatus={
+                                                handleShipOrderStatus
+                                            }
+                                            handleShipSuccessOrderStatus={
+                                                handleShipSuccessOrderStatus
                                             }
                                         />
                                     </Drawer>

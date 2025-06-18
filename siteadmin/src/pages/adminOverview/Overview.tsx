@@ -10,7 +10,6 @@ import {
     ArrowDown2,
     UserAdd,
     ArrowDown,
-    ArrowSwapVertical,
 } from "iconsax-react";
 import {
     Select,
@@ -29,7 +28,6 @@ import { getBreadcrumbItems } from "src/containers/layout";
 import AdminBreadCrumb from "src/components/common/AdminBreadCrumb";
 import { RevenueProfitStatisticsDto } from "src/stores/order.store";
 import OrderAPI from "src/api/order.api";
-import { RootStore } from "src/stores/base";
 import { useStore } from "src/stores";
 import { filterEmptyFields, getErrorMessage } from "src/utils";
 import apiClient from "src/api/apiClient";
@@ -739,11 +737,31 @@ const Overview = observer(() => {
         }
     };
 
+    const fetchInitialRevenueAndProfit = async () => {
+        try {
+            const { start_date, end_date } = getDefaultRange(
+                overviewStore.year,
+                overviewStore.selectType
+            );
+            overviewStore.setDateRange(start_date, end_date);
+        } catch (err) {
+            const errorMessage = getErrorMessage(
+                err,
+                "Không thể lấy dữ liệu doanh thu và lợi nhuận"
+            );
+            console.error(
+                "Error fetching initial revenue and profit:",
+                errorMessage
+            );
+        }
+    };
+
     const fetchStaticData = async () => {
         try {
             await Promise.all([
                 fetchTotalRevenue(overviewStore.year),
                 fetchOrderOverview(overviewStore.year),
+                fetchInitialRevenueAndProfit(),
             ]);
         } catch (err) {
             const errorMessage = getErrorMessage(

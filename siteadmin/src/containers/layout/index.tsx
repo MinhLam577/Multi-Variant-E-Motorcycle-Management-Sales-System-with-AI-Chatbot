@@ -150,11 +150,17 @@ const AppLayout = (props) => {
                 (item) => item.path === perm.path && item.method === perm.method
             );
 
-        items.push(
-            getSideMenuItem("Tổng quan", "1", <BarChartOutlined />, null, () =>
-                navigate("/")
-            )
-        );
+        if (hasPermission(ALL_PERMISSIONS.DASHBOARD.GET_PAGINATE)) {
+            items.push(
+                getSideMenuItem(
+                    "Tổng quan",
+                    "1",
+                    <BarChartOutlined />,
+                    null,
+                    () => navigate("/")
+                )
+            );
+        }
 
         if (hasPermission(ALL_PERMISSIONS.USER.GET_PAGINATE)) {
             items.push(

@@ -930,7 +930,6 @@ const ImportPage: React.FC<ImportPageProps> = () => {
                 });
             }
         }
-
         return Array.from(mapRes.values());
     };
 

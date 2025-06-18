@@ -156,24 +156,20 @@ export const ALL_PERMISSIONS = {
             path: "/api/v1/order/:id/cancel",
             module: "ORDERS",
         },
-        CONFIRM: {
-            method: "PATCH",
-            path: "/api/v1/order/confirm",
-            module: "ORDERS",
-        },
-        FAIL_DELIVERY: {
-            method: "PATCH",
-            path: "/api/v1/order/:id/failed-delivery",
-            module: "ORDERS",
-        },
+
         PRINT_ORDER: {
             method: "GET",
             path: "/api/v1/order/print/:id",
             module: "ORDERS",
         },
+        CONFIRM: {
+            method: "PATCH",
+            path: "/api/v1/order/:id/confirm",
+            module: "ORDERS",
+        },
         EXPORTED: {
             method: "PATCH",
-            path: "/api/v1/order/:id/export-success",
+            path: "/api/v1/order/:id/export",
             module: "ORDERS",
         },
         HAND_OVER: {
@@ -183,12 +179,22 @@ export const ALL_PERMISSIONS = {
         },
         DELIVERING: {
             method: "PATCH",
-            path: "/api/v1/order/:id/delivering",
+            path: "/api/v1/order/:id/deliver",
             module: "ORDERS",
         },
         SHIPPING: {
             method: "PATCH",
-            path: "/api/v1/order/:id/shipping",
+            path: "/api/v1/order/:id/ship",
+            module: "ORDERS",
+        },
+        DELIVERED: {
+            method: "PATCH",
+            path: "/api/v1/order/:id/ship-success",
+            module: "ORDERS",
+        },
+        FAIL_DELIVERY: {
+            method: "PATCH",
+            path: "/api/v1/order/:id/failed-delivery",
             module: "ORDERS",
         },
     },

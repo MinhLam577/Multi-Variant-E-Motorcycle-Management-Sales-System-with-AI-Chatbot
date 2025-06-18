@@ -69,7 +69,7 @@ export type globalFiltersDataOrder = {
     search?: string;
     sortOrder?: string;
     sortBy?: string;
-    order_status?: string;
+    order_status?: Omit<EnumOrderStatusesValue, "All">;
     payment_status?: string;
     payment_method?: string;
     created_from?: string;
@@ -124,11 +124,11 @@ export default class OrderObservable {
     private validateQuery(query?: string | object): string {
         // Xử lý chuyển đổi query string thành object
         let parsedQuery: globalFiltersDataOrder & paginationData = {
+            current: Number(this.pagination.current),
+            pageSize: Number(this.pagination.pageSize),
             ...(typeof query === "string"
                 ? Object.fromEntries(new URLSearchParams(query.trim()))
                 : query),
-            current: Number(this.pagination.current),
-            pageSize: Number(this.pagination.pageSize),
         };
 
         // Gộp filters và xử lý dữ liệu
@@ -334,28 +334,186 @@ export default class OrderObservable {
         }
     }
 
-    *confirmOrder(data: ExportOrder) {
+    *confirmOrder(id: string) {
         try {
-            const response: ResponsePromise = yield OrderAPI.confirmOrder(data);
+            const response: ResponsePromise = yield OrderAPI.confirmOrder(id);
             const { status, message } = response;
             const success_status = [200, 201, 204];
             if (success_status.includes(status)) {
                 yield this.getListOrder();
-                yield this.getOrderDetail(data.order_id);
+                yield this.getOrderDetail(id);
                 this.rootStore.status = status;
                 this.rootStore.successMsg = message;
                 this.rootStore.showSuccessMsg = true;
                 return true;
             } else {
                 this.rootStore.status = status;
-                this.rootStore.errorMsg = message;
+                this.rootStore.errorMsg = Array.isArray(message)
+                    ? message[0]
+                    : message;
                 this.rootStore.showSuccessMsg = false;
                 return false;
             }
         } catch (e: any) {
-            console.error(e);
-            this.rootStore.status = 500;
-            this.rootStore.errorMsg = e?.message || "Lỗi không xác định";
+            console.error("Error confirming order:", e);
+            const errorMessage = getErrorMessage(
+                e,
+                "Không thể xác nhận đơn hàng"
+            );
+
+            this.rootStore.setStatusMessage(500, errorMessage, "", false);
+            return false;
+        }
+    }
+
+    *exportOrder(id: string) {
+        try {
+            const response: ResponsePromise = yield OrderAPI.exportOrder(id);
+            const { status, message } = response;
+            const success_status = [200, 201, 204];
+            if (success_status.includes(status)) {
+                yield this.getListOrder();
+                yield this.getOrderDetail(id);
+                this.rootStore.status = status;
+                this.rootStore.successMsg = message;
+                this.rootStore.showSuccessMsg = true;
+                return true;
+            } else {
+                this.rootStore.status = status;
+                this.rootStore.errorMsg = Array.isArray(message)
+                    ? message[0]
+                    : message;
+                this.rootStore.showSuccessMsg = false;
+                return false;
+            }
+        } catch (e: any) {
+            console.error("Error exporting order:", e);
+            const errorMessage = getErrorMessage(e, "Không thể xuất đơn hàng");
+            this.rootStore.setStatusMessage(500, errorMessage, "", false);
+            return false;
+        }
+    }
+
+    *handOverOrder(id: string) {
+        try {
+            const response: ResponsePromise = yield OrderAPI.handOverOrder(id);
+            const { status, message } = response;
+            const success_status = [200, 201, 204];
+            if (success_status.includes(status)) {
+                yield this.getListOrder();
+                yield this.getOrderDetail(id);
+                this.rootStore.status = status;
+                this.rootStore.successMsg = message;
+                this.rootStore.showSuccessMsg = true;
+                return true;
+            } else {
+                this.rootStore.status = status;
+                this.rootStore.errorMsg = Array.isArray(message)
+                    ? message[0]
+                    : message;
+                this.rootStore.showSuccessMsg = false;
+                return false;
+            }
+        } catch (e: any) {
+            console.error("Error handing over order:", e);
+            const errorMessage = getErrorMessage(
+                e,
+                "Không thể bàn giao đơn hàng"
+            );
+            this.rootStore.setStatusMessage(500, errorMessage, "", false);
+            return false;
+        }
+    }
+
+    *deliverOrder(id: string) {
+        try {
+            const response: ResponsePromise = yield OrderAPI.deliverOrder(id);
+            const { status, message } = response;
+            const success_status = [200, 201, 204];
+            if (success_status.includes(status)) {
+                yield this.getListOrder();
+                yield this.getOrderDetail(id);
+                this.rootStore.status = status;
+                this.rootStore.successMsg = message;
+                this.rootStore.showSuccessMsg = true;
+                return true;
+            } else {
+                this.rootStore.status = status;
+                this.rootStore.errorMsg = Array.isArray(message)
+                    ? message[0]
+                    : message;
+                this.rootStore.showSuccessMsg = false;
+                return false;
+            }
+        } catch (e: any) {
+            console.error("Error delivering order:", e);
+            const errorMessage = getErrorMessage(
+                e,
+                "Không thể chuyển sang trạng thái vận chuyển"
+            );
+            this.rootStore.setStatusMessage(500, errorMessage, "", false);
+            return false;
+        }
+    }
+
+    *shipOrder(id: string) {
+        try {
+            const response: ResponsePromise = yield OrderAPI.shipOrder(id);
+            const { status, message } = response;
+            const success_status = [200, 201, 204];
+            if (success_status.includes(status)) {
+                yield this.getListOrder();
+                yield this.getOrderDetail(id);
+                this.rootStore.status = status;
+                this.rootStore.successMsg = message;
+                this.rootStore.showSuccessMsg = true;
+                return true;
+            } else {
+                this.rootStore.status = status;
+                this.rootStore.errorMsg = Array.isArray(message)
+                    ? message[0]
+                    : message;
+                this.rootStore.showSuccessMsg = false;
+                return false;
+            }
+        } catch (e: any) {
+            console.error("Error shipping order:", e);
+            const errorMessage = getErrorMessage(
+                e,
+                "Không thể chuyển trang thái giao hàng"
+            );
+            this.rootStore.setStatusMessage(500, errorMessage, "", false);
+            return false;
+        }
+    }
+
+    *shipSuccess(id: string) {
+        try {
+            const response: ResponsePromise = yield OrderAPI.shipSuccess(id);
+            const { status, message } = response;
+            const success_status = [200, 201, 204];
+            if (success_status.includes(status)) {
+                yield this.getListOrder();
+                yield this.getOrderDetail(id);
+                this.rootStore.status = status;
+                this.rootStore.successMsg = message;
+                this.rootStore.showSuccessMsg = true;
+                return true;
+            } else {
+                this.rootStore.status = status;
+                this.rootStore.errorMsg = Array.isArray(message)
+                    ? message[0]
+                    : message;
+                this.rootStore.showSuccessMsg = false;
+                return false;
+            }
+        } catch (e: any) {
+            console.error("Error shipping success order:", e);
+            const errorMessage = getErrorMessage(
+                e,
+                "Không thể chuyển trạng thái giao hàng thành công"
+            );
+            this.rootStore.setStatusMessage(500, errorMessage, "", false);
             return false;
         }
     }
@@ -490,4 +648,34 @@ export default class OrderObservable {
             this.loading = false;
         }
     }
+
+    get OrderDetailStatus() {
+        return EnumOrderStatusesValue[this.data.order_detail?.order_status];
+    }
 }
+
+// *confirmOrder(data: ExportOrder) {
+//     try {
+//         const response: ResponsePromise = yield OrderAPI.confirmOrder(data);
+//         const { status, message } = response;
+//         const success_status = [200, 201, 204];
+//         if (success_status.includes(status)) {
+//             yield this.getListOrder();
+//             yield this.getOrderDetail(data.order_id);
+//             this.rootStore.status = status;
+//             this.rootStore.successMsg = message;
+//             this.rootStore.showSuccessMsg = true;
+//             return true;
+//         } else {
+//             this.rootStore.status = status;
+//             this.rootStore.errorMsg = message;
+//             this.rootStore.showSuccessMsg = false;
+//             return false;
+//         }
+//     } catch (e: any) {
+//         console.error(e);
+//         this.rootStore.status = 500;
+//         this.rootStore.errorMsg = e?.message || "Lỗi không xác định";
+//         return false;
+//     }
+// }

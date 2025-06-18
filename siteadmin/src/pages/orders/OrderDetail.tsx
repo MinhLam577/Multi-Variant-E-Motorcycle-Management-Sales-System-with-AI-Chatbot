@@ -39,6 +39,12 @@ interface OrderDetailProps {
     handleUpdateOrderStatus: (orderNo: string) => void;
     handleCancelOrderStatus: (orderNo: string, reason: string) => void;
     handleFailedDelivery: (orderNo: string, reason: string) => void;
+    handleConfirmOrderStatus: (orderNo: string) => void;
+    handleExportOrderStatus: (orderNo: string) => void;
+    handleHandoverOrderStatus: (orderNo: string) => void;
+    handleDeliverOrderStatus: (orderNo: string) => void;
+    handleShipOrderStatus: (orderNo: string) => void;
+    handleShipSuccessOrderStatus: (orderNo: string) => void;
 }
 
 const OrderDetail: React.FC<OrderDetailProps> = ({
@@ -49,6 +55,12 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
     handleUpdateOrderStatus,
     handleCancelOrderStatus,
     handleFailedDelivery,
+    handleConfirmOrderStatus,
+    handleExportOrderStatus,
+    handleHandoverOrderStatus,
+    handleDeliverOrderStatus,
+    handleShipOrderStatus,
+    handleShipSuccessOrderStatus,
 }) => {
     const elementPrintOrder = useRef<HTMLDivElement | null>(null);
     const store = useStore();
@@ -142,12 +154,12 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
                 case EnumOrderStatusesValue.PENDING:
                 case EnumOrderStatusesValue.CONFIRMED:
                 case EnumOrderStatusesValue.EXPORTED:
+                case EnumOrderStatusesValue.HAND_OVERED:
                 case EnumOrderStatusesValue.DELIVERING:
                 case EnumOrderStatusesValue.SHIPPING:
                     newStatus = status;
                     break;
                 case EnumOrderStatusesValue.DELIVERED:
-                case EnumOrderStatusesValue.RETURNED:
                     newStatus = EnumOrderStatusesValue.DELIVERED;
                     break;
                 case EnumOrderStatusesValue.FAILED_DELIVERY:
@@ -157,7 +169,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
                             : EnumOrderStatusesValue.SHIPPING;
                     isError = true;
                     break;
-                case EnumOrderStatusesValue.CANCELED:
+                case EnumOrderStatusesValue.CANCELLED:
                     newStatus =
                         prev_status === EnumOrderStatusesValue.CONFIRMED
                             ? EnumOrderStatusesValue.CONFIRMED
@@ -228,32 +240,32 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
     };
 
     // Modal xuất đơn hàng
-    const [open_modal_export_order, set_open_export_order] = useState(false);
-    const handleSaveExportOrderModal = async (
-        orderExport: CreateDetailExport[],
-        note: string
-    ): Promise<boolean> => {
-        try {
-            const data: ExportOrder = {
-                order_id: orderDetail.id,
-                detail_export: orderExport,
-                note: note,
-            };
-            const res = await order_store.confirmOrder(data);
-            return !!res;
-        } catch (e: any) {
-            console.error("Error confirming and saving export order:", e);
-            const errorMessage = getErrorMessage(
-                e,
-                "Lỗi khi xác nhận và lưu xuất đơn hàng"
-            );
-            store.setStatusMessage(500, errorMessage, "");
-        }
-    };
+    // const [open_modal_export_order, set_open_export_order] = useState(false);
+    // const handleSaveExportOrderModal = async (
+    //     orderExport: CreateDetailExport[],
+    //     note: string
+    // ): Promise<boolean> => {
+    //     try {
+    //         const data: ExportOrder = {
+    //             order_id: orderDetail.id,
+    //             detail_export: orderExport,
+    //             note: note,
+    //         };
+    //         const res = await order_store.confirmOrder(data);
+    //         return !!res;
+    //     } catch (e: any) {
+    //         console.error("Error confirming and saving export order:", e);
+    //         const errorMessage = getErrorMessage(
+    //             e,
+    //             "Lỗi khi xác nhận và lưu xuất đơn hàng"
+    //         );
+    //         store.setStatusMessage(500, errorMessage, "");
+    //     }
+    // };
 
-    const handleCloseExportOrderModal = () => {
-        set_open_export_order(false);
-    };
+    // const handleCloseExportOrderModal = () => {
+    //     set_open_export_order(false);
+    // };
 
     const skus_ids = orderDetail?.order_details.map((item) => item.skus.id);
     const map_detail_import_skus = new Map<string, any>();
@@ -290,38 +302,6 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
                             >
                                 <Button onClick={onPrint}>In hóa đơn</Button>
                             </Access>
-                            <Access
-                                permission={ALL_PERMISSIONS.ORDERS.CONFIRM}
-                                hideChildren
-                            >
-                                <Button
-                                    onClick={() => {
-                                        const orderDetailStatus:
-                                            | string
-                                            | undefined =
-                                            order_store.data.order_detail
-                                                ?.order_status;
-                                        const status: number | undefined =
-                                            EnumOrderStatusesValue[
-                                                orderDetailStatus
-                                            ];
-                                        if (
-                                            status ===
-                                            EnumOrderStatusesValue.PENDING
-                                        ) {
-                                            set_open_export_order(true);
-                                        } else {
-                                            store.setStatusMessage(
-                                                400,
-                                                "Chỉ có thể xác nhận khi đơn hàng đang ở trạng thái chờ xử lí",
-                                                ""
-                                            );
-                                        }
-                                    }}
-                                >
-                                    Xác nhận đơn
-                                </Button>
-                            </Access>
                         </CustomizeButton>
                     </div>
                 </div>
@@ -348,39 +328,157 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
                 <OrderProductsTable data={orderProductTableData} />
                 <div className="flex justify-between items-center">
                     <CustomizeButton>
-                        <Button
-                            onClick={() => {
-                                handleUpdateOrderStatus(orderNo);
-                            }}
-                        >
-                            Cập nhật trạng thái
-                        </Button>
-                        <Access
-                            permission={ALL_PERMISSIONS.ORDERS.FAIL_DELIVERY}
-                            hideChildren
-                        >
-                            <Button
-                                onClick={() => {
-                                    setTypeOpenReasonModal("failed_delivery");
-                                    setOpenReasonModal(true);
-                                }}
+                        {order_store.OrderDetailStatus ===
+                            EnumOrderStatusesValue.PENDING && (
+                            <Access
+                                permission={ALL_PERMISSIONS.ORDERS.CONFIRM}
+                                hideChildren
                             >
-                                Giao thất bại
-                            </Button>
-                        </Access>
-                        <Access
-                            permission={ALL_PERMISSIONS.ORDERS.CANCEL}
-                            hideChildren
-                        >
-                            <Button
-                                onClick={() => {
-                                    setTypeOpenReasonModal("cancel");
-                                    setOpenReasonModal(true);
-                                }}
+                                <Button
+                                    onClick={() => {
+                                        const orderDetailStatus:
+                                            | string
+                                            | undefined =
+                                            order_store.data.order_detail
+                                                ?.order_status;
+                                        const status: number | undefined =
+                                            EnumOrderStatusesValue[
+                                                orderDetailStatus
+                                            ];
+                                        if (
+                                            status ===
+                                            EnumOrderStatusesValue.PENDING
+                                        ) {
+                                            // set_open_export_order(true);
+                                            handleConfirmOrderStatus(orderNo);
+                                        } else {
+                                            store.setStatusMessage(
+                                                400,
+                                                "Chỉ có thể xác nhận khi đơn hàng đang ở trạng thái chờ xử lí",
+                                                ""
+                                            );
+                                        }
+                                    }}
+                                >
+                                    Xác nhận đơn
+                                </Button>
+                            </Access>
+                        )}
+                        {order_store.OrderDetailStatus ===
+                            EnumOrderStatusesValue.CONFIRMED && (
+                            <Access
+                                permission={ALL_PERMISSIONS.ORDERS.EXPORTED}
+                                hideChildren
                             >
-                                Hủy đơn
-                            </Button>
-                        </Access>
+                                <Button
+                                    onClick={() => {
+                                        handleExportOrderStatus(orderNo);
+                                    }}
+                                >
+                                    Xuất hàng ra kho
+                                </Button>
+                            </Access>
+                        )}
+                        {order_store.OrderDetailStatus ===
+                            EnumOrderStatusesValue.EXPORTED && (
+                            <Access
+                                permission={ALL_PERMISSIONS.ORDERS.HAND_OVER}
+                                hideChildren
+                            >
+                                <Button
+                                    onClick={() => {
+                                        handleHandoverOrderStatus(orderNo);
+                                    }}
+                                >
+                                    Bàn giao đơn vị vận chuyển
+                                </Button>
+                            </Access>
+                        )}
+                        {order_store.OrderDetailStatus ===
+                            EnumOrderStatusesValue.HAND_OVERED && (
+                            <Access
+                                permission={ALL_PERMISSIONS.ORDERS.DELIVERING}
+                                hideChildren
+                            >
+                                <Button
+                                    onClick={() => {
+                                        handleDeliverOrderStatus(orderNo);
+                                    }}
+                                >
+                                    Đang vận chuyển
+                                </Button>
+                            </Access>
+                        )}
+                        {order_store.OrderDetailStatus ===
+                            EnumOrderStatusesValue.DELIVERING && (
+                            <Access
+                                permission={ALL_PERMISSIONS.ORDERS.SHIPPING}
+                                hideChildren
+                            >
+                                <Button
+                                    onClick={() => {
+                                        handleShipOrderStatus(orderNo);
+                                    }}
+                                >
+                                    Đang giao hàng
+                                </Button>
+                            </Access>
+                        )}
+                        {order_store.OrderDetailStatus ===
+                            EnumOrderStatusesValue.SHIPPING && (
+                            <Access
+                                permission={ALL_PERMISSIONS.ORDERS.DELIVERED}
+                                hideChildren
+                            >
+                                <Button
+                                    onClick={() => {
+                                        handleShipSuccessOrderStatus(orderNo);
+                                    }}
+                                >
+                                    Giao hàng thành công
+                                </Button>
+                            </Access>
+                        )}
+                        {(order_store.OrderDetailStatus ===
+                            EnumOrderStatusesValue.DELIVERING ||
+                            order_store.OrderDetailStatus ===
+                                EnumOrderStatusesValue.SHIPPING) && (
+                            <Access
+                                permission={
+                                    ALL_PERMISSIONS.ORDERS.FAIL_DELIVERY
+                                }
+                                hideChildren
+                            >
+                                <Button
+                                    onClick={() => {
+                                        setTypeOpenReasonModal(
+                                            "failed_delivery"
+                                        );
+                                        setOpenReasonModal(true);
+                                    }}
+                                >
+                                    Giao hàng thất bại
+                                </Button>
+                            </Access>
+                        )}
+                        {order_store.OrderDetailStatus ===
+                            EnumOrderStatusesValue.PENDING ||
+                        order_store.OrderDetailStatus ===
+                            EnumOrderStatusesValue.CONFIRMED ? (
+                            <Access
+                                permission={ALL_PERMISSIONS.ORDERS.CANCEL}
+                                hideChildren
+                            >
+                                <Button
+                                    onClick={() => {
+                                        setTypeOpenReasonModal("cancel");
+                                        setOpenReasonModal(true);
+                                    }}
+                                >
+                                    Hủy đơn
+                                </Button>
+                            </Access>
+                        ) : undefined}
                     </CustomizeButton>
                 </div>
                 <ModalConfirmReason
@@ -394,13 +492,13 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
                     placeholder_input={`Nhập lý do`}
                 />
 
-                <ModalExportOrder
+                {/* <ModalExportOrder
                     isOpen={open_modal_export_order}
                     handleClose={handleCloseExportOrderModal}
                     handleSave={handleSaveExportOrderModal}
                     orderDetail={orderDetail}
                     map_skus_detail_import={map_detail_import_skus}
-                />
+                /> */}
                 <CustomerDescription orderDetail={orderDetail} />
             </div>
             <div className="hidden">
