@@ -50,6 +50,7 @@ const getColumnsConfig = ({
             },
             ellipsis: true,
             width: "140px",
+            responsive: ["md"],
         },
         {
             title: "Tên voucher",
@@ -67,6 +68,7 @@ const getColumnsConfig = ({
             render: (fixed) => {
                 return <div className="flex">{fixed ? "%" : "Tiền"}</div>;
             },
+            responsive: ["lg"],
         },
         {
             title: "Trạng thái",
@@ -83,6 +85,7 @@ const getColumnsConfig = ({
             },
             ellipsis: true,
             width: "120px",
+            responsive: ["xl"],
         },
         {
             title: "Đã sử dụng",
@@ -107,6 +110,7 @@ const getColumnsConfig = ({
                     </div>
                 );
             },
+            responsive: ["sm"],
         },
 
         {

@@ -1,4 +1,4 @@
-import { Button, Image } from "antd";
+import { Button, Image, Grid } from "antd";
 import { observer } from "mobx-react-lite";
 import TableComponent from "src/containers/TableComponent";
 import { useStore } from "src/stores";
@@ -11,6 +11,7 @@ import {
     processWithModals,
 } from "../../containers/processWithModals.js";
 import { ALL_MODULES } from "src/constants/permissions";
+const { useBreakpoint } = Grid;
 export interface IBrandsTableProps {
     data: BrandResponseType[];
     handleDeleteBrands: (id: string) => void;
@@ -23,6 +24,7 @@ const BrandsTable: React.FC<IBrandsTableProps> = ({
 }) => {
     const store = useStore();
     const brandStore = store.brandObservable;
+    const screens = useBreakpoint();
     const getColumnsConfig = ({
         handleEditBrands,
         handleDeleteBrands,
@@ -54,7 +56,7 @@ const BrandsTable: React.FC<IBrandsTableProps> = ({
                         </div>
                     );
                 },
-                width: "30%",
+                width: screens.md ? "30%" : "60%",
             },
             {
                 title: "Mô tả",
@@ -65,6 +67,7 @@ const BrandsTable: React.FC<IBrandsTableProps> = ({
                 },
                 ellipsis: true,
                 width: "40%",
+                responsive: ["md"],
             },
             {
                 title: "Ngày tạo",
@@ -79,6 +82,7 @@ const BrandsTable: React.FC<IBrandsTableProps> = ({
                 },
                 ellipsis: false,
                 width: "20%",
+                responsive: ["xl"],
             },
             {
                 title: "Thao tác",

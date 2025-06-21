@@ -348,7 +348,7 @@ const FormListSelectOrInput: React.FC<IFormListSelectOrInputProps> = ({
         showAddValue = true,
     }) => {
         return (
-            <Col xs={13} md={13} lg={13} xl={13}>
+            <Col xs={24} md={13} lg={13} xl={13}>
                 <div className="flex flex-col items-center justify-between w-full relative">
                     {showAddValue && !rest.isUpdate && (
                         <Button
@@ -412,7 +412,7 @@ const FormListSelectOrInput: React.FC<IFormListSelectOrInputProps> = ({
             [form.getFieldValue(fieldValue), rowField.name]
         );
         return (
-            <Col xs={10} md={10} lg={10} xl={10}>
+            <Col xs={24} md={10} lg={10} xl={10}>
                 <div className="flex items-center justify-between gap-4 w-full">
                     <Form.Item
                         label={formItemLabel || "Default title"}

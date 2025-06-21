@@ -1,24 +1,8 @@
-import { makeAutoObservable, toJS } from "mobx";
+import { makeAutoObservable } from "mobx";
 
-import { DateTimeFormat } from "../constants";
-import OrderAPI, { ExportOrder, ResponsePromise } from "../api/order";
+import { ExportOrder, ResponsePromise } from "../api/order";
 import { RootStore } from "./base";
 import voucherApi from "../api/voucher";
-
-// export type OrderStatus = {
-//     key?: string;
-// };
-
-// export type globalFiltersData = {
-//     search?: string;
-//     sortOrder?: string;
-//     sortBy?: string;
-//     order_status?: string;
-//     payment_status?: string;
-//     payment_method?: string;
-//     created_from?: string;
-//     created_to?: string;
-// };
 export type TypeVoucher = {
     id: string;
     name_type_voucher: string;
@@ -29,7 +13,16 @@ export type paginationData = {
     pageSize: number;
 };
 
-interface Voucher {
+export type UserVoucherResponseType = {
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string | null;
+    is_used: boolean;
+    used_at: string | null;
+    voucher: VoucherResponseType;
+};
+interface VoucherResponseType {
     id: string;
     createdAt: string;
     updatedAt: string;
@@ -56,7 +49,7 @@ export default class VoucherObservable {
     data = null;
     dataUser = null;
     typeVoucher: TypeVoucher[] = [];
-    dataDetail = "";
+    dataDetail: UserVoucherResponseType = null;
     dataListCustomer_no_voucher = [];
     idVoucher_User: string = "";
     idVoucher: string = "";

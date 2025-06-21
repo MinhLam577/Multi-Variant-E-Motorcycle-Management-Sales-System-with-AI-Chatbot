@@ -1,4 +1,4 @@
-import { Button, message, Popconfirm } from "antd";
+import { Button, message, Popconfirm, Tooltip } from "antd";
 import * as moment from "moment";
 import PropTypes from "prop-types";
 import GroupActionButton from "../../components/GroupActionButton";
@@ -38,19 +38,44 @@ const getColumnsConfig = ({ hanleDeleteNews, handleUpdateNews }) => {
                                     "/images/default_product_image.jpg";
                             }}
                         />
-                        <div className="text-sm truncate max-h-24">
-                            <h3 className="text-base font-semibold text-gray-800 truncate overflow-hidden whitespace-nowrap text-ellipsis max-h-6">
-                                {item.title}
-                            </h3>
-                            <div
-                                className="text-sm text-gray-500 truncate overflow-hidden whitespace-nowrap text-ellipsis max-h-6"
-                                dangerouslySetInnerHTML={{
-                                    __html: item.content,
-                                }}
-                            >
-                                {item.description}
+                        <Tooltip
+                            title={
+                                <div className="max-w-xs">
+                                    <h3 className="text-base font-semibold text-gray-800">
+                                        {item.title}
+                                    </h3>
+                                    <div
+                                        className="text-sm text-gray-500"
+                                        dangerouslySetInnerHTML={{
+                                            __html: item.content,
+                                        }}
+                                    >
+                                        {item.description}
+                                    </div>
+                                </div>
+                            }
+                            placement="topLeft"
+                            trigger={["hover", "focus"]}
+                            color="#fff"
+                            overlayStyle={{
+                                maxWidth: "300px",
+                                wordBreak: "break-word",
+                            }}
+                        >
+                            <div className="text-sm truncate max-h-24">
+                                <h3 className="text-base font-semibold text-gray-800 truncate overflow-hidden whitespace-nowrap text-ellipsis max-h-6">
+                                    {item.title}
+                                </h3>
+                                <div
+                                    className="text-sm text-gray-500 truncate overflow-hidden whitespace-nowrap text-ellipsis max-h-6"
+                                    dangerouslySetInnerHTML={{
+                                        __html: item.content,
+                                    }}
+                                >
+                                    {item.description}
+                                </div>
                             </div>
-                        </div>
+                        </Tooltip>
                     </Link>
                 );
             },
@@ -69,6 +94,7 @@ const getColumnsConfig = ({ hanleDeleteNews, handleUpdateNews }) => {
                 );
             },
             width: "20%",
+            responsive: ["xl"],
         },
         {
             title: "Ngày cập nhật",
@@ -82,6 +108,7 @@ const getColumnsConfig = ({ hanleDeleteNews, handleUpdateNews }) => {
                 );
             },
             width: "20%",
+            responsive: ["xl"],
         },
         {
             title: "Thao tác",
@@ -134,7 +161,7 @@ const getColumnsConfig = ({ hanleDeleteNews, handleUpdateNews }) => {
                     </div>
                 );
             },
-            width: "10%",
+            width: 40,
         },
     ];
 };

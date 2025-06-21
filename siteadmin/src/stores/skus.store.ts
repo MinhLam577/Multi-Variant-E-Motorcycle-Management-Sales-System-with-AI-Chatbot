@@ -16,7 +16,6 @@ export class UpdateSkusDto {
     product_id: string;
     masku: string;
     barcode: string;
-    name: string;
     image: string;
     price_sold: number;
     price_compare: number;
@@ -28,7 +27,6 @@ export class CreateSkusDto {
     product_id: string;
     masku: string;
     barcode: string;
-    name: string;
     image: string;
     price_sold: number;
     price_compare: number;
@@ -129,10 +127,12 @@ export default class SkusObservable {
                 this.rootStore.errorMsg = message;
             }
         } catch (e: any) {
-            console.error(e);
-            this.rootStore.status = 500;
-            this.rootStore.errorMsg =
-                "Có lỗi xảy ra trong quá trình lấy dữ liệu của biến thể, vui lòng thử lại sau.";
+            console.error("Error fetching detail imports:", e);
+            const errorMessage = getErrorMessage(
+                e,
+                "Không thể lấy thông tin chi tiết nhập hàng, vui lòng thử lại sau."
+            );
+            this.rootStore.setStatusMessage(500, errorMessage, "", false);
         }
     }
 
@@ -154,10 +154,12 @@ export default class SkusObservable {
                 this.rootStore.errorMsg = message;
             }
         } catch (e: any) {
-            console.error(e);
-            this.rootStore.status = 500;
-            this.rootStore.errorMsg =
-                "Có lỗi xảy ra trong quá trình lấy dữ liệu của biến thể, vui lòng thử lại sau.";
+            console.error("Error fetching SKU list:", e);
+            const errorMessage = getErrorMessage(
+                e,
+                "Không thể lấy danh sách biến thể, vui lòng thử lại sau."
+            );
+            this.rootStore.setStatusMessage(500, errorMessage, "", false);
         } finally {
             this.loading = false;
         }
@@ -190,8 +192,7 @@ export default class SkusObservable {
                 e,
                 "Có lỗi xảy ra trong quá trình tạo mới biến thể, vui lòng thử lại sau."
             );
-            this.rootStore.status = 500;
-            this.rootStore.errorMsg = errorMessage;
+            this.rootStore.setStatusMessage(500, errorMessage, "", false);
         } finally {
             this.loading = false;
         }
@@ -217,10 +218,12 @@ export default class SkusObservable {
                 return false;
             }
         } catch (e) {
-            console.error(e);
-            this.rootStore.status = 500;
-            this.rootStore.errorMsg =
-                "Có lỗi xảy ra trong quá trình xóa biến thể, vui lòng thử lại sau.";
+            console.error("Error removing SKU:", e);
+            const errorMessage = getErrorMessage(
+                e,
+                "Có lỗi xảy ra trong quá trình xóa biến thể, vui lòng thử lại sau."
+            );
+            this.rootStore.setStatusMessage(500, errorMessage, "", false);
         } finally {
             this.loading = false;
         }
@@ -246,10 +249,12 @@ export default class SkusObservable {
                 return false;
             }
         } catch (e) {
-            console.error(e);
-            this.rootStore.status = 500;
-            this.rootStore.errorMsg =
-                "Có lỗi xảy ra trong quá trình cập nhật biến thể, vui lòng thử lại sau.";
+            console.error("Error updating SKU:", e);
+            const errorMessage = getErrorMessage(
+                e,
+                "Có lỗi xảy ra trong quá trình cập nhật biến thể, vui lòng thử lại sau."
+            );
+            this.rootStore.setStatusMessage(500, errorMessage, "", false);
         } finally {
             this.loading = false;
         }

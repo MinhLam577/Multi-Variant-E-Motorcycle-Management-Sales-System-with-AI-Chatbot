@@ -1,17 +1,13 @@
-import { toJS } from "mobx";
 import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
 import CustomizeModal from "src/components/common/CustomizeModal";
 import OrderSearch from "src/components/orders/OrderSearch";
 import { getOrderColumnsConfig } from "src/components/orders/OrdersTable";
-import {
-    EnumOrderStatuses,
-    EnumOrderStatusesValue,
-    PaymentStatus,
-} from "src/constants";
+import { EnumOrderStatusesValue } from "src/constants";
 import TableComponent from "src/containers/TableComponent";
 import { useStore } from "src/stores";
-import { convertDate } from "src/utils";
+import { globalFiltersDataOrder } from "src/stores/order.store";
+import { paginationData } from "src/stores/voucher";
 
 export interface ModalSelectOrderProps {
     open: boolean;
@@ -30,89 +26,33 @@ const ModalSelectOrder: React.FC<ModalSelectOrderProps> = ({
     const orderStore = store.orderObservable;
 
     const paymentMethodStore = store.paymentMethodObservable;
-    const [filterData, setFilterData] = useState([]);
-
+    const fetchListOrder = async (
+        query?:
+            | (globalFiltersDataOrder & paginationData)
+            | globalFiltersDataOrder
+            | paginationData
+    ) => {
+        await orderStore.getListOrder(query);
+    };
     useEffect(() => {
-        orderStore.getListOrder({
+        fetchListOrder({
             ...orderStore.pagination,
             order_status: EnumOrderStatusesValue.CONFIRMED,
         });
     }, []);
+
     useEffect(() => {
-        // const status = orderStore.data?.order_status_selected;
-        const globalFilters = orderStore.globalFilters;
-        let filteredData = toJS(orderStore.data?.orders || []);
-
-        // Kiểm tra dữ liệu đầu vào
-        if (!Array.isArray(filteredData)) {
-            filteredData = [];
-        }
-        filteredData = filteredData
-            .filter((order) => {
-                if (
-                    (order?.payment_method?.name?.toUpperCase() !== "COD" &&
-                        order?.payment_status !== PaymentStatus.PAID) ||
-                    order?.order_status !== EnumOrderStatuses.CONFIRMED
-                ) {
-                    return false;
-                }
-                return true;
-            })
-            .filter((order) => {
-                // Điều kiện status
-                const statusMatch =
-                    !status ||
-                    status === "All" ||
-                    order.order_status === status;
-                const orderFilter =
-                    orderSelected?.length && orderSelected.length > 0
-                        ? !orderSelected.includes(order.id)
-                        : true;
-                // Điều kiện search
-                const searchMatch =
-                    !globalFilters?.search ||
-                    order.id === globalFilters.search ||
-                    order.customer.username
-                        .toLowerCase()
-                        .includes(globalFilters.search.toLowerCase()) ||
-                    order.customer.email
-                        .toLowerCase()
-                        .includes(globalFilters.search.toLowerCase()) ||
-                    order.customer.id === globalFilters.search;
-
-                const matchPaymentMethod =
-                    !globalFilters?.payment_method ||
-                    order.payment_method.name.toLowerCase() ===
-                        globalFilters?.payment_method?.toLowerCase();
-
-                const matchPaymentStatus =
-                    !globalFilters?.payment_status ||
-                    order.payment_status.toLowerCase() ===
-                        globalFilters?.payment_status?.toLowerCase();
-
-                const createdFrom = globalFilters?.created_from
-                    ? convertDate(globalFilters?.created_from)
-                    : null;
-                const createdTo = globalFilters?.created_to
-                    ? convertDate(globalFilters?.created_to)
-                    : null;
-
-                const matchDate =
-                    !(createdFrom && createdTo) ||
-                    (order.createdAt >= createdFrom &&
-                        order.createdAt <= createdTo);
-
-                return (
-                    statusMatch &&
-                    searchMatch &&
-                    matchPaymentMethod &&
-                    matchPaymentStatus &&
-                    matchDate &&
-                    orderFilter
-                );
-            });
-        setFilterData([...filteredData]);
-    }, [orderStore.data?.orders, orderStore.globalFilters]);
+        fetchListOrder({
+            ...orderStore.globalFilters,
+            ...orderStore.pagination,
+            order_status: EnumOrderStatusesValue.CONFIRMED,
+        });
+    }, [orderStore.globalFilters]);
+    const filterOrder = () => {
+        return orderStore.data.orders?.filter(
+            (order) => !orderSelected.includes(order.id)
+        );
+    };
     const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
     const handleRowSelection = (selectedRowKeys: string[]) => {
         const filterSelectedRowKeys = selectedRowKeys.filter((item) => {
@@ -124,7 +64,6 @@ const ModalSelectOrder: React.FC<ModalSelectOrderProps> = ({
         setSelectedRowKeys(filterSelectedRowKeys);
     };
     const handleCloseModal = () => {
-        orderStore.setOrderStatusSelected(undefined);
         onClose();
     };
     return (
@@ -145,12 +84,13 @@ const ModalSelectOrder: React.FC<ModalSelectOrderProps> = ({
                     setGlobalFilters={orderStore.setGlobalFilters}
                     payment_status={paymentMethodStore.data.payment_status}
                     payment_method={paymentMethodStore.data.payment_method}
+                    delivery_method={paymentMethodStore.deliveryMethodData}
                 />
 
                 <TableComponent
-                    data={orderStore.data.orders || []}
+                    data={filterOrder() || []}
                     observableName={orderStore.constructor.name}
-                    loading={false}
+                    loading={orderStore.loading}
                     getColumnsConfig={getOrderColumnsConfig}
                     scroll={{ y: "300px" }}
                     rowSelection={{

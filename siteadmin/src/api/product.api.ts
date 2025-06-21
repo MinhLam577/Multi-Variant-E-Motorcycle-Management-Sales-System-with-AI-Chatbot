@@ -13,6 +13,7 @@ const ProductAPI: {
     detailProduct: (id: string) => Promise<ResponsePromise>;
     uploadImagesToServer: (files: File[]) => Promise<ResponseImage[]>;
     createProduct: (data: CreateProductDto) => Promise<ResponsePromise>;
+    hardDeleteProduct: (id: string) => Promise<ResponsePromise>;
     updateProduct: (
         id: string,
         data: UpdateProductDto
@@ -54,6 +55,8 @@ const ProductAPI: {
         await apiClient.put(productEndpoints.update(id), JSON.stringify(data)),
     softDeleteProduct: async (id: string) =>
         await apiClient.delete(productEndpoints.softDelete(id)),
+    hardDeleteProduct: async (id: string) =>
+        await apiClient.delete(productEndpoints.hardDelete(id)),
     restoreDeleteProduct: async (id: string) =>
         await apiClient.patch(productEndpoints.restoreDelete(id)),
     detailProduct: async (id: string) =>

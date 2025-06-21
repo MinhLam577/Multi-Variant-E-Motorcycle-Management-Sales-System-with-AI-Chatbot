@@ -120,7 +120,7 @@ const News = () => {
 
     return (
         <>
-            <div className="flex justify-between items-center animate-slideDown">
+            <div className="flex justify-between items-start animate-slideDown flex-col gap-4 md:flex-row md:gap-0 md:items-center">
                 <AdminBreadCrumb
                     description="Thông tin chi tiết danh mục"
                     items={[...getBreadcrumbItems(location.pathname)]}

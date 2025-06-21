@@ -730,7 +730,6 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
     const store = useStore();
     const quillRef = useRef<ReactQuill>(null);
     const productStore = store.productObservable;
-    const skusStore = store.skusObservable;
     const handleQuillChange = (content: string, delta, source, editor) => {
         try {
             form.setFieldValue("description", content);
@@ -892,7 +891,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                         />
                     </Form.Item>
                     <Row gutter={24}>
-                        <Col sm={24} md={12} lg={12} xl={12}>
+                        <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                             <Form.Item
                                 label="Loại xe"
                                 name={"type"}
@@ -920,7 +919,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                 />
                             </Form.Item>
                         </Col>
-                        <Col sm={24} md={12} lg={12} xl={12}>
+                        <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                             <Form.Item
                                 label="Slug sản phẩm"
                                 name={"slug_product"}
@@ -941,7 +940,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                         </Col>
                     </Row>
                     <Row gutter={24}>
-                        <Col sm={24} md={12} lg={12} xl={12}>
+                        <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                             <Form.Item
                                 label="Nhãn hàng"
                                 name={"brand_id"}
@@ -969,7 +968,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                 />
                             </Form.Item>
                         </Col>
-                        <Col sm={24} md={12} lg={12} xl={12}>
+                        <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                             <Form.Item
                                 label="Danh mục"
                                 name={"category_id"}
@@ -1039,10 +1038,10 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                             },
                         ]}
                     >
-                        <div className="w-full h-32">
+                        <div className="w-full min-h-32">
                             <label
                                 htmlFor="uploadImageFile"
-                                className={`flex flex-col items-center justify-center w-full border border-dashed border-gray-300 rounded-md cursor-pointer hover:border-gray-400 transition-all duration-500 ease-in-out h-full
+                                className={`h-32 flex flex-col items-center justify-center w-full border border-dashed border-gray-300 rounded-md cursor-pointer hover:border-gray-400 transition-all duration-500 ease-in-out
                                 ${formImageList.length === 0 ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-32"} origin-top`}
                             >
                                 <UploadOutlined className={`text-2xl`} />
@@ -1050,89 +1049,101 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                     Tải lên hình ảnh
                                 </span>
                             </label>
-                            <div className="flex items-center justify-start w-full h-full gap-2">
-                                <Upload
-                                    name="uploadImageFile"
-                                    id="uploadImageFile"
-                                    accept={AcceptImageTypes.join(",")}
-                                    listType="picture-card"
-                                    showUploadList={{
-                                        showPreviewIcon: true,
-                                        showRemoveIcon: true,
-                                    }}
-                                    maxCount={DEFAULT_MAX_IMAGE_UPLOAD_PRODUCT}
-                                    multiple
-                                    beforeUpload={(file, fileList) => {
-                                        const isValidType =
-                                            AcceptImageTypes.some(
-                                                (type) => file.type === type
-                                            );
-                                        if (!isValidType) {
-                                            store.setStatusMessage(
-                                                400,
-                                                `Vui lòng chọn ảnh có định dạng ${AcceptImageTypes.join(
-                                                    ", "
-                                                )}`,
-                                                "",
-                                                false
-                                            );
-                                            return false;
+                            <div className="flex items-center justify-start w-full gap-2 overflow-x-auto">
+                                <div className="flex flex-nowrap gap-2 overflow-x-auto">
+                                    <Upload
+                                        name="uploadImageFile"
+                                        id="uploadImageFile"
+                                        accept={AcceptImageTypes.join(",")}
+                                        listType="picture-card"
+                                        showUploadList={{
+                                            showPreviewIcon: true,
+                                            showRemoveIcon: true,
+                                        }}
+                                        maxCount={
+                                            DEFAULT_MAX_IMAGE_UPLOAD_PRODUCT
                                         }
-                                        if (
-                                            formImageList.length +
+                                        multiple
+                                        beforeUpload={(file, fileList) => {
+                                            const isValidType =
+                                                AcceptImageTypes.some(
+                                                    (type) => file.type === type
+                                                );
+                                            if (!isValidType) {
+                                                store.setStatusMessage(
+                                                    400,
+                                                    `Vui lòng chọn ảnh có định dạng ${AcceptImageTypes.join(
+                                                        ", "
+                                                    )}`,
+                                                    "",
+                                                    false
+                                                );
+                                                return Upload.LIST_IGNORE;
+                                            }
+                                            if (
+                                                formImageList.length +
+                                                    fileList.length >
+                                                    DEFAULT_MAX_IMAGE_UPLOAD_PRODUCT ||
                                                 fileList.length >
-                                                DEFAULT_MAX_IMAGE_UPLOAD_PRODUCT ||
-                                            fileList.length >
-                                                DEFAULT_MAX_IMAGE_UPLOAD_PRODUCT
-                                        ) {
-                                            store.setStatusMessage(
-                                                400,
-                                                `Chỉ được upload tối đa ${DEFAULT_MAX_IMAGE_UPLOAD_PRODUCT} ảnh!`,
-                                                ""
+                                                    DEFAULT_MAX_IMAGE_UPLOAD_PRODUCT
+                                            ) {
+                                                store.setStatusMessage(
+                                                    400,
+                                                    `Chỉ được upload tối đa ${DEFAULT_MAX_IMAGE_UPLOAD_PRODUCT} ảnh!`,
+                                                    ""
+                                                );
+                                                return Upload.LIST_IGNORE;
+                                            }
+                                            return true;
+                                        }}
+                                        onChange={(info) => {
+                                            setFormImageList([
+                                                ...info.fileList,
+                                            ]);
+                                        }}
+                                        fileList={
+                                            formImageList.length
+                                                ? formImageList
+                                                : undefined
+                                        }
+                                        customRequest={async ({
+                                            file,
+                                            onSuccess,
+                                            onError,
+                                        }) => {
+                                            try {
+                                                onSuccess?.("Thành công", file);
+                                            } catch (error) {
+                                                onError?.(error as Error);
+                                            }
+                                        }}
+                                        onPreview={handlePreview}
+                                        onRemove={(file) => {
+                                            setFormImageList((prev) =>
+                                                prev.filter(
+                                                    (item) =>
+                                                        item.uid !== file.uid
+                                                )
                                             );
-                                            return false;
-                                        }
-                                        return true;
-                                    }}
-                                    onChange={(info) => {
-                                        setFormImageList([...info.fileList]);
-                                    }}
-                                    fileList={
-                                        formImageList.length
-                                            ? formImageList
-                                            : undefined
-                                    }
-                                    customRequest={async ({
-                                        file,
-                                        onSuccess,
-                                        onError,
-                                    }) => {
-                                        try {
-                                            onSuccess?.("Thành công", file);
-                                        } catch (error) {
-                                            onError?.(error as Error);
-                                        }
-                                    }}
-                                    onPreview={handlePreview}
-                                    onRemove={(file) => {
-                                        setFormImageList((prev) =>
-                                            prev.filter(
-                                                (item) => item.uid !== file.uid
-                                            )
-                                        );
-                                    }}
-                                    className={`product_image_upload w-full transition-opacity duration-1000 ease-in-out ${
-                                        formImageList.length !== 0
-                                            ? "opacity-100 scale-100 -translate-y-32"
-                                            : "opacity-0 scale-0 translate-y-0"
-                                    } origin-top-left`}
-                                >
-                                    <div
-                                        className={`flex flex-col items-center justify-center w-full h-full`}
+                                        }}
+                                        // className={`w-full transition-opacity duration-1000 ease-in-out ${
+                                        //     formImageList.length !== 0
+                                        //         ? "opacity-100 scale-100 -translate-y-32"
+                                        //         : "opacity-0 scale-0 translate-y-0"
+                                        // } origin-top-left absolute top-0 left-0`}
+                                        className={`absolute top-0 left-0 w-full transition-all duration-500 ease-in-out ${
+                                            formImageList.length !== 0
+                                                ? "opacity-100 scale-100 translate-y-0"
+                                                : "opacity-0 scale-0 -translate-y-32 pointer-events-none"
+                                        }`}
                                     >
-                                        <UploadOutlined className="text-2xl" />
-                                    </div>
-                                </Upload>
+                                        <div
+                                            className={`flex flex-col items-center justify-center flex-[0_0_102px]`}
+                                        >
+                                            <UploadOutlined className="text-2xl" />
+                                        </div>
+                                    </Upload>
+                                </div>
                                 {previewImage && (
                                     <Image
                                         src={previewImage}
@@ -1277,7 +1288,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                     Thông tin giá
                 </h2>
                 <Row gutter={24}>
-                    <Col sm={24} md={12} lg={12} xl={12}>
+                    <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                         <Form.Item
                             label="Giá bán"
                             name={"price_sold"}
@@ -1321,7 +1332,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                             />
                         </Form.Item>
                     </Col>
-                    <Col sm={24} md={12} lg={12} xl={12}>
+                    <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                         <Form.Item
                             label="Giá so sánh"
                             name={"price_compare"}
@@ -1439,7 +1450,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                     Quản lý tồn kho
                 </h2>
                 <Row gutter={24} align={"middle"}>
-                    <Col sm={24} md={12} lg={12} xl={12}>
+                    <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                         <Form.Item
                             label="Giá vốn"
                             name={"price_import"}
@@ -1485,7 +1496,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                             />
                         </Form.Item>
                     </Col>
-                    <Col sm={24} md={12} lg={12} xl={12}>
+                    <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                         <div className="flex gap-6 justify-start items-center w-full">
                             <div className="flex flex-col gap-2">
                                 <span>Biên lợi nhuận</span>
@@ -1512,7 +1523,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                     </Col>
                 </Row>
                 <Row gutter={24}>
-                    <Col sm={24} md={12} lg={12} xl={12}>
+                    <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                         <Form.Item
                             label="SKU"
                             name={"masku"}
@@ -1552,7 +1563,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                             />
                         </Form.Item>
                     </Col>
-                    <Col sm={24} md={12} lg={12} xl={12}>
+                    <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                         <Form.Item
                             label="Barcode"
                             name={"barcode"}
@@ -2715,60 +2726,23 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                 price_sold: Number(form.getFieldValue("price_sold")),
                 price_compare: Number(form.getFieldValue("price_compare")),
                 detail_import: defaultDetailImport,
-                name: `${form.getFieldValue("title")} - mặc định`,
                 barcode: form.getFieldValue("barcode"),
                 masku: form.getFieldValue("masku"),
                 image: imageUrl?.length ? imageUrl[0] : "",
             });
             return [defaultSkus];
-        } else {
-            const skusDetailImport = [
-                ...toJS(modalCreateProductStore.skuCustomData).entries(),
-            ]
-                .map(([name, item]) => ({
-                    name,
-                    ...item,
-                }))
-                .flatMap((item) => ({
-                    name: item?.name,
-                    detail_import: item?.detail_import,
-                }));
-            if (!skusDetailImport?.length) {
-                throw new Error(
-                    "Tồn tại chi tiết nhập kho của biến thể không hợp lệ"
-                );
-            }
-            const detailImport: SkusDetailImportDto[] =
-                skusDetailImport
-                    ?.flatMap(
-                        (item: {
-                            name: string;
-                            detail_import: {
-                                warehouse_id: string;
-                                quantity_import: number;
-                                lot_name: string;
-                            }[];
-                        }) =>
-                            item.detail_import.map(
-                                (detail: {
-                                    warehouse_id: string;
-                                    quantity_import: number;
-                                    lot_name: string;
-                                }) => ({
-                                    name: item.name,
-                                    price_import: Number(
-                                        form.getFieldValue("price_import")
-                                    ),
-                                    warehouse_id: detail.warehouse_id,
-                                    quantity_import: detail.quantity_import,
-                                    lot_name: detail.lot_name,
-                                })
-                            )
-                    )
-                    .flat() || [];
-            const filePromises = Array.from(
-                modalCreateProductStore.skuCustomData.entries()
-            ).map(async ([name, item]) => {
+        }
+        const skusCustomData = Array.from(
+            modalCreateProductStore.skuCustomData.entries()
+        );
+        if (!skusCustomData.length) {
+            throw new Error(
+                "Tồn tại chi tiết nhập kho của biến thể không hợp lệ"
+            );
+        }
+
+        const fileResults = await Promise.all(
+            skusCustomData.map(async ([name, item]) => {
                 if (!item.image || !item.image.startsWith("data:image/")) {
                     throw new Error(
                         `Chuỗi base64 không hợp lệ cho biến thể ${name}`
@@ -2776,70 +2750,67 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                 }
                 const file = await convertBase64ToFile(
                     item.image,
-                    `${name}.png`
+                    `${name}.jpeg`
                 );
                 return { name, file, item };
-            });
-            // Chờ tất cả file được chuyển đổi
-            const fileResults = await Promise.all(filePromises);
-            const imageFiles = fileResults.map(({ file }) => file);
-            const uploadData = await BaseAPI.uploadImagesToServer(imageFiles);
-            if ("path" in uploadData) {
-                const { message } = uploadData;
-                const errorMessage = Array.isArray(message)
-                    ? message.join(", ")
-                    : message;
-                throw new Error(errorMessage);
-            }
-            const uploadImage = uploadData.map((data) => data.url);
-            if (uploadImage.length !== imageFiles.length) {
+            })
+        );
+
+        const uploadData = await BaseAPI.uploadImagesToServer(
+            fileResults.map(({ file }) => file)
+        );
+        if ("path" in uploadData) {
+            throw new Error(
+                Array.isArray(uploadData.message)
+                    ? uploadData.message.join(", ")
+                    : uploadData.message
+            );
+        }
+        const uploadImage = uploadData.map((data) => data.url);
+        if (uploadImage.length !== fileResults.length) {
+            throw new Error(
+                "Số ảnh trả về không khớp với số lượng ảnh tải lên"
+            );
+        }
+
+        const detail_import_per_sku: Record<string, SkusDetailImportDto[]> = {};
+        skusCustomData.forEach(([name, item]) => {
+            if (!item.detail_import || !item.detail_import.length) {
                 throw new Error(
-                    "Số ảnh trả về không khớp với số lượng ảnh tải lên"
+                    `Chi tiết nhập kho của biến thể ${name} không hợp lệ`
                 );
             }
-            const detail_import_per_sku = detailImport.reduce(
-                (acc: Record<string, SkusDetailImportDto[]>, item) => {
-                    if (!acc[item.name]) {
-                        acc[item.name] = [];
-                    }
-                    acc[item.name].push({
-                        warehouse_id: item.warehouse_id,
-                        quantity_import: item.quantity_import,
-                        price_import: item.price_import,
-                        lot_name: item.lot_name,
-                    });
-                    return acc;
-                },
-                {}
-            );
-            // kiểm tra sku có detail_import rỗng ko
-            Object.entries(detail_import_per_sku).forEach(
-                ([name, detail_import]) => {
-                    if (!detail_import?.length || detail_import.length === 0) {
-                        throw new Error(
-                            `Chi tiết nhập kho của biến thể ${name} không hợp lệ`
-                        );
-                    }
+            item.detail_import.forEach((detail) => {
+                if (!detail.warehouse_id || !detail.quantity_import) {
+                    throw new Error(
+                        `Chi tiết nhập kho của biến thể ${name} không hợp lệ`
+                    );
                 }
-            );
-            const skusData: CreateSkusDto[] = fileResults.map(
-                ({ name, item }, index) => {
-                    return filterEmptyFields({
-                        name: `${name}`,
-                        barcode: item.barcode,
-                        masku: item.masku,
-                        price_sold: Number(item.price_sold),
-                        price_compare: Number(item.price_compare),
-                        detail_import: detail_import_per_sku[name],
-                        image: uploadImage[index],
-                        variant_combinations:
-                            modalCreateProductStore.skuCustomData.get(name)
-                                .variant_combinations,
-                    });
+                if (!detail_import_per_sku[name]) {
+                    detail_import_per_sku[name] = [];
                 }
-            );
-            return skusData;
-        }
+                detail_import_per_sku[name].push({
+                    warehouse_id: detail.warehouse_id,
+                    quantity_import: detail.quantity_import,
+                    price_import: Number(form.getFieldValue("price_import")),
+                    lot_name: detail.lot_name || "",
+                });
+            });
+        });
+
+        const skusData: CreateSkusDto[] = fileResults.map(
+            ({ name, item }, index) =>
+                filterEmptyFields({
+                    barcode: item.barcode,
+                    masku: item.masku,
+                    price_sold: Number(item.price_sold),
+                    price_compare: Number(item.price_compare),
+                    detail_import: detail_import_per_sku[name],
+                    image: uploadImage[index],
+                    variant_combinations: item.variant_combinations,
+                })
+        );
+        return skusData;
     };
 
     const validateProductData = async () => {
@@ -2917,8 +2888,14 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
             store.setLoading(true);
             const skusFormValue = form.getFieldValue("skus");
             const validName = [...modalCreateProductStore.skuCustomData.keys()];
-
-            if (!skusFormValue && validName.length > 0) {
+            if (
+                validName.length > 0 &&
+                (!skusFormValue ||
+                    skusFormValue.every(
+                        (sku: IFormSkuCustomData) =>
+                            !validName.includes(sku.name)
+                    ))
+            ) {
                 store.setStatusMessage(
                     400,
                     `Dữ liệu biến thể ${validName.join(", ")} chưa điền hoặc không hợp lệ`,
@@ -2926,22 +2903,6 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                     false
                 );
                 return;
-            }
-            if (skusFormValue) {
-                const missingValidName = validName.filter((item: string) =>
-                    skusFormValue.every(
-                        (skus: IFormSkuCustomData) => skus.name !== item
-                    )
-                );
-                if (missingValidName.length > 0) {
-                    store.setStatusMessage(
-                        400,
-                        `Dữ liệu biến thể ${missingValidName.join(", ")} chưa điền hoặc không hợp lệ`,
-                        "",
-                        false
-                    );
-                    return;
-                }
             }
             const productData = await validateProductData();
             let res = null;

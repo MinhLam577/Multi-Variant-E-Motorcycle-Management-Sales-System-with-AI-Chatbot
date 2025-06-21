@@ -52,6 +52,11 @@ export const ALL_PERMISSIONS = {
             path: "/api/v1/products/:id",
             module: "PRODUCTS",
         },
+        HARD_DELETE: {
+            method: "DELETE",
+            path: "/api/v1/products/:id/hard-delete",
+            module: "PRODUCTS",
+        },
     },
     SKUS: {
         GET_PAGINATE: {

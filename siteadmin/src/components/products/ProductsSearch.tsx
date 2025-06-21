@@ -104,7 +104,7 @@ const ProductsSearch: React.FC<IProductsSearchProps> = ({
                         </Tooltip>
                     </Form.Item>
                 </Col>
-                <Col xl={5} lg={12} md={12} xs={12}>
+                <Col xl={5} lg={12} md={12} xs={24}>
                     <Form.Item
                         label={<span className="font-bold">Loại xe</span>}
                         name="type"
@@ -124,7 +124,7 @@ const ProductsSearch: React.FC<IProductsSearchProps> = ({
                         />
                     </Form.Item>
                 </Col>
-                <Col xl={5} lg={12} md={12} xs={12}>
+                <Col xl={5} lg={12} md={12} xs={24}>
                     <Form.Item
                         label={<span className="font-bold">Danh mục</span>}
                         name="categoryName"
@@ -149,7 +149,7 @@ const ProductsSearch: React.FC<IProductsSearchProps> = ({
                         />
                     </Form.Item>
                 </Col>
-                <Col xl={5} lg={12} md={12} xs={12}>
+                <Col xl={5} lg={12} md={12} xs={24}>
                     <Form.Item
                         label={<span className="font-bold">Nhãn hàng</span>}
                         name="brand"
@@ -169,7 +169,7 @@ const ProductsSearch: React.FC<IProductsSearchProps> = ({
                         />
                     </Form.Item>
                 </Col>
-                <Col xl={4} lg={12} md={12} xs={12}>
+                <Col xl={4} lg={12} md={12} xs={24}>
                     <Form.Item
                         label={<span className="font-bold">Trạng thái</span>}
                         name="status"

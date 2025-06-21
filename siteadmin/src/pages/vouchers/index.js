@@ -48,7 +48,7 @@ const Vouchers = observer(() => {
     useEffect(() => {}, [globalFilters]);
     return (
         <>
-            <div className="flex justify-between items-center animate-slideDown">
+            <div className="flex justify-between items-start animate-slideDown flex-col gap-4 md:flex-row md:gap-0 md:items-center">
                 <AdminBreadCrumb
                     description="Thông tin danh sách voucher"
                     items={[...getBreadcrumbItems(location.pathname)]}

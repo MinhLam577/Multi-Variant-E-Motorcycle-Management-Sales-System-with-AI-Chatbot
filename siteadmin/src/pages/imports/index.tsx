@@ -286,13 +286,13 @@ const ImportPage: React.FC<ImportPageProps> = () => {
     }) => {
         return [
             {
-                title: "Biến thể",
+                title: "Sản phẩm",
                 dataIndex: "skus_name",
                 key: "skus_name",
                 render: (_, record) => {
                     const skusId = Object.keys(record)?.[0];
                     const name = record[skusId]?.skus_name;
-
+                    const product_title = record[skusId]?.product_title;
                     return (
                         <div className="w-full">
                             <Form.Item
@@ -321,14 +321,26 @@ const ImportPage: React.FC<ImportPageProps> = () => {
                             </Form.Item>
 
                             <Tooltip
-                                title={<span>{name}</span>}
+                                title={
+                                    <div className="flex flex-col items-start gap-2 w-full">
+                                        <span>{product_title}</span>
+                                        <span className="text-sm overflow-hidden text-ellipsis max-w-full">
+                                            {name}
+                                        </span>
+                                    </div>
+                                }
                                 placement="topLeft"
                                 trigger={["hover"]}
                                 className="w-full"
                             >
-                                <span className="text-sm overflow-hidden text-ellipsis max-w-full">
-                                    {name}
-                                </span>
+                                <div className="flex flex-col items-start gap-2 w-full overflow-hidden">
+                                    <span className="truncate max-w-[50px] sm:max-w-[100px] md:max-w-[150px] lg:max-w-[200px] xl:max-w-[250px]">
+                                        {product_title}
+                                    </span>
+                                    <span className="text-sm overflow-hidden text-ellipsis max-w-full text-gray-600">
+                                        {name}
+                                    </span>
+                                </div>
                             </Tooltip>
                         </div>
                     );
@@ -352,18 +364,20 @@ const ImportPage: React.FC<ImportPageProps> = () => {
                                 message: "Vui lòng nhập giá nhập",
                             },
                         ]}
+                        className="min-w-[100px] w-full"
                     >
                         <Input
                             type="number"
                             placeholder="Nhập giá nhập"
                             min={0}
+                            className="w-full"
                         />
                     </Form.Item>
                 ),
                 width: "20%",
             },
             {
-                title: "Thông tin chi tiết nhập kho (kho, số lượng, tên lô)",
+                title: "Chi tiết",
                 key: "warehouses",
                 render: (text, record) => {
                     const skusId = Object.keys(record)[0];
@@ -406,65 +420,85 @@ const ImportPage: React.FC<ImportPageProps> = () => {
                                             return (
                                                 <div
                                                     key={key}
-                                                    className="flex gap-2 mb-2 items-center"
+                                                    className="flex flex-col sm:flex-row gap-0 sm:gap-2 mb-0 sm:mb-2 items-center"
                                                 >
                                                     <div className="flex flex-col gap-2 w-full">
-                                                        <div className="flex gap-2 w-full">
-                                                            <Form.Item
-                                                                {...restField}
-                                                                name={[
-                                                                    name,
-                                                                    "warehouse_id",
-                                                                ]}
-                                                                rules={[
-                                                                    {
-                                                                        required:
-                                                                            true,
-                                                                        message:
-                                                                            "Vui lòng chọn kho",
-                                                                    },
-                                                                ]}
-                                                                className="w-1/2"
+                                                        <Row
+                                                            className="w-full"
+                                                            gutter={8}
+                                                        >
+                                                            <Col
+                                                                xl={12}
+                                                                lg={12}
+                                                                md={12}
+                                                                sm={24}
+                                                                xs={24}
                                                             >
-                                                                <Select
-                                                                    placeholder="Chọn kho"
-                                                                    options={
-                                                                        availableWarehouses?.map(
-                                                                            (
-                                                                                item
-                                                                            ) => ({
-                                                                                label: item.name,
-                                                                                value: item.id,
-                                                                            })
-                                                                        ) || []
-                                                                    }
+                                                                <Form.Item
+                                                                    {...restField}
+                                                                    name={[
+                                                                        name,
+                                                                        "warehouse_id",
+                                                                    ]}
+                                                                    rules={[
+                                                                        {
+                                                                            required:
+                                                                                true,
+                                                                            message:
+                                                                                "Vui lòng chọn kho",
+                                                                        },
+                                                                    ]}
                                                                     className="w-full"
-                                                                />
-                                                            </Form.Item>
-                                                            <Form.Item
-                                                                {...restField}
-                                                                name={[
-                                                                    name,
-                                                                    "quantity_import",
-                                                                ]}
-                                                                rules={[
-                                                                    {
-                                                                        required:
-                                                                            true,
-                                                                        message:
-                                                                            "Vui lòng nhập số lượng nhập",
-                                                                    },
-                                                                ]}
-                                                                className="w-1/2"
+                                                                >
+                                                                    <Select
+                                                                        placeholder="Chọn kho"
+                                                                        options={
+                                                                            availableWarehouses?.map(
+                                                                                (
+                                                                                    item
+                                                                                ) => ({
+                                                                                    label: item.name,
+                                                                                    value: item.id,
+                                                                                })
+                                                                            ) ||
+                                                                            []
+                                                                        }
+                                                                        className="w-full"
+                                                                    />
+                                                                </Form.Item>
+                                                            </Col>
+                                                            <Col
+                                                                xl={12}
+                                                                lg={12}
+                                                                md={12}
+                                                                sm={24}
+                                                                xs={24}
                                                             >
-                                                                <Input
-                                                                    type="number"
-                                                                    placeholder="Nhập số lượng nhập"
-                                                                    min={0}
+                                                                <Form.Item
+                                                                    {...restField}
+                                                                    name={[
+                                                                        name,
+                                                                        "quantity_import",
+                                                                    ]}
+                                                                    rules={[
+                                                                        {
+                                                                            required:
+                                                                                true,
+                                                                            message:
+                                                                                "Vui lòng nhập số lượng nhập",
+                                                                        },
+                                                                    ]}
                                                                     className="w-full"
-                                                                />
-                                                            </Form.Item>
-                                                        </div>
+                                                                >
+                                                                    <Input
+                                                                        type="number"
+                                                                        placeholder="Nhập số lượng nhập"
+                                                                        min={0}
+                                                                        className="w-full"
+                                                                    />
+                                                                </Form.Item>
+                                                            </Col>
+                                                        </Row>
                                                         <Form.Item
                                                             {...restField}
                                                             name={[
@@ -550,6 +584,7 @@ const ImportPage: React.FC<ImportPageProps> = () => {
                         quantity_import: 0,
                         price_import: 0,
                         lot_name: "",
+                        product_title: item?.product_title,
                     },
                 };
             });
@@ -868,11 +903,12 @@ const ImportPage: React.FC<ImportPageProps> = () => {
             selectedProducts.includes(item.id)
         );
         if (selectedProductsData) {
-            const allSkus = selectedProductsData.flatMap((item) =>
-                item.skus.map((sku) => ({
+            const allSkus = selectedProductsData.flatMap((item) => {
+                return item.skus.map((sku) => ({
                     ...sku,
-                }))
-            );
+                    product_title: item?.products?.title,
+                }));
+            });
             setSkusData(allSkus);
 
             // Lấy danh sách skus_id từ importData
@@ -908,6 +944,7 @@ const ImportPage: React.FC<ImportPageProps> = () => {
                     [key]: {
                         skus_id: skus.id,
                         skus_name: skus.name,
+                        product_title: skus.product?.title,
                         price_import: item.price_import,
                         quantity_import: item.quantity_import,
                         warehouses: [
@@ -1049,7 +1086,7 @@ const ImportPage: React.FC<ImportPageProps> = () => {
     return (
         <section className="w-full flex flex-col">
             <div className="w-full flex flex-col animate-slideDown">
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-start flex-col gap-4 md:flex-row md:gap-0 md:items-center">
                     <AdminBreadCrumb
                         description="Thông tin chi tiết về danh sách các đợt nhập hàng"
                         items={[...getBreadcrumbItems(location.pathname)]}
@@ -1136,7 +1173,7 @@ const ImportPage: React.FC<ImportPageProps> = () => {
                                 <div className="flex items-center justify-between w-full">
                                     <div>
                                         <span className="text-[red]">* </span>
-                                        <span>Biến thể nhập</span>
+                                        <span>Sản phẩm nhập</span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <button
@@ -1174,6 +1211,7 @@ const ImportPage: React.FC<ImportPageProps> = () => {
                                     size="small"
                                     className="py-2"
                                     rowSelection={{
+                                        selectedRowKeys: selectedImport,
                                         onChange: (selectedRowKeys) => {
                                             setSelectedImport(
                                                 selectedRowKeys as string[]
@@ -1195,7 +1233,7 @@ const ImportPage: React.FC<ImportPageProps> = () => {
                 isOpen={openVariantValueModal}
                 key={"variantValue"}
                 width={700}
-                title="Thêm biến thể nhập hàng"
+                title="Thêm phiên bản cần nhập"
                 forceRender
             >
                 <Form
@@ -1210,6 +1248,7 @@ const ImportPage: React.FC<ImportPageProps> = () => {
                         }}
                         columns={getColumnProductShowConfig()}
                         rowSelection={{
+                            selectedRowKeys: selectedProducts,
                             onChange: (selectedRowKeys) => {
                                 setSelectedProducts(
                                     selectedRowKeys as string[]
@@ -1283,7 +1322,7 @@ const ImportPage: React.FC<ImportPageProps> = () => {
                                 <div className="flex items-center justify-between w-full">
                                     <div>
                                         <span className="text-[red]">* </span>
-                                        <span>Biến thể nhập</span>
+                                        <span>Sản phẩm nhập</span>
                                     </div>
                                 </div>
                                 <Table

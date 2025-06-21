@@ -35,7 +35,7 @@ const getColumnsConfig = ({
                     </Button>
                 );
             },
-            width: "200px",
+            width: "150px",
         },
         {
             title: "Số điện thoại",
@@ -43,6 +43,7 @@ const getColumnsConfig = ({
             key: "phoneNumber",
             width: "140px",
             ellipsis: true,
+            responsive: ["lg"],
         },
         {
             title: "Địa chỉ nhận hàng",
@@ -67,12 +68,14 @@ const getColumnsConfig = ({
                     address?.province,
                 ].join(", ");
             },
+            responsive: ["xl"],
         },
         {
             title: "SL Đơn hàng",
             dataIndex: "total_order",
             key: "total_order",
             ellipsis: true,
+            responsive: ["sm"],
         },
         {
             title: "Tổng chi tiêu",
@@ -82,6 +85,7 @@ const getColumnsConfig = ({
             render: (totalSpending) => {
                 return <span>{formatVNDMoney(totalSpending)}</span>;
             },
+            responsive: ["sm"],
         },
         {
             title: "Action",

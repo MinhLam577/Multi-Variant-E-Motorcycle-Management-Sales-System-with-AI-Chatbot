@@ -29,7 +29,7 @@ const CategoriesSearch = ({ setFilters }) => {
         <Form labelWrap labelCol={{ flex: "30%" }} layout="vertical">
             <div className="w-full">
                 <Row gutter={16} align="middle" justify={"space-between"}>
-                    <Col xs={24} sm={12} md={8} lg={6} xl={6}>
+                    <Col xs={24} sm={12} md={12} lg={6} xl={6}>
                         <Form.Item
                             label={<div className="font-bold">Search</div>}
                             name="search"
@@ -42,7 +42,7 @@ const CategoriesSearch = ({ setFilters }) => {
                             />
                         </Form.Item>
                     </Col>
-                    <Col xs={24} sm={12} md={8} lg={6} xl={6}>
+                    <Col xs={24} sm={12} md={12} lg={6} xl={6}>
                         <Form.Item
                             label={<span className="font-bold">Loại xe</span>}
                             name="type"
@@ -63,7 +63,7 @@ const CategoriesSearch = ({ setFilters }) => {
                             />
                         </Form.Item>
                     </Col>
-                    <Col xs={24} sm={12} md={8} lg={6} xl={6}>
+                    <Col xs={24} sm={12} md={12} lg={6} xl={6}>
                         <Form.Item
                             label={
                                 <div className="font-bold">Kiểu hiển thị</div>
@@ -90,40 +90,7 @@ const CategoriesSearch = ({ setFilters }) => {
                             />
                         </Form.Item>
                     </Col>
-                    {/* <Col xs={24} sm={12} md={8} lg={6} xl={5}>
-                        <Form.Item
-                            label={
-                                <div className="font-bold">
-                                    Trạng thái hoạt động
-                                </div>
-                            }
-                            name="status"
-                        >
-                            <Select
-                                allowClear
-                                showSearch
-                                optionFilterProp="label"
-                                options={[
-                                    {
-                                        label: "Hiện",
-                                        value: true,
-                                    },
-                                    {
-                                        label: "Ẩn",
-                                        value: false,
-                                    },
-                                ]}
-                                onChange={(value) => {
-                                    setFilters((prev) => ({
-                                        ...prev,
-                                        status: value,
-                                    }));
-                                }}
-                                placeholder="Chọn trạng thái"
-                            />
-                        </Form.Item>
-                    </Col> */}
-                    <Col xs={24} sm={12} md={8} lg={6} xl={6}>
+                    <Col xs={24} sm={12} md={12} lg={6} xl={6}>
                         <Form.Item
                             label={
                                 <div className="font-bold">
@@ -135,6 +102,7 @@ const CategoriesSearch = ({ setFilters }) => {
                             <RangePicker
                                 format={"DD/MM/YYYY"}
                                 placeholder={["Start Day", "End Day"]}
+                                className="!w-full"
                                 onChange={(_, dateString) => {
                                     setFilters((prev) => ({
                                         ...prev,

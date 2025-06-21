@@ -160,7 +160,7 @@ const Profile = () => {
                         />
                     </Form.Item>
                     <Row gutter={16}>
-                        <Col span={12}>
+                        <Col xl={12} lg={12} md={24} sm={24} xs={24}>
                             <Form.Item
                                 rules={[
                                     {
@@ -178,12 +178,12 @@ const Profile = () => {
                                 <Input placeholder="Nhập Họ và tên" />
                             </Form.Item>
                         </Col>
-                        <Col span={12}>
+                        <Col xl={12} lg={12} md={24} sm={24} xs={24}>
                             <Form.Item name={"email"} label={"Email"}>
                                 <Input disabled placeholder="Nhập Email" />
                             </Form.Item>
                         </Col>
-                        <Col span={12}>
+                        <Col xl={12} lg={12} md={24} sm={24} xs={24}>
                             <Form.Item
                                 rules={[
                                     {
@@ -202,7 +202,7 @@ const Profile = () => {
                                 <Input placeholder="Nhập số điện thoại" />
                             </Form.Item>
                         </Col>
-                        <Col span={12}>
+                        <Col xl={12} lg={12} md={24} sm={24} xs={24}>
                             <Form.Item name={"Roles"} label={"Role"}>
                                 <Select
                                     options={[

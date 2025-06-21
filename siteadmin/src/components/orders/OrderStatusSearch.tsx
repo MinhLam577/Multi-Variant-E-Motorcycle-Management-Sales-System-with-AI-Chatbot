@@ -1,15 +1,11 @@
 import { Button } from "antd";
-import React, { useEffect, useState } from "react";
-import { EnumOrderStatuses } from "../../constants";
-import { OrderStatus } from "src/stores/order.store";
+import React, { useState } from "react";
+import { EnumOrderStatuses, EnumOrderStatusesValue } from "../../constants";
 import { ButtonProps } from "antd/lib";
-import { toJS } from "mobx";
 interface IOrderStatusSearchProps {
-    order_status: OrderStatus[];
     order_store: any;
 }
 const OrderStatusSearch: React.FC<IOrderStatusSearchProps> = ({
-    order_status,
     order_store,
 }) => {
     const button_extra_style: Partial<ButtonProps> = {
@@ -17,18 +13,30 @@ const OrderStatusSearch: React.FC<IOrderStatusSearchProps> = ({
         variant: "solid",
     };
     const [button_focus, set_button_focus] = useState(false);
-    const [status_selected, set_status_selected] = useState("All");
+    const [status_selected, set_status_selected] = useState(
+        EnumOrderStatusesValue.All
+    );
+    const order_status_selectData = Object.keys(EnumOrderStatuses).map(
+        (key) => ({
+            key: key,
+            value: EnumOrderStatusesValue[
+                key as keyof typeof EnumOrderStatusesValue
+            ],
+        })
+    );
     return (
-        <div className="flex flex-wrap justify-between items-center gap-y-4 mt-2">
-            {order_status?.map((status) => {
-                const isSelected = status_selected === status.key;
+        <div className="flex flex-wrap justify-start items-center gap-y-4 mt-2">
+            {order_status_selectData?.map((status) => {
+                const isSelected = status_selected === status.value;
                 return (
                     <Button
-                        key={status.key}
+                        key={status.value}
                         onClick={() => {
                             set_button_focus(!button_focus);
-                            set_status_selected(status.key);
-                            order_store?.setOrderStatusSelected(status.key);
+                            set_status_selected(status.value);
+                            order_store?.setGlobalFilters({
+                                order_status: status.value,
+                            });
                         }}
                         {...(isSelected ? button_extra_style : {})}
                         size="middle"
