@@ -51,12 +51,8 @@ const ExportPage: React.FC<ExportPageProps> = () => {
             productStore.getListProduct({
                 ...productStore.pagination,
             }),
-            orderStore.getOrderStatus(),
             warehouseStore.getListWarehouse(),
             fetchExportData(),
-            orderStore.getListOrder({
-                ...orderStore.pagination,
-            }),
             paymentMethodStore.getPaymentStatus(),
             paymentMethodStore.getMethods(),
         ]);
@@ -192,7 +188,7 @@ const ExportPage: React.FC<ExportPageProps> = () => {
     return (
         <section className="w-full flex flex-col">
             <div className="w-full flex flex-col animate-slideDown">
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-start flex-col gap-4 md:flex-row md:gap-0 md:items-center">
                     <AdminBreadCrumb
                         description="Thông tin chi tiết về danh sách các đợt xuất hàng"
                         items={[...getBreadcrumbItems(location.pathname)]}

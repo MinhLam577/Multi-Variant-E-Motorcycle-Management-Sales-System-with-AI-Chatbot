@@ -32,6 +32,7 @@ export const getOrderColumnsConfig = ({ handleViewOrders }) => {
                 </div>
             ),
             width: "20%",
+            responsive: ["md"],
         },
         {
             title: "Khách hàng",
@@ -91,6 +92,7 @@ export const getOrderColumnsConfig = ({ handleViewOrders }) => {
             ),
             ellipsis: true,
             width: "25%",
+            responsive: ["xl"],
         },
         {
             title: "Tổng tiền",
@@ -101,6 +103,7 @@ export const getOrderColumnsConfig = ({ handleViewOrders }) => {
             ),
             ellipsis: true,
             width: "10%",
+            responsive: ["lg"],
         },
         {
             title: "Trạng thái đơn hàng",
@@ -113,6 +116,7 @@ export const getOrderColumnsConfig = ({ handleViewOrders }) => {
             ),
             ellipsis: true,
             width: "15%",
+            responsive: ["sm"],
         },
         {
             title: "Thao tác",

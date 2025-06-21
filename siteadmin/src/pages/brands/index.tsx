@@ -258,7 +258,7 @@ const BrandsPage = () => {
     return (
         <section className="w-full">
             <div
-                className={`flex justify-between items-center animate-slideDown`}
+                className={`flex justify-between items-start animate-slideDown flex-col gap-4 md:flex-row md:gap-0 md:items-center`}
             >
                 <AdminBreadCrumb
                     description="Danh sách các nhãn hàng cung cấp"

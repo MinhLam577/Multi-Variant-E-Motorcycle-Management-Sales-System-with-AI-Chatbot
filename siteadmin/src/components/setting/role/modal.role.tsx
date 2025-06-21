@@ -248,7 +248,6 @@ const ModalRole = observer((props: IProps) => {
                     <Col span={24}>
                         <ProCard
                             title="Quyền hạn"
-                            subTitle="Các quyền hạn được phép cho vai trò này"
                             headStyle={{ color: "#d81921" }}
                             style={{ marginBottom: 20 }}
                             headerBordered

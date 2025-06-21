@@ -9,6 +9,8 @@ import Delivery from "./delivery";
 import VoucherSection from "./voucher";
 import { useRouter } from "next/navigation"; // nếu dùng App Router: 'next/navigation'
 import { notification } from "antd";
+import { observer } from "mobx-react-lite";
+import { toJS } from "mobx";
 
 const BillingMain = () => {
     const router = useRouter();
@@ -23,7 +25,6 @@ const BillingMain = () => {
     useEffect(() => {
         const fetchData = async () => {
             await storeAccount.getAccount();
-            // ); // Delay nhỏ 1 tick để MobX update xong
             await storeDelivery.getDeliveryDefault();
             await storeDelivery.getListDelivery();
             await storePayment.getListPaymentMethod();
@@ -44,19 +45,19 @@ const BillingMain = () => {
         let addressDefault = "";
         const customer_id = storeAccount.account?.userId;
         const subtotal = storeCart?.listDataSelected.reduce(
-            (sum, item) => sum + item.skus.price_sold * item.quantity,
+            (sum, item) =>
+                sum + Number(item.skus.price_sold || 0) * item.quantity,
             0
         );
         function getDiscountAmount(itemTotal) {
             const voucher = storeVoucher.dataDetail?.voucher;
             if (!voucher) return 0;
-
             const amount = Number(voucher.discount_amount);
             return voucher.fixed ? (amount / 100) * itemTotal : amount;
         }
 
         const total = storeCart?.listDataSelected.reduce((sum, item) => {
-            const itemTotal = item.skus.price_sold * item.quantity;
+            const itemTotal = Number(item.skus.price_sold || 0) * item.quantity;
             const fee = storeDelivery.data.detailDelivery?.fee ?? 0;
             const discountAmount = getDiscountAmount(itemTotal);
             return sum + itemTotal + fee - discountAmount;
@@ -145,7 +146,6 @@ const BillingMain = () => {
                     <h4 className="title">Your Order</h4>
                     <OrderAmountDetails
                         listDataSelected={storeCart.listDataSelected}
-                        storeVoucher={storeVoucher}
                     />
                 </div>
                 {/* End your order */}
@@ -170,5 +170,5 @@ const BillingMain = () => {
     );
 };
 
-export default BillingMain;
+export default observer(BillingMain);
 // <BillingDetails />

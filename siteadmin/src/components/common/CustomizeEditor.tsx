@@ -406,34 +406,6 @@ const CustomizeEditor: React.FC<CustomizeEditorProps> = forwardRef<
             setFilesSelected((prev) => prev.filter((f) => f !== file));
         };
 
-        const handleVideoEditorClicked = async () => {
-            const quill = quillRef.current.getEditor();
-            const range = quill.getSelection(true);
-            if (!range) return;
-            const url = prompt("Nhập link video youtube");
-            const width = prompt("Nhập chiều rộng video (px hoặc %)", "100%");
-            const height = prompt(
-                "Nhập chiều cao video (px hoặc % hoặc auto)",
-                "100%"
-            );
-            if (width && !/^\d+(px|%)$/.test(width)) {
-                alert("Chiều rộng không hợp lệ. Vui lòng nhập lại.");
-                return;
-            }
-            if (height && !/^\d+(px|%)$/.test(height) && height !== "auto") {
-                alert("Chiều cao không hợp lệ. Vui lòng nhập lại.");
-                return;
-            }
-            if (url) {
-                quill.insertEmbed(range.index, "video", {
-                    url,
-                    width: width || maxWidth,
-                    height: height || maxHeight,
-                });
-                quill.setSelection(range.index + 1, 0, "silent");
-            }
-        };
-
         const FileListDiv = () => {
             return (
                 <div className="flex flex-col items-center justify-center w-full h-full mt-4">

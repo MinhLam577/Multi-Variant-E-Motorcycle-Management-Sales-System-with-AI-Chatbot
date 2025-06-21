@@ -19,7 +19,25 @@
 .ql-toolbar {
     border: none !important;
     border-bottom: 1px solid var(--border-gray) !important;
-    height: 2.5rem !important;
+    height: 7rem !important;
+}
+
+/* Từ md (768px) trở lên */
+@media (min-width: 576px) {
+    .ql-toolbar {
+        height: 5rem !important;
+    }
+}
+@media (min-width: 768px) {
+    .ql-toolbar {
+        height: 4rem !important;
+    }
+}
+
+@media (min-width: 1200px) {
+    .ql-toolbar {
+        height: 2.5rem !important;
+    }
 }
 
 .ql-fullscreen:focus > svg,
@@ -72,7 +90,7 @@
 }
 
 .editor-container:has(.ql-fullscreenActive) .ql-editor {
-    height: calc(100vh - 2.5rem) !important;
+    /* height: calc(100vh - 2.5rem) !important; */
     overflow-y: auto !important;
     padding-bottom: 16px !important;
     z-index: 9999 !important;
@@ -88,4 +106,13 @@
     display: flex !important;
     justify-content: start !important;
     align-content: center !important;
+}
+
+.ant-upload-list.ant-upload-list-picture-card {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+}
+
+.ant-upload-list.ant-upload-list-picture-card .ant-upload-list-item-container {
+    flex: 0 0 auto !important;
 }

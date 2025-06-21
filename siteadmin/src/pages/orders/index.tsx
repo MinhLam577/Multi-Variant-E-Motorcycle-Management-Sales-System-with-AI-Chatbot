@@ -11,24 +11,30 @@ import { convertDate, getErrorMessage } from "../../utils";
 import AdminBreadCrumb from "src/components/common/AdminBreadCrumb";
 import { getBreadcrumbItems } from "src/containers/layout";
 import CustomizeTab from "src/components/common/CustomizeTab";
+import { globalFiltersDataOrder } from "src/stores/order.store";
+import { paginationData } from "src/stores/voucher";
+import { toJS } from "mobx";
 const Orders = () => {
     const store = useStore();
     const orderStore = store.orderObservable;
     const skusStore = store.skusObservable;
     const paymentMethodStore = store.paymentMethodObservable;
-    const fetchListOrder = async (query = undefined) => {
-        orderStore.getListOrder(query);
+    const fetchListOrder = async (
+        query?:
+            | (globalFiltersDataOrder & paginationData)
+            | globalFiltersDataOrder
+            | paginationData
+    ) => {
+        await orderStore.getListOrder(query);
     };
-    const [filterData, setFilterData] = useState([]);
     const fetchData = async () => {
         try {
             await Promise.all([
                 fetchListOrder(),
-                orderStore.getOrderStatus(),
                 paymentMethodStore.getPaymentStatus(),
                 paymentMethodStore.getMethods(),
+                paymentMethodStore.getListDeliveryMethod(),
             ]);
-            setFilterData(orderStore.data?.orders);
         } catch (e: any) {
             console.error("Error fetching data for order page:", e);
         }
@@ -39,67 +45,11 @@ const Orders = () => {
     }, []);
 
     useEffect(() => {
-        const status = orderStore.data?.order_status_selected;
-        const globalFilters = orderStore.globalFilters;
-        let filteredData = orderStore.data?.orders || [];
-
-        // Kiểm tra dữ liệu đầu vào
-        if (!Array.isArray(filteredData)) {
-            filteredData = [];
-        }
-        filteredData = filteredData.filter((order) => {
-            // Điều kiện status
-            const statusMatch =
-                !status || status === "All" || order.order_status === status;
-
-            // Điều kiện search
-            const searchMatch =
-                !globalFilters?.search ||
-                order.id === globalFilters.search ||
-                order.customer.username
-                    .toLowerCase()
-                    .includes(globalFilters.search.toLowerCase()) ||
-                order.customer.email
-                    .toLowerCase()
-                    .includes(globalFilters.search.toLowerCase()) ||
-                order.customer.id === globalFilters.search;
-
-            const matchPaymentMethod =
-                !globalFilters?.payment_method ||
-                order.payment_method.name.toLowerCase() ===
-                    globalFilters?.payment_method?.toLowerCase();
-
-            const matchPaymentStatus =
-                !globalFilters?.payment_status ||
-                order.payment_status.toLowerCase() ===
-                    globalFilters?.payment_status?.toLowerCase();
-
-            const createdFrom = globalFilters?.created_from
-                ? convertDate(globalFilters?.created_from)
-                : null;
-            const createdTo = globalFilters?.created_to
-                ? convertDate(globalFilters?.created_to)
-                : null;
-
-            const matchDate =
-                !(createdFrom && createdTo) ||
-                (order.createdAt >= createdFrom &&
-                    order.createdAt <= createdTo);
-
-            return (
-                statusMatch &&
-                searchMatch &&
-                matchPaymentMethod &&
-                matchPaymentStatus &&
-                matchDate
-            );
+        fetchListOrder({
+            ...orderStore.pagination,
+            ...orderStore.globalFilters,
         });
-        setFilterData(filteredData);
-    }, [
-        orderStore.data?.order_status_selected,
-        orderStore.data?.orders,
-        orderStore.globalFilters,
-    ]);
+    }, [orderStore.globalFilters, orderStore.pagination]);
 
     const handleViewOrders = async (id: string) => {
         try {
@@ -243,10 +193,7 @@ const Orders = () => {
                         Xuất excel
                     </Button> */}
                 </div>
-                <OrderStatusSearch
-                    order_status={orderStore?.data?.order_status}
-                    order_store={orderStore}
-                />
+                <OrderStatusSearch order_store={orderStore} />
             </div>
             <div className="w-full mt-4 mb-6 flex flex-col gap-4 px-4 pb-4 border border-gray-200 rounded-lg bg-white shadow-sm animate-slideUp">
                 <CustomizeTab
@@ -268,6 +215,9 @@ const Orders = () => {
                                         payment_method={
                                             paymentMethodStore.data
                                                 .payment_method
+                                        }
+                                        delivery_method={
+                                            paymentMethodStore.deliveryMethodData
                                         }
                                     />
                                     <Drawer
@@ -291,7 +241,6 @@ const Orders = () => {
                                             </div>
                                         }
                                         placement="right"
-                                        closable={false}
                                         onClose={() =>
                                             orderStore.setOpenDetail(false)
                                         }
@@ -339,7 +288,7 @@ const Orders = () => {
                                     </Drawer>
                                     <OrdersTable
                                         data={{
-                                            data: filterData,
+                                            data: orderStore.data?.orders || [],
                                         }}
                                         handleViewOrders={handleViewOrders}
                                     />

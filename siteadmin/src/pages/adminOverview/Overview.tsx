@@ -864,8 +864,8 @@ const Overview = observer(() => {
                         </div>
                     </header>
                     <div className="my-6 w-full flex flex-col gap-6">
-                        <div className="flex w-full items-center gap-8 animate-slideRightToLeft">
-                            <div className="w-[20%] border border-solid border-[#01A768] rounded-md overflow-hidden flex flex-col">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 w-full animate-slideRightToLeft">
+                            <div className="border border-solid border-[#01A768] rounded-md overflow-hidden flex flex-col">
                                 <div className="bg-[#ffffff] flex justify-stretch items-center gap-2 flex-col py-4">
                                     <Profile2User
                                         className="text-[#01A768]"
@@ -899,7 +899,7 @@ const Overview = observer(() => {
                                     </span>
                                 </button>
                             </div>
-                            <div className="w-[20%] border border-solid border-[#817AF3] rounded-md overflow-hidden flex flex-col">
+                            <div className="border border-solid border-[#817AF3] rounded-md overflow-hidden flex flex-col">
                                 <div className="bg-[#ffffff] flex justify-stretch items-center gap-2 flex-col py-4">
                                     <Bill
                                         className="text-[#817AF3]"
@@ -931,7 +931,7 @@ const Overview = observer(() => {
                                     </span>
                                 </button>
                             </div>
-                            <div className="w-[20%] border border-solid border-[#03A9F5] rounded-md overflow-hidden flex flex-col">
+                            <div className="border border-solid border-[#03A9F5] rounded-md overflow-hidden flex flex-col">
                                 <div className="bg-[#ffffff] flex justify-stretch items-center gap-2 flex-col py-4">
                                     <ArchiveBox
                                         className="text-[#03A9F5]"
@@ -965,7 +965,7 @@ const Overview = observer(() => {
                                     </span>
                                 </button>
                             </div>
-                            <div className="w-[20%] border border-solid border-[#F0483E] rounded-md overflow-hidden flex flex-col">
+                            <div className="border border-solid border-[#F0483E] rounded-md overflow-hidden flex flex-col">
                                 <div className="bg-[#ffffff] flex justify-stretch items-center gap-2 flex-col py-4">
                                     <DollarCircle
                                         className="text-[#F0483E]"
@@ -998,7 +998,7 @@ const Overview = observer(() => {
                                     </span>
                                 </button>
                             </div>
-                            <div className="w-[20%] border border-solid border-[#DBA362] rounded-md overflow-hidden flex flex-col">
+                            <div className="border border-solid border-[#DBA362] rounded-md overflow-hidden flex flex-col">
                                 <div className="bg-[#ffffff] flex justify-stretch items-center gap-2 flex-col py-4">
                                     <UserAdd
                                         className="text-[#DBA362]"
@@ -1031,16 +1031,16 @@ const Overview = observer(() => {
                                 </button>
                             </div>
                         </div>
-                        <div className="w-full flex gap-8">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
                             <div
-                                className="flex flex-col w-[calc(60%+1rem)] bg-[#ffffff] rounded-xl border border-solid border-[rgb(29,36,46,0.3)]"
+                                className="flex flex-col w-full bg-[#ffffff] rounded-xl border border-solid border-[rgb(29,36,46,0.3)]"
                                 id="earning__report"
                             >
-                                <div className="flex items-center justify-between w-full px-5 pt-5 rounded-xl">
+                                <div className="flex flex-col md:flex-row items-start md:items-center justify-between w-full px-5 pt-5 rounded-xl">
                                     <h2 className="text-lg font-semibold text-gray-700">
                                         Earning Reports
                                     </h2>
-                                    <div className="flex w-max">
+                                    <div className="flex items-center justify-between w-full md:w-auto mt-5 md:pt-0">
                                         <ConfigProvider
                                             theme={{
                                                 ...filterTheme,
@@ -1285,14 +1285,14 @@ const Overview = observer(() => {
                                     />
                                 </div>
                             </div>
-                            <div className="flex items-center flex-col bg-[#ffffff] rounded-xl w-[40%] border border-solid border-[rgb(29,36,46,0.3)]">
+                            <div className="flex items-center flex-col bg-[#ffffff] rounded-xl w-full border border-solid border-[rgb(29,36,46,0.3)]">
                                 <div className="flex items-center justify-between w-full px-5 pt-5 rounded-xl">
                                     <h2 className="text-lg font-semibold text-gray-700">
                                         Order Status
                                     </h2>
                                 </div>
-                                <div className="relative w-full p-5">
-                                    <div className="gap-4 w-full relative">
+                                <div className="relative w-full p-5 flex">
+                                    <div className="gap-4 w-full relative flex justify-center items-center sm:block">
                                         {overviewStore.orderPieSeries.length ===
                                             0 ||
                                         overviewStore.orderPieSeries.every(

@@ -7,6 +7,7 @@ import { warehouseResponseType } from "./warehouse.store";
 import { BrandResponseType } from "./brand.store";
 import { CategoryResponseType } from "./categories.store";
 import { DetailImportResponseType } from "./imports.store";
+import { getErrorMessage } from "src/utils";
 
 export enum EnumProductType {
     CAR = "Xe hơi",
@@ -62,6 +63,7 @@ export type SkusDetailImportDtoV2 = {
     }[];
     skus_id: string;
     price_import: number;
+    product_title: string;
 };
 
 export type UpdateDetailImportDto = {
@@ -80,7 +82,6 @@ export type UpdateImportDto = {
 export type CreateSkusDto = {
     masku?: string;
     barcode?: string;
-    name?: string;
     image?: string;
     price_sold: number;
     price_compare: number;
@@ -125,6 +126,7 @@ export type SkusDataResponseType = {
     detail_import?: DetailImportResponseType[];
     optionValue?: OptionValueDataResponseType[];
     product?: ProductDataResponseType;
+    total_remaining?: number;
 };
 export type ProductDataResponseType = {
     id: string;
@@ -417,6 +419,33 @@ class ProductObservable {
                     : "Có lỗi xảy ra trong quá trình khôi phục sản phẩm";
             this.rootStore.status = 500;
             this.rootStore.errorMsg = errorMsg;
+            return false;
+        }
+    }
+
+    *hardDeleteProduct(id: string) {
+        try {
+            const response: ResponsePromise =
+                yield ProductAPI.hardDeleteProduct(id);
+            const { status, message } = response;
+            if (SUCCESS_STATUSES.includes(status)) {
+                this.rootStore.status = status;
+                this.rootStore.successMsg = message;
+                return true;
+            } else {
+                this.rootStore.status = status;
+                this.rootStore.errorMsg = Array.isArray(message)
+                    ? message[0]
+                    : message;
+                return false;
+            }
+        } catch (e) {
+            console.error("Error hard deleting product:", e);
+            const errorMsg = getErrorMessage(
+                e,
+                "Có lỗi xảy ra trong quá trình xóa sản phẩm"
+            );
+            this.rootStore.setStatusMessage(500, errorMsg, "", false);
             return false;
         }
     }

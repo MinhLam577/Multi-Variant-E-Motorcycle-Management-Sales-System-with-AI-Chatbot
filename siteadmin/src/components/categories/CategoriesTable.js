@@ -53,8 +53,8 @@ const getColumnsConfig = ({
             dataIndex: "slug",
             key: "slug",
             render: (value) => <span>{value}</span>,
-
             ellipsis: true,
+            responsive: ["md"],
         },
         {
             title: "Mô tả",
@@ -64,6 +64,7 @@ const getColumnsConfig = ({
                 return <span>{value}</span>;
             },
             ellipsis: true,
+            responsive: ["sm"],
         },
         {
             title: "Thao tác",

@@ -130,7 +130,7 @@ const UserImport = (props) => {
         <>
             <Modal
                 title="Import data user"
-                width={"50vw"}
+                width={"100%"}
                 open={openModalImport}
                 onOk={() => handleSubmit()}
                 onCancel={() => {
@@ -166,7 +166,6 @@ const UserImport = (props) => {
                             Download Sample File
                         </a>
                     </p>
-                    ;
                 </Dragger>
 
                 <div style={{ paddingTop: 20 }}>
@@ -183,26 +182,31 @@ const UserImport = (props) => {
                                 dataIndex: "email",
                                 title: "Email",
                                 ellipsis: true,
+                                responsive: ["sm"],
                             },
                             {
                                 dataIndex: "phoneNumber",
                                 title: "Số điện thoại",
                                 ellipsis: true,
+                                responsive: ["sm"],
                             },
                             {
                                 dataIndex: "address",
                                 title: "Địa chỉ",
                                 ellipsis: true,
+                                responsive: ["lg"],
                             },
                             {
                                 dataIndex: "birthday",
                                 title: "Ngày Sinh",
                                 ellipsis: true,
+                                responsive: ["xl"],
                             },
                             {
                                 dataIndex: "gender",
                                 title: "Giới tính",
                                 ellipsis: true,
+                                responsive: ["xl"],
                             },
                             {
                                 dataIndex: "role",

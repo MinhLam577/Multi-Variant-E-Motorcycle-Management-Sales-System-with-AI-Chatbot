@@ -223,25 +223,52 @@ const ModalCreateExport: React.FC<ModalCreateExportProps> = ({
                 ) => {
                     return (
                         <div className="flex items-center gap-4">
-                            <Image
-                                src={record?.skus_image}
-                                alt={
-                                    record?.skus_name ? record.skus_name : "N/A"
-                                }
-                                fallback="/images/default_product_image.png"
-                                width={48}
-                                height={48}
-                                preview={false}
-                                className="min-w-12 min-h-12 rounded-md cursor-pointer"
-                            />
+                            <div className="hidden sm:block">
+                                <Image
+                                    src={record?.skus_image}
+                                    alt={
+                                        record?.skus_name
+                                            ? record.skus_name
+                                            : "N/A"
+                                    }
+                                    fallback="/images/default_product_image.png"
+                                    width={48}
+                                    height={48}
+                                    preview={false}
+                                    className="min-w-12 min-h-12 rounded-md cursor-pointer "
+                                />
+                            </div>
 
-                            <div className="flex flex-col gap-2">
-                                <span className="text-sm font-semibold">
-                                    {record?.product_name}
-                                </span>
-                                <span className="text-sm text-gray-500">
-                                    {record?.skus_name}
-                                </span>
+                            <div className="flex flex-col gap-2 overflow-hidden">
+                                <Tooltip
+                                    placement="topLeft"
+                                    title={
+                                        <>
+                                            <span className="font-semibold">
+                                                {record?.product_name}
+                                            </span>
+                                            <br />
+                                            {record?.skus_name}
+                                        </>
+                                    }
+                                    color="#000"
+                                    trigger={["hover"]}
+                                    overlay={() => {
+                                        return (
+                                            <div className="w-full max-w-full">
+                                                {record?.product_name} -{" "}
+                                                {record?.skus_name}
+                                            </div>
+                                        );
+                                    }}
+                                >
+                                    <span className="text-sm font-semibold truncate max-w-[200px]">
+                                        {record?.product_name}
+                                    </span>
+                                    <span className="text-sm text-gray-500">
+                                        {record?.skus_name}
+                                    </span>
+                                </Tooltip>
                             </div>
                         </div>
                     );
@@ -341,10 +368,10 @@ const ModalCreateExport: React.FC<ModalCreateExportProps> = ({
                                     <span>Lô hàng</span>
                                 </Col>
                                 <Col span={6}>
-                                    <span>Số lượng tồn kho</span>
+                                    <span>Tồn kho</span>
                                 </Col>
                                 <Col span={6}>
-                                    <span>Số lượng xuất kho</span>
+                                    <span>Xuất kho</span>
                                 </Col>
                                 <Col span={5}>
                                     <span>Thao tác</span>
@@ -382,7 +409,13 @@ const ModalCreateExport: React.FC<ModalCreateExportProps> = ({
                                             gutter={[16, 0]}
                                             className="w-full"
                                         >
-                                            <Col span={6}>
+                                            <Col
+                                                xl={6}
+                                                lg={6}
+                                                md={6}
+                                                sm={24}
+                                                xs={24}
+                                            >
                                                 <Form.Item
                                                     {...restField}
                                                     name={[
@@ -482,7 +515,13 @@ const ModalCreateExport: React.FC<ModalCreateExportProps> = ({
                                                     />
                                                 </Form.Item>
                                             </Col>
-                                            <Col span={6}>
+                                            <Col
+                                                xl={6}
+                                                lg={6}
+                                                md={6}
+                                                sm={24}
+                                                xs={24}
+                                            >
                                                 <Form.Item
                                                     {...restField}
                                                     name={[
@@ -500,7 +539,13 @@ const ModalCreateExport: React.FC<ModalCreateExportProps> = ({
                                                     />
                                                 </Form.Item>
                                             </Col>
-                                            <Col span={6}>
+                                            <Col
+                                                xl={6}
+                                                lg={6}
+                                                md={6}
+                                                sm={24}
+                                                xs={24}
+                                            >
                                                 <Form.Item
                                                     {...restField}
                                                     name={[
@@ -549,7 +594,13 @@ const ModalCreateExport: React.FC<ModalCreateExportProps> = ({
                                                     />
                                                 </Form.Item>
                                             </Col>
-                                            <Col span={6}>
+                                            <Col
+                                                xl={6}
+                                                lg={6}
+                                                md={6}
+                                                sm={24}
+                                                xs={24}
+                                            >
                                                 <Button
                                                     type="link"
                                                     onClick={() => remove(name)}

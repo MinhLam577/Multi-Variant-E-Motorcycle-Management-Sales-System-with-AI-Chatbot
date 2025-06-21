@@ -1,20 +1,27 @@
-.ant-layout-sider-children .ant-menu {
+.ant-layout-sider-children .ant-menu,
+.ant-drawer-body .ant-menu {
     background-color: var(--sideBar-background-color) !important;
 }
 
-.ant-layout-sider-children .ant-menu > .ant-menu-item-selected {
+.ant-layout-sider-children .ant-menu > .ant-menu-item-selected,
+.ant-drawer-body .ant-menu > .ant-menu-item-selected {
     background-color: var(--sideBar-item-active-color) !important;
     color: var(--sideBar-text-color) !important;
 }
 
-.ant-layout-sider-children .ant-menu > .ant-menu-item-active {
+.ant-layout-sider-children .ant-menu > .ant-menu-item-active,
+.ant-drawer-body .ant-menu > .ant-menu-item-active {
     color: var(--sideBar-text-color) !important;
 }
 
 .ant-layout-sider-children
     .ant-menu
     > .ant-menu-item:hover:not(.ant-menu-item-selected),
+.ant-drawer-body .ant-menu > .ant-menu-item:hover:not(.ant-menu-item-selected),
 .ant-layout-sider-children
+    .ant-menu
+    > .ant-menu-item-active:not(.ant-menu-item-selected),
+.ant-drawer-body
     .ant-menu
     > .ant-menu-item-active:not(.ant-menu-item-selected) {
     background-color: transparent !important;
@@ -23,10 +30,14 @@
 .ant-layout-sider-children
     .ant-menu
     > .ant-menu-submenu.ant-menu-submenu-inline.ant-menu-submenu-active:hover,
-.ant-layout-sider-children
+.ant-drawer-body
+    .ant-menu
+    > .ant-menu-submenu.ant-menu-submenu-inline.ant-menu-submenu-active:hover
+    .ant-layout-sider-children
     .ant-menu
     > .ant-menu-submenu
-    > .ant-menu-submenu-title:focus {
+    > .ant-menu-submenu-title:focus,
+.ant-drawer-body .ant-menu > .ant-menu-submenu > .ant-menu-submenu-title:focus {
     background-color: transparent !important;
 }
 
@@ -55,7 +66,31 @@
     > .ant-menu-submenu.ant-menu-submenu-inline.ant-menu-submenu-active
     > .ant-menu-submenu-title,
 .ant-layout-sider-children .ant-menu > .ant-menu-item.ant-menu-item-selected,
-.ant-layout-sider-children .ant-menu > .ant-menu-item {
+.ant-layout-sider-children .ant-menu > .ant-menu-item,
+.ant-drawer-body
+    .ant-menu
+    > .ant-menu-submenu.ant-menu-submenu-inline.ant-menu-submenu-open,
+.ant-drawer-body
+    .ant-menu
+    > .ant-menu-submenu.ant-menu-submenu-inline.ant-menu-submenu-open.ant-menu-submenu-active,
+.ant-drawer-body
+    .ant-menu
+    > .ant-menu-submenu.ant-menu-submenu-inline.ant-menu-submenu-open.ant-menu-submenu-active
+    > .ant-menu-submenu-title,
+.ant-drawer-body .ant-menu > .ant-menu-submenu.ant-menu-submenu-inline,
+.ant-drawer-body
+    .ant-menu
+    > .ant-menu-submenu.ant-menu-submenu-inline
+    > .ant-menu-submenu-title,
+.ant-drawer-body
+    .ant-menu
+    > .ant-menu-submenu.ant-menu-submenu-inline.ant-menu-submenu-active,
+.ant-drawer-body
+    .ant-menu
+    > .ant-menu-submenu.ant-menu-submenu-inline.ant-menu-submenu-active
+    > .ant-menu-submenu-title,
+.ant-drawer-body .ant-menu > .ant-menu-item.ant-menu-item-selected,
+.ant-drawer-body .ant-menu > .ant-menu-item {
     border-radius: 0 !important;
     margin-block: 0px 0px !important;
     width: 100% !important;
@@ -64,16 +99,18 @@
 
 .ant-layout-sider-children
     .ant-menu.ant-menu-light.ant-menu-root.ant-menu-vertical,
-.ant-layout-sider-children .ant-menu-light.ant-menu-root.ant-menu-inline {
+.ant-layout-sider-children .ant-menu-light.ant-menu-root.ant-menu-inline,
+.ant-drawer-body .ant-menu.ant-menu-light.ant-menu-root.ant-menu-vertical,
+.ant-drawer-body .ant-menu-light.ant-menu-root.ant-menu-inline {
     border-inline-end: 0 !important;
 }
 
 .ant-layout-sider-children .ant-menu > .ant-menu-item,
 .ant-layout-sider-children .ant-menu > .ant-menu-submenu,
-.ant-layout-sider-children
-    .ant-menu
-    > .ant-menu-submenu
-    > .ant-menu-submenu-title {
+.ant-layout-sider-children,
+.ant-drawer-body .ant-menu > .ant-menu-item,
+.ant-drawer-body .ant-menu > .ant-menu-submenu,
+.ant-drawer-body .ant-menu > .ant-menu-submenu > .ant-menu-submenu-title {
     color: var(--sideBar-text-color) !important;
 }
 
@@ -90,6 +127,12 @@
     .ant-menu
     > .ant-menu-submenu
     > .ant-menu-submenu-title
+    > span,
+.ant-drawer-body .ant-menu > .ant-menu-item span,
+.ant-drawer-body
+    .ant-menu
+    > .ant-menu-submenu
+    > .ant-menu-submenu-title
     > span {
     font-size: 1rem !important;
     font-weight: 400 !important;
@@ -98,14 +141,20 @@
 .ant-layout-sider-children
     .ant-menu
     > .ant-menu-submenu.ant-menu-submenu-vertical
+    > .ant-menu-submenu-title,
+.ant-drawer-body
+    .ant-menu
+    > .ant-menu-submenu.ant-menu-submenu-vertical
     > .ant-menu-submenu-title {
     margin-inline: 0 !important;
 }
 
-.ant-layout-sider-children .ant-menu-submenu-placement-rightTop {
+.ant-layout-sider-children .ant-menu-submenu-placement-rightTop,
+.ant-drawer-body .ant-menu-submenu-placement-rightTop {
     padding-inline-start: 0 !important;
 }
-.ant-layout-sider-children .ant-menu-submenu-popup > .ant-menu {
+.ant-layout-sider-children .ant-menu-submenu-popup > .ant-menu,
+.ant-drawer-body .ant-menu-submenu-popup > .ant-menu {
     border-radius: 0 !important;
 }
 
@@ -119,7 +168,10 @@
     .ant-menu-submenu-title
     .ant-menu-item-icon
     + span,
-.ant-layout-sider-children .ant-menu .ant-menu-submenu-title .anticon + span {
+.ant-layout-sider-children .ant-menu .ant-menu-submenu-title .anticon + span,
+.ant-drawer-body .ant-menu > .ant-menu-item > .ant-menu-item-icon + span,
+.ant-drawer-body .ant-menu .ant-menu-submenu-title .ant-menu-item-icon + span,
+.ant-drawer-body .ant-menu .ant-menu-submenu-title .anticon + span {
     margin-inline-start: 1rem !important;
 }
 

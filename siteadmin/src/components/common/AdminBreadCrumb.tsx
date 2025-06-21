@@ -6,7 +6,8 @@ interface IAdminBreadCrumbProps {
     items: Array<{ key: number; href: string; title: string }>;
 }
 const AdminBreadCrumb: React.FC<IAdminBreadCrumbProps> = ({
-  description, items
+    description,
+    items,
 }) => {
     return (
         <div className="flex flex-col justify-start items-start gap-1 w-full">
@@ -16,7 +17,7 @@ const AdminBreadCrumb: React.FC<IAdminBreadCrumbProps> = ({
                 }}
                 items={items}
             />
-            <p className="text-sm">{description}</p>
+            <p className="text-sm hidden md:block">{description}</p>
         </div>
     );
 };

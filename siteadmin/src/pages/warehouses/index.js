@@ -119,7 +119,7 @@ const WareHouses = () => {
                     );
                 },
                 ellipsis: false,
-                width: "30%",
+                width: "40%",
             },
             {
                 title: "Địa chỉ",
@@ -130,6 +130,7 @@ const WareHouses = () => {
                 },
                 ellipsis: false,
                 width: "120px",
+                responsive: ["sm"],
             },
 
             {
@@ -141,6 +142,7 @@ const WareHouses = () => {
                 },
                 ellipsis: false,
                 width: "120px",
+                responsive: ["lg"],
             },
 
             // Action

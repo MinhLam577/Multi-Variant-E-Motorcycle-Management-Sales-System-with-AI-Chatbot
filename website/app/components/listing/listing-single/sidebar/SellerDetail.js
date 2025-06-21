@@ -8,8 +8,8 @@ const SellerDetail = () => {
                     width={60}
                     height={60}
                     className="mr-3 author_img w60"
-                    src="/images/team/seller.png"
-                    // src="images/favicon.ico"
+                    // src="/images/team/seller.png"
+                    src="/images/logo.png"
                     alt="author.png"
                 />
             </div>
