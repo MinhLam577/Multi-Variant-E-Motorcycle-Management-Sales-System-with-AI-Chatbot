@@ -10,7 +10,13 @@ import { observer } from "mobx-react-lite";
 import { Breakpoint } from "antd/lib";
 import { productTableFilterDataType } from "src/pages/products";
 import { ALL_MODULES } from "src/constants/permissions";
-import { MenuOutlined } from "@ant-design/icons";
+import {
+    CloseCircleOutlined,
+    DeleteOutlined,
+    EditOutlined,
+    MenuOutlined,
+    UndoOutlined,
+} from "@ant-design/icons";
 const { useBreakpoint } = Grid;
 
 interface IGetColumnsConfigProps {
@@ -135,20 +141,6 @@ const getColumnsConfig = ({
                                 placement="bottomLeft"
                                 menu={{
                                     items: [
-                                        {
-                                            key: "view",
-                                            label: (
-                                                <Button
-                                                    type="text"
-                                                    onClick={() =>
-                                                        handleViewProducts(item)
-                                                    }
-                                                    className="!w-full !p-2"
-                                                >
-                                                    Xem chi tiết
-                                                </Button>
-                                            ),
-                                        },
                                         {
                                             key: "edit",
                                             label: (

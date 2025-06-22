@@ -2978,6 +2978,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                 modalCreateProductStore.setFullCustomData(subFormValue);
             }
             form.setFieldsValue(formInitialValues);
+            console.log("formInitialValues", form.getFieldsValue(true));
         }
     }, [formInitialValues]);
     const navigate = useNavigate();

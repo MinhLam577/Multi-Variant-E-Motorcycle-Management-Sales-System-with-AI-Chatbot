@@ -27,7 +27,14 @@ const LoginScreen = ({
     return (
         <>
             <Row className="h-screen fixed w-full">
-                <Col xl={12} lg={12} md={12} sm={0} xs={0}>
+                <Col
+                    xl={12}
+                    lg={12}
+                    md={12}
+                    sm={0}
+                    xs={0}
+                    className="hidden md:block h-full"
+                >
                     <div
                         className="w-full flex flex-col justify-center items-center space-y-4"
                         style={{
@@ -61,22 +68,21 @@ const LoginScreen = ({
                     className="flex items-center justify-center"
                 >
                     <div
-                        className="w-full flex flex-col justify-center items-center"
-                        {...(!screens.md
-                            ? {
-                                  style: {
-                                      padding: "20px",
+                        className="w-full flex flex-col justify-center items-center px-4"
+                        style={
+                            !screens.md
+                                ? {
                                       backgroundImage: `url(${backgroundImage})`,
                                       backgroundSize: "cover",
                                       backgroundPosition: "center",
                                       backgroundRepeat: "no-repeat",
-                                      height: "100vh",
-                                  },
-                              }
-                            : {})}
+                                      minHeight: "100vh",
+                                  }
+                                : {}
+                        }
                     >
                         <Card
-                            className="w-96 shadow"
+                            className="w-full max-w-96 shadow"
                             title="Vui lòng nhập thông tin đăng nhập"
                         >
                             <div className="content">
