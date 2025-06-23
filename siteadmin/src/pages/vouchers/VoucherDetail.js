@@ -68,7 +68,6 @@ const VoucherDetail = observer(({ mode }) => {
             });
         }
 
-        // }
     }, [voucherStore.dataDetail]);
 
     const fetchVoucherDetail = async () => {
@@ -425,6 +424,15 @@ const VoucherDetail = observer(({ mode }) => {
                                                             message:
                                                                 "Vui lòng chọn ngày bắt đầu!",
                                                         },
+                                                        ({ getFieldValue }) => ({
+                                                        validator(_, value) {
+                                                        const endDate = getFieldValue('end_date');
+                                                        if (!value || !endDate || value.isBefore(endDate)) {
+                                                            return Promise.resolve();
+                                                        }
+                                                        return Promise.reject(new Error('Ngày bắt đầu phải nhỏ hơn ngày kết thúc'));
+                                                        },
+                                                    }),
                                                     ]}
                                                     width={"100%"}
                                                 >
@@ -451,6 +459,15 @@ const VoucherDetail = observer(({ mode }) => {
                                                             message:
                                                                 "Vui lòng chọn ngày kết thúc!",
                                                         },
+                                                        ({ getFieldValue }) => ({
+                                                        validator(_, value) {
+                                                        const startDate = getFieldValue('start_date');
+                                                        if (!value || !startDate || value.isAfter(startDate)) {
+                                                            return Promise.resolve();
+                                                        }
+                                                        return Promise.reject(new Error('Ngày kết thúc phải lớn hơn ngày bắt đầu'));
+                                                        },
+                                                    }),
                                                     ]}
                                                     width={"100%"}
                                                 >
