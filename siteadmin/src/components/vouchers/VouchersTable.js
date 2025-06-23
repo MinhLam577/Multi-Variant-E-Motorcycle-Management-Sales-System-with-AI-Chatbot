@@ -93,11 +93,13 @@ const getColumnsConfig = ({
             key: "uses",
             ellipsis: true,
             width: "100px",
-            render: (inputValue) => {
+            
+            render: (inputValue, record) => {
+                const limit = record.limit ?? 0; // fallback nếu limit null
                 return (
                     <div>
                         <span className="flex justify-end">
-                            {inputValue}/10
+                            {inputValue}/ {limit}
                         </span>
                         <Slider
                             className="m-0"
@@ -112,6 +114,51 @@ const getColumnsConfig = ({
             },
             responsive: ["sm"],
         },
+         {
+            title: "Khách đã nhận",
+            dataIndex: "count_user_get",
+            key: "count_user_get",
+            ellipsis: true,
+            width: "100px",
+
+             align: "center", // ✅ Căn giữa toàn cột
+            render: (count_user_get) => {
+                
+                return (
+                    
+                        <div className="flex justify-center">
+                           <span>
+                            {count_user_get}
+                            </span> 
+                        </div>
+
+                
+                );
+            },
+            responsive: ["sm"],
+        },{
+  title: "Áp dụng",
+  key: "period",
+  dataIndex: "start_date", // hoặc để null cũng được vì dùng record
+  ellipsis: true,
+  width: "140px",
+  align: "center",
+  render: (_, record) => {
+    const start = record.start_date
+      ? new Date(record.start_date).toLocaleDateString("vi-VN")
+      : "Chưa có";
+    const end = record.end_date
+      ? new Date(record.end_date).toLocaleDateString("vi-VN")
+      : "Chưa có";
+
+    return (
+      <div className="">
+        {start} - {end}
+      </div>
+    );
+  },
+  responsive: ["sm"],
+},
 
         {
             title: "Action",
