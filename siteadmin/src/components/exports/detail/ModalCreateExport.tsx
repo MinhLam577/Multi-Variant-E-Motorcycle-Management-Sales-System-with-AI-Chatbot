@@ -81,7 +81,12 @@ const ModalCreateExport: React.FC<ModalCreateExportProps> = ({
         Map<string, SkusDetailImportResponseType>
     >(new Map());
     const handleSaveSelectOrder = (selectedRowKeys: string[]) => {
-        setSelectedOrder((prev) => [...prev, ...selectedRowKeys]);
+        setSelectedOrder((prev) => {
+            const newSelectedOrder = Array.from(
+                new Set([...prev, ...selectedRowKeys])
+            );
+            return newSelectedOrder;
+        });
         setOpenSelectOrderModal(false);
     };
     const handleCloseSelectOrder = () => {
@@ -98,6 +103,9 @@ const ModalCreateExport: React.FC<ModalCreateExportProps> = ({
                                 return orders.find(
                                     (order) => order.id === item
                                 );
+                            }
+                            if (orderStore.data.order_detail?.id === item) {
+                                return orderStore.data.order_detail;
                             }
                             await orderStore.getOrderDetail(item);
                             const orderDetailsData = toJS(
@@ -758,6 +766,7 @@ const ModalCreateExport: React.FC<ModalCreateExportProps> = ({
         );
         setSelectedOrder(newSelectedOrder);
     };
+
     return (
         <CustomizeModal
             isOpen={open}
