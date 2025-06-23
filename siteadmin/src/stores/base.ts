@@ -17,6 +17,7 @@ import ImportObservable from "./imports.store";
 import ExportObservable from "./exports.store";
 import UserObservable from "../stores/user";
 import PermissionObservable from "./permission.store";
+import ContactObservable from "./contact.store";
 export interface MessageStore {
     status?: number;
     errorMsg?: string;
@@ -59,8 +60,10 @@ export class RootStore implements MessageStore {
     warehouseObservable: WarehouseObservable;
     userObservable: UserObservable;
     permissionObservable: PermissionObservable;
+    contactObservable: ContactObservable;
     constructor() {
         makeObservable(this);
+        this.contactObservable = new ContactObservable(this);
         this.permissionObservable = new PermissionObservable(this);
         this.userObservable = new UserObservable(this);
         this.exportObservable = new ExportObservable(this);

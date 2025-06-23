@@ -12,6 +12,22 @@ import {
     StatisticsResponse,
 } from "src/pages/adminOverview/Overview";
 
+export class order_detail_dto {
+    skus_id: string;
+    quantity: number;
+}
+
+export type CreateOrderDto = {
+    customer_id: string;
+    receive_address_id: string;
+    total_price: number;
+    discount_price: number;
+    order_note?: string;
+    payment_method_id: string;
+    delivery_method_id: string;
+    order_details: order_detail_dto[];
+};
+
 export type RevenueProfitStatisticsDto = {
     time_type: EnumTypeOfTimeStatistics;
     year?: number;

@@ -1,4 +1,4 @@
-import { Breadcrumb, Button, Drawer, message } from "antd";
+import { Breadcrumb, Button, Drawer, Form, message } from "antd";
 import { useEffect, useState } from "react";
 
 import OrderSearch from "src/components/orders/OrderSearch";
@@ -14,6 +14,7 @@ import CustomizeTab from "src/components/common/CustomizeTab";
 import { globalFiltersDataOrder } from "src/stores/order.store";
 import { paginationData } from "src/stores/voucher";
 import { toJS } from "mobx";
+import CustomizeModal from "src/components/common/CustomizeModal";
 const Orders = () => {
     const store = useStore();
     const orderStore = store.orderObservable;
@@ -177,6 +178,18 @@ const Orders = () => {
         }
     };
 
+    const [openModalCreateOrder, setOpenModalCrateOrder] = useState(false);
+    const [createForm] = Form.useForm();
+    const handleCloseModalCreateOrder = () => {
+        createForm.resetFields();
+        setOpenModalCrateOrder(false);
+    };
+    const handleSaveModalCreateOrder = () => {
+        createForm.submit();
+    };
+
+    const handleSubmitCreateOrder = async (values: any) => {};
+
     return (
         <section className="w-full flex flex-col">
             <div className="w-full flex flex-col animate-slideDown">
@@ -298,6 +311,17 @@ const Orders = () => {
                     ]}
                 />
             </div>
+
+            <CustomizeModal
+                isOpen={openModalCreateOrder}
+                title="Tạo đơn hàng mới"
+                okText="Lưu"
+                cancelText="Hủy"
+                handleCloseModal={handleCloseModalCreateOrder}
+                handleSaveModal={handleSaveModalCreateOrder}
+            >
+                <Form></Form>
+            </CustomizeModal>
         </section>
     );
 };

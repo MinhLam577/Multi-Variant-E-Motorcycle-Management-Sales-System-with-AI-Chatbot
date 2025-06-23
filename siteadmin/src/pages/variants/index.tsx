@@ -195,11 +195,13 @@ const VariantsPage = () => {
             search: "",
         }));
     };
+
     const handleCloseModalUpdate = () => {
         setOpenModalUpdate(false);
         setSkuSelected(null);
         updateForm.resetFields();
     };
+
     const convertSkusResponseToForm = (
         skus: SkusResponseType
     ): FormValueCreateVariantType => {

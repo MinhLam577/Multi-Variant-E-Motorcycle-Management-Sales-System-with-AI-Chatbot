@@ -32,6 +32,7 @@ const CustomizeModal: React.FC<CustomizeModalProps> = ({
             cancelText={cancelText || "Hủy"}
             destroyOnClose={true}
             title={title}
+            forceRender={true}
         >
             {children}
         </Modal>
