@@ -88,8 +88,8 @@ const TableComponent: React.FC<ITableComponentProps> = ({
 
     return (
         <Table
-            rowKey={(record) => record.id}
             {...res}
+            rowKey={(record) => record.id}
             locale={{
                 ...AntdTableLocale,
             }}

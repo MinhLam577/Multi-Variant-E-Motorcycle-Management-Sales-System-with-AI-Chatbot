@@ -8,7 +8,7 @@ import GroupActionButton from "../GroupActionButton";
 import { ALL_MODULES, ALL_PERMISSIONS } from "src/constants/permissions";
 import Access from "src/access/access";
 
-const handleCopy = (text) => {
+export const handleCopy = (text) => {
     navigator.clipboard.writeText(text);
     message.info("Copied!!");
 };
