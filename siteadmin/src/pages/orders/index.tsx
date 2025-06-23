@@ -312,7 +312,7 @@ const Orders = () => {
                 />
             </div>
 
-            <CustomizeModal
+            {/* <CustomizeModal
                 isOpen={openModalCreateOrder}
                 title="Tạo đơn hàng mới"
                 okText="Lưu"
@@ -321,7 +321,7 @@ const Orders = () => {
                 handleSaveModal={handleSaveModalCreateOrder}
             >
                 <Form></Form>
-            </CustomizeModal>
+            </CustomizeModal> */}
         </section>
     );
 };
