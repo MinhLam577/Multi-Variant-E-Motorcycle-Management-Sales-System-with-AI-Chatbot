@@ -827,8 +827,9 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
         return firstLevel3Node;
     };
     const selectableTreeData = addSelectable(initialOptionsCategory);
-
+    // const [formImageList, setFormImageList] = useState<UploadFile[]>([]);
     // Hàm render thông tin chung của sản phẩm
+
     const GeneralInformation = observer(() => {
         const [formImageList, setFormImageList] = useState<UploadFile[]>([]);
         const [previewVisible, setPreviewVisible] = useState<boolean>(false);
@@ -847,12 +848,35 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
             [form]
         );
         useEffect(() => {
-            const initialImages = form.getFieldValue("image") || [];
-            if (initialImages.length > 0 && formImageList.length === 0) {
-                setFormImageList(initialImages);
+            if (formInitialValues) {
+                const subFormValue: Record<
+                    string,
+                    Omit<IFormSkuCustomData, "name">
+                > = subForm.getFieldValue("skus");
+                if (subFormValue) {
+                    modalCreateProductStore.setFullCustomData(subFormValue);
+                }
+                form.setFieldsValue(formInitialValues);
+                const imageList = form.getFieldValue("image") || [];
+                if (Array.isArray(imageList)) {
+                    setFormImageList(
+                        imageList.map((item: string | UploadFile) => {
+                            if (typeof item === "string") {
+                                return {
+                                    uid: item,
+                                    name: item.split("/").pop() || "image",
+                                    status: "done",
+                                    url: item,
+                                };
+                            }
+                            return item;
+                        })
+                    );
+                } else {
+                    setFormImageList([]);
+                }
             }
-        }, [form]);
-
+        }, [formInitialValues, form, subForm]);
         useEffect(() => {
             const initialImages = form.getFieldValue("image") || [];
             if (
@@ -860,7 +884,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
             ) {
                 form.setFieldValue("image", formImageList);
             }
-        }, [form, formImageList]);
+        }, [formImageList]);
         const productTypeOption: SelectType[] = Object.keys(
             EnumProductType
         ).map((key) => ({
@@ -951,13 +975,6 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                         message: "Vui lòng chọn nhãn hàng",
                                     },
                                 ]}
-                                initialValue={
-                                    !productId
-                                        ? initialOptionsBrand
-                                            ? initialOptionsBrand[0]?.value
-                                            : undefined
-                                        : undefined
-                                }
                             >
                                 <Select
                                     placeholder="Chọn nhãn hàng"
@@ -979,15 +996,6 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                         message: "Vui lòng chọn danh mục",
                                     },
                                 ]}
-                                initialValue={
-                                    !productId
-                                        ? getFirstLevel3Node(selectableTreeData)
-                                            ? getFirstLevel3Node(
-                                                  selectableTreeData
-                                              )
-                                            : undefined
-                                        : undefined
-                                }
                             >
                                 <TreeSelect
                                     placeholder="Chọn danh mục"
@@ -1000,27 +1008,37 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                             </Form.Item>
                         </Col>
                     </Row>
-                    <Form.Item label="Mô tả">
-                        <div className="w-full h-[25rem] overflow-hidden border border-solid border-[var(--border-gray)] rounded-md editor-container">
-                            <CustomizeEditor
-                                onChange={handleQuillChange}
-                                folder="Cars"
-                                theme="snow"
-                                value={form.getFieldValue("description")}
-                                ref={quillRef}
-                                store={productStore}
-                                className="w-full h-full"
-                                defaultForm={form}
-                                fieldFormName="description"
-                            />
-                        </div>
-                    </Form.Item>
 
+                    <div className="flex flex-col gap-2 mb-4">
+                        <span className="text-sm text-gray-700">
+                            Mô tả sản phẩm
+                        </span>
+                        <div className="w-full h-[25rem] overflow-y-auto border border-solid border-[var(--border-gray)] rounded-md editor-container">
+                            <Form.Item name="description">
+                                <CustomizeEditor
+                                    onChange={handleQuillChange}
+                                    folder="Cars"
+                                    theme="snow"
+                                    value={form.getFieldValue("description")}
+                                    ref={quillRef}
+                                    store={productStore}
+                                    className="w-full h-full"
+                                    defaultForm={form}
+                                    fieldFormName="description"
+                                />
+                            </Form.Item>
+                        </div>
+                    </div>
                     <Form.Item
                         label="Hình ảnh sản phẩm"
-                        name={"image"}
+                        name="image"
                         tooltip={`Ảnh nhận định dạng ${AcceptImageTypes.map((image) => "." + image.split("/")[1]).join(", ")}, có tỷ lệ 1:1 (Ảnh vuông) và được chọn tối đa 5 hình ảnh`}
-                        getValueFromEvent={(info) => info.fileList}
+                        getValueFromEvent={(e) => {
+                            if (Array.isArray(e)) {
+                                return e;
+                            }
+                            return e && e.fileList;
+                        }}
                         rules={[
                             {
                                 validator: (_, value) => {
@@ -1049,6 +1067,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                     Tải lên hình ảnh
                                 </span>
                             </label>
+
                             <div className="flex items-center justify-start w-full gap-2 overflow-x-auto">
                                 <div className="flex flex-nowrap gap-2 overflow-x-auto">
                                     <Upload
@@ -1081,11 +1100,11 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                                 return Upload.LIST_IGNORE;
                                             }
                                             if (
-                                                formImageList.length +
-                                                    fileList.length >
+                                                formImageList.length >
                                                     DEFAULT_MAX_IMAGE_UPLOAD_PRODUCT ||
                                                 fileList.length >
-                                                    DEFAULT_MAX_IMAGE_UPLOAD_PRODUCT
+                                                    DEFAULT_MAX_IMAGE_UPLOAD_PRODUCT -
+                                                        formImageList.length
                                             ) {
                                                 store.setStatusMessage(
                                                     400,
@@ -1102,8 +1121,10 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                             ]);
                                         }}
                                         fileList={
-                                            formImageList.length
-                                                ? formImageList
+                                            Array.isArray(formImageList)
+                                                ? formImageList.length > 0
+                                                    ? formImageList
+                                                    : undefined
                                                 : undefined
                                         }
                                         customRequest={async ({
@@ -1111,11 +1132,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                                             onSuccess,
                                             onError,
                                         }) => {
-                                            try {
-                                                onSuccess?.("Thành công", file);
-                                            } catch (error) {
-                                                onError?.(error as Error);
-                                            }
+                                            onSuccess("Thành công", file);
                                         }}
                                         onPreview={handlePreview}
                                         onRemove={(file) => {
@@ -2057,13 +2074,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                             errors: [],
                         },
                     ]);
-                    defaultForm
-                        .validateFields([
-                            getDefaultNamePathVariantFormItem("image").join(
-                                "."
-                            ),
-                        ])
-                        .catch(() => {});
+
                     setInputFileKey(generateUUIDV4());
                 };
                 reader.onerror = () => {
@@ -2968,19 +2979,6 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
 
     const handleFormValueChange = (changedValues: any, values: any) => {};
 
-    useEffect(() => {
-        if (formInitialValues) {
-            const subFormValue: Record<
-                string,
-                Omit<IFormSkuCustomData, "name">
-            > = subForm.getFieldValue("skus");
-            if (subFormValue) {
-                modalCreateProductStore.setFullCustomData(subFormValue);
-            }
-            form.setFieldsValue(formInitialValues);
-            console.log("formInitialValues", form.getFieldsValue(true));
-        }
-    }, [formInitialValues]);
     const navigate = useNavigate();
     return (
         <>

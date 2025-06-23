@@ -254,6 +254,13 @@ const endpoints = {
     permissionModule: {
         list: () => `/Permissions_Modules`,
     },
+
+    contact: {
+        list: (query: string) => `/contact?${query}`,
+        update: (id: string) => `/contact/${id}`,
+        delete: (id: string) => `/contact/${id}`,
+        create: () => `/contact`,
+    },
 };
 
 export default endpoints;

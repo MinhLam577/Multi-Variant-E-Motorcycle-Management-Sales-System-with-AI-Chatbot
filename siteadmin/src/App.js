@@ -39,6 +39,7 @@ import CustomerDetail from "./pages/customers/CustomerDetail";
 import NetworkError from "./pages/NetworkError";
 import PermissionPage from "./pages/permission/permission";
 import RolePage from "./pages/role/role";
+import ContactPage from "./pages/contact";
 // import Role from
 import CategoriesNews from "./pages/categoriesNews";
 import CategoriesNewsDetail from "./pages/categoriesNews/CategoriesNewsDetail";
@@ -603,6 +604,14 @@ function App() {
                                 <Route
                                     path="/PaymentFailed"
                                     element={<div>Payment Failed</div>}
+                                />
+                                <Route
+                                    path="/contact"
+                                    element={
+                                        <ProtectedRoute>
+                                            <ContactPage />
+                                        </ProtectedRoute>
+                                    }
                                 />
                             </Routes>
                         </Suspense>

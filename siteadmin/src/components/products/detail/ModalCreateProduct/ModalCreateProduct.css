@@ -19,24 +19,22 @@
 .ql-toolbar {
     border: none !important;
     border-bottom: 1px solid var(--border-gray) !important;
-    height: 7rem !important;
+    height: 2.5rem !important;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: white;
 }
 
-/* Từ md (768px) trở lên */
-@media (min-width: 576px) {
-    .ql-toolbar {
-        height: 5rem !important;
-    }
-}
-@media (min-width: 768px) {
+@media (min-width: 576px) and (max-width: 991.98px) {
     .ql-toolbar {
         height: 4rem !important;
     }
 }
 
-@media (min-width: 1200px) {
+@media (max-width: 575.98px) {
     .ql-toolbar {
-        height: 2.5rem !important;
+        height: 7.5rem !important;
     }
 }
 
@@ -46,14 +44,14 @@
 }
 
 .ql-editor {
-    height: 18.75rem;
-    overflow: scroll;
-    padding-bottom: 16px;
+    height: auto;
+    overflow: visible;
 }
 
 .ql-container {
-    height: calc(100% - 2.5rem);
+    height: 20rem;
     border: none !important;
+    overflow-y: scroll;
 }
 
 .editor-container:has(.ql-editor:focus):not(:has(.ql-fullscreenActive)) {
@@ -90,17 +88,18 @@
 }
 
 .editor-container:has(.ql-fullscreenActive) .ql-editor {
-    /* height: calc(100vh - 2.5rem) !important; */
+    height: calc(100vh - 5rem) !important;
     overflow-y: auto !important;
     padding-bottom: 16px !important;
     z-index: 9999 !important;
 }
 .editor-container:has(.ql-fullscreenActive) .ql-toolbar {
-    flex: 0 0 2.5rem !important;
+    flex: 0 0 5rem !important;
     z-index: 10000 !important;
     border: none !important;
     border-bottom: 1px solid rgb(0, 0, 0, 0.3) !important;
 }
+
 .ant-select-multiple .ant-select-selection-overflow {
     min-height: 40px !important;
     display: flex !important;

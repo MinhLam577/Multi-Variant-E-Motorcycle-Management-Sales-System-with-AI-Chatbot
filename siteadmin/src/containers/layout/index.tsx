@@ -8,6 +8,7 @@ import {
     GiftOutlined,
     ImportOutlined,
     OrderedListOutlined,
+    PhoneOutlined,
     SettingOutlined,
     ShoppingOutlined,
     SolutionOutlined,
@@ -75,6 +76,7 @@ const BreadcrumbLabel = {
     import: "Quản lí nhập kho",
     export: "Quản lí xuất kho",
     brands: "Quản lí nhãn hàng cung cấp",
+    contact: "Liên hệ",
 };
 
 export const getBreadcrumbItems = (path: string) => {
@@ -309,6 +311,7 @@ const AppLayout = (props) => {
                 )
             );
         }
+
         if (hasPermission(ALL_PERMISSIONS.BRANDS.GET_PAGINATE)) {
             items.push(
                 getSideMenuItem(
@@ -353,6 +356,20 @@ const AppLayout = (props) => {
                 )
             );
         }
+        if (hasPermission(ALL_PERMISSIONS.CONTACT.GET_PAGINATE)) {
+            items.push(
+                getSideMenuItem(
+                    "Liên hệ",
+                    "30",
+                    <PhoneOutlined />,
+                    null,
+                    () => {
+                        navigate("/contact");
+                        appLayoutStore.setOpenDrawer(false);
+                    }
+                )
+            );
+        }
 
         if (hasPermission(ALL_PERMISSIONS.PERMISSIONS.GET_PAGINATE)) {
             items.push(
@@ -368,6 +385,7 @@ const AppLayout = (props) => {
                 )
             );
         }
+
         appLayoutStore.setItems(items);
     }, []);
 
@@ -396,6 +414,7 @@ const AppLayout = (props) => {
                 "/export": "23",
                 "/variants": "24",
                 "/brands": "25",
+                "/contact": "30",
             };
             for (let key of Object.keys(menuKeys)) {
                 if (path.startsWith(key)) {
@@ -414,6 +433,7 @@ const AppLayout = (props) => {
             return ["1"];
         }
     };
+
     useEffect(() => {
         const messageReaction = reaction(
             () => ({
