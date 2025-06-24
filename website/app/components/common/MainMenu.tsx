@@ -47,7 +47,7 @@ const MainMenu = observer(() => {
                                 onClick={() => {
                                     router.push(`/${redirectedProductType}`);
                                 }}
-                                className={`relative px-3 py-2 mb-2 text-black rounded flex items-center space-x-2 
+                                className={`relative px-3 py-2 text-black rounded flex items-center space-x-2 
             after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:bg-yellow-400 
             after:w-0 group-hover:after:w-full after:transition-all after:duration-500 after:ease-in-out  ${
                 isActive

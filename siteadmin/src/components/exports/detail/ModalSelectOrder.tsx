@@ -44,7 +44,7 @@ const ModalSelectOrder: React.FC<ModalSelectOrderProps> = ({
     useEffect(() => {
         fetchListOrder({
             ...orderStore.pagination,
-            order_status: EnumOrderStatusesValue.CANCELLED,
+            order_status: EnumOrderStatusesValue.CONFIRMED,
         });
     }, []);
 
@@ -52,7 +52,7 @@ const ModalSelectOrder: React.FC<ModalSelectOrderProps> = ({
         fetchListOrder({
             ...orderStore.globalFilters,
             ...orderStore.pagination,
-            order_status: EnumOrderStatusesValue.CANCELLED,
+            order_status: EnumOrderStatusesValue.CONFIRMED,
         });
     }, [orderStore.globalFilters]);
     const filterOrder = () => {
