@@ -49,7 +49,7 @@ const getColumnsConfig = ({
                 );
             },
             ellipsis: true,
-            width: "140px",
+            width: "100px",
             responsive: ["md"],
         },
         {
@@ -57,7 +57,7 @@ const getColumnsConfig = ({
             dataIndex: "voucher_name",
             key: "voucher_name",
             ellipsis: true,
-            width: "100px",
+            width: "140px",
         },
         {
             title: "Loại",
