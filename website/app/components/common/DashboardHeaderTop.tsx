@@ -1,37 +1,37 @@
 const DashboardHeaderTop = () => {
-  const socialData = [
-    {
-      icon: "fab fa-facebook-f",
-      link: "#",
-    },
-    {
-      icon: "fab fa-twitter",
-      link: "#",
-    },
-    {
-      icon: "fab fa-instagram",
-      link: "#",
-    },
-    {
-      icon: "fab fa-linkedin",
-      link: "#",
-    },
-  ];
+ const socialData = [
+        {
+            icon: "fab fa-facebook-f",
+            link: "#",
+        },
+        {
+            icon: "fab fa-twitter",
+            link: "#",
+        },
+        {
+            icon: "fab fa-instagram",
+            link: "#",
+        },
+        {
+            icon: "fab fa-linkedin",
+            link: "#",
+        },
+    ];
 
-  const contactData = [
-    {
-      icon: "flaticon-phone-call",
-      text: "1-800-458-56987",
-    },
-    {
-      icon: "flaticon-map",
-      text: "47 Bakery Street, London, UK",
-    },
-    {
-      icon: "flaticon-clock",
-      text: "Mon - Fri 8:00 - 18:00",
-    },
-  ];
+    const contactData = [
+        {
+            icon: "flaticon-phone-call",
+            text: "0973 470 778",
+        },
+        {
+            icon: "flaticon-map",
+            text: "548 Nguyễn Hữu Thọ, Cẩm Lệ, Đà Nẵng QL1A, Hòa Phước, Hòa Vang",
+        },
+        {
+            icon: "flaticon-clock",
+            text: "Thứ 2 - Thứ 7 8:00 - 18:00",
+        },
+    ];
 
   return (
     <div className="header_top home3_style dashbord_style dn-992">
@@ -63,7 +63,7 @@ const DashboardHeaderTop = () => {
                     </a>
                   </li>
                 ))}
-                <li className="list-inline-item">
+                {/* <li className="list-inline-item">
                   <a
                     href="#"
                     data-bs-toggle="modal"
@@ -80,7 +80,7 @@ const DashboardHeaderTop = () => {
                   >
                     Register
                   </a>
-                </li>
+                </li> */}
               </ul>
             </div>
           </div>

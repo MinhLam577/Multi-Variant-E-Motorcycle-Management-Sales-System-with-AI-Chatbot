@@ -4,7 +4,7 @@ import MainMenu from "../common/MainMenu";
 import { ThemeContext } from "@/app/layout/ThemeContext";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import Link from "next/link";
-
+import { usePathname, useSearchParams } from "next/navigation";
 import { Badge } from "antd";
 import PopoverCart from "../popover/cart";
 import PopoverAvatar from "../popover/avatar";
@@ -13,10 +13,15 @@ import { observer } from "mobx-react-lite";
 import { useRouter } from "next/navigation";
 const Header = observer(() => {
     const router = useRouter();
+const pathname = usePathname();
+    const searchParams = useSearchParams();
     const value = useContext(ThemeContext);
     const [keyword, setKeyword] = useState("");
     const handleSearch = () => {
-        if (router.pathname === "/home-motorbike") {
+       
+        const isMotorbikePage =
+      pathname === "/home-motorbike" ;
+        if (isMotorbikePage ) {
             if (keyword.trim()) {
                 const encodedValue = encodeURIComponent(`${keyword}`);
                 router.push(

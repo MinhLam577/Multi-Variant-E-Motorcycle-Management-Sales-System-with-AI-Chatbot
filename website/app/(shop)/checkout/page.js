@@ -8,7 +8,7 @@ import BillingMain from "@/app/components/shop/checkout";
 import AddressDefault from "@/app/components/shop/checkout/addressDefault";
 
 export const metadata = {
-  title: "Checkout || hongson ",
+  title: "Thanh Toán || Hồng Sơn ",
 };
 
 const Checkout = () => {
@@ -42,14 +42,14 @@ const Checkout = () => {
           <div className="row">
             <div className="col-xl-12">
               <div className="breadcrumb_content style2">
-                <h2 className="breadcrumb_title">Shop Checkout</h2>
+                <h2 className="breadcrumb_title">Thanh Toán</h2>
 
                 <ol className="breadcrumb">
                   <li className="breadcrumb-item">
-                    <a href="#">Home</a>
+                    <a href="/">Trang chủ</a>
                   </li>
                   <li className="breadcrumb-item active" aria-current="page">
-                    Checkout
+                    Thanh Toán
                   </li>
                 </ol>
               </div>
