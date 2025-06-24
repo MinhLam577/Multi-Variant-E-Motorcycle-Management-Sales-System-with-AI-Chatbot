@@ -15,17 +15,17 @@ const CartTotal = ({ cartList, cartObservable }) => {
 
   return (
     <div className="order_sidebar_widget style2">
-      <h4 className="title">Cart Totals</h4>
+      <h4 className="title">Tổng giỏ hàng</h4>
       <ul className="mb15">
         <li className="subtitle">
           <p>
-            Subtotal{" "}
+             Tạm tính{" "}
             <span className="float-end">${formatCurrency(subtotal)}</span>
           </p>
         </li>
         <li className="subtitle">
           <p>
-            Total{" "}
+            Tổng tiền{" "}
             <span className="float-end totals color-orose">
               ${formatCurrency(subtotal)}
             </span>
@@ -43,7 +43,7 @@ const CartTotal = ({ cartList, cartObservable }) => {
           }`}
           onClick={() => router.push("/checkout")}
         >
-          Proceed to Checkout
+          Chuyển Đến Thanh Toán
         </button>
       </div>
     </div>

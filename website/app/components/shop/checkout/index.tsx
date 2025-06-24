@@ -143,7 +143,7 @@ const BillingMain = () => {
 
             <div className="col-lg-4">
                 <div className="order_sidebar_widget mb30">
-                    <h4 className="title">Your Order</h4>
+                    <h4 className="title">Đơn hàng của bạn</h4>
                     <OrderAmountDetails
                         listDataSelected={storeCart.listDataSelected}
                     />
@@ -162,7 +162,7 @@ const BillingMain = () => {
                         onClick={handlePlaceOrder}
                         disabled={!storeCart?.selectedItems?.length}
                     >
-                        Place Order
+                        Đặt Hàng
                     </button>
                 </div>
             </div>

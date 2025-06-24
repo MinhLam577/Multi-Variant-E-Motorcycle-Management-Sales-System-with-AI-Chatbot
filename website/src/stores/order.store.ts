@@ -81,6 +81,7 @@ export default class OrderObservable {
         this.returnOrder = this.returnOrder.bind(this);
         this.setStatusMessage = this.setStatusMessage.bind(this);
         this.confirmOrder = this.confirmOrder.bind(this);
+        this.getListOrderCustomer = this.getListOrderCustomer.bind(this)
     }
 
     private validateQuery(query?: string | object): string {
@@ -140,6 +141,7 @@ export default class OrderObservable {
             this.loading = true;
 
             const queryString = this.validateQuery(query);
+            // test
             const response: ResponsePromise = yield OrderAPI.getOrderList(
                 queryString
             );
@@ -162,6 +164,35 @@ export default class OrderObservable {
         } finally {
             this.loading = false;
         }
+    }
+
+    *getListOrderCustomer(idCustomer,query?: string | object) {
+        // try {
+        //     this.loading = true;
+
+        //     const queryString = this.validateQuery(query);
+        //     const response: ResponsePromise = yield OrderAPI.getOrderList(idCustomer,
+        //         queryString
+        //     );
+        //     const { data, status, message } = response;
+        //     const success_status = [200, 201, 204];
+        //     if (success_status.includes(status)) {
+        //         this.data.orders = data.orders;
+        //         this.status = status;
+        //         this.successMsg = message;
+        //     } else {
+        //         this.status = status;
+        //         this.errorMsg = Array.isArray(message)
+        //             ? message.join(", ")
+        //             : message;
+        //     }
+        // } catch (e: any) {
+        //     console.error(e);
+        //     this.status = 500;
+        //     this.errorMsg = e?.message || "Lỗi không xác định";
+        // } finally {
+        //     this.loading = false;
+        // }
     }
 
     *getOrderStatus() {

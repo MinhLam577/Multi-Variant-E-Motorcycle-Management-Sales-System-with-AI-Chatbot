@@ -6,8 +6,68 @@ import listingCar from "@/data/listingCar";
 import Link from "next/link";
 import Image from "next/image";
 import { toCurrency } from "@/utils";
+import { useEffect, useState } from "react";
+import { observer } from "mobx-react-lite";
+import { EnumProductStore, globalFilterType } from "@/src/stores/productStore";
+import { filterEmptyFields } from "@/utils";
+import { paginationData } from "@/src/stores/order.store";
+import { useStore } from "@/src/stores";
+const EnumProductType1 = {
+    CARS: "Xe hơi",
+    MOTOBIKES: "Xe máy điện",
+};
 
-const ReleatedCar = () => {
+const ReleatedCar = observer(() => {
+  const [queryObject, setQueryObject] = useState({
+        brandID: undefined,
+        categoryID: undefined,
+        search: undefined,
+        price_min: undefined,
+        price_max: undefined,
+        type: EnumProductStore.CAR,
+        
+    });
+  const { productObservable } = useStore();
+  const fetchData = async (query, type = EnumProductStore.CAR) => {
+    try {
+        await productObservable.getListProduct(query, type);
+    } catch (e) {
+        console.error("Error fetching data:", e);
+    }
+};
+
+
+    // Cập nhật URL khi người dùng thay đổi lựa chọn
+    const updateUrl = (newParams) => {
+        // Lấy các tham số hiện tại từ URL
+        const newQueryParams = new URLSearchParams(
+            Object.entries(newParams).reduce((acc, [key, value]) => {
+                acc[key] = String(value);
+                return acc;
+            }, {} )
+        );
+        window.history.replaceState(null, "", `?${newQueryParams.toString()}`);
+    };
+
+    const handleClearAllFilters = () => {
+        setQueryObject({
+            brandID: undefined,
+            categoryID: undefined,
+            search: undefined,
+            price_min: undefined,
+            price_max: undefined,
+            type: queryObject.type,
+        });
+    };
+
+    useEffect(() => {
+        if (Object.keys(queryObject).length > 0) {
+            const searchObject = filterEmptyFields(queryObject);
+            updateUrl(searchObject);
+            fetchData(searchObject, queryObject.type);
+        }
+    }, [queryObject]);
+
   return (
     <>
       <Swiper
@@ -35,33 +95,33 @@ const ReleatedCar = () => {
           },
         }}
       >
-        {listingCar.slice(0, 6).map((listing) => (
-          <SwiperSlide key={listing.id}>
+        {productObservable?.data?.cars?.data.slice(0, 6).map((listing) => (
+          <SwiperSlide key={listing?.products?.id}>
             <div className="item">
               <div className="car-listing">
                 <div className="thumb">
-                  {listing.featured ? (
+                  {!listing?.featured ? (
                     <>
                       <div className="tag">Mới</div>
                     </>
                   ) : undefined}
-                  {!listing.featured ? (
+                  {listing?.featured ? (
                     <>
                       <div className="tag blue">Đã qua sử dụng</div>
                     </>
                   ) : undefined}
+                 <Link href={`/listing-single-v1/${listing?.products?.id}?type=car`}>
+    <div className="w-full h-[220px] relative overflow-hidden rounded-t-xl">
+    <Image
+      src={listing?.products?.images?.[0]}
+      alt={listing?.products?.images?.[0]}
+      fill
+      priority
+      className="object-cover"
+    />
+  </div>
+</Link>
 
-                  <Image
-                    width={284}
-                    height={183}
-                    style={{
-                      width: "100%",
-                      objectFit: "cover",
-                    }}
-                    priority
-                    src={listing.image}
-                    alt={listing.title}
-                  />
                   <div className="thmb_cntnt2">
                     <ul className="mb0">
                       <li className="list-inline-item">
@@ -95,9 +155,9 @@ const ReleatedCar = () => {
                 </div>
                 <div className="details">
                   <div className="wrapper">
-                    <h5 className="price">{toCurrency(listing.price)}</h5>
+                    <h5 className="price">{toCurrency(listing?.price)}</h5>
                     <h6 className="title">
-                      <Link href="/listing-single-v1">{listing.title}</Link>
+                      <Link href={`/listing-single-v1/${listing?.products?.id}?type=car`}> {listing?.products?.title}</Link>
                     </h6>
                   </div>{" "}
                   <div className="listing_footer">
@@ -127,6 +187,6 @@ const ReleatedCar = () => {
       </div>
     </>
   );
-};
+});
 
 export default ReleatedCar;

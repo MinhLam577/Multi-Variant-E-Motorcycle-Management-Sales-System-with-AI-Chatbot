@@ -188,7 +188,10 @@ const endpoints = {
         uploads: "/receive-address/upload-images",
     },
     order: {
-        list: (query: string = "current=1&pageSize=20") => `/order?${query}`,
+        // list: (customerId: string, query: string = "current=1&pageSize=20") =>
+        // `/order/${customerId}/customer?${query}`,
+           list: ( query: string = "current=1&pageSize=20") =>
+        `/order/?${query}`,
         getStatus: () => "/order/order-status",
         getOrderDetail: (id: string) => `/order/${id}`,
         updateOrderStatus: (id: string) => `/order/${id}/status`,
