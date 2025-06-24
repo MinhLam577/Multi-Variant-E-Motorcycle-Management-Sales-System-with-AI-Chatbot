@@ -1,0 +1,4 @@
+.search-mobile .ant-input-affix-wrapper,
+.search-mobile .ant-select-selector {
+    border-radius: 0 !important;
+}

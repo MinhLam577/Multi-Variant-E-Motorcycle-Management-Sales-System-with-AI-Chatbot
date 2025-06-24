@@ -12,8 +12,8 @@ import MotorHero from "@/app/components/home/MotorHero";
 import SaleBanner from "@/app/components/home/SaleBanner";
 import Link from "next/link";
 export const metadata = {
-    title: "Salon Ô Tô Hồng Sơn | Mua Bán Xe Hơi Uy Tín & Chất Lượng",
-    description: `Salon Ô Tô Hồng Sơn - Địa chỉ uy tín chuyên cung cấp các dòng xe hơi chất lượng cao, dịch vụ chăm sóc khách hàng chuyên nghiệp, giá cả cạnh tranh.`,
+    title: "Ô Tô Hồng Sơn | Mua Bán Xe Hơi Uy Tín & Chất Lượng",
+    description: `Ô Tô Hồng Sơn - Địa chỉ uy tín chuyên cung cấp các dòng xe hơi chất lượng cao, dịch vụ chăm sóc khách hàng chuyên nghiệp, giá cả cạnh tranh.`,
 };
 
 const partners = [

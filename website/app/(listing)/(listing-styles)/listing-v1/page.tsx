@@ -19,7 +19,6 @@ import {
 } from "@/src/stores/productStore";
 import { filterEmptyFields } from "@/utils";
 import { observer } from "mobx-react-lite";
-import { reaction } from "mobx";
 import { headerWithActionsStore } from "@/app/components/common/HeaderWidthActions";
 
 const ListingV1 = observer(() => {
@@ -42,8 +41,22 @@ const ListingV1 = observer(() => {
     const [type, setType] = useState<EnumProductStore>();
     useEffect(() => {
         const typeFromParams = searchParams.get("type");
+        const categoryIDFromParams = searchParams.get("categoryID");
+        const search = searchParams.get("search");
         if (typeFromParams) {
             setType(typeFromParams as EnumProductStore);
+        }
+        if (categoryIDFromParams) {
+            setQueryObject((prev) => ({
+                ...prev,
+                categoryID: categoryIDFromParams,
+            }));
+        }
+        if (search !== undefined) {
+            setQueryObject((prev) => ({
+                ...prev,
+                search: search,
+            }));
         }
     }, [searchParams]);
 
