@@ -1,14 +1,17 @@
 "use client";
-import menuItems from "@/data/menuItems";
 import { useStore } from "@/src/stores";
 import { CategoryResponseType } from "@/src/stores/categories";
 import { isParentActive } from "@/utils/isMenuActive";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Menu, MenuItem, Sidebar, SubMenu } from "react-pro-sidebar";
 import { toJS } from "mobx";
+import PopoverAvatar from "../popover/avatar";
+import { ShoppingCartOutlined } from "@ant-design/icons";
+import PopoverCart from "../popover/cart";
+import { Badge } from "antd";
 
 export interface IMenuItems {
     label: string;
@@ -62,6 +65,23 @@ const MobileMenu = () => {
     ];
 
     const store = useStore();
+    const [user, setUser] = useState("");
+
+    const AccountStore = store.accountObservable;
+    const cartStore = store.cartObservable;
+    useEffect(() => {
+        const fetchData = async () => {
+            await AccountStore?.getAccount(); // lấy thông tin người dùng
+            const account = AccountStore?.account;
+            setUser(account);
+
+            if (account) {
+                await cartStore.getListCart(); // chỉ gọi khi đã có user
+            }
+        };
+
+        fetchData();
+    }, []);
     const { categoryObservable, blogCategoryObservable } = store;
     useEffect(() => {
         const fetchCategories = async () => {
@@ -109,7 +129,6 @@ const MobileMenu = () => {
     const getMenuItems = () => {
         const defaultMenuItems: IMenuItems[] = [
             { label: "Giới thiệu", path: "/about-us" },
-            { label: "Khuyến mãi", path: "/khuyen-mai" },
             { label: "Tin tức", path: "/blog-list" },
             { label: "Liên hệ", path: "/lien-he" },
         ];
@@ -168,7 +187,7 @@ const MobileMenu = () => {
                 data-bs-scroll="true"
             >
                 <div className="offcanvas-body">
-                    <div className="pro-header">
+                    <div className="pro-header flex justify-between items-stretch">
                         <Link href="/">
                             <Image
                                 width={140}
@@ -179,11 +198,60 @@ const MobileMenu = () => {
                             />
                         </Link>
                         <div
-                            className="fix-icon"
+                            className="fix-icon flex gap-4 items-end justify-between flex-col flex-1"
                             data-bs-dismiss="offcanvas"
                             aria-label="Close"
                         >
                             <i className="fa-light fa-circle-xmark"></i>
+                            <div className="flex items-center justify-center gap-4 ">
+                                {user && (
+                                    <PopoverCart
+                                        dataCart={cartStore?.data}
+                                        cart={
+                                            <Badge
+                                                count={
+                                                    cartStore.data?.length || 0
+                                                }
+                                            >
+                                                <ShoppingCartOutlined className="text-2xl text-white" />
+                                            </Badge>
+                                        }
+                                    />
+                                )}
+                                {user ? (
+                                    // Nếu đã đăng nhập
+                                    <PopoverAvatar
+                                        avatar={
+                                            <div className="flex items-center gap-4">
+                                                <img
+                                                    src={
+                                                        AccountStore?.account
+                                                            ?.avatarUrl ||
+                                                        "https://res.cloudinary.com/diwacy6yr/image/upload/v1728441530/User/default.png"
+                                                    }
+                                                    alt="Avatar"
+                                                    className="min-w-8 w-8 h-8 rounded-full object-cover filter invert"
+                                                />
+                                            </div>
+                                        }
+                                    />
+                                ) : (
+                                    <div className="flex gap-2 items-center">
+                                        <Link
+                                            href="/login"
+                                            className="cursor-pointer text-[15px] w-20 !text-white text-center "
+                                        >
+                                            Đăng nhập
+                                        </Link>
+                                        <Link
+                                            href="/signup"
+                                            className="cursor-pointer text-[15px] w-14 !text-white text-center "
+                                        >
+                                            Đăng ký
+                                        </Link>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                     {/* End pro-header */}

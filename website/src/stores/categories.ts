@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, toJS } from "mobx";
 import { ExportOrder, ResponsePromise } from "../api/order";
 import { RootStore } from "./base";
 import { getAllCategory } from "../api/categories";
@@ -111,7 +111,7 @@ export default class CategoryObservable {
             const { data, status, message } = response;
             const success_status = [200, 201, 204];
             if (success_status.includes(status)) {
-                this.data.categories = data?.data;
+                this.data.categories = toJS(data?.data);
                 this.status = status;
                 this.successMsg = message;
             } else {

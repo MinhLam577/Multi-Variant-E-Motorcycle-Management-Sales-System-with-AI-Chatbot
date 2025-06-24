@@ -9,11 +9,11 @@ SwiperCore.use([Navigation]);
 const MotorHero = () => {
     const slides = [
         {
-            image: "/images/home-motor/homepage-motor.jpg",
+            image: "/images/home-motor/homepage-motor-3.jpg",
             height: "700px",
         },
         {
-            image: "/images/home-motor/homepage-motor-3.jpg",
+            image: "/images/home-motor/homepage-motor-2.jpg",
             height: "700px",
         },
     ];

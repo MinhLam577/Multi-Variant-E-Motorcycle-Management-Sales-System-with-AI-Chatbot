@@ -121,7 +121,6 @@ const Header = observer(() => {
                                     }
                                 />
                             )}
-
                             {user ? (
                                 // Nếu đã đăng nhập
                                 <PopoverAvatar
