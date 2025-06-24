@@ -118,13 +118,6 @@ const ListingV1 = observer(() => {
         });
     };
 
-    const scrollToTop = () => {
-        window.scrollTo({
-            top: 250,
-            behavior: "smooth",
-        });
-    };
-
     useEffect(() => {
         if (queryObject.type) {
             const searchObject = filterEmptyFields(queryObject);
@@ -135,17 +128,6 @@ const ListingV1 = observer(() => {
 
     useEffect(() => {
         fetchOtherData();
-        // const reactionLoading = reaction(
-        //     () => storeProduct.loading,
-        //     (loading) => {
-        //         if (!loading) {
-        //             scrollToTop();
-        //         }
-        //     }
-        // );
-        // return () => {
-        //     reactionLoading();
-        // };
     }, []);
 
     return (
@@ -178,6 +160,7 @@ const ListingV1 = observer(() => {
                     <AdvanceFilter
                         handleFilterChange={setQueryObject}
                         handleClearAllFilters={handleClearAllFilters}
+                        queryObject={queryObject}
                     />
                 </div>
             </section>
