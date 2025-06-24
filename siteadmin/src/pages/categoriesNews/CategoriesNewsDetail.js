@@ -281,7 +281,7 @@ const CategoriesNewsDetail = ({ mode }) => {
                         >
                             <Input
                                 readOnly={isReadOnly()}
-                                placeholder="Nhập slug của danh mục  tin tức"
+                                placeholder="Nhập slug của danh mục tin tức"
                             />
                         </Form.Item>
                         <Form.Item
@@ -300,16 +300,23 @@ const CategoriesNewsDetail = ({ mode }) => {
                                 placeholder="Nhập Tóm tắt tin tức"
                             />
                         </Form.Item>
-                        <div className="flex justify-end">
+                        <div className="flex justify-center flex-col gap-4 sm:gap-0 sm:flex-row sm:justify-end">
                             <Button onClick={handleCancel}>
                                 {getButtonCancelText()}
                             </Button>
                             {isReadOnly() ? (
                                 <>
                                     <Divider type="vertical" />
-                                    <Button onClick={handleEdit}>
-                                        {getButtonEditText()}
-                                    </Button>
+                                    <Access
+                                        permission={
+                                            ALL_PERMISSIONS.BLOGCATEGORY.UPDATE
+                                        }
+                                        hideChildren
+                                    >
+                                        <Button onClick={handleEdit}>
+                                            {getButtonEditText()}
+                                        </Button>
+                                    </Access>
                                     <Divider type="vertical" />
                                     <Access
                                         permission={

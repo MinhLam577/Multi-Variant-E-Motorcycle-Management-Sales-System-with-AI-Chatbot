@@ -49,11 +49,13 @@ const ExportPage: React.FC<ExportPageProps> = ({
                         day: "2-digit",
                     });
                 },
+                responsive: ["md"],
             },
             {
                 title: "Ghi chú",
                 dataIndex: "note",
                 key: "note",
+                responsive: ["lg"],
             },
             {
                 title: "Số lượng xuất",
@@ -67,6 +69,7 @@ const ExportPage: React.FC<ExportPageProps> = ({
                         0
                     );
                 },
+                responsive: ["sm"],
             },
             {
                 title: "Thao tác",

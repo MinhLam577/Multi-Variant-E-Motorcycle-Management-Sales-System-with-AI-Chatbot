@@ -67,13 +67,14 @@ export default class ExportObservable {
     }
 
     private validateQuery(query?: string | object): string {
-        // Xử lý chuyển đổi query string thành object
         let parsedQuery: globalFilterExportDataType & paginationData = {
-            ...(typeof query === "string"
-                ? Object.fromEntries(new URLSearchParams(query.trim()))
-                : query),
             current: Number(this.pagination.current),
             pageSize: Number(this.pagination.pageSize),
+            ...(typeof query === "string"
+                ? Object.fromEntries(new URLSearchParams(query.trim()))
+                : query
+                  ? query
+                  : {}),
         };
 
         // Gộp filters và xử lý dữ liệu
@@ -118,13 +119,7 @@ export default class ExportObservable {
     ) {
         this.setLoading(true);
         try {
-            const { product_id, ...restFilter } =
-                "product_id" in query
-                    ? query
-                    : { ...query, product_id: undefined };
-            const queryString = this.validateQuery({
-                ...restFilter,
-            });
+            const queryString = this.validateQuery(query);
             const response = yield ExportAPI.getList(queryString);
             const { data, message, status } = response;
             const responseData = data?.data;

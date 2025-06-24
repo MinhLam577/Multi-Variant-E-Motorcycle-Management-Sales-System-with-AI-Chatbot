@@ -1,6 +1,5 @@
 import {
     GlobalOutlined,
-    HomeOutlined,
     SettingOutlined,
     SolutionOutlined,
     UserSwitchOutlined,
@@ -43,7 +42,7 @@ export default function Setting() {
     return (
         <div style={{ height: "500px" }} className="animate-slideDown">
             <Card style={{ width: "100%", height: "100%" }}>
-                <div className="grid grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     {settingsItems.map((item, index) => (
                         <div
                             key={index}

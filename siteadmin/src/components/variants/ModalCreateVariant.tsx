@@ -214,7 +214,6 @@ const ModalCreateVariant: React.FC<ModalCreateVariantProps> = ({
 
             // Kiểm tra xem ảnh có phải là base64 hay không
             if (formValue.image && formValue.image.startsWith("data:image")) {
-                // Handle base64 image (create or new image upload)
                 const convertImageFile = await convertBase64ToFile(
                     formValue.image,
                     `${Date.now().toString()}.jpeg`
@@ -248,7 +247,6 @@ const ModalCreateVariant: React.FC<ModalCreateVariantProps> = ({
                     barcode: formValue.barcode,
                     image: uploadImage,
                     masku: formValue.masku,
-                    name: formValue.name,
                     price_compare: Number(formValue.price_compare),
                     price_sold: Number(formValue.price_sold),
                     variant_combinations: optionValue,
@@ -292,7 +290,6 @@ const ModalCreateVariant: React.FC<ModalCreateVariantProps> = ({
                     product_id: props?.productId,
                     masku: formValue.masku,
                     barcode: formValue.barcode,
-                    name: formValue.name,
                     image: uploadImage,
                     price_sold: Number(formValue.price_sold),
                     price_compare: Number(formValue.price_compare),
@@ -373,6 +370,19 @@ const ModalCreateVariant: React.FC<ModalCreateVariantProps> = ({
         return `Tạo biến thể của sản phẩm ${defaultForm.getFieldValue("title")}`;
     };
 
+    const hasOption = useCallback(() => {
+        const options = defaultForm.getFieldValue("options");
+        return Array.isArray(options) && options.length > 0;
+    }, [defaultForm]);
+
+    const getOption = useCallback(() => {
+        const options = defaultForm.getFieldValue("options");
+        if (Array.isArray(options) && options.length > 0) {
+            return options;
+        }
+        return [];
+    }, [defaultForm]);
+
     return (
         <CustomizeModal
             {...props}
@@ -404,43 +414,43 @@ const ModalCreateVariant: React.FC<ModalCreateVariantProps> = ({
                         >
                             <span>Các thuộc tính</span>
                         </h2>
-                        <Row gutter={16} align={"stretch"}>
-                            <Col span={24} className="h-full">
-                                <Form.Item label={"Tên biến thể"} name={"name"}>
-                                    <Input
-                                        placeholder="Nhập tên biến thể"
-                                        className="w-full"
-                                    />
-                                </Form.Item>
-                            </Col>
-                            {defaultForm
-                                ?.getFieldValue("options")
-                                ?.map((option: OptionValueOfProductType) => {
-                                    return (
-                                        <Col span={18} key={option.id}>
-                                            <Form.Item
-                                                label={option.name}
-                                                name={[
-                                                    "optionValue",
-                                                    option.id,
-                                                ]}
-                                                rules={[
-                                                    {
-                                                        required: true,
-                                                        message:
-                                                            "Vui lòng nhập giá trị",
-                                                    },
-                                                ]}
-                                            >
-                                                <Input
-                                                    placeholder={`Nhập ${option.name}`}
-                                                    className="w-full"
-                                                />
-                                            </Form.Item>
-                                        </Col>
-                                    );
-                                })}
-                            <Col span={6}>
+                        <Row gutter={16} align={"top"}>
+                            {hasOption() && (
+                                <Col xl={18} lg={18} md={18} xs={24}>
+                                    {getOption()?.map(
+                                        (option: OptionValueOfProductType) => {
+                                            return (
+                                                <Form.Item
+                                                    key={option.id}
+                                                    label={option.name}
+                                                    name={[
+                                                        "optionValue",
+                                                        option.id,
+                                                    ]}
+                                                    rules={[
+                                                        {
+                                                            required: true,
+                                                            message:
+                                                                "Vui lòng nhập giá trị",
+                                                        },
+                                                    ]}
+                                                >
+                                                    <Input
+                                                        placeholder={`Nhập ${option.name}`}
+                                                        className="w-full"
+                                                    />
+                                                </Form.Item>
+                                            );
+                                        }
+                                    )}
+                                </Col>
+                            )}
+                            <Col
+                                xl={hasOption() ? 6 : 24}
+                                lg={hasOption() ? 6 : 24}
+                                md={hasOption() ? 6 : 24}
+                                xs={24}
+                            >
                                 <Form.Item
                                     label="Ảnh biến thể"
                                     name="image"
@@ -524,7 +534,7 @@ const ModalCreateVariant: React.FC<ModalCreateVariantProps> = ({
                             <span>Thông tin giá</span>
                         </h2>
                         <Row gutter={24}>
-                            <Col sm={24} md={12} lg={12} xl={12}>
+                            <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                                 <Form.Item
                                     label="Giá bán"
                                     name={"price_sold"}
@@ -558,7 +568,7 @@ const ModalCreateVariant: React.FC<ModalCreateVariantProps> = ({
                                     />
                                 </Form.Item>
                             </Col>
-                            <Col sm={24} md={12} lg={12} xl={12}>
+                            <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                                 <Form.Item
                                     label="Giá so sánh"
                                     name={"price_compare"}
@@ -601,7 +611,13 @@ const ModalCreateVariant: React.FC<ModalCreateVariantProps> = ({
                             </h2>
                             {!props?.isUpdate && (
                                 <Row gutter={24} align={"middle"}>
-                                    <Col sm={24} md={12} lg={12} xl={12}>
+                                    <Col
+                                        xs={24}
+                                        sm={24}
+                                        md={12}
+                                        lg={12}
+                                        xl={12}
+                                    >
                                         <Form.Item
                                             label="Giá vốn"
                                             name={"price_import"}
@@ -639,7 +655,13 @@ const ModalCreateVariant: React.FC<ModalCreateVariantProps> = ({
                                             />
                                         </Form.Item>
                                     </Col>
-                                    <Col sm={24} md={12} lg={12} xl={12}>
+                                    <Col
+                                        xs={24}
+                                        sm={24}
+                                        md={12}
+                                        lg={12}
+                                        xl={12}
+                                    >
                                         <div className="flex gap-6 justify-start items-center w-full">
                                             <div className="flex flex-col gap-2">
                                                 <span>Biên lợi nhuận</span>
@@ -665,7 +687,7 @@ const ModalCreateVariant: React.FC<ModalCreateVariantProps> = ({
                             )}
 
                             <Row gutter={24}>
-                                <Col sm={24} md={12} lg={12} xl={12}>
+                                <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                                     <Form.Item
                                         label="SKU"
                                         name={"masku"}
@@ -695,7 +717,7 @@ const ModalCreateVariant: React.FC<ModalCreateVariantProps> = ({
                                         />
                                     </Form.Item>
                                 </Col>
-                                <Col sm={24} md={12} lg={12} xl={12}>
+                                <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                                     <Form.Item
                                         label="Barcode"
                                         name={"barcode"}

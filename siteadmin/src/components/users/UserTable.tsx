@@ -47,12 +47,14 @@ const getColumnsConfig = ({
             dataIndex: "email",
             key: "email",
             ellipsis: true,
+            responsive: ["lg"],
         },
         {
             title: "Số điện thoại",
             dataIndex: "phoneNumber",
             key: "phoneNumber",
             ellipsis: true,
+            responsive: ["lg"],
         },
 
         {
@@ -69,6 +71,7 @@ const getColumnsConfig = ({
                       })
                     : "Chưa có ngày sinh";
             },
+            responsive: ["xl"],
         },
 
         {
@@ -83,6 +86,7 @@ const getColumnsConfig = ({
                 )[0]?.toUpperCase();
                 return roleName ? RoleEnumValue[roleName] : "Chưa có vai trò";
             },
+            responsive: ["sm"],
         },
 
         {

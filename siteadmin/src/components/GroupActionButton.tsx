@@ -1,4 +1,9 @@
-import { DeleteOutlined, EditOutlined, UndoOutlined } from "@ant-design/icons";
+import {
+    CloseCircleOutlined,
+    DeleteOutlined,
+    EditOutlined,
+    UndoOutlined,
+} from "@ant-design/icons";
 import { Button } from "antd";
 import { observer } from "mobx-react-lite";
 import Access from "src/access/access";
@@ -9,6 +14,7 @@ export interface IGroupActionButtonProps {
     handleUpdate?: (item: any) => void;
     handleDelete?: (id: string | number) => void;
     handleRestore?: (id: string | number) => void;
+    handleHardDelete?: (id: string | number) => void;
     moduleName?: string;
     item?: any;
 }
@@ -18,6 +24,7 @@ const GroupActionButton: React.FC<IGroupActionButtonProps> = ({
     handleUpdate,
     handleDelete,
     handleRestore,
+    handleHardDelete,
     moduleName,
     item,
 }) => {
@@ -57,6 +64,19 @@ const GroupActionButton: React.FC<IGroupActionButtonProps> = ({
                     onClick={() => handleRestore(item.id)}
                     style={{ minWidth: "30px" }}
                 />
+            )}
+
+            {handleHardDelete && (
+                <Access
+                    permission={ALL_PERMISSIONS?.[`${moduleName}`]?.HARD_DELETE}
+                    hideChildren={true}
+                >
+                    <Button
+                        onClick={() => handleHardDelete(item.id)}
+                        icon={<CloseCircleOutlined title="Xóa vĩnh viễn" />}
+                        style={{ minWidth: "30px" }}
+                    />
+                </Access>
             )}
         </div>
     );

@@ -52,6 +52,11 @@ export const ALL_PERMISSIONS = {
             path: "/api/v1/products/:id",
             module: "PRODUCTS",
         },
+        HARD_DELETE: {
+            method: "DELETE",
+            path: "/api/v1/products/:id/hard-delete",
+            module: "PRODUCTS",
+        },
     },
     SKUS: {
         GET_PAGINATE: {
@@ -374,6 +379,28 @@ export const ALL_PERMISSIONS = {
             module: "DASHBOARD",
         },
     },
+    CONTACT: {
+        GET_PAGINATE: {
+            method: "GET",
+            path: "/api/v1/contact",
+            module: "CONTACT",
+        },
+        CREATE: {
+            method: "POST",
+            path: "/api/v1/contact",
+            module: "CONTACT",
+        },
+        UPDATE: {
+            method: "PATCH",
+            path: "/api/v1/contact/:id",
+            module: "CONTACT",
+        },
+        DELETE: {
+            method: "DELETE",
+            path: "/api/v1/contact/:id",
+            module: "CONTACT",
+        },
+    },
 };
 
 export const ALL_MODULES = {
@@ -396,4 +423,5 @@ export const ALL_MODULES = {
     IMPORT: "IMPORT",
     DETAIL_IMPORT: "DETAIL_IMPORT",
     FILES: "FILES",
+    CONTACT: "CONTACT",
 };

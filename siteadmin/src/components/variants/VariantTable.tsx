@@ -8,9 +8,11 @@ import {
     ProcessModalName,
 } from "src/containers/processWithModals.js";
 import { DetailImportResponseType } from "src/stores/imports.store";
-import { Image, Tooltip } from "antd";
+import { Image, Tooltip, Grid } from "antd";
 import { getErrorMessage } from "src/utils";
 import { ALL_MODULES } from "src/constants/permissions";
+const { useBreakpoint } = Grid;
+
 interface VariantTableProps {
     data: SkusResponseType[];
     handleUpdateSkus?: (item: SkusResponseType) => void;
@@ -23,6 +25,7 @@ const VariantTable: React.FC<VariantTableProps> = ({
     handleDeleteSkus,
 }) => {
     const store = useStore();
+    const screen = useBreakpoint();
     const skusStore = store.skusObservable;
     const getColumnsConfig = ({
         handleUpdate,
@@ -37,12 +40,15 @@ const VariantTable: React.FC<VariantTableProps> = ({
                 dataIndex: "name",
                 key: "name",
                 render: (text: string, record: SkusResponseType) => {
+                    const optionValue = record.optionValue
+                        .map((ov) => ov.value)
+                        .join(" / ");
                     return (
                         <div
                             className={`flex items-center gap-2 justify-start`}
                         >
                             <div
-                                className={`w-14 h-14 shrink-0 flex justify-center items-center`}
+                                className={`w-14 h-14 shrink-0 hidden md:flex justify-center items-center`}
                             >
                                 <Image
                                     src={record.image}
@@ -61,17 +67,18 @@ const VariantTable: React.FC<VariantTableProps> = ({
                                     </span>
                                 </Tooltip>
                                 <Tooltip
-                                    title={record.name}
+                                    title={optionValue}
                                     placement="topLeft"
                                 >
                                     <span className="text-sm font-normal text-gray-500 truncate">
-                                        {record.name}
+                                        {optionValue}
                                     </span>
                                 </Tooltip>
                             </div>
                         </div>
                     );
                 },
+                width: screen.md ? 250 : 150,
             },
             {
                 title: "Mã SKU/Barcode",
@@ -89,6 +96,7 @@ const VariantTable: React.FC<VariantTableProps> = ({
                         </div>
                     );
                 },
+                responsive: ["xl"],
             },
             {
                 title: "Giá bán",
@@ -104,6 +112,7 @@ const VariantTable: React.FC<VariantTableProps> = ({
                         </div>
                     );
                 },
+                responsive: ["lg"],
             },
             {
                 title: "Tồn kho",
@@ -121,6 +130,7 @@ const VariantTable: React.FC<VariantTableProps> = ({
                         </div>
                     );
                 },
+                responsive: ["sm"],
             },
             {
                 title: "Thao tác",

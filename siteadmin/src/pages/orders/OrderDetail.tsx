@@ -240,52 +240,33 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
     };
 
     // Modal xuất đơn hàng
-    // const [open_modal_export_order, set_open_export_order] = useState(false);
-    // const handleSaveExportOrderModal = async (
-    //     orderExport: CreateDetailExport[],
-    //     note: string
-    // ): Promise<boolean> => {
-    //     try {
-    //         const data: ExportOrder = {
-    //             order_id: orderDetail.id,
-    //             detail_export: orderExport,
-    //             note: note,
-    //         };
-    //         const res = await order_store.confirmOrder(data);
-    //         return !!res;
-    //     } catch (e: any) {
-    //         console.error("Error confirming and saving export order:", e);
-    //         const errorMessage = getErrorMessage(
-    //             e,
-    //             "Lỗi khi xác nhận và lưu xuất đơn hàng"
-    //         );
-    //         store.setStatusMessage(500, errorMessage, "");
-    //     }
-    // };
-
-    // const handleCloseExportOrderModal = () => {
-    //     set_open_export_order(false);
-    // };
-
-    const skus_ids = orderDetail?.order_details.map((item) => item.skus.id);
-    const map_detail_import_skus = new Map<string, any>();
-
-    const fetchDetailImportsBySkusIds = async (skus_ids: string[]) => {
-        await skus_store.getDetailImportsByIds(skus_ids);
-        const data = skus_store.data.detail_imports;
-        if (data.length > 0) {
-            data.forEach((item, index) => {
-                if (!map_detail_import_skus.has(skus_ids[index])) {
-                    map_detail_import_skus.set(skus_ids[index], item);
-                }
-            });
+    const [open_modal_export_order, set_open_export_order] = useState(false);
+    const handleSaveExportOrderModal = async (): Promise<boolean> => {
+        try {
+            handleConfirmOrderStatus(orderNo);
+            // const data: ExportOrder = {
+            //     order_id: orderDetail.id,
+            //     detail_export: orderExport,
+            //     note: note,
+            // };
+            // const res = await order_store.confirmOrder(data);
+            // return !!res;
+            // await order_store.confirmOrder()
+            // return !!data;
+            return true;
+        } catch (e: any) {
+            console.error("Error confirming and saving export order:", e);
+            const errorMessage = getErrorMessage(
+                e,
+                "Lỗi khi xác nhận và lưu xuất đơn hàng"
+            );
+            store.setStatusMessage(500, errorMessage, "");
         }
     };
-    useEffect(() => {
-        if (skus_ids) {
-            fetchDetailImportsBySkusIds(skus_ids);
-        }
-    }, [skus_ids]);
+
+    const handleCloseExportOrderModal = () => {
+        set_open_export_order(false);
+    };
 
     return (
         <div key={orderNo} className="p-4" id={"order_detail_container"}>
@@ -349,8 +330,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
                                             status ===
                                             EnumOrderStatusesValue.PENDING
                                         ) {
-                                            // set_open_export_order(true);
-                                            handleConfirmOrderStatus(orderNo);
+                                            set_open_export_order(true);
                                         } else {
                                             store.setStatusMessage(
                                                 400,
@@ -364,7 +344,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
                                 </Button>
                             </Access>
                         )}
-                        {order_store.OrderDetailStatus ===
+                        {/* {order_store.OrderDetailStatus ===
                             EnumOrderStatusesValue.CONFIRMED && (
                             <Access
                                 permission={ALL_PERMISSIONS.ORDERS.EXPORTED}
@@ -378,7 +358,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
                                     Xuất hàng ra kho
                                 </Button>
                             </Access>
-                        )}
+                        )} */}
                         {order_store.OrderDetailStatus ===
                             EnumOrderStatusesValue.EXPORTED && (
                             <Access
@@ -492,13 +472,12 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
                     placeholder_input={`Nhập lý do`}
                 />
 
-                {/* <ModalExportOrder
+                <ModalExportOrder
                     isOpen={open_modal_export_order}
                     handleClose={handleCloseExportOrderModal}
                     handleSave={handleSaveExportOrderModal}
                     orderDetail={orderDetail}
-                    map_skus_detail_import={map_detail_import_skus}
-                /> */}
+                />
                 <CustomerDescription orderDetail={orderDetail} />
             </div>
             <div className="hidden">

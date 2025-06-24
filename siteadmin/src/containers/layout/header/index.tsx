@@ -1,18 +1,33 @@
 import {
     LogoutOutlined,
+    MenuOutlined,
     ProfileOutlined,
     UserOutlined,
 } from "@ant-design/icons";
-import { Avatar, Col, Layout, Menu, Popover, Row, Space, theme } from "antd";
+import {
+    Avatar,
+    Button,
+    Col,
+    Layout,
+    Menu,
+    Popover,
+    Row,
+    Space,
+    theme,
+} from "antd";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useStore } from "../../../stores";
 import { ProcessModalName, processWithModals } from "../../processWithModals";
 import { useAuth } from "../../../contexts/AuthProvider";
 const { Header } = Layout;
-
+import { appLayoutStore } from "..";
+import { observer } from "mobx-react-lite";
+import { Grid } from "antd";
+const { useBreakpoint } = Grid;
 const HeaderComponent = () => {
     const navigate = useNavigate();
+    const screens = useBreakpoint();
     const { accountObservable } = useStore();
     const account = accountObservable?.account;
     const auth = useAuth();
@@ -74,15 +89,47 @@ const HeaderComponent = () => {
             />
         );
     };
-
+    const getGreetingByTime = () => {
+        const currentHour = new Date().getHours();
+        if (currentHour < 12) {
+            return "Chào buổi sáng";
+        } else if (currentHour < 18) {
+            return "Chào buổi chiều";
+        } else {
+            return "Chào buổi tối";
+        }
+    };
     return (
         <Header
             style={{
                 background: "#f7fafd",
             }}
-            className="px-2 pr-8 border-b border-b-gray-600 shadow-lg mb-4"
+            className="px-6 pr-8 border-b border-b-gray-600 shadow-lg mb-4"
         >
-            <Row justify="end">
+            <Row justify="space-between" align="middle">
+                <Col>
+                    {screens.md ? (
+                        <div
+                            className="text-gray-700 text-lg font-semibold cursor-pointer"
+                            style={{ userSelect: "none" }}
+                        >
+                            {getGreetingByTime()}
+                            {", "}
+                            <span>{account?.username || "Khách"}</span>
+                        </div>
+                    ) : (
+                        !appLayoutStore.openDrawer && (
+                            <Button
+                                type="default"
+                                onClick={() => {
+                                    appLayoutStore.setOpenDrawer(true);
+                                }}
+                            >
+                                <MenuOutlined />
+                            </Button>
+                        )
+                    )}
+                </Col>
                 <Col>
                     <Popover
                         placement="bottomLeft"
@@ -108,4 +155,4 @@ const HeaderComponent = () => {
         </Header>
     );
 };
-export default HeaderComponent;
+export default observer(HeaderComponent);

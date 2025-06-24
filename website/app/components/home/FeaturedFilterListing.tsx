@@ -37,15 +37,16 @@ const FeaturedFilterListing = observer(() => {
                             <div className="car-listing">
                                 <div className="thumb">
                                     <Image
-                                        width={284}
-                                        height={183}
                                         style={{
                                             width: "100%",
                                             objectFit: "cover",
                                         }}
+                                        width={383}
+                                        height={284}
                                         priority
                                         src={listing.images[0]}
                                         alt={listing.title}
+                                        className="!h-64"
                                     />
                                 </div>
                                 <div className="details">

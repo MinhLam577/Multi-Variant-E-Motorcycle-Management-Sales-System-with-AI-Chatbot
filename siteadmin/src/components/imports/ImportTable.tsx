@@ -49,11 +49,13 @@ const ImportTable: React.FC<ImportTableProps> = ({
                         day: "2-digit",
                     });
                 },
+                responsive: ["md"],
             },
             {
                 title: "Ghi chú",
                 dataIndex: "note",
                 key: "note",
+                responsive: ["lg"],
             },
             {
                 title: "Số lượng nhập",
@@ -65,6 +67,7 @@ const ImportTable: React.FC<ImportTableProps> = ({
                         0
                     );
                 },
+                responsive: ["md"],
             },
             {
                 title: "Thao tác",

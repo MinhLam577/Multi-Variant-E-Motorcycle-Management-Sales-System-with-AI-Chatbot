@@ -13,6 +13,7 @@ import VoucherSearch from "../../components/vouchers/VoucherSearch";
 import Access from "../../access/access.tsx";
 import { ALL_PERMISSIONS } from "../../constants/permissions";
 const Vouchers = observer(() => {
+    const [filteredVouchers, setFilteredVouchers] = useState([]);
     const navigate = useNavigate();
     const { globalDispatch } = useContext(GlobalContext);
     const store = useStore();
@@ -45,10 +46,48 @@ const Vouchers = observer(() => {
         });
         navigate(`/vouchers/${voucherData.id}`, { replace: true });
     };
-    useEffect(() => {}, [globalFilters]);
+useEffect(() => {
+  const {
+    search,
+    status,
+    fixed,
+    start_date,
+    end_date,
+  } = globalFilters || {};
+
+  const filtered = voucherStore.data.filter((voucher) => {
+    const matchSearch = search
+      ? voucher.voucher_name?.toLowerCase().includes(search.toLowerCase()) ||
+        voucher.voucher_code?.toLowerCase().includes(search.toLowerCase())
+      : true;
+
+    const matchStatus = status ? voucher.status === status : true;
+
+    const matchFixed =
+      fixed !== undefined && fixed !== ''
+        ? String(voucher.fixed) === String(fixed)
+        : true;
+
+    const matchStartDate = start_date
+      ? new Date(voucher.start_date) >= new Date(start_date)
+      : true;
+
+    const matchEndDate = end_date
+      ? new Date(voucher.end_date) <= new Date(end_date)
+      : true;
+
+    return (
+      matchSearch && matchStatus && matchFixed && matchStartDate && matchEndDate
+    );
+  });
+
+  setFilteredVouchers(filtered);
+}, [globalFilters, voucherStore.data]);
+
+
     return (
         <>
-            <div className="flex justify-between items-center animate-slideDown">
+            <div className="flex justify-between items-start animate-slideDown flex-col gap-4 md:flex-row md:gap-0 md:items-center">
                 <AdminBreadCrumb
                     description="Thông tin danh sách voucher"
                     items={[...getBreadcrumbItems(location.pathname)]}
@@ -83,7 +122,7 @@ const Vouchers = observer(() => {
                                         setFilters={setGlobalFilters}
                                     />
                                     <VouchersTable
-                                        data={voucherStore.data}
+                                        data={filteredVouchers}
                                         handleEditVouchers={handleEditVouchers}
                                         handleViewVouchers={handleViewVouchers}
                                         voucherStore={voucherStore}

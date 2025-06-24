@@ -68,7 +68,6 @@ const VoucherDetail = observer(({ mode }) => {
             });
         }
 
-        // }
     }, [voucherStore.dataDetail]);
 
     const fetchVoucherDetail = async () => {
@@ -239,43 +238,56 @@ const VoucherDetail = observer(({ mode }) => {
                                         autoComplete="off"
                                         onFinish={handleFormFinish}
                                     >
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <Form.Item name="discountId" hidden>
-                                                <Input />
-                                            </Form.Item>
-                                            <Form.Item
-                                                label="Mã giảm giá"
-                                                name="voucher_code"
-                                                rules={[
-                                                    {
-                                                        required: true,
-                                                        message:
-                                                            "Vui lòng nhập mã giảm giá!",
-                                                    },
-                                                ]}
+                                        <Row gutter={16}>
+                                            <Col
+                                                xl={12}
+                                                lg={24}
+                                                md={24}
+                                                sm={24}
+                                                xs={24}
                                             >
-                                                <Input
-                                                    readOnly={isReadOnly()}
-                                                    placeholder="Nhập mã giảm giá"
-                                                />
-                                            </Form.Item>
-                                            <Form.Item
-                                                label="Tên giảm giá"
-                                                name="voucher_name"
-                                                rules={[
-                                                    {
-                                                        required: true,
-                                                        message:
-                                                            "Hãy nhập tên giảm giá!",
-                                                    },
-                                                ]}
+                                                <Form.Item
+                                                    label="Mã giảm giá"
+                                                    name="voucher_code"
+                                                    rules={[
+                                                        {
+                                                            required: true,
+                                                            message:
+                                                                "Vui lòng nhập mã giảm giá!",
+                                                        },
+                                                    ]}
+                                                >
+                                                    <Input
+                                                        readOnly={isReadOnly()}
+                                                        placeholder="Nhập mã giảm giá"
+                                                    />
+                                                </Form.Item>
+                                            </Col>
+                                            <Col
+                                                xl={12}
+                                                lg={24}
+                                                md={24}
+                                                sm={24}
+                                                xs={24}
                                             >
-                                                <Input
-                                                    readOnly={isReadOnly()}
-                                                    placeholder="Nhập tên giảm giá"
-                                                />
-                                            </Form.Item>
-                                        </div>
+                                                <Form.Item
+                                                    label="Tên giảm giá"
+                                                    name="voucher_name"
+                                                    rules={[
+                                                        {
+                                                            required: true,
+                                                            message:
+                                                                "Hãy nhập tên giảm giá!",
+                                                        },
+                                                    ]}
+                                                >
+                                                    <Input
+                                                        readOnly={isReadOnly()}
+                                                        placeholder="Nhập tên giảm giá"
+                                                    />
+                                                </Form.Item>
+                                            </Col>
+                                        </Row>
                                         <Form.Item
                                             label="Mô tả"
                                             name="description"
@@ -396,7 +408,13 @@ const VoucherDetail = observer(({ mode }) => {
                                             </Form.Item>
                                         </div>
                                         <Row gutter={16}>
-                                            <Col span={12}>
+                                            <Col
+                                                xl={12}
+                                                lg={24}
+                                                md={24}
+                                                sm={24}
+                                                xs={24}
+                                            >
                                                 <Form.Item
                                                     label="Ngày bắt đầu"
                                                     name="start_date"
@@ -406,6 +424,15 @@ const VoucherDetail = observer(({ mode }) => {
                                                             message:
                                                                 "Vui lòng chọn ngày bắt đầu!",
                                                         },
+                                                        ({ getFieldValue }) => ({
+                                                        validator(_, value) {
+                                                        const endDate = getFieldValue('end_date');
+                                                        if (!value || !endDate || value.isBefore(endDate)) {
+                                                            return Promise.resolve();
+                                                        }
+                                                        return Promise.reject(new Error('Ngày bắt đầu phải nhỏ hơn ngày kết thúc'));
+                                                        },
+                                                    }),
                                                     ]}
                                                     width={"100%"}
                                                 >
@@ -416,7 +443,13 @@ const VoucherDetail = observer(({ mode }) => {
                                                     />
                                                 </Form.Item>
                                             </Col>
-                                            <Col span={12}>
+                                            <Col
+                                                xl={12}
+                                                lg={24}
+                                                md={24}
+                                                sm={24}
+                                                xs={24}
+                                            >
                                                 <Form.Item
                                                     label="Ngày kết thúc"
                                                     name="end_date"
@@ -426,6 +459,15 @@ const VoucherDetail = observer(({ mode }) => {
                                                             message:
                                                                 "Vui lòng chọn ngày kết thúc!",
                                                         },
+                                                        ({ getFieldValue }) => ({
+                                                        validator(_, value) {
+                                                        const startDate = getFieldValue('start_date');
+                                                        if (!value || !startDate || value.isAfter(startDate)) {
+                                                            return Promise.resolve();
+                                                        }
+                                                        return Promise.reject(new Error('Ngày kết thúc phải lớn hơn ngày bắt đầu'));
+                                                        },
+                                                    }),
                                                     ]}
                                                     width={"100%"}
                                                 >

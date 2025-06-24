@@ -377,6 +377,28 @@ const Products = () => {
             store.setStatusMessage(500, errorMsg, "");
         }
     };
+
+    const handleHardDeleteProducts = async (id: string) => {
+        try {
+            const result = await productStore.hardDeleteProduct(id);
+            if (result) {
+                store.setStatusMessage(
+                    200,
+                    "",
+                    "Xóa vĩnh viễn sản phẩm thành công",
+                    true
+                );
+                fetchOnlyProducts();
+            }
+        } catch (e) {
+            console.error("Error hard deleting product:", e);
+            const errorMsg = getErrorMessage(
+                e,
+                "Có lỗi xảy ra khi xóa vĩnh viễn sản phẩm"
+            );
+            store.setStatusMessage(500, errorMsg, "");
+        }
+    };
     return (
         <section className="w-full">
             <ProductHeader
@@ -469,6 +491,9 @@ const Products = () => {
                                         }
                                         handleViewOrUpdateProduct={
                                             handleViewOrUpdateProduct
+                                        }
+                                        handleHardDeleteProducts={
+                                            handleHardDeleteProducts
                                         }
                                     />
                                 </>

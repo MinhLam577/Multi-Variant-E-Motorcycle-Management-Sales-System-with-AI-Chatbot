@@ -84,15 +84,15 @@ const PermissionPage = observer(() => {
                 transform: (value) => ({ search: value }),
             },
         },
-        {
-            title: "API",
-            dataIndex: "path",
-            sorter: true,
+        // {
+        //     title: "API",
+        //     dataIndex: "path",
+        //     sorter: true,
 
-            search: {
-                transform: (value) => ({ search: value }),
-            },
-        },
+        //     search: {
+        //         transform: (value) => ({ search: value }),
+        //     },
+        // },
         {
             title: "Method",
             dataIndex: "method",
@@ -239,7 +239,7 @@ const PermissionPage = observer(() => {
                         <ConfigProvider locale={viVN}>
                             <DataTable<PermissionResponseType>
                                 actionRef={tableRef}
-                                headerTitle="Danh sách Permissions (Quyền Hạn)"
+                                headerTitle="Các quyền hạn"
                                 rowKey="id"
                                 loading={loading}
                                 columns={columns}

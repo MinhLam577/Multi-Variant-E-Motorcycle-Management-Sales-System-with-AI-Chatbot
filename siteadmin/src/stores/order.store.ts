@@ -12,6 +12,22 @@ import {
     StatisticsResponse,
 } from "src/pages/adminOverview/Overview";
 
+export class order_detail_dto {
+    skus_id: string;
+    quantity: number;
+}
+
+export type CreateOrderDto = {
+    customer_id: string;
+    receive_address_id: string;
+    total_price: number;
+    discount_price: number;
+    order_note?: string;
+    payment_method_id: string;
+    delivery_method_id: string;
+    order_details: order_detail_dto[];
+};
+
 export type RevenueProfitStatisticsDto = {
     time_type: EnumTypeOfTimeStatistics;
     year?: number;
@@ -72,13 +88,14 @@ export type globalFiltersDataOrder = {
     order_status?: Omit<EnumOrderStatusesValue, "All">;
     payment_status?: string;
     payment_method?: string;
+    delivery_method?: string;
     created_from?: string;
     created_to?: string;
 };
 
 export type orderData = {
     orders: OrderDetailResponseType[];
-    order_status: OrderStatus[];
+    order_status: EnumOrderStatusesValue[];
     order_status_selected?: string;
     order_selected?: string;
     order_detail?: OrderDetailResponseType;
@@ -109,6 +126,7 @@ export default class OrderObservable {
         payment_method: null,
         created_from: null,
         created_to: null,
+        delivery_method: null,
     };
     pagination: paginationData = {
         current: 1,
@@ -128,7 +146,9 @@ export default class OrderObservable {
             pageSize: Number(this.pagination.pageSize),
             ...(typeof query === "string"
                 ? Object.fromEntries(new URLSearchParams(query.trim()))
-                : query),
+                : query
+                  ? query
+                  : {}),
         };
 
         // Gộp filters và xử lý dữ liệu
@@ -203,32 +223,6 @@ export default class OrderObservable {
             console.error("Error fetching orders:", errorMessage);
         } finally {
             this.loading = false;
-        }
-    }
-
-    *getOrderStatus() {
-        try {
-            const response: ResponsePromise = yield OrderAPI.getOrderStatus();
-            const { data, status, message } = response;
-            const success_status = [200, 201, 204];
-            if (success_status.includes(status)) {
-                this.data.order_status = [
-                    {
-                        key: "All",
-                        value: null,
-                    },
-                    ...data,
-                ];
-                this.rootStore.status = status;
-                this.rootStore.successMsg = message;
-            } else {
-                this.rootStore.status = status;
-                this.rootStore.errorMsg = message;
-            }
-        } catch (e: any) {
-            console.error(e);
-            this.rootStore.status = 500;
-            this.rootStore.errorMsg = e?.message || "Lỗi không xác định";
         }
     }
 
@@ -518,8 +512,14 @@ export default class OrderObservable {
         }
     }
 
-    setGlobalFilters(filters: globalFiltersDataOrder) {
+    setGlobalFilters(
+        filters:
+            | (globalFiltersDataOrder & paginationData)
+            | globalFiltersDataOrder
+            | paginationData
+    ) {
         this.globalFilters = {
+            ...this.pagination,
             ...this.globalFilters,
             ...filters,
         };

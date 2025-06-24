@@ -164,3 +164,12 @@
     box-shadow: none !important;
     cursor: not-allowed !important;
 }
+
+.ant-dropdown > ul {
+    padding: 0 !important;
+    width: 100% !important;
+}
+.ant-dropdown > ul > li {
+    padding: 0 !important;
+    width: 100% !important;
+}

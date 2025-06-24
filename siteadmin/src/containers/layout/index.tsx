@@ -8,13 +8,22 @@ import {
     GiftOutlined,
     ImportOutlined,
     OrderedListOutlined,
+    PhoneOutlined,
     SettingOutlined,
     ShoppingOutlined,
     SolutionOutlined,
     UsergroupAddOutlined,
     UserOutlined,
 } from "@ant-design/icons";
-import { ConfigProvider, Grid, Layout, Menu, message, Spin } from "antd";
+import {
+    ConfigProvider,
+    Drawer,
+    Grid,
+    Layout,
+    Menu,
+    message,
+    Spin,
+} from "antd";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import Logo from "../../components/Logo";
@@ -67,6 +76,7 @@ const BreadcrumbLabel = {
     import: "Quản lí nhập kho",
     export: "Quản lí xuất kho",
     brands: "Quản lí nhãn hàng cung cấp",
+    contact: "Liên hệ",
 };
 
 export const getBreadcrumbItems = (path: string) => {
@@ -112,12 +122,21 @@ export const getBreadcrumbItems = (path: string) => {
 
 class AppLayoutStore {
     items = [];
+    openDrawer: boolean = false;
+    collapsed: boolean = false;
     constructor() {
         makeAutoObservable(this, {}, { autoBind: true });
     }
 
     setItems(items) {
         this.items = items;
+    }
+    setOpenDrawer(open: boolean) {
+        this.openDrawer = open;
+    }
+
+    setCollapsed(collapsed: boolean) {
+        this.collapsed = collapsed;
     }
 }
 
@@ -126,11 +145,11 @@ export const appLayoutStore = new AppLayoutStore();
 const AppLayout = (props) => {
     const location = useLocation();
     const navigate = useNavigate();
+    const screens = useBreakpoint();
     const { children } = props;
-    const [collapsed, setCollapsed] = useState(false);
+    // const [collapsed, setCollapsed] = useState(false);
     const store = useStore();
     const [messageApi, contextHolder] = message.useMessage();
-    const screens = useBreakpoint();
     const Store = useStore();
     const { loginObservable } = useStore();
     const AccountStore = Store.accountObservable;
@@ -157,15 +176,25 @@ const AppLayout = (props) => {
                     "1",
                     <BarChartOutlined />,
                     null,
-                    () => navigate("/")
+                    () => {
+                        navigate("/");
+                        appLayoutStore.setOpenDrawer(false);
+                    }
                 )
             );
         }
 
         if (hasPermission(ALL_PERMISSIONS.USER.GET_PAGINATE)) {
             items.push(
-                getSideMenuItem("Nhân viên", "2", <UserOutlined />, null, () =>
-                    navigate("/users")
+                getSideMenuItem(
+                    "Nhân viên",
+                    "2",
+                    <UserOutlined />,
+                    null,
+                    () => {
+                        navigate("/users");
+                        appLayoutStore.setOpenDrawer(false);
+                    }
                 )
             );
         }
@@ -177,7 +206,10 @@ const AppLayout = (props) => {
                     "19",
                     <UsergroupAddOutlined />,
                     null,
-                    () => navigate("/customer")
+                    () => {
+                        navigate("/customer");
+                        appLayoutStore.setOpenDrawer(false);
+                    }
                 )
             );
         }
@@ -188,7 +220,10 @@ const AppLayout = (props) => {
                     "4",
                     <ShoppingOutlined />,
                     null,
-                    () => navigate("/products")
+                    () => {
+                        navigate("/products");
+                        appLayoutStore.setOpenDrawer(false);
+                    }
                 )
             );
         }
@@ -200,7 +235,10 @@ const AppLayout = (props) => {
                     "24",
                     <ClusterOutlined />,
                     null,
-                    () => navigate("/variants")
+                    () => {
+                        navigate("/variants");
+                        appLayoutStore.setOpenDrawer(false);
+                    }
                 )
             );
         }
@@ -212,7 +250,10 @@ const AppLayout = (props) => {
                     "7",
                     <FileDoneOutlined />,
                     null,
-                    () => navigate("/categories")
+                    () => {
+                        navigate("/categories");
+                        appLayoutStore.setOpenDrawer(false);
+                    }
                 )
             );
         }
@@ -224,7 +265,10 @@ const AppLayout = (props) => {
                     "8",
                     <CalendarOutlined />,
                     null,
-                    () => navigate("/categorynews")
+                    () => {
+                        navigate("/categorynews");
+                        appLayoutStore.setOpenDrawer(false);
+                    }
                 )
             );
         }
@@ -236,26 +280,38 @@ const AppLayout = (props) => {
                     "9",
                     <OrderedListOutlined />,
                     null,
-                    () => navigate("/orders")
+                    () => {
+                        navigate("/orders");
+                        appLayoutStore.setOpenDrawer(false);
+                    }
                 )
             );
         }
 
         if (hasPermission(ALL_PERMISSIONS.VOURCHERS.GET_PAGINATE)) {
             items.push(
-                getSideMenuItem("Voucher", "16", <GiftOutlined />, null, () =>
-                    navigate("/vouchers")
-                )
+                getSideMenuItem("Voucher", "16", <GiftOutlined />, null, () => {
+                    navigate("/vouchers");
+                    appLayoutStore.setOpenDrawer(false);
+                })
             );
         }
 
         if (hasPermission(ALL_PERMISSIONS.WAREHOUSE.GET_PAGINATE)) {
             items.push(
-                getSideMenuItem("Kho", "17", <DashboardOutlined />, null, () =>
-                    navigate("/warehouse")
+                getSideMenuItem(
+                    "Kho",
+                    "17",
+                    <DashboardOutlined />,
+                    null,
+                    () => {
+                        navigate("/warehouse");
+                        appLayoutStore.setOpenDrawer(false);
+                    }
                 )
             );
         }
+
         if (hasPermission(ALL_PERMISSIONS.BRANDS.GET_PAGINATE)) {
             items.push(
                 getSideMenuItem(
@@ -263,7 +319,10 @@ const AppLayout = (props) => {
                     "25",
                     <SolutionOutlined />,
                     null,
-                    () => navigate("/brands")
+                    () => {
+                        navigate("/brands");
+                        appLayoutStore.setOpenDrawer(false);
+                    }
                 )
             );
         }
@@ -275,7 +334,10 @@ const AppLayout = (props) => {
                     "22",
                     <ImportOutlined />,
                     null,
-                    () => navigate("/import")
+                    () => {
+                        navigate("/import");
+                        appLayoutStore.setOpenDrawer(false);
+                    }
                 )
             );
         }
@@ -287,7 +349,24 @@ const AppLayout = (props) => {
                     "23",
                     <ExportOutlined />,
                     null,
-                    () => navigate("/export")
+                    () => {
+                        navigate("/export");
+                        appLayoutStore.setOpenDrawer(false);
+                    }
+                )
+            );
+        }
+        if (hasPermission(ALL_PERMISSIONS.CONTACT.GET_PAGINATE)) {
+            items.push(
+                getSideMenuItem(
+                    "Liên hệ",
+                    "30",
+                    <PhoneOutlined />,
+                    null,
+                    () => {
+                        navigate("/contact");
+                        appLayoutStore.setOpenDrawer(false);
+                    }
                 )
             );
         }
@@ -299,10 +378,14 @@ const AppLayout = (props) => {
                     "20",
                     <SettingOutlined />,
                     null,
-                    () => navigate("/setting")
+                    () => {
+                        navigate("/setting");
+                        appLayoutStore.setOpenDrawer(false);
+                    }
                 )
             );
         }
+
         appLayoutStore.setItems(items);
     }, []);
 
@@ -331,6 +414,7 @@ const AppLayout = (props) => {
                 "/export": "23",
                 "/variants": "24",
                 "/brands": "25",
+                "/contact": "30",
             };
             for (let key of Object.keys(menuKeys)) {
                 if (path.startsWith(key)) {
@@ -349,6 +433,7 @@ const AppLayout = (props) => {
             return ["1"];
         }
     };
+
     useEffect(() => {
         const messageReaction = reaction(
             () => ({
@@ -368,6 +453,7 @@ const AppLayout = (props) => {
             messageReaction();
         };
     }, []);
+
     return (
         <ConfigProvider
             theme={{
@@ -391,28 +477,69 @@ const AppLayout = (props) => {
                     tip="Loading..."
                     fullscreen
                 />
-                <Sider
-                    collapsible
-                    collapsed={collapsed}
-                    onCollapse={(value) => setCollapsed(value)}
-                    width={256}
-                    className={collapsed ? "sider-collapsed" : "sider-expanded"}
-                    breakpoint="lg"
-                    collapsedWidth={80}
-                >
-                    <div className="w-full h-16 flex justify-center flex-col items-center cursor-pointer bg-[var(--sideBar-logo-background-color)]">
-                        <Logo
-                            handleClick={() => navigate("/")}
-                            collapsed={screens.md ? collapsed : true}
+                {screens.md ? (
+                    <Sider
+                        collapsed={appLayoutStore.collapsed}
+                        onCollapse={(value) =>
+                            appLayoutStore.setCollapsed(value)
+                        }
+                        width={256}
+                        className={
+                            appLayoutStore.collapsed
+                                ? "sider-collapsed"
+                                : "sider-expanded"
+                        }
+                        breakpoint="md"
+                        collapsedWidth={0}
+                        onBreakpoint={(broken) => {
+                            appLayoutStore.setOpenDrawer(broken);
+                            appLayoutStore.setCollapsed(broken);
+                        }}
+                    >
+                        <div className="w-full h-16 flex justify-center flex-col items-center cursor-pointer bg-[var(--sideBar-logo-background-color)]">
+                            <Logo
+                                handleClick={() => navigate("/")}
+                                collapsed={
+                                    screens.md ? appLayoutStore.collapsed : true
+                                }
+                            />
+                        </div>
+                        <Menu
+                            defaultSelectedKeys={["1"]}
+                            selectedKeys={getSideMenuSelectedKeys()}
+                            items={appLayoutStore.items}
+                            mode="inline"
                         />
-                    </div>
-                    <Menu
-                        defaultSelectedKeys={["1"]}
-                        selectedKeys={getSideMenuSelectedKeys()}
-                        items={appLayoutStore.items}
-                        mode="inline"
-                    />
-                </Sider>
+                    </Sider>
+                ) : (
+                    <Drawer
+                        title={
+                            <div className="flex justify-center items-center">
+                                <Logo
+                                    handleClick={() => navigate("/")}
+                                    collapsed={appLayoutStore.collapsed}
+                                />
+                            </div>
+                        }
+                        placement="left"
+                        open={appLayoutStore.openDrawer}
+                        closeIcon={null}
+                        destroyOnClose={true}
+                        onClose={() => {
+                            appLayoutStore.setOpenDrawer(false);
+                        }}
+                        width={256}
+                        className="!bg-[var(--sideBar-background-color)]"
+                    >
+                        <Menu
+                            defaultSelectedKeys={["1"]}
+                            selectedKeys={getSideMenuSelectedKeys()}
+                            items={appLayoutStore.items}
+                            mode="inline"
+                            className="!bg-[var(--sideBar-background-color)]"
+                        />
+                    </Drawer>
+                )}
                 <Layout>
                     <HeaderComponent />
                     <Content className="mx-6 !bg-[#f3f4f6]">

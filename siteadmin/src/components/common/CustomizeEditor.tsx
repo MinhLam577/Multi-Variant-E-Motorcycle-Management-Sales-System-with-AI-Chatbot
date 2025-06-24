@@ -1,8 +1,8 @@
-import ReactQuill, { Quill } from "react-quill";
+import ReactQuill, { Quill } from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
 import QuillResizeImage from "quill-resize-image";
 import {
     forwardRef,
-    useEffect,
     useImperativeHandle,
     useMemo,
     useRef,
@@ -15,7 +15,6 @@ import { useStore } from "src/stores";
 import { observer } from "mobx-react-lite";
 import CustomizeModal from "./CustomizeModal";
 import { Button, Form, Select, Image, FormInstance } from "antd";
-import ReactDOM from "react-dom";
 import { makeAutoObservable } from "mobx";
 const Parchment = Quill.import("parchment");
 const maxWidth = 600;
@@ -174,7 +173,6 @@ const defaultFormats = [
     "italic",
     "underline",
     "list",
-    "bullet",
     "link",
     "image",
     "size",
@@ -182,9 +180,25 @@ const defaultFormats = [
     "background",
     "indent",
     "blockquote",
-    "clean",
-    "fullscreen",
 ];
+// const defaultFormats = [
+//     "header",
+//     "align",
+//     "bold",
+//     "italic",
+//     "underline",
+//     "list",
+//     "bullet",
+//     "link",
+//     "image",
+//     "size",
+//     "color",
+//     "background",
+//     "indent",
+//     "blockquote",
+//     "clean",
+//     "fullscreen",
+// ];
 const CustomizeEditor: React.FC<CustomizeEditorProps> = forwardRef<
     ReactQuill,
     CustomizeEditorProps
@@ -264,7 +278,7 @@ const CustomizeEditor: React.FC<CustomizeEditorProps> = forwardRef<
         );
         const [modalForm] = Form.useForm();
 
-        const default_store = store || useStore();
+        const default_store = useStore();
         const quillRef = useRef<ReactQuill>(null);
         useImperativeHandle(ref, () => quillRef.current as ReactQuill, []);
         const validateFiles = (files: File[]) => {
@@ -404,34 +418,6 @@ const CustomizeEditor: React.FC<CustomizeEditorProps> = forwardRef<
 
         const handleRemoveFile = (file: File) => {
             setFilesSelected((prev) => prev.filter((f) => f !== file));
-        };
-
-        const handleVideoEditorClicked = async () => {
-            const quill = quillRef.current.getEditor();
-            const range = quill.getSelection(true);
-            if (!range) return;
-            const url = prompt("Nhập link video youtube");
-            const width = prompt("Nhập chiều rộng video (px hoặc %)", "100%");
-            const height = prompt(
-                "Nhập chiều cao video (px hoặc % hoặc auto)",
-                "100%"
-            );
-            if (width && !/^\d+(px|%)$/.test(width)) {
-                alert("Chiều rộng không hợp lệ. Vui lòng nhập lại.");
-                return;
-            }
-            if (height && !/^\d+(px|%)$/.test(height) && height !== "auto") {
-                alert("Chiều cao không hợp lệ. Vui lòng nhập lại.");
-                return;
-            }
-            if (url) {
-                quill.insertEmbed(range.index, "video", {
-                    url,
-                    width: width || maxWidth,
-                    height: height || maxHeight,
-                });
-                quill.setSelection(range.index + 1, 0, "silent");
-            }
         };
 
         const FileListDiv = () => {

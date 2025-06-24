@@ -13,7 +13,7 @@ import VariantTable from "src/components/variants/VariantTable";
 import ModalCreateVariant from "src/components/variants/ModalCreateVariant";
 import CustomizeModal from "src/components/common/CustomizeModal";
 import { ProductDataResponseType } from "src/stores/product.store";
-import { getErrorMessage, urlToBase64 } from "src/utils";
+import { getErrorMessage } from "src/utils";
 import { useLocation } from "react-router";
 import { ALL_PERMISSIONS } from "src/constants/permissions";
 import Access from "src/access/access";
@@ -159,6 +159,7 @@ const VariantsPage = () => {
                 }
             });
         });
+
         return Array.from(optionMap.values());
     };
 
@@ -194,11 +195,13 @@ const VariantsPage = () => {
             search: "",
         }));
     };
+
     const handleCloseModalUpdate = () => {
         setOpenModalUpdate(false);
         setSkuSelected(null);
         updateForm.resetFields();
     };
+
     const convertSkusResponseToForm = (
         skus: SkusResponseType
     ): FormValueCreateVariantType => {

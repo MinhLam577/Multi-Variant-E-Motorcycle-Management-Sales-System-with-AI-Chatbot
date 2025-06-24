@@ -1,9 +1,10 @@
 import { Col, DatePicker, Form, Input, Row, Select, Tooltip } from "antd";
-import PropTypes from "prop-types";
 import { PaymentStatus } from "../../constants";
 import { observer } from "mobx-react-lite";
-import { makeAutoObservable } from "mobx";
-
+import { makeAutoObservable, toJS } from "mobx";
+import { DeliveryMethodResponseType } from "src/stores/paymentMethod";
+import { useCallback } from "react";
+import { debounce } from "lodash";
 // Khai báo store nhỏ cho trạng thái focus
 const statusSearch = makeAutoObservable({
     isInputFocused: false,
@@ -22,9 +23,17 @@ const OrderSearch = ({
     setGlobalFilters,
     payment_status,
     payment_method,
+    delivery_method,
 }) => {
     const [form] = Form.useForm();
-
+    const debounceInputChange: (value: string) => void = useCallback(
+        debounce((value: string) => {
+            setGlobalFilters({
+                search: value,
+            });
+        }, 400),
+        []
+    );
     return (
         <>
             <Form
@@ -34,8 +43,8 @@ const OrderSearch = ({
                 className="flex flex-col"
                 labelCol={{ flex: "30%" }}
             >
-                <Row gutter={16} align="middle" justify={"space-between"}>
-                    <Col xs={24} sm={12} md={8} lg={6} xl={6}>
+                <Row gutter={8} align="middle">
+                    <Col xs={24} sm={24} md={24} lg={18} xl={18}>
                         <Form.Item
                             label={<span className="font-bold">Search</span>}
                             name="search"
@@ -59,11 +68,8 @@ const OrderSearch = ({
                                 <Input
                                     name="search"
                                     placeholder="Nhập mã đơn hàng, ..."
-                                    value={globalFilters?.search || ""}
                                     onChange={(e) => {
-                                        setGlobalFilters({
-                                            search: e.target.value,
-                                        });
+                                        debounceInputChange(e.target.value);
                                     }}
                                     onFocus={() => {
                                         statusSearch.setInputFocused(true);
@@ -81,7 +87,29 @@ const OrderSearch = ({
                             </Tooltip>
                         </Form.Item>
                     </Col>
-                    <Col xs={24} sm={12} md={8} lg={6} xl={6}>
+                    <Col xs={24} sm={12} md={12} lg={6} xl={6}>
+                        <Form.Item
+                            label={
+                                <div className="font-bold">
+                                    Khoảng thời gian
+                                </div>
+                            }
+                            name="date"
+                        >
+                            <RangePicker
+                                format={"DD/MM/YYYY"}
+                                className="w-full"
+                                placeholder={["Start Day", "End Day"]}
+                                onChange={(_, dateString) => {
+                                    setGlobalFilters({
+                                        created_from: dateString[0],
+                                        created_to: dateString[1],
+                                    });
+                                }}
+                            />
+                        </Form.Item>
+                    </Col>
+                    <Col xs={24} sm={12} md={12} lg={8} xl={8}>
                         <Form.Item
                             label={
                                 <div className="font-bold">
@@ -93,7 +121,7 @@ const OrderSearch = ({
                             <Select
                                 allowClear
                                 showSearch
-                                placeholder="Chọn phương thức thanh toán"
+                                placeholder="Phương thức thanh toán"
                                 optionFilterProp="label"
                                 value={globalFilters?.payment_method}
                                 options={payment_method?.map((i) => ({
@@ -106,7 +134,36 @@ const OrderSearch = ({
                             />
                         </Form.Item>
                     </Col>
-                    <Col xs={24} sm={12} md={8} lg={6} xl={6}>
+                    <Col xs={24} sm={12} md={12} lg={8} xl={8}>
+                        <Form.Item
+                            label={
+                                <div className="font-bold">
+                                    Phương thức vận chuyển
+                                </div>
+                            }
+                            name="delivery_method"
+                        >
+                            <Select
+                                allowClear
+                                showSearch
+                                placeholder="Phương thức vận chuyển"
+                                optionFilterProp="label"
+                                value={globalFilters?.delivery_method}
+                                options={delivery_method?.map(
+                                    (i: DeliveryMethodResponseType) => ({
+                                        value: i.id,
+                                        label: i.name,
+                                    })
+                                )}
+                                onChange={(value) => {
+                                    setGlobalFilters({
+                                        delivery_method: value,
+                                    });
+                                }}
+                            />
+                        </Form.Item>
+                    </Col>
+                    <Col xs={24} sm={12} md={12} lg={8} xl={8}>
                         <Form.Item
                             label={
                                 <div className="font-bold">
@@ -118,36 +175,15 @@ const OrderSearch = ({
                             <Select
                                 allowClear
                                 showSearch
-                                placeholder="Chọn trạng thái thanh toán"
+                                placeholder="Trạng thái thanh toán"
                                 optionFilterProp="label"
                                 value={globalFilters?.payment_status}
                                 options={payment_status?.map((i) => ({
-                                    value: i.key,
+                                    value: i.value,
                                     label: PaymentStatus[i.key],
                                 }))}
                                 onChange={(value) => {
                                     setGlobalFilters({ payment_status: value });
-                                }}
-                            />
-                        </Form.Item>
-                    </Col>
-                    <Col xs={24} sm={12} md={8} lg={6} xl={6}>
-                        <Form.Item
-                            label={
-                                <div className="font-bold">
-                                    Khoảng thời gian
-                                </div>
-                            }
-                            name="date"
-                        >
-                            <RangePicker
-                                format={"DD/MM/YYYY"}
-                                placeholder={["Start Day", "End Day"]}
-                                onChange={(_, dateString) => {
-                                    setGlobalFilters({
-                                        created_from: dateString[0],
-                                        created_to: dateString[1],
-                                    });
                                 }}
                             />
                         </Form.Item>

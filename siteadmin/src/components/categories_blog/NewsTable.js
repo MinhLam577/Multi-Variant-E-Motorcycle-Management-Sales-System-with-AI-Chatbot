@@ -36,6 +36,7 @@ const getColumnsConfig = ({
             dataIndex: "description",
             key: "description",
             ellipsis: true,
+            responsive: ["sm"],
         },
         {
             title: "Thời gian tạo",
@@ -45,6 +46,7 @@ const getColumnsConfig = ({
                 moment(createdAt).format(DateTimeFormat.TimeStamp),
             sorter: true,
             ellipsis: true,
+            responsive: ["lg"],
         },
         {
             title: "Thao tác",

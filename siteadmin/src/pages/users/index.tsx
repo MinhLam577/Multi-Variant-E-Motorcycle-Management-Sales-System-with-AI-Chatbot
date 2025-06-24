@@ -138,7 +138,7 @@ const User = () => {
 
     return (
         <>
-            <div className="flex justify-between items-center animate-slideDown">
+            <div className="flex justify-between items-start animate-slideDown flex-col gap-4 sm:items-center sm:flex-row sm:gap-0">
                 <AdminBreadCrumb
                     description="Thông tin danh sách người dùng hệ thống"
                     items={[...getBreadcrumbItems(location.pathname)]}

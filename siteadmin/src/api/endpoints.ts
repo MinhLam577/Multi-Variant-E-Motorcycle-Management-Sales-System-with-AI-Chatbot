@@ -26,6 +26,7 @@ const endpoints = {
         uploadImagesToServer: "/products/upload/multipleImage",
         softDelete: (id: string) => `/products/${id}/soft`,
         restoreDelete: (id: string) => `/products/${id}/restore`,
+        hardDelete: (id: string) => `/products/${id}/hard-delete`,
     },
     options: {
         list: () => "/option",
@@ -215,7 +216,9 @@ const endpoints = {
         getPaymentName: () => `/payment-method/payment-method-name`,
         getPaymentStatus: () => "/order/payment-status",
     },
-
+    deliveryMethod: {
+        list: (query: string) => `/delivery-method?${query}`,
+    },
     skus: {
         list: (query: string) => `/skus?${query}`,
         create: () => "/skus",
@@ -250,6 +253,13 @@ const endpoints = {
 
     permissionModule: {
         list: () => `/Permissions_Modules`,
+    },
+
+    contact: {
+        list: (query: string) => `/contact?${query}`,
+        update: (id: string) => `/contact/${id}`,
+        delete: (id: string) => `/contact/${id}`,
+        create: () => `/contact`,
     },
 };
 

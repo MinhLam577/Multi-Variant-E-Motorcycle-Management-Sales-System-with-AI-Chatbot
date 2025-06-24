@@ -18,7 +18,7 @@ const UserSearch = ({ setFilters }) => {
         <Form labelWrap labelCol={{ flex: "30%" }} layout="vertical">
             <div className="w-full">
                 <Row gutter={16} align="middle" justify={"space-between"}>
-                    <Col xs={24} sm={12} md={8} lg={6} xl={6}>
+                    <Col xs={24} sm={12} md={12} lg={6} xl={6}>
                         <Form.Item
                             label={<div className="font-bold">Search</div>}
                             name="search"
@@ -31,7 +31,7 @@ const UserSearch = ({ setFilters }) => {
                             />
                         </Form.Item>
                     </Col>
-                    <Col xs={24} sm={12} md={8} lg={6} xl={6}>
+                    <Col xs={24} sm={12} md={12} lg={6} xl={6}>
                         <Form.Item
                             label={
                                 <div className="font-bold">Loại người dùng</div>
@@ -62,7 +62,7 @@ const UserSearch = ({ setFilters }) => {
                             />
                         </Form.Item>
                     </Col>
-                    <Col xs={24} sm={12} md={8} lg={6} xl={6}>
+                    <Col xs={24} sm={12} md={12} lg={6} xl={6}>
                         <Form.Item
                             label={
                                 <div className="font-bold">
@@ -95,7 +95,7 @@ const UserSearch = ({ setFilters }) => {
                             />
                         </Form.Item>
                     </Col>
-                    <Col xs={24} sm={12} md={8} lg={6} xl={6}>
+                    <Col xs={24} sm={12} md={12} lg={6} xl={6}>
                         <Form.Item
                             label={
                                 <div className="font-bold">

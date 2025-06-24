@@ -1,17 +1,20 @@
-import { toJS } from "mobx";
+import { CopyOutlined } from "@ant-design/icons";
+import { Checkbox, Tag } from "antd";
 import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
 import CustomizeModal from "src/components/common/CustomizeModal";
 import OrderSearch from "src/components/orders/OrderSearch";
-import { getOrderColumnsConfig } from "src/components/orders/OrdersTable";
+import { handleCopy } from "src/components/orders/OrdersTable";
 import {
+    EnumOrderColorStatuses,
     EnumOrderStatuses,
     EnumOrderStatusesValue,
-    PaymentStatus,
 } from "src/constants";
 import TableComponent from "src/containers/TableComponent";
 import { useStore } from "src/stores";
-import { convertDate } from "src/utils";
+import { globalFiltersDataOrder } from "src/stores/order.store";
+import { paginationData } from "src/stores/voucher";
+import { formatVNDMoney } from "src/utils";
 
 export interface ModalSelectOrderProps {
     open: boolean;
@@ -30,89 +33,33 @@ const ModalSelectOrder: React.FC<ModalSelectOrderProps> = ({
     const orderStore = store.orderObservable;
 
     const paymentMethodStore = store.paymentMethodObservable;
-    const [filterData, setFilterData] = useState([]);
-
+    const fetchListOrder = async (
+        query?:
+            | (globalFiltersDataOrder & paginationData)
+            | globalFiltersDataOrder
+            | paginationData
+    ) => {
+        await orderStore.getListOrder(query);
+    };
     useEffect(() => {
-        orderStore.getListOrder({
+        fetchListOrder({
             ...orderStore.pagination,
             order_status: EnumOrderStatusesValue.CONFIRMED,
         });
     }, []);
+
     useEffect(() => {
-        // const status = orderStore.data?.order_status_selected;
-        const globalFilters = orderStore.globalFilters;
-        let filteredData = toJS(orderStore.data?.orders || []);
-
-        // Kiểm tra dữ liệu đầu vào
-        if (!Array.isArray(filteredData)) {
-            filteredData = [];
-        }
-        filteredData = filteredData
-            .filter((order) => {
-                if (
-                    (order?.payment_method?.name?.toUpperCase() !== "COD" &&
-                        order?.payment_status !== PaymentStatus.PAID) ||
-                    order?.order_status !== EnumOrderStatuses.CONFIRMED
-                ) {
-                    return false;
-                }
-                return true;
-            })
-            .filter((order) => {
-                // Điều kiện status
-                const statusMatch =
-                    !status ||
-                    status === "All" ||
-                    order.order_status === status;
-                const orderFilter =
-                    orderSelected?.length && orderSelected.length > 0
-                        ? !orderSelected.includes(order.id)
-                        : true;
-                // Điều kiện search
-                const searchMatch =
-                    !globalFilters?.search ||
-                    order.id === globalFilters.search ||
-                    order.customer.username
-                        .toLowerCase()
-                        .includes(globalFilters.search.toLowerCase()) ||
-                    order.customer.email
-                        .toLowerCase()
-                        .includes(globalFilters.search.toLowerCase()) ||
-                    order.customer.id === globalFilters.search;
-
-                const matchPaymentMethod =
-                    !globalFilters?.payment_method ||
-                    order.payment_method.name.toLowerCase() ===
-                        globalFilters?.payment_method?.toLowerCase();
-
-                const matchPaymentStatus =
-                    !globalFilters?.payment_status ||
-                    order.payment_status.toLowerCase() ===
-                        globalFilters?.payment_status?.toLowerCase();
-
-                const createdFrom = globalFilters?.created_from
-                    ? convertDate(globalFilters?.created_from)
-                    : null;
-                const createdTo = globalFilters?.created_to
-                    ? convertDate(globalFilters?.created_to)
-                    : null;
-
-                const matchDate =
-                    !(createdFrom && createdTo) ||
-                    (order.createdAt >= createdFrom &&
-                        order.createdAt <= createdTo);
-
-                return (
-                    statusMatch &&
-                    searchMatch &&
-                    matchPaymentMethod &&
-                    matchPaymentStatus &&
-                    matchDate &&
-                    orderFilter
-                );
-            });
-        setFilterData([...filteredData]);
-    }, [orderStore.data?.orders, orderStore.globalFilters]);
+        fetchListOrder({
+            ...orderStore.globalFilters,
+            ...orderStore.pagination,
+            order_status: EnumOrderStatusesValue.CONFIRMED,
+        });
+    }, [orderStore.globalFilters]);
+    const filterOrder = () => {
+        return orderStore.data.orders?.filter(
+            (order) => !orderSelected.includes(order.id)
+        );
+    };
     const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
     const handleRowSelection = (selectedRowKeys: string[]) => {
         const filterSelectedRowKeys = selectedRowKeys.filter((item) => {
@@ -123,8 +70,159 @@ const ModalSelectOrder: React.FC<ModalSelectOrderProps> = ({
         });
         setSelectedRowKeys(filterSelectedRowKeys);
     };
+
+    const handleCheckboxChange = (recordId: string) => {
+        setSelectedRowKeys((prevKeys) => {
+            if (prevKeys.includes(recordId)) {
+                return prevKeys.filter((key) => key !== recordId);
+            } else {
+                if (!orderSelected.includes(recordId)) {
+                    return [...prevKeys, recordId];
+                }
+                return prevKeys;
+            }
+        });
+    };
+    const getColumnsConfig = () => {
+        return [
+            {
+                title: (
+                    <Checkbox
+                        checked={
+                            selectedRowKeys.length === filterOrder().length
+                        }
+                        onChange={(e) => {
+                            if (e.target.checked) {
+                                const allRowKeys = filterOrder().map(
+                                    (item) => item.id
+                                );
+                                handleRowSelection(allRowKeys);
+                            } else {
+                                handleRowSelection([]);
+                            }
+                        }}
+                    />
+                ),
+                dataIndex: "selection",
+                key: "selection",
+                render: (_, record) => (
+                    <Checkbox
+                        checked={selectedRowKeys.includes(record.id)}
+                        onChange={() => handleCheckboxChange(record.id)}
+                    />
+                ),
+                width: "5%",
+                fixed: "left",
+            },
+            {
+                title: "Mã đơn hàng",
+                dataIndex: "id",
+                key: "id",
+                render: (_, record) => (
+                    <div className="flex items-center gap-2">
+                        <span
+                            className="!p-0 whitespace-normal"
+                            key={record.id}
+                        >
+                            {record.id}
+                        </span>
+                        <CopyOutlined
+                            onClick={() => {
+                                handleCopy(record.id);
+                            }}
+                        />
+                    </div>
+                ),
+                width: "20%",
+                responsive: ["md"],
+            },
+            {
+                title: "Khách hàng",
+                dataIndex: ["customer", "username"],
+                key: "username",
+                render: (_, record) => (
+                    <div>
+                        <span className="font-semibold">
+                            {record.customer.username}
+                        </span>
+                    </div>
+                ),
+                ellipsis: true,
+                width: "20%",
+            },
+            {
+                title: "Thông tin nhận hàng",
+                dataIndex: "receive_address",
+                key: "receive_address",
+                render: (_, record) => (
+                    <>
+                        <div>
+                            <span className="font-semibold">Tên: </span>
+                            <div className="cursor-pointer inline-flex gap-2">
+                                {record.receive_address.receiver_name}
+                                <CopyOutlined
+                                    onClick={() => {
+                                        handleCopy(record.id);
+                                    }}
+                                />
+                            </div>
+                        </div>
+                        <div>
+                            <span className="font-semibold">SDT: </span>
+                            <div className="cursor-pointer inline-flex gap-2">
+                                {record.receive_address.receiver_phone}
+                                <CopyOutlined
+                                    onClick={() => {
+                                        handleCopy(record.id);
+                                    }}
+                                />
+                            </div>
+                        </div>
+                        <div>
+                            <span className="font-semibold">Địa chỉ: </span>
+                            <span className="cursor-pointer whitespace-normal break-words">
+                                {record.receive_address.address}
+                                <CopyOutlined
+                                    onClick={() => {
+                                        handleCopy(record.id);
+                                    }}
+                                    className="ml-2"
+                                />
+                            </span>
+                        </div>
+                    </>
+                ),
+                ellipsis: true,
+                width: "25%",
+                responsive: ["xl"],
+            },
+            {
+                title: "Tổng tiền",
+                dataIndex: "total_price",
+                key: "total_price",
+                render: (_, record) => (
+                    <>{formatVNDMoney(record.total_price) + "đ"}</>
+                ),
+                ellipsis: true,
+                width: "10%",
+                responsive: ["lg"],
+            },
+            {
+                title: "Trạng thái đơn hàng",
+                dataIndex: "order_status",
+                key: "order_status",
+                render: (status) => (
+                    <Tag color={EnumOrderColorStatuses[status]}>
+                        {EnumOrderStatuses[status]}
+                    </Tag>
+                ),
+                ellipsis: true,
+                width: "15%",
+            },
+        ];
+    };
     const handleCloseModal = () => {
-        orderStore.setOrderStatusSelected(undefined);
+        setSelectedRowKeys([]);
         onClose();
     };
     return (
@@ -145,17 +243,15 @@ const ModalSelectOrder: React.FC<ModalSelectOrderProps> = ({
                     setGlobalFilters={orderStore.setGlobalFilters}
                     payment_status={paymentMethodStore.data.payment_status}
                     payment_method={paymentMethodStore.data.payment_method}
+                    delivery_method={paymentMethodStore.deliveryMethodData}
                 />
 
                 <TableComponent
-                    data={orderStore.data.orders || []}
+                    data={filterOrder() || []}
                     observableName={orderStore.constructor.name}
-                    loading={false}
-                    getColumnsConfig={getOrderColumnsConfig}
+                    loading={orderStore.loading}
+                    getColumnsConfig={getColumnsConfig}
                     scroll={{ y: "300px" }}
-                    rowSelection={{
-                        onChange: handleRowSelection,
-                    }}
                 />
             </div>
         </CustomizeModal>
