@@ -42,7 +42,7 @@ const CarItems: React.FC<ICarItemsProps> = ({ data, queryObject }) => {
     return (
         <>
             {getDataToRender()
-                .filter((p) => p.products.status === true)
+                .filter((p) => p.products.deletedAt === null)
                 .map((listing) => (
                     <div
                         className="col-sm-6 col-lg-4 col-xl-3"

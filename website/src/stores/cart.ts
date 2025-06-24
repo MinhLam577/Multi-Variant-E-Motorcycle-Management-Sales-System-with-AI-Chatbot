@@ -8,17 +8,6 @@ import { getBlogDetails, getListBlog } from "../api/blog";
 import apiClient from "../api/apiClient";
 import endpoints from "../api/endpoints";
 
-export type globalFiltersData = {
-    search?: string;
-    sortOrder?: string;
-    sortBy?: string;
-    order_status?: string;
-    payment_status?: string;
-    payment_method?: string;
-    created_from?: string;
-    created_to?: string;
-};
-
 export type paginationData = {
     current: number;
     pageSize: number;
@@ -52,16 +41,6 @@ export default class CartObservable {
     data: CartItemResponseType[] = [];
     idcart: string = "";
 
-    globalFilters: globalFiltersData = {
-        search: null,
-        sortOrder: null,
-        sortBy: null,
-        order_status: null,
-        payment_status: null,
-        payment_method: null,
-        created_from: null,
-        created_to: null,
-    };
     pagination: paginationData = {
         current: 1,
         pageSize: 100,
@@ -443,14 +422,6 @@ export default class CartObservable {
             this.successMsg = successMsg;
         }
     }
-
-    setGlobalFilters(filters: globalFiltersData) {
-        this.globalFilters = {
-            ...this.globalFilters,
-            ...filters,
-        };
-    }
-
     setPagination(page: number, pageSize: number) {
         if (page < 1 || pageSize < 1) return;
 
