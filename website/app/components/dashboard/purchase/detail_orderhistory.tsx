@@ -94,13 +94,15 @@ export default function DetailOrderHistory({ slug }) {
                 <div className="text-lg semibold">
                     {(() => {
                         const statusMap = {
-                            PENDING: "Đang xử lý",
+                            PENDING: "Đang chờ xử lí",
                             CONFIRMED: "Đã xác nhận",
-                            EXPORTED: "Xuất kho",
-                            CANCELED: "Hủy",
+                            EXPORTED: "Đã xuất kho",
+                            CANCELLED: "Đã Hủy",
                             DELIVERING: "Đang vận chuyển",
                             SHIPPING: "Đang giao hàng",
                             DELIVERED: "Đã giao",
+                            HAND_OVERED: 'Đã bàn giao cho vận chuyển',
+                            FAILED_DELIVERY: 'Giao hàng thất bại'
                         };
                         return (
                             statusMap[data?.order_status] ||

@@ -79,6 +79,7 @@ const PopoverCart = ({ cart, dataCart = [] }) => {
                         placement="bottomRight"
                         title={text}
                         content={content}
+                        trigger={["hover", "click"]}
                     >
                         {cart}
                     </Popover>

@@ -45,13 +45,15 @@ const OrderHistory = observer(() => {
         // admin xác nhận đơn đã gói hàng cb vận chuyển
         { name: "Đã xác nhận", status: "CONFIRMED" },
         // shiper lấy hàng và đang giao đơn hàng  : vận chuyển
-        { name: "Xuất kho", status: "EXPORTED" },
+        // { name: "Xuất kho", status: "EXPORTED" },
+        // {name : "Đã bàn giao cho vận chuyển",status :"HAND_OVERED"},
         { name: "Đang vận chuyển", status: "DELIVERING" },
         { name: "Đang giao hàng", status: "SHIPPING" },
         // đã giao cho khách hàng , kh nhận thành công
         { name: "Đã giao", status: "DELIVERED" },
         // hủy ở giai đoạn
-        { name: "Đã hủy", status: "CANCELED" },
+        { name: "Đã hủy", status: "CANCELLED" },
+        
     ];
 
     //   const { data } = useQuery({
@@ -63,9 +65,12 @@ const OrderHistory = observer(() => {
 
     useEffect(() => {
         const fetchData = async () => {
+            
             await AccountStore.getAccount(); // chờ lấy account trước
             const account = AccountStore.account;
-            await StoreOrder.getListOrder({ customer_id: account?.id }); // ví dụ dùng account để truyền query
+            console.log(account)
+          //  await StoreOrder.getListOrderCustomer( account?.userId ,""); // ví dụ dùng account để truyền query
+            await StoreOrder.getListOrder( {search:account?.email }); // ví dụ dùng account để truyền query
 
             const urlParams = new URLSearchParams(window.location.search);
             const status = urlParams.get("status");

@@ -199,7 +199,7 @@ const ListingSingle = observer(() => {
                     >
                       Tổng quan
                     </button> */}
-                    <button
+                    {/* <button
                       className="nav-link"
                       id="nav-features-tab"
                       data-bs-toggle="tab"
@@ -209,7 +209,7 @@ const ListingSingle = observer(() => {
                       aria-selected="false"
                     >
                       Chức năng
-                    </button>
+                    </button> */}
                     <button
                       className="nav-link"
                       id="nav-location-tab"
@@ -490,7 +490,7 @@ const ListingSingle = observer(() => {
 
             <div className="col-sm-6">
               <div className="text-center text-md-end mb30-520">
-                <Link href="/page-list-v1" className="more_listing">
+                <Link href={`/listing-v1?type=car&sort_by=updatedAtDesc&current=1&pageSize=10`} className="more_listing">
                   Xem thêm
                   <span className="icon">
                     <span className="fas fa-plus" />

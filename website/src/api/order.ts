@@ -32,7 +32,9 @@ const OrderAPI: {
     failedDelivery: (id: string, reason?: string) => Promise<ResponsePromise>;
     returnOrder: (id: string, reason?: string) => Promise<ResponsePromise>;
 } = {
-    getOrderList: async (query: string) =>
+    // getOrderList: async (idCustomer,query: string) =>
+    //     await apiClient.get(orderEndpoints.list(idCustomer,query)),
+      getOrderList: async (query: string) =>
         await apiClient.get(orderEndpoints.list(query)),
     getOrderDetail: async (id: string) =>
         await apiClient.get(orderEndpoints.getOrderDetail(id)),

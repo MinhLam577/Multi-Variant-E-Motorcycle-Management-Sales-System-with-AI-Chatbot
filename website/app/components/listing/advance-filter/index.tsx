@@ -5,10 +5,12 @@ import { globalFilterType } from "@/src/stores/productStore";
 export interface IAdvanceFilterProps {
     handleFilterChange: Dispatch<SetStateAction<globalFilterType>>;
     handleClearAllFilters: () => void;
+    queryObject: globalFilterType;
 }
 const AdvanceFilter: React.FC<IAdvanceFilterProps> = ({
     handleFilterChange,
     handleClearAllFilters,
+    queryObject,
 }) => {
     const handleDeleteAll = () => {
         handleClearAllFilters();
@@ -17,7 +19,10 @@ const AdvanceFilter: React.FC<IAdvanceFilterProps> = ({
     return (
         <>
             <div className="row">
-                <MainFilter handleFilterChange={handleFilterChange} />
+                <MainFilter
+                    handleFilterChange={handleFilterChange}
+                    queryObject={queryObject}
+                />
                 {/*search */}
                 <div className="col col-sm-4 col-lg-2">
                     <div className="advance_search_style">

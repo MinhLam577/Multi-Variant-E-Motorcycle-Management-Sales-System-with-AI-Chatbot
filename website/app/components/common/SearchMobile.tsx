@@ -37,7 +37,7 @@ const SearchMobile = observer(() => {
         });
     };
     return (
-        <section className="flex items-center justify-between px-4 py-3 bg-white border-b border-gray-200 mt-28 lg:mt-0 lg:hidden !bg-[var(--primary-bike)] search-mobile">
+        <section className="flex items-center justify-between px-4 py-3 bg-white border-b border-gray-200 mt-28 lg:mt-0 lg:hidden !bg-[var(--primary-bike)] search-mobile flex-col sm:flex-row gap-4 sm:!gap-0">
             <Input
                 type="search"
                 id="search"
@@ -65,18 +65,32 @@ const SearchMobile = observer(() => {
                     handleSearch(inputValue);
                 }}
             />
-            <div className="flex items-center space-x-2">
-                <Select
-                    defaultValue={getSelectData()[0].value}
-                    className="!w-28 !border-0 !text-white !h-12 !bg-transparent !border-none focus:!border-none focus:!outline-none !rounded-none"
-                    options={getSelectData().map((item) => ({
-                        value: item.value,
-                        label: item.label,
-                    }))}
-                    onChange={(value) => {
-                        setSelectValue(value);
-                    }}
-                />
+            <Select
+                defaultValue={getSelectData()[0].value}
+                className="!w-32 !border-0 !text-white !h-12 !bg-transparent !border-none focus:!border-none focus:!outline-none !rounded-none hidden sm:block"
+                options={getSelectData().map((item) => ({
+                    value: item.value,
+                    label: item.label,
+                }))}
+                onChange={(value) => {
+                    setSelectValue(value);
+                }}
+            />
+            <div className="flex items-center gap-2 overflow-x-auto !scrollbar-hide !w-full sm:hidden search-mobile-select">
+                {getSelectData().map((item) => (
+                    <span
+                        key={item.value}
+                        className={`!cursor-pointer !text-black !bg-[var(--primary-bike)] !rounded-full !bg-white !text-sm px-2 py-1 ${
+                            selectValue === item.value ? "active" : ""
+                        }`}
+                        onClick={() => {
+                            setSelectValue(item.value);
+                        }}
+                    >
+                        <SelectOutlined className="mr-1" />
+                        {item.label}
+                    </span>
+                ))}
             </div>
         </section>
     );

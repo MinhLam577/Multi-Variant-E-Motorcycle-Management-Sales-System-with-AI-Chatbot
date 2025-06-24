@@ -37,17 +37,17 @@ const PaymentWidget = observer(() => {
                         className="form-check-label"
                         htmlFor="flexCheckDefault"
                     >
-                        Direct bank transfer
+                        Phương thức thanh toán
                     </label>
                 </div>
                 {/* End form-check */}
 
-                <div className="bt_details">
-                    <p data-placeholder="Enter your payment reference">
-                        Make your payment directly into our bank account. Please
-                        use your Order ID as the payment reference. Your order
-                        will not be shipped until the funds have.
-                    </p>
+               <div className="bt_details">
+                <p data-placeholder="Enter your payment reference">
+                    Quý khách có thể thanh toán bằng **chuyển khoản ngân hàng** hoặc **tiền mặt khi nhận hàng**.
+                    <br></br>
+                    Nếu chọn thanh toán tiền mặt, quý khách vui lòng thanh toán trực tiếp cho nhân viên giao hàng khi nhận sản phẩm.
+                </p>
                 </div>
                 {storePayment?.data.payments?.map((element, index) => (
                     <div className="form-check mb-4" key={index}>
