@@ -40,7 +40,7 @@ const DashboardHeader = () => {
                     >
                         <MainMenu />
                         {/**/}
-                        <li
+                        {/* <li
                             className="sidebar_panel  " // 👈 chỉ hiện khi nhỏ hơn lg
                             data-bs-toggle="offcanvas"
                             data-bs-target="#offcanvasRight"
@@ -49,7 +49,7 @@ const DashboardHeader = () => {
                             <a className="sidebar_switch pt0  " role="button">
                                 <span />
                             </a>
-                        </li>
+                        </li> */}
                     </ul>
                 </div>
             </nav>
