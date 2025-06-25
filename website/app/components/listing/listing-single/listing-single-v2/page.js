@@ -289,171 +289,167 @@ const ListingSingleV2 = observer(() => {
                             {/* End Location */}
                             {/* End Motor Specifications */}
                         </div>
-                        <div className="col-lg-5 col-xl-5 space-y-6 text-sm text-gray-700">
-                            {/* Tiêu đề */}
-                            <div className="flex items-start gap-2">
-                                <span className="bg-red-500 text-white text-xs font-medium px-2 py-1 rounded">
-                                    Yêu Thích
-                                </span>
-                                <h1 className="text-xl font-semibold leading-tight text-gray-900">
-                                    {
-                                        storeProduct?.data?.dataDetail?.data
-                                            ?.title
-                                    }
-                                </h1>
-                            </div>
-
-                            {/* Đánh giá */}
-                            <div className="flex items-center gap-4 text-sm text-gray-600">
-                                <span>
-                                    <strong>Thương hiệu: </strong>
-                                    {storeProduct?.data?.dataDetail?.data?.brand
-                                        ?.name || "Không rõ"}
-                                </span>
-                                {sku?.masku && (
-                                    <span>
-                                        <strong>Mã sku:</strong> {sku?.masku}
+                        <div className="col-lg-5 col-xl-5">
+                            <div className="space-y-6 text-sm text-gray-700 sticky top-0 pt-1">
+                                {/* Tiêu đề */}
+                                <div className="flex items-start gap-2">
+                                    <span className="bg-red-500 text-white text-xs font-medium px-2 py-1 rounded">
+                                        Yêu Thích
                                     </span>
-                                )}
-
-                                <span>
-                                    {`Đã Bán ${
-                                        sku?.quantity_sold ||
-                                        storeProduct?.data?.dataDetail?.data
-                                            ?.totalSold ||
-                                        0
-                                    }`}{" "}
-                                </span>
-                            </div>
-
-                            {/* Giá */}
-                            <div className="bg-[#fff0f0] p-4 rounded-lg">
-                                <div className="flex items-end gap-3 flex-wrap">
-                                    <span className="text-red-500 text-2xl font-bold">
-                                        ₫
-                                        {Number(
-                                            sku?.price_sold ||
-                                                storeProduct?.data?.dataDetail
-                                                    ?.data?.skus?.[0]
-                                                    ?.price_sold ||
-                                                0
-                                        ).toLocaleString()}
-                                    </span>
-
-                                    <span className="line-through text-gray-400 text-sm">
-                                        ₫
-                                        {Number(
-                                            sku?.price_compare ||
-                                                storeProduct?.data?.dataDetail
-                                                    ?.data?.skus?.[0]
-                                                    ?.price_compare ||
-                                                0
-                                        ).toLocaleString()}
-                                    </span>
-                                    {(() => {
-                                        const priceCompare =
-                                            sku?.price_compare ||
+                                    <h1 className="text-xl font-semibold leading-tight text-gray-900">
+                                        {
                                             storeProduct?.data?.dataDetail?.data
-                                                ?.skus?.[0]?.price_compare;
-                                        const priceSold =
-                                            sku?.price_sold ||
-                                            storeProduct?.data?.dataDetail?.data
-                                                ?.skus?.[0]?.price_sold;
-
-                                        if (priceCompare && priceSold) {
-                                            const discount = Math.round(
-                                                ((+priceCompare - +priceSold) /
-                                                    +priceCompare) *
-                                                    100
-                                            );
-                                            return (
-                                                <span className="text-red-500 text-sm font-medium">
-                                                    -{discount}%
-                                                </span>
-                                            );
+                                                ?.title
                                         }
-
-                                        return null;
-                                    })()}
+                                    </h1>
                                 </div>
-                            </div>
-
-                            {/* Mã giảm giá */}
-
-                            {/* Chính sách */}
-
-                            {/* Hiển thỉ biến thể : Màu sắc , kích thước */}
-
-                            <div className="space-y-6">
-                                <OptionSelector
-                                    optionValues={
-                                        storeProduct?.data?.optionValues
-                                    }
-                                    onSelectChange={handleOptionSelect}
-                                    setAllSelected={setAllSelected}
-                                />
-                            </div>
-
-                            {/* Số lượng */}
-                            <div className="flex items-center gap-4">
-                                <span className="text-gray-700 font-medium">
-                                    Số Lượng
-                                </span>
-                                <div className="flex items-center border rounded">
-                                    <button
-                                        onClick={decreaseQuantity}
-                                        className="px-3 py-1 text-gray-500 hover:text-black"
-                                    >
-                                        −
-                                    </button>
-                                    <input
-                                        type="text"
-                                        value={quantity}
-                                        onChange={handleQuantityChange}
-                                        className="w-12 text-center border-l border-r outline-none"
+                                {/* Đánh giá */}
+                                <div className="flex items-center gap-4 text-sm text-gray-600">
+                                    <span>
+                                        <strong>Thương hiệu: </strong>
+                                        {storeProduct?.data?.dataDetail?.data
+                                            ?.brand?.name || "Không rõ"}
+                                    </span>
+                                    {sku?.masku && (
+                                        <span>
+                                            <strong>Mã sku:</strong>{" "}
+                                            {sku?.masku}
+                                        </span>
+                                    )}
+                                    <span>
+                                        {`Đã Bán ${
+                                            sku?.quantity_sold ||
+                                            storeProduct?.data?.dataDetail?.data
+                                                ?.totalSold ||
+                                            0
+                                        }`}{" "}
+                                    </span>
+                                </div>
+                                {/* Giá */}
+                                <div className="bg-[#fff0f0] p-4 rounded-lg">
+                                    <div className="flex items-end gap-3 flex-wrap">
+                                        <span className="text-red-500 text-2xl font-bold">
+                                            ₫
+                                            {Number(
+                                                sku?.price_sold ||
+                                                    storeProduct?.data
+                                                        ?.dataDetail?.data
+                                                        ?.skus?.[0]
+                                                        ?.price_sold ||
+                                                    0
+                                            ).toLocaleString()}
+                                        </span>
+                                        <span className="line-through text-gray-400 text-sm">
+                                            ₫
+                                            {Number(
+                                                sku?.price_compare ||
+                                                    storeProduct?.data
+                                                        ?.dataDetail?.data
+                                                        ?.skus?.[0]
+                                                        ?.price_compare ||
+                                                    0
+                                            ).toLocaleString()}
+                                        </span>
+                                        {(() => {
+                                            const priceCompare =
+                                                sku?.price_compare ||
+                                                storeProduct?.data?.dataDetail
+                                                    ?.data?.skus?.[0]
+                                                    ?.price_compare;
+                                            const priceSold =
+                                                sku?.price_sold ||
+                                                storeProduct?.data?.dataDetail
+                                                    ?.data?.skus?.[0]
+                                                    ?.price_sold;
+                                            if (priceCompare && priceSold) {
+                                                const discount = Math.round(
+                                                    ((+priceCompare -
+                                                        +priceSold) /
+                                                        +priceCompare) *
+                                                        100
+                                                );
+                                                return (
+                                                    <span className="text-red-500 text-sm font-medium">
+                                                        -{discount}%
+                                                    </span>
+                                                );
+                                            }
+                                            return null;
+                                        })()}
+                                    </div>
+                                </div>
+                                {/* Mã giảm giá */}
+                                {/* Chính sách */}
+                                {/* Hiển thỉ biến thể : Màu sắc , kích thước */}
+                                <div className="space-y-6">
+                                    <OptionSelector
+                                        optionValues={
+                                            storeProduct?.data?.optionValues
+                                        }
+                                        onSelectChange={handleOptionSelect}
+                                        setAllSelected={setAllSelected}
                                     />
+                                </div>
+                                {/* Số lượng */}
+                                <div className="flex items-center gap-4">
+                                    <span className="text-gray-700 font-medium">
+                                        Số Lượng
+                                    </span>
+                                    <div className="flex items-center border rounded">
+                                        <button
+                                            onClick={decreaseQuantity}
+                                            className="px-3 py-1 text-gray-500 hover:text-black"
+                                        >
+                                            −
+                                        </button>
+                                        <input
+                                            type="text"
+                                            value={quantity}
+                                            onChange={handleQuantityChange}
+                                            className="w-12 text-center border-l border-r outline-none"
+                                        />
+                                        <button
+                                            onClick={increaseQuantity}
+                                            className="px-3 py-1 text-gray-500 hover:text-black"
+                                        >
+                                            +
+                                        </button>
+                                    </div>
+                                    <span className="text-gray-500 text-sm">
+                                        {sku?.quantity_remaining ||
+                                            storeProduct?.data?.dataDetail?.data
+                                                ?.totalStock}{" "}
+                                        sản phẩm có sẵn
+                                    </span>
+                                </div>
+                                {/* Hành động */}
+                                <div className="flex items-center gap-4 pt-4">
                                     <button
-                                        onClick={increaseQuantity}
-                                        className="px-3 py-1 text-gray-500 hover:text-black"
+                                        className="bg-red-100 flex items-center border border-red-500 text-red-500 px-5 py-2 rounded-full hover:bg-red-50 transition-colors"
+                                        onClick={() => handleAddCart()}
                                     >
-                                        +
+                                        <svg
+                                            className="w-5 h-5 mr-2"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.3 2.6A1 1 0 007 17h12m-5 4a1 1 0 100-2 1 1 0 000 2zm-6 0a1 1 0 100-2 1 1 0 000 2z"
+                                            />
+                                        </svg>
+                                        Thêm Vào Giỏ Hàng
+                                    </button>
+                                    <button
+                                        className="bg-red-500 text-white px-6 py-2 rounded-full hover:bg-red-600 transition-colors"
+                                        onClick={() => handleAddCart_BuyNow()}
+                                    >
+                                        Mua Ngay
                                     </button>
                                 </div>
-                                <span className="text-gray-500 text-sm">
-                                    {sku?.quantity_remaining ||
-                                        storeProduct?.data?.dataDetail?.data
-                                            ?.totalStock}{" "}
-                                    sản phẩm có sẵn
-                                </span>
-                            </div>
-
-                            {/* Hành động */}
-                            <div className="flex items-center gap-4 pt-4">
-                                <button
-                                    className="bg-red-100 flex items-center border border-red-500 text-red-500 px-5 py-2 rounded-full hover:bg-red-50 transition-colors"
-                                    onClick={() => handleAddCart()}
-                                >
-                                    <svg
-                                        className="w-5 h-5 mr-2"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.3 2.6A1 1 0 007 17h12m-5 4a1 1 0 100-2 1 1 0 000 2zm-6 0a1 1 0 100-2 1 1 0 000 2z"
-                                        />
-                                    </svg>
-                                    Thêm Vào Giỏ Hàng
-                                </button>
-                                <button
-                                    className="bg-red-500 text-white px-6 py-2 rounded-full hover:bg-red-600 transition-colors"
-                                    onClick={() => handleAddCart_BuyNow()}
-                                >
-                                    Mua Ngay
-                                </button>
                             </div>
                         </div>
 

@@ -256,10 +256,12 @@ class ProductObservable {
                     : message;
             }
         } catch (e: any) {
-            console.error("Error fetching product list:", e);
-            this.rootStore.status = 500;
-            this.rootStore.errorMsg =
-                e?.message || "Có lỗi xảy ra, vui lòng thử lại";
+            const errorMsg = getErrorMessage(
+                e,
+                "Có lỗi xảy ra trong quá trình lấy danh sách sản phẩm"
+            );
+            console.error("Error fetching product list:", errorMsg);
+            this.rootStore.setStatusMessage(500, errorMsg, "", false);
         } finally {
             this.loading = false;
         }
@@ -282,10 +284,12 @@ class ProductObservable {
                     : message;
             }
         } catch (e: any) {
-            console.error("Error fetching product details:", e);
-            this.rootStore.status = 500;
-            this.rootStore.errorMsg =
-                e?.message || "Có lỗi xảy ra, vui lòng thử lại";
+            const errorMsg = getErrorMessage(
+                e,
+                "Có lỗi xảy ra trong quá trình lấy chi tiết sản phẩm"
+            );
+            console.error("Error fetching product details:", errorMsg);
+            this.rootStore.setStatusMessage(500, errorMsg, "", false);
         } finally {
             this.loading = false;
         }
@@ -327,10 +331,12 @@ class ProductObservable {
                 return false;
             }
         } catch (e: any) {
-            console.error("Error creating product:", e);
-            this.rootStore.status = 500;
-            this.rootStore.errorMsg =
-                e?.message || "Có lỗi xảy ra, vui lòng thử lại";
+            const errorMessage = getErrorMessage(
+                e,
+                "Có lỗi xảy ra trong quá trình tạo sản phẩm"
+            );
+            console.error("Error creating product:", errorMessage);
+            this.rootStore.setStatusMessage(500, errorMessage, "", false);
         } finally {
             this.rootStore.loading = false;
         }
@@ -356,10 +362,13 @@ class ProductObservable {
                 return false;
             }
         } catch (e: any) {
-            console.error("Error updating product:", e);
-            this.rootStore.status = 500;
-            this.rootStore.errorMsg =
-                e?.message || "Có lỗi xảy ra, vui lòng thử lại";
+            const errorMessage = getErrorMessage(
+                e,
+                "Có lỗi xảy ra trong quá trình cập nhật sản phẩm"
+            );
+            console.error("Error updating product:", errorMessage);
+            this.rootStore.setStatusMessage(500, errorMessage, "", false);
+            return false;
         } finally {
             this.rootStore.loading = false;
         }
@@ -382,15 +391,12 @@ class ProductObservable {
                 return false;
             }
         } catch (e) {
-            console.error("Error soft deleting product:", e);
-            const errorMsg =
-                typeof e === "object" && e instanceof Error
-                    ? e.message
-                    : typeof e === "object" && "message" in e
-                      ? (e.message as string)
-                      : "Có lỗi xảy ra trong quá trình xóa sản phẩm";
-            this.rootStore.status = 500;
-            this.rootStore.errorMsg = errorMsg;
+            const errorMsg = getErrorMessage(
+                e,
+                "Có lỗi xảy ra trong quá trình xóa sản phẩm"
+            );
+            console.error("Error soft deleting product:", errorMsg);
+            this.rootStore.setStatusMessage(500, errorMsg, "", false);
             return false;
         }
     }
@@ -412,13 +418,12 @@ class ProductObservable {
                 return false;
             }
         } catch (e) {
-            console.error("Error restoring deleted product:", e);
-            const errorMsg =
-                e instanceof Error
-                    ? e.message
-                    : "Có lỗi xảy ra trong quá trình khôi phục sản phẩm";
-            this.rootStore.status = 500;
-            this.rootStore.errorMsg = errorMsg;
+            const errorMsg = getErrorMessage(
+                e,
+                "Có lỗi xảy ra trong quá trình khôi phục sản phẩm"
+            );
+            console.error("Error restoring deleted product:", errorMsg);
+            this.rootStore.setStatusMessage(500, errorMsg, "", false);
             return false;
         }
     }

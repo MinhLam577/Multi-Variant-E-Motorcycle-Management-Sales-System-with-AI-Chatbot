@@ -22,6 +22,8 @@ import { getBreadcrumbItems } from "../../containers/layout/index.tsx";
 import CustomizeTab from "../../components/common/CustomizeTab.tsx";
 import Access from "../../access/access.tsx";
 import { ALL_PERMISSIONS } from "../../constants/permissions.ts";
+import { convertDate } from "../../utils/index.ts";
+import { DateTimeFormat } from "../../constants/index.ts";
 
 const WareHouses = () => {
     const navigate = useNavigate();
@@ -73,7 +75,7 @@ const WareHouses = () => {
         }
     };
 
-    const getColumnsConfig = ({ handleStatusProducts }) => {
+    const getColumnsConfig = () => {
         const handleViewWareHouse = (item) => {
             globalDispatch({
                 type: "breadcrum",
@@ -137,8 +139,16 @@ const WareHouses = () => {
                 title: "Ngày Tạo",
                 dataIndex: "created_at",
                 key: "created_at",
-                render: (value) => {
-                    return <div className="break-words">{value}</div>;
+                render: (value, item) => {
+                    return (
+                        <div className="break-words">
+                            {convertDate(
+                                value,
+                                DateTimeFormat.TIME_STAMP_POSTGRES_TZ,
+                                DateTimeFormat.TimeStamp
+                            )}
+                        </div>
+                    );
                 },
                 ellipsis: false,
                 width: "120px",
