@@ -99,16 +99,13 @@ const CartItems = ({
     // };
 
     const handleCheckboxChange = async (itemId) => {
-        
         const prevSelected = await cartObservable.getSelectedItems(); // 🟢 Lấy giá trị cũ từ observable , giá trị đã chọn trước đó
-        console.log(prevSelected)
         let newSelected;
         if (prevSelected.includes(itemId)) {
             newSelected = prevSelected.filter((id) => id !== itemId);
         } else {
             newSelected = [...prevSelected, itemId];
         }
-        console.log(newSelected)
         await cartObservable.setSelectedItems(newSelected);
 
         // Cập nhật state local nếu cần
@@ -134,15 +131,15 @@ const CartItems = ({
                             onChange={() => handleCheckboxChange(item.id)}
                         />
                     </td>
-                    <th className="pl30" scope="row">
-                        <ul className="cart_list mt20 flex items-center justify-center">
+                    <th className="!pl-0" scope="row">
+                        <ul className="cart_list mt20 flex items-center justify-start">
                             <li className="list-inline-item !mr-4">
                                 <Link
                                     href={`/listing-single-v2/${item?.skus?.product.id}`}
                                 >
                                     <Image
-                                        width={70}
-                                        height={70}
+                                        width={100}
+                                        height={100}
                                         quality={30}
                                         src={item?.skus?.image}
                                         alt="https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m0r1nxglujkfeb@resize_w48_nl.webp"

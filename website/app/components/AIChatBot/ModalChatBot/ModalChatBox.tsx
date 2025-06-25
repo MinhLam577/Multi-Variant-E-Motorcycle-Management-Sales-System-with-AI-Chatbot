@@ -7,7 +7,7 @@ interface Message {
     type: "user" | "bot";
     text: string;
     image?: string;
-    question?:string;
+    question?: string;
 }
 export default function ModalChatBox() {
     const [isOpen, setIsOpen] = useState(false);
@@ -50,12 +50,12 @@ export default function ModalChatBox() {
                     throw new Error(`HTTP error! status: ${response.status}`);
 
                 const data = await response.json();
-                console.log(data)
+                console.log(data);
                 const botMessage: Message = {
                     type: "bot",
                     text: data.text || data.message || "",
                     image: data.image || undefined,
-                    question:data?.question || undefined
+                    question: data?.question || undefined,
                 };
                 setMessages((prev) => [...prev, botMessage]);
             } catch (error) {
@@ -77,9 +77,9 @@ export default function ModalChatBox() {
     };
 
     return (
-        <div>
+        <div className="z-[3000]">
             {/* Nút chat nổi */}
-            <div className="fixed bottom-[60px] right-4 z-50">
+            <div className="fixed bottom-[60px] right-4">
                 <button
                     className="w-14 h-14 rounded-full bg-slate-900 shadow-lg flex items-center justify-center hover:bg-slate-800 transition"
                     onClick={() => setIsOpen(!isOpen)}
@@ -196,18 +196,16 @@ export default function ModalChatBox() {
                                                     />
                                                 )}
 
-                                                {msg?.question &&
+                                            {msg?.question &&
                                                 typeof msg?.question ===
                                                     "string" && (
-                                                 <span>{msg?.question}</span>
+                                                    <span>{msg?.question}</span>
                                                 )}
-
                                         </div>
                                     ) : (
                                         <>
-                                        
-                                        <span>{msg.text}</span>
-                                        <span>{msg.question}</span>
+                                            <span>{msg.text}</span>
+                                            <span>{msg.question}</span>
                                         </>
                                     )}
                                 </div>
