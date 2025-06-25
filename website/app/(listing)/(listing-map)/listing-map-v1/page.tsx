@@ -7,6 +7,7 @@ import MobileMenu from "@/app/components/common/MobileMenu";
 import LoginSignupModal from "@/app/components/common/login-signup";
 import AdvanceFilter from "@/app/components/listing/advance-filter";
 import Map from "@/app/components/common/Map";
+import { EnumProductStore } from "@/src/stores/productStore";
 
 // export const metadata = {
 //     title: "Hongson ",
@@ -45,6 +46,14 @@ const ListingMapV1 = () => {
                     <AdvanceFilter
                         handleClearAllFilters={handleClearAllFilters}
                         handleFilterChange={handleFilterChange}
+                        queryObject={{
+                            brandID: undefined,
+                            categoryID: undefined,
+                            search: undefined,
+                            price_min: undefined,
+                            price_max: undefined,
+                            type: EnumProductStore.CAR,
+                        }}
                     />
                 </div>
             </section>

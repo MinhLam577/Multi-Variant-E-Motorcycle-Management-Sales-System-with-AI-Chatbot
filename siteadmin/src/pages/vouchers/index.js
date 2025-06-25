@@ -46,44 +46,47 @@ const Vouchers = observer(() => {
         });
         navigate(`/vouchers/${voucherData.id}`, { replace: true });
     };
-useEffect(() => {
-  const {
-    search,
-    status,
-    fixed,
-    start_date,
-    end_date,
-  } = globalFilters || {};
+    useEffect(() => {
+        const { search, status, fixed, start_date, end_date } =
+            globalFilters || {};
 
-  const filtered = voucherStore.data.filter((voucher) => {
-    const matchSearch = search
-      ? voucher.voucher_name?.toLowerCase().includes(search.toLowerCase()) ||
-        voucher.voucher_code?.toLowerCase().includes(search.toLowerCase())
-      : true;
+        const filtered = voucherStore.data?.filter((voucher) => {
+            if (!voucher) return false;
+            const matchSearch = search
+                ? voucher?.voucher_name
+                      ?.toLowerCase()
+                      ?.includes(search.toLowerCase()) ||
+                  voucher?.voucher_code
+                      ?.toLowerCase()
+                      ?.includes(search.toLowerCase())
+                : true;
 
-    const matchStatus = status ? voucher.status === status : true;
+            const matchStatus = status ? voucher?.status === status : true;
 
-    const matchFixed =
-      fixed !== undefined && fixed !== ''
-        ? String(voucher.fixed) === String(fixed)
-        : true;
+            const matchFixed =
+                fixed !== undefined && fixed !== ""
+                    ? String(voucher?.fixed) === String(fixed)
+                    : true;
 
-    const matchStartDate = start_date
-      ? new Date(voucher.start_date) >= new Date(start_date)
-      : true;
+            const matchStartDate = start_date
+                ? new Date(voucher?.start_date) >= new Date(start_date)
+                : true;
 
-    const matchEndDate = end_date
-      ? new Date(voucher.end_date) <= new Date(end_date)
-      : true;
+            const matchEndDate = end_date
+                ? new Date(voucher?.end_date) <= new Date(end_date)
+                : true;
 
-    return (
-      matchSearch && matchStatus && matchFixed && matchStartDate && matchEndDate
-    );
-  });
+            return (
+                matchSearch &&
+                matchStatus &&
+                matchFixed &&
+                matchStartDate &&
+                matchEndDate
+            );
+        });
 
-  setFilteredVouchers(filtered);
-}, [globalFilters, voucherStore.data]);
-
+        setFilteredVouchers(filtered);
+    }, [globalFilters, voucherStore.data]);
 
     return (
         <>
