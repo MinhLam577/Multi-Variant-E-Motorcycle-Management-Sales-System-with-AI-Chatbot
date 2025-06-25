@@ -99,13 +99,16 @@ const CartItems = ({
     // };
 
     const handleCheckboxChange = async (itemId) => {
+        
         const prevSelected = await cartObservable.getSelectedItems(); // 🟢 Lấy giá trị cũ từ observable , giá trị đã chọn trước đó
+        console.log(prevSelected)
         let newSelected;
         if (prevSelected.includes(itemId)) {
             newSelected = prevSelected.filter((id) => id !== itemId);
         } else {
             newSelected = [...prevSelected, itemId];
         }
+        console.log(newSelected)
         await cartObservable.setSelectedItems(newSelected);
 
         // Cập nhật state local nếu cần
