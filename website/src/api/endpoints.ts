@@ -209,13 +209,14 @@ const endpoints = {
     // // Payos
     pay_os: {
         createPayosOrder: () => "/payos/create-order",
+        cancel_order_payos :(orderCode)=>`/payos/cancel-order/${orderCode}`
     },
     paymentMethod: {
         list: () => `/payment-method`,
         getPaymentName: () => `/payment-method/payment-method-name`,
         getPaymentStatus: () => "/order/payment-status",
     },
-
+  
     sku: {
         getDetailImportsById: (id: string) => `/skus/${id}/detail-import`,
         getDetailImportsByIds: () => `/skus/detail-imports-by-ids`,

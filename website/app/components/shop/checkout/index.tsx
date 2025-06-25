@@ -29,6 +29,7 @@ const BillingMain = () => {
             await storeDelivery.getListDelivery();
             await storePayment.getListPaymentMethod();
             await storeVoucher.getListVoucher_of_User();
+            await storeCart.initSelectedItemsFromStorage()
             setTimeout(async () => {
                 const idCustomer = storeAccount.account?.userId;
                 if (idCustomer) {
