@@ -290,7 +290,7 @@ const ListingSingleV2 = observer(() => {
                             {/* End Motor Specifications */}
                         </div>
                         <div className="col-lg-5 col-xl-5">
-                            <div className="space-y-6 text-sm text-gray-700 sticky top-0 pt-1">
+                            <div className="space-y-6 text-sm text-gray-700 sticky top-0">
                                 {/* Tiêu đề */}
                                 <div className="flex items-start gap-2">
                                     <span className="bg-red-500 text-white text-xs font-medium px-2 py-1 rounded">

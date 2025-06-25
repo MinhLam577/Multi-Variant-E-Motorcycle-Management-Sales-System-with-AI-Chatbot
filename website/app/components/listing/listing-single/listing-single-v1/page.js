@@ -291,7 +291,7 @@ const ListingSingle = observer(() => {
                         {/* End .col-xl-8 */}
 
                         <div className="col-lg-4 col-xl-4">
-                            <div className="sticky top-0 pt-3 z-[2000]">
+                            <div className="sticky top-0 z-[2000]">
                                 {/* Giá */}
                                 <div className="bg-[#fff0f0] p-4 rounded-lg">
                                     <div className="flex items-end gap-3 flex-wrap">
