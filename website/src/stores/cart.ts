@@ -91,12 +91,29 @@ export default class CartObservable {
 
     *setSelectedItems(items: string[]) {
         this.selectedItems = items;
+        
+        // Lưu vào localStorage
+        localStorage.setItem("selectedItems", JSON.stringify(this.selectedItems));
         // lấy danh sách item đc chọn
+
         this.listDataSelected = this.data.filter((item) =>
             this.selectedItems.includes(item.id)
         );
     }
-    get ListDataSelectedByCart() {
+    // lấy lại khi F5 ở checkout 
+    *initSelectedItemsFromStorage() {
+        const stored = localStorage.getItem("selectedItems");
+        if (stored) {
+            this.selectedItems = JSON.parse(stored);
+
+            // Tái tạo listDataSelected từ data hiện có
+            this.listDataSelected = this.data.filter(item =>
+                this.selectedItems.includes(item.id)
+            );
+        }
+    }
+
+    *getListDataSelectedByCart() {
         return this.data.filter((item) => item);
     }
 
@@ -119,10 +136,13 @@ export default class CartObservable {
             const { data, status, message } = response;
             const success_status = [200, 201, 204];
             if (success_status.includes(status)) {
+                // ✅ Xóa selectedItems trong localStorage
+                localStorage.removeItem("selectedItems");
                 // lấy id cart
                 yield this.getListCart();
                 this.dataOrder.orderId = data.id;
                 this.dataOrder.payment_method = data.payment_method.name;
+
                 this.status = status;
                 this.successMsg = message;
             } else {
@@ -149,6 +169,8 @@ export default class CartObservable {
             const { data, status, message } = response;
             const success_status = [200, 201, 204];
             if (success_status.includes(status)) {
+                // ✅ Xóa selectedItems trong localStorage
+                localStorage.removeItem("selectedItems");
                 // lấy id cart
                 this.dataOrder.order_url = data.response.order_url;
 
@@ -178,8 +200,18 @@ export default class CartObservable {
             const { data, status, message } = response;
             const success_status = [200, 201, 204];
             if (success_status.includes(status)) {
+                // ✅ Xóa selectedItems trong localStorage
+                localStorage.removeItem("selectedItems");
                 // lấy id cart
-                this.dataOrder.checkoutUrl = data.checkoutUrl;
+
+                   // ✅ Kiểm tra checkoutUrl trước khi dùng
+                if (data?.checkoutUrl) {
+                    this.dataOrder.checkoutUrl = data.checkoutUrl;
+                    console.log("PayOS Checkout URL:", data.checkoutUrl);
+                } else {
+                    console.warn("Không nhận được checkoutUrl từ PayOS.");
+                }
+                // this.dataOrder.checkoutUrl = data.checkoutUrl;
                 console.log(data.checkoutUrl);
                 this.status = status;
                 this.successMsg = message;
@@ -197,6 +229,35 @@ export default class CartObservable {
             this.loading = false;
         }
     }
+
+    // hủy đơn pay os 
+    *cancel_order_payos(orderID) {
+        try {
+            this.loading = true;
+            const response = yield apiClient.post(
+                endpoints.pay_os.cancel_order_payos(orderID)
+            );
+            const { data, status, message } = response;
+            const success_status = [200, 201, 204];
+            if (success_status.includes(status)) {
+                // lấy id cart
+                this.status = status;
+                this.successMsg = message;
+            } else {
+                this.status = status;
+                this.errorMsg = Array.isArray(message)
+                    ? message.join(", ")
+                    : message;
+            }
+        } catch (e: any) {
+            console.error(e);
+            this.status = 500;
+            this.errorMsg = e?.message || "Lỗi không xác định";
+        } finally {
+            this.loading = false;
+        }
+    }
+
     *BuyAgain_InOrder(body) {
         try {
             this.loading = true;

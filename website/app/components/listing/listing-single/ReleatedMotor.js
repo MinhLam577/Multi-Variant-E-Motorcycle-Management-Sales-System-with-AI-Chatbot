@@ -25,17 +25,15 @@ const ReleatedMotor = observer(() => {
         price_min: undefined,
         price_max: undefined,
         type: EnumProductStore.MOTORBIKE,
-        
     });
-  const { productObservable } = useStore();
-  const fetchData = async (query, type = EnumProductStore.MOTORBIKE) => {
-    try {
-        await productObservable.getListProduct(query, type);
-    } catch (e) {
-        console.error("Error fetching data:", e);
-    }
-};
-
+    const { productObservable } = useStore();
+    const fetchData = async (query, type = EnumProductStore.MOTORBIKE) => {
+        try {
+            await productObservable.getListProduct(query, type);
+        } catch (e) {
+            console.error("Error fetching data:", e);
+        }
+    };
 
     // Cập nhật URL khi người dùng thay đổi lựa chọn
     const updateUrl = (newParams) => {
@@ -44,7 +42,7 @@ const ReleatedMotor = observer(() => {
             Object.entries(newParams).reduce((acc, [key, value]) => {
                 acc[key] = String(value);
                 return acc;
-            }, {} )
+            }, {})
         );
         window.history.replaceState(null, "", `?${newQueryParams.toString()}`);
     };
@@ -68,125 +66,152 @@ const ReleatedMotor = observer(() => {
         }
     }, [queryObject]);
 
-  return (
-    <>
-      <Swiper
-        spaceBetween={20}
-        speed={1000}
-        modules={[Pagination]}
-        pagination={{
-          el: ".car-for-rent-pag",
-          spaceBetween: 10,
-          clickable: true,
-        }}
-        breakpoints={{
-          // breakpoints for responsive design
-          320: {
-            slidesPerView: 1,
-          },
-          640: {
-            slidesPerView: 2,
-          },
-          768: {
-            slidesPerView: 3,
-          },
-          1068: {
-            slidesPerView: 4,
-          },
-        }}
-      >
-        {productObservable?.data?.motobikes?.data.slice(0, 6).map((listing) => {
-          console.log(listing)
-          return (
-          <SwiperSlide key={listing.id}>
-            <div className="item">
-              <div className="car-listing">
-                <div className="thumb">
-                  {!listing.featured ? (
-                    <>
-                      <div className="tag">Mới</div>
-                    </>
-                  ) : undefined}
-                  {listing.featured ? (
-                    <>
-                      <div className="tag blue">Đã qua sử dụng</div>
-                    </>
-                  ) : undefined}
-                <Link href={`/listing-single-v2/${listing?.products?.id}?type=motorbike`}>
-
-                                  <Image
-                                    width={284}
-                                    height={183}
-                                    style={{
-                                      width: "100%",
-                                      height: "100%",
-                                      objectFit: "cover",
-                                    }}
-                                    priority
-                                    src={listing?.products?.images?.[0]}
-                                    alt={listing.title}
-                                  />
-                </Link>
-                  <div className="thmb_cntnt2">
-                    <ul className="mb0">
-                      <li className="list-inline-item">
-                        <a className="text-white" href="#">
-                          <span className="flaticon-photo-camera mr3" />{" "}
-                          {listing.photosCount}
-                        </a>
-                      </li>
-                      <li className="list-inline-item">
-                        <a className="text-white" href="#">
-                          <span className="flaticon-play-button mr3" />{" "}
-                          {listing.videosCount}
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="thmb_cntnt3">
-                    <ul className="mb0">
-                      <li className="list-inline-item">
-                        <a href="#">
-                          <span className="flaticon-shuffle-arrows" />
-                        </a>
-                      </li>
-                      <li className="list-inline-item">
-                        <a href="#">
-                          <span className="flaticon-heart" />
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-                <div className="details mt-1">
-                  <div className="wrapper">
-                    <h5 className="price">{toCurrency(listing?.products?.price)}</h5>
-                  <h6 className="mt-1 text-base  leading-snug h-[48px] overflow-hidden line-clamp-2">
-                    <Link href={`/listing-single-v2/${listing?.products?.id}?type=motorbike`}>
-                      {listing?.products?.title}
-                    </Link>
-                  </h6>
-
-                  </div>{" "}
-                  
-                </div>
-              </div>
+    return (
+        <>
+            <Swiper
+                spaceBetween={20}
+                speed={1000}
+                modules={[Pagination]}
+                pagination={{
+                    el: ".car-for-rent-pag",
+                    spaceBetween: 10,
+                    clickable: true,
+                }}
+                breakpoints={{
+                    // breakpoints for responsive design
+                    320: {
+                        slidesPerView: 1,
+                    },
+                    640: {
+                        slidesPerView: 2,
+                    },
+                    768: {
+                        slidesPerView: 3,
+                    },
+                    1068: {
+                        slidesPerView: 4,
+                    },
+                }}
+            >
+                {productObservable?.data?.motobikes?.data
+                    .slice(0, 6)
+                    .map((listing) => {
+                        return (
+                            <SwiperSlide key={listing.id}>
+                                <div className="item">
+                                    <div className="car-listing">
+                                        <div className="thumb">
+                                            {!listing.featured ? (
+                                                <>
+                                                    <div className="tag">
+                                                        Mới
+                                                    </div>
+                                                </>
+                                            ) : undefined}
+                                            {listing.featured ? (
+                                                <>
+                                                    <div className="tag blue">
+                                                        Đã qua sử dụng
+                                                    </div>
+                                                </>
+                                            ) : undefined}
+                                            <Link
+                                                href={`/listing-single-v2/${listing?.products?.id}?type=motorbike`}
+                                            >
+                                                <div className="w-full h-[220px] relative overflow-hidden rounded-t-xl">
+                                                    <Image
+                                                        width={284}
+                                                        height={183}
+                                                        style={{
+                                                            width: "100%",
+                                                            height: "100%",
+                                                            objectFit: "cover",
+                                                        }}
+                                                        priority
+                                                        src={
+                                                            listing?.products
+                                                                ?.images?.[0]
+                                                        }
+                                                        alt={listing.title}
+                                                    />
+                                                </div>
+                                            </Link>
+                                            <div className="thmb_cntnt2">
+                                                <ul className="mb0">
+                                                    <li className="list-inline-item">
+                                                        <a
+                                                            className="text-white"
+                                                            href="#"
+                                                        >
+                                                            <span className="flaticon-photo-camera mr3" />{" "}
+                                                            {
+                                                                listing.photosCount
+                                                            }
+                                                        </a>
+                                                    </li>
+                                                    <li className="list-inline-item">
+                                                        <a
+                                                            className="text-white"
+                                                            href="#"
+                                                        >
+                                                            <span className="flaticon-play-button mr3" />{" "}
+                                                            {
+                                                                listing.videosCount
+                                                            }
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div className="thmb_cntnt3">
+                                                <ul className="mb0">
+                                                    <li className="list-inline-item">
+                                                        <a href="#">
+                                                            <span className="flaticon-shuffle-arrows" />
+                                                        </a>
+                                                    </li>
+                                                    <li className="list-inline-item">
+                                                        <a href="#">
+                                                            <span className="flaticon-heart" />
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div className="details mt-1">
+                                            <div className="wrapper">
+                                                <h5 className="price">
+                                                    {toCurrency(
+                                                        listing?.products?.price
+                                                    )}
+                                                </h5>
+                                                <h6 className="mt-1 text-base  leading-snug h-[48px] overflow-hidden line-clamp-2">
+                                                    <Link
+                                                        href={`/listing-single-v2/${listing?.products?.id}?type=motorbike`}
+                                                    >
+                                                        {
+                                                            listing?.products
+                                                                ?.title
+                                                        }
+                                                    </Link>
+                                                </h6>
+                                            </div>{" "}
+                                        </div>
+                                    </div>
+                                </div>
+                            </SwiperSlide>
+                        );
+                    })}
+            </Swiper>
+            <div className="mt-3 text-center">
+                <div className="car-for-rent-pag" />
             </div>
-          </SwiperSlide>
-
-          )
-        }
-        )}
-      </Swiper>
-      <div className="mt-3 text-center">
-        <div className="car-for-rent-pag" />
-      </div>
-    </>
-  );
+        </>
+    );
 });
 
 export default ReleatedMotor;
-{/* <div className="listing_footer">
+{
+    /* <div className="listing_footer">
                     <ul className="mb0">
                       <li className="list-inline-item">
                         <span className="flaticon-road-perspective me-2" />
@@ -201,4 +226,5 @@ export default ReleatedMotor;
                         {listing?.transmission}
                       </li>
                     </ul>
-                  </div> */}
+                  </div> */
+}

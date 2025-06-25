@@ -94,7 +94,7 @@ const Categories = () => {
     return (
         <>
             <Access permission={ALL_PERMISSIONS.CATEGORIES.GET_PAGINATE}>
-                <div className="flex justify-between items-start md:items-center animate-slideDown flex-col gap-4 md:flew-row md:gap-0">
+                <div className="flex justify-between items-start md:items-center animate-slideDown flex-col gap-4 md:flex-row md:gap-0">
                     <AdminBreadCrumb
                         description="Thông tin danh sách danh mục"
                         items={[...getBreadcrumbItems(location.pathname)]}

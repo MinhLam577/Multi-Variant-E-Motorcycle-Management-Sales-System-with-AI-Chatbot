@@ -23,6 +23,19 @@ import { AccountObservable } from "@/src/stores/account";
 // import useQueryParams from "../../../../hook/useSearchParam";
 // import paymentAPI from "../../../../Api/user/payment.js";
 import { useRouter } from "next/navigation";
+
+export enum order_status {
+  CANCELLED = -1, // Đã hủy đơn hàng
+  PENDING = 0, // Đang chờ xử lí
+  CONFIRMED = 1, // Đã xác nhận đơn hàng và chờ hàng xuất kho
+  EXPORTED = 2, // Đã xuất kho thành công và chuẩn bị bàn giao cho đơn vị vận chuyển
+  HAND_OVERED = 3, // Đã bàn giao hàng cho đơn vị vận chuyển
+  DELIVERING = 4, // Đang vận chuyển hàng từ nơi xa về gần nơi của khách hàng
+  SHIPPING = 5, // Hàng đã đến gần khách và đang trong quá trình giao trực tiếp
+  DELIVERED = 6, // Đã giao hàng thành công
+  FAILED_DELIVERY = 7, // Giao hàng thất bại
+  All = undefined
+}
 const OrderHistory = observer(() => {
     const router = useRouter();
     const store = useStore();
@@ -30,10 +43,6 @@ const OrderHistory = observer(() => {
     const StoreCart = store.cartObservable;
     // lấy ra account
     const AccountStore = store.accountObservable;
-
-    //   const { isAuthenticated, logout, checkedProducts, setCheckedProducts } =
-    //     useContext(AuthContext);
-    //   const navigate = useNavigate(); // Hook để điều hướng
     const [IdOrder, setIdOrder] = useState("");
     const [IdProduct, setIdProduct] = useState("");
     const [isActive, setActive] = useState("All");
@@ -43,7 +52,7 @@ const OrderHistory = observer(() => {
         // đang chờ khách hàng  thanh toán , chuyển khoản  :
         { name: "Đang chờ", status: "PENDING" },
         // admin xác nhận đơn đã gói hàng cb vận chuyển
-        { name: "Đã xác nhận", status: "CONFIRMED" },
+        { name: "Đã xác nhận", status: "CONFIRMED"  },
         // shiper lấy hàng và đang giao đơn hàng  : vận chuyển
         // { name: "Xuất kho", status: "EXPORTED" },
         // {name : "Đã bàn giao cho vận chuyển",status :"HAND_OVERED"},
@@ -56,34 +65,33 @@ const OrderHistory = observer(() => {
         
     ];
 
-    //   const { data } = useQuery({
-    //     queryKey: ["getOrderApi"],
-    //     queryFn: () => {
-    //       return OrderApi.getHistoryOrder();
-    //     },
-    //   });
+
+
 
     useEffect(() => {
         const fetchData = async () => {
-            
             await AccountStore.getAccount(); // chờ lấy account trước
             const account = AccountStore.account;
-            console.log(account)
           //  await StoreOrder.getListOrderCustomer( account?.userId ,""); // ví dụ dùng account để truyền query
             await StoreOrder.getListOrder( {search:account?.email }); // ví dụ dùng account để truyền query
-
+            setDataAll(StoreOrder.data.orders);
             const urlParams = new URLSearchParams(window.location.search);
             const status = urlParams.get("status");
+            const orderCode= urlParams.get("orderCode");
             if (status === "PAID") {
                 notification.success({
                     message: "Thanh toán thành công",
                     description: "Đơn hàng của bạn đã thanh toán thành công.",
                 });
             } else if (status == "CANCELLED") {
-                notification.error({
-                    message: "Thanh toán thất bại",
-                    description: "Đơn hàng của bạn đã bị huỷ.",
-                });
+                await StoreCart.cancel_order_payos(orderCode)
+                const success_status = [200, 201, 204];
+                if(success_status.includes(StoreCart.status)){
+                    notification.error({
+                        message: "Thanh toán thất bại",
+                        description: "Đơn hàng của bạn đã bị huỷ.",
+                    });
+                }
             }
         };
 
@@ -91,28 +99,26 @@ const OrderHistory = observer(() => {
     }, []);
 
     const [dataAll, setDataAll] = useState([]);
-    // Đảm bảo khi StoreOrder.data.orders thay đổi, dữ liệu được cập nhật
-    // useEffect(() => {
-    //   if (StoreOrder?.data?.orders) {
-    //     setDataAll(StoreOrder.data.orders);
-    //   }
-    // }, [StoreOrder?.data?.orders]); // Khi orders thay đổi, chạy lại effect
-
     useEffect(() => {
-        if (StoreOrder?.data?.orders) {
-            setDataAll(StoreOrder.data.orders);
-        }
+        const account = AccountStore.account;
         if (isActive && isActive !== "All") {
-            const filter = StoreOrder.data.orders?.filter((element) => {
-                return element?.order_status === isActive;
-            });
-            if (filter) {
-                setDataAll(filter);
-            }
+        fetchData({search :account?.email ,order_status: order_status[isActive]})
         } else if (isActive == "All") {
-            setDataAll(StoreOrder.data.orders);
+             
+            fetchData({search :account?.email })
+            
         }
-    }, [StoreOrder?.data?.orders, isActive]);
+    }, [ isActive]);
+
+
+    const fetchData = async (query ?: {
+        search ?: string ,
+        order_status ?: order_status
+    } ) => { 
+            await StoreOrder.getListOrder(query); 
+            setDataAll(StoreOrder.data.orders);
+    }
+
 
     const handleBuyAgain = async (order_detail) => {
         let arrayIdCart = []; // Declare the array before the loop
@@ -161,20 +167,6 @@ const OrderHistory = observer(() => {
         setIdProduct(product_id);
         setIsModalOpen(true);
     };
-    // useEffect(() => {
-    //   if (dataAll?.length) {
-    //     dataAll.forEach((element) => {
-    //       console.log(element);
-    //       if (
-    //         (element.payment_method_name === "PAYOS" ||
-    //           element.payment_method_name === "VNPAY") &&
-    //         element.payment_status === "pending"
-    //       ) {
-    //         handleCancelOrder1(element.order_id);
-    //       }
-    //     });
-    //   }
-    // }, [dataAll]);
     return (
         <div className="">
             <div className="flex justify-between  ">
