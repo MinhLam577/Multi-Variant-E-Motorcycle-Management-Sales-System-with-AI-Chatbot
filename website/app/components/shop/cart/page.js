@@ -6,13 +6,11 @@ import HeaderTop from "@/app/components/common/HeaderTop";
 import MobileMenu from "@/app/components/common/MobileMenu";
 import LoginSignupModal from "@/app/components/common/login-signup";
 import CartItems from "@/app/components/shop/cart/CartItems";
-import Coupon from "@/app/components/shop/cart/Coupon";
 import CartTotal from "@/app/components/shop/cart/CartTotal";
 import { useStore } from "@/src/stores";
 import { useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { Empty } from "antd";
-
 
 const Cart = observer(() => {
     const [selectedAllItems, setSelectedAllItems] = useState(false); // Thêm state để lưu các sản phẩm đã chọn
@@ -118,7 +116,7 @@ const Cart = observer(() => {
                                                             </th>
                                                             <th
                                                                 scope="col"
-                                                                className="text-center text-black"
+                                                                className="!text-left text-black"
                                                             >
                                                                 Sản phẩm
                                                             </th>
