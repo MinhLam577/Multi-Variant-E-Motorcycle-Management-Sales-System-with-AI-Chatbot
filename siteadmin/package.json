@@ -1,5 +1,5 @@
 {
-    "homepage": "./",
+    "homepage": "https://otohongson-admin.netlify.app",
     "dependencies": {
         "@ant-design/charts": "^2.2.6",
         "@ant-design/icons": "^5.2.6",
