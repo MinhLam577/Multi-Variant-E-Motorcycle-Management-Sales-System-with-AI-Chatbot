@@ -65,42 +65,45 @@ const handleError = async (error) => {
 };
 
 const handleError401 = async (originalRequest, error) => {
-    if (originalRequest._retry) {
-        return;
-    }
+    const respData = error?.response?.data;
+    checkLogout();
+    return Promise.reject(respData);
+    // if (originalRequest._retry) {
+    //     return;
+    // }
 
-    if (originalRequest.url.includes(endpoints.authAdmin.refreshToken)) {
-        checkLogout();
-        return;
-    }
+    // if (originalRequest.url.includes(endpoints.authAdmin.refreshToken)) {
+    //     checkLogout();
+    //     return;
+    // }
 
-    if (isRefreshing) {
-        return new Promise((resolve) => {
-            refreshSubscribers.push((token) => {
-                originalRequest.headers.Authorization = `Bearer ${token}`;
-                resolve(apiClient(originalRequest));
-            });
-        });
-    }
+    // if (isRefreshing) {
+    //     return new Promise((resolve) => {
+    //         refreshSubscribers.push((token) => {
+    //             originalRequest.headers.Authorization = `Bearer ${token}`;
+    //             resolve(apiClient(originalRequest));
+    //         });
+    //     });
+    // }
 
-    originalRequest._retry = true;
-    isRefreshing = true;
+    // originalRequest._retry = true;
+    // isRefreshing = true;
 
-    try {
-        const newAccessToken = await refreshToken();
-        if (!newAccessToken) return Promise.reject(error);
+    // try {
+    //     const newAccessToken = await refreshToken();
+    //     if (!newAccessToken) return Promise.reject(error);
 
-        apiClient.defaults.headers.Authorization = `Bearer ${newAccessToken}`;
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+    //     apiClient.defaults.headers.Authorization = `Bearer ${newAccessToken}`;
+    //     originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 
-        refreshSubscribers.forEach((callback) => callback(newAccessToken));
-        refreshSubscribers = [];
-        isRefreshing = false;
+    //     refreshSubscribers.forEach((callback) => callback(newAccessToken));
+    //     refreshSubscribers = [];
+    //     isRefreshing = false;
 
-        return apiClient(originalRequest);
-    } catch (err) {
-        return Promise.reject(err);
-    }
+    //     return apiClient(originalRequest);
+    // } catch (err) {
+    //     return Promise.reject(err);
+    // }
 };
 
 const refreshToken = async () => {
@@ -133,7 +136,6 @@ const refreshToken = async () => {
 
 const checkLogout = async () => {
     await secureLocalStorage.removeItem(keyStorageAccount);
-    window.location.href = "/login";
 };
 
 apiClient.interceptors.response.use(handleSuccess, handleError);

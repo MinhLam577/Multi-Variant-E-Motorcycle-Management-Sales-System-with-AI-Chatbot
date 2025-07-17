@@ -1,9 +1,7 @@
 import { makeAutoObservable } from "mobx";
-import apiClient from "../api/apiClient";
-import endpoints from "../api/endpoints";
 import { RootStore } from "./base";
-import { handleErrorMessage } from "../api/handleErrorMessage";
 import { getErrorMessage } from "src/utils";
+import LoginAPI from "src/api/login.api";
 
 export class LoginObservable {
     errorMsg: string = "";
@@ -18,12 +16,9 @@ export class LoginObservable {
     *login(email: string, password: string) {
         this.status = "submitting";
         try {
-            const { data, status, message } = yield apiClient.post(
-                endpoints.authAdmin.login,
-                {
-                    email,
-                    password,
-                }
+            const { data, status, message } = yield LoginAPI.login(
+                email,
+                password
             );
 
             if (status !== 200 && !data?.userId) {
@@ -32,7 +27,6 @@ export class LoginObservable {
                 return;
             }
             yield this.rootStore.accountObservable.setAccount(data);
-            // yield this.rootStore.userObservable.getMe(data.userId);
             this.status = "loginSuccess";
             this.successMsg = message;
         } catch (error) {
@@ -45,19 +39,13 @@ export class LoginObservable {
     *getAccountApi(email: string) {
         this.status = "submitting";
         try {
-            const { data, status, message } = yield apiClient.post(
-                endpoints.authAdmin.getAccount,
-                {
-                    email,
-                }
-            );
+            const { data, status, message } = yield LoginAPI.getAccount(email);
             if (status !== 200 && !data?.userId) {
                 this.status = "loginFailed";
                 this.errorMsg = message;
                 return;
             }
             yield this.rootStore.accountObservable.setAccount(data);
-            // yield this.rootStore.userObservable.getMe(data.userId);
 
             this.status = "loginSuccess";
             this.successMsg = message;
@@ -73,12 +61,7 @@ export class LoginObservable {
     //forgot password
     *forgotPassword(email: string) {
         try {
-            const { data, status } = yield apiClient.post(
-                endpoints.authAdmin.forgotPassword,
-                {
-                    email,
-                }
-            );
+            const { data, status } = yield LoginAPI.forgotPassword(email);
             if (status !== 200) {
                 this.status = "forgotPasswordFailed";
                 this.errorMsg = "Email không tồn tại!";
@@ -86,8 +69,12 @@ export class LoginObservable {
             }
             this.status = "forgotPasswordSuccess";
         } catch (error) {
+            const errorMessage = getErrorMessage(
+                error,
+                "Quên mật khẩu thất bại"
+            );
             this.status = "forgotPasswordFailed";
-            this.errorMsg = handleErrorMessage(error);
+            this.errorMsg = errorMessage;
         }
     }
 

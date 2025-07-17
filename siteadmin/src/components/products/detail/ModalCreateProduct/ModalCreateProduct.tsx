@@ -738,59 +738,16 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
 
     const initialOptionsBrand: SelectType[] = brandSelectData?.length
         ? brandSelectData
-        : [
-              { label: "Nhãn hàng A", value: "BA" },
-              { label: "Nhãn hàng B", value: "BB" },
-              { label: "Nhãn hàng C", value: "BC" },
-          ];
+        : [];
     const initialOptionsCategory: TreeSelectType[] = categorySelectData?.length
         ? categorySelectData
-        : [
-              {
-                  title: "Điện tử",
-                  value: "electronics",
-                  children: [
-                      {
-                          title: "Điện thoại",
-                          value: "mobile-phones",
-                          children: [
-                              {
-                                  title: "iPhone",
-                                  value: "iphone",
-                                  children: [],
-                              },
-                              {
-                                  title: "Samsung",
-                                  value: "samsung",
-                                  children: [],
-                              },
-                              {
-                                  title: "Xiaomi",
-                                  value: "xiaomi",
-                                  children: [],
-                              },
-                          ],
-                      },
-                  ],
-              },
-          ];
+        : [];
     const initialOptionsInventory: SelectType[] = warehouseSelectData?.length
         ? warehouseSelectData
-        : [
-              { label: "Kho chính", value: "main" },
-              { label: "Kho phụ", value: "sub" },
-              { label: "Kho tạm", value: "temp" },
-              { label: "Kho 1", value: "warehouse1" },
-              { label: "Kho 2", value: "warehouse2" },
-              { label: "Kho 3", value: "warehouse3" },
-          ];
+        : [];
     const initialOptionsVariant: SelectType[] = optionSelectData?.length
         ? optionSelectData
-        : [
-              { label: "Thuộc tính 1", value: "color" },
-              { label: "Thuộc tính 2", value: "size" },
-              { label: "Thuộc tính 4", value: "material" },
-          ];
+        : [];
 
     // Hàm thêm selectable cho node cấp 3
     const addSelectable = (nodes, level = 1) => {
@@ -802,32 +759,8 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
                 : undefined,
         }));
     };
-    const getFirstLevel3Node = (treeData) => {
-        let firstLevel3Node = null;
 
-        const traverse = (nodes, level = 1) => {
-            for (const node of nodes) {
-                if (
-                    level === 3 &&
-                    (!node.children || node.children.length === 0)
-                ) {
-                    firstLevel3Node = node.value;
-                    return true;
-                }
-                if (node.children && node.children.length > 0) {
-                    if (traverse(node.children, level + 1)) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        };
-
-        traverse(treeData);
-        return firstLevel3Node;
-    };
     const selectableTreeData = addSelectable(initialOptionsCategory);
-    // const [formImageList, setFormImageList] = useState<UploadFile[]>([]);
     // Hàm render thông tin chung của sản phẩm
 
     const GeneralInformation = observer(() => {
@@ -1774,10 +1707,9 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
 
     // #region Hàm render quản lí biến thể
 
-    // const [subForm] = Form.useForm();
     const handleCheckVariant = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.checked) {
-            const defaultVariant = initialOptionsVariant[0].value || "";
+            const defaultVariant = initialOptionsVariant[0]?.value || "";
             const variants = [
                 { name: defaultVariant, values: [{ value: "" }] },
             ];
