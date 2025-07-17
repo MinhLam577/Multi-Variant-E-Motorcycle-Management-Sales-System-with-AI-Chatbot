@@ -24,8 +24,6 @@ import Notification from "./pages/notifications";
 import Orders from "./pages/orders";
 import OrderDetail, { OrderDetailMode } from "./pages/orders/OrderDetail";
 import { ProductUnitsDetailMode } from "./pages/product_units/ProductUnitsDetail";
-import Stores from "./pages/stores";
-import StoresDetail, { StoresDetailMode } from "./pages/stores/StoresDetail";
 import User from "./pages/users";
 import DeleteUser from "./pages/users/DeleteUser";
 import UserDetail from "./pages/users/UserDetail";
@@ -198,44 +196,6 @@ function App() {
                                     }
                                 />
 
-                                <Route
-                                    path="/stores"
-                                    element={
-                                        <ProtectedRoute>
-                                            <Stores />
-                                        </ProtectedRoute>
-                                    }
-                                />
-                                <Route
-                                    path="/stores/add"
-                                    element={
-                                        <ProtectedRoute>
-                                            <StoresDetail
-                                                mode={StoresDetailMode.Add}
-                                            />
-                                        </ProtectedRoute>
-                                    }
-                                />
-                                <Route
-                                    path="/stores/:id"
-                                    element={
-                                        <ProtectedRoute>
-                                            <StoresDetail
-                                                mode={StoresDetailMode.View}
-                                            />
-                                        </ProtectedRoute>
-                                    }
-                                />
-                                <Route
-                                    path="/stores/:id/edit"
-                                    element={
-                                        <ProtectedRoute>
-                                            <StoresDetail
-                                                mode={StoresDetailMode.Edit}
-                                            />
-                                        </ProtectedRoute>
-                                    }
-                                />
                                 <Route path="users">
                                     <Route
                                         index

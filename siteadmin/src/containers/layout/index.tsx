@@ -161,7 +161,7 @@ const AppLayout = (props) => {
     useEffect(() => {
         fetchData();
         const permissions = AccountStore.permissions || [];
-        if (!permissions?.length) return;
+        // if (!permissions?.length) return;
         const items = [];
 
         const hasPermission = (perm) =>
@@ -213,7 +213,7 @@ const AppLayout = (props) => {
                 )
             );
         }
-        if (hasPermission(ALL_PERMISSIONS.ROLES.GET_PAGINATE)) {
+        if (hasPermission(ALL_PERMISSIONS.PRODUCTS.GET_PAGINATE)) {
             items.push(
                 getSideMenuItem(
                     "Sản phẩm",
