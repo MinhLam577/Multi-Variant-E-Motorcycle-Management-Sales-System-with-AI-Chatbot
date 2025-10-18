@@ -9,7 +9,7 @@ import ModalCreateExport from "src/components/exports/detail/ModalCreateExport";
 import ModalUpdateExport from "src/components/exports/detail/ModalUpdateExport";
 import ExportSearch from "src/components/exports/ExportSearch";
 import ExportTable from "src/components/exports/ExportTable";
-import { SelectType } from "src/components/products/detail/ModalCreateProduct/ModalCreateProduct";
+import { SelectType } from "src/components/products/detail/ModalCreateProduct/ModalCreateProduct.type";
 import { ALL_PERMISSIONS } from "src/constants/permissions";
 import { getBreadcrumbItems } from "src/containers/layout";
 import { useStore } from "src/stores";

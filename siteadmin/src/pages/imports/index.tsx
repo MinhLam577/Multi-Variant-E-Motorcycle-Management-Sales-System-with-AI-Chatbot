@@ -47,7 +47,7 @@ import { toJS } from "mobx";
 import { filterEmptyFields, generateUUIDV4, getErrorMessage } from "src/utils";
 import { FormInstance } from "antd/lib";
 import TextArea from "antd/es/input/TextArea";
-import { SelectType } from "src/components/products/detail/ModalCreateProduct/ModalCreateProduct";
+import { SelectType } from "src/components/products/detail/ModalCreateProduct/ModalCreateProduct.type";
 import Access from "src/access/access";
 import { ALL_PERMISSIONS } from "src/constants/permissions";
 

@@ -44,8 +44,16 @@ export const HeaderWithActions = observer(() => {
             (type) => {
                 if (type === EnumProductStore.CAR) {
                     onChangeTheme("primary-car");
+                    document.documentElement.style.setProperty(
+                        `--primary-hover`,
+                        "var(--primary-car)"
+                    );
                 } else if (type === EnumProductStore.MOTORBIKE) {
                     onChangeTheme("primary-bike");
+                    document.documentElement.style.setProperty(
+                        `--primary-hover`,
+                        "var(--primary-bike)"
+                    );
                 }
             },
             {
@@ -61,15 +69,16 @@ export const HeaderWithActions = observer(() => {
     return (
         <div className="header_action xl:!flex lg:!flex md:!hidden sm:!hidden hidden">
             {/* <!-- Left Content --> */}
-            <Link href="/" passHref legacyBehavior>
-                <div
-                    style={{
-                        backgroundColor:
-                            theme === "primary-car" ? `var(--${theme})` : null,
-                    }}
-                    className="left-content"
-                    onClick={handleLeftClick}
-                >
+            <button
+                style={{
+                    backgroundColor:
+                        theme === "primary-car" ? `var(--${theme})` : null,
+                }}
+                className="left-content"
+                onClick={handleLeftClick}
+                type="button"
+            >
+                <Link href="/">
                     <Image
                         alt="oto"
                         src="/images/icon/car.png"
@@ -77,9 +86,9 @@ export const HeaderWithActions = observer(() => {
                         height={30}
                         className="me-3"
                     />
-                    <a>Ô TÔ TẢI</a>
-                </div>
-            </Link>
+                    <span>Ô TÔ TẢI</span>
+                </Link>
+            </button>
 
             {/* <!-- Center Logo --> */}
             <div className="flex justify-center items-center">
@@ -93,15 +102,15 @@ export const HeaderWithActions = observer(() => {
             </div>
 
             {/* <!-- Right Content --> */}
-            <Link href="/home-motorbike" passHref legacyBehavior>
-                <div
-                    className="right-content"
-                    onClick={handleRightClick}
-                    style={{
-                        backgroundColor:
-                            theme === "primary-bike" ? `var(--${theme})` : null,
-                    }}
-                >
+            <button
+                className="right-content"
+                onClick={handleRightClick}
+                style={{
+                    backgroundColor:
+                        theme === "primary-bike" ? `var(--${theme})` : null,
+                }}
+            >
+                <Link href="/home-motorbike">
                     <Image
                         alt="motor"
                         src={"/images/icon/scooter.png"}
@@ -109,9 +118,9 @@ export const HeaderWithActions = observer(() => {
                         height={30}
                         className="me-2"
                     />
-                    <a>XE MÁY ĐIỆN</a>
-                </div>
-            </Link>
+                    <span>XE MÁY ĐIỆN</span>
+                </Link>
+            </button>
         </div>
     );
 });

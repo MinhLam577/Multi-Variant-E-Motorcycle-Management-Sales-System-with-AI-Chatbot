@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
 import { Dispatch, SetStateAction, useCallback, useEffect } from "react";
 import { debounce } from "lodash";
-import { SelectType } from "../products/detail/ModalCreateProduct/ModalCreateProduct";
+import { SelectType } from "../products/detail/ModalCreateProduct/ModalCreateProduct.type";
 import { Col, Form, FormInstance, Input, Row, Select } from "antd";
 import { globalFiltersDataSkus } from "src/stores/skus.store";
 const VariantSearch: React.FC<{

@@ -12,7 +12,7 @@ import MotorHero from "@/app/components/home/MotorHero";
 import SaleBanner from "@/app/components/home/SaleBanner";
 import Link from "next/link";
 export const metadata = {
-    title: "Ô Tô Hồng Sơn | Mua Bán Máy Điện Uy Tín & Chất Lượng",
+    title: "Ô Tô Hồng Sơn | Mua Bán Xe Hơi Uy Tín & Chất Lượng",
     description: `Ô Tô Hồng Sơn - Địa chỉ uy tín chuyên cung cấp các dòng xe hơi chất lượng cao, dịch vụ chăm sóc khách hàng chuyên nghiệp, giá cả cạnh tranh.`,
 };
 
@@ -24,6 +24,17 @@ const partners = [
     { imgPath: "/images/partners/bike_1.png", delay: 900 },
     { imgPath: "/images/partners/bike_1.png", delay: 1100 },
 ];
+
+const filterOptions = [
+    { value: "*", name: "Tất cả" },
+    { value: "new", name: "Xe điện Vinfast" },
+    { value: "car", name: "Xe YADEKA" },
+    { value: "car", name: "Xe YAKA" },
+    { value: "car", name: "Xe EVGO" },
+    { value: "car", name: "Xe điện thời trang" },
+    { value: "car-specialized", name: "Xe điện học sinh" },
+];
+
 const HomeMotorbike = () => {
     return (
         <div className="wrapper ovh">
@@ -38,16 +49,15 @@ const HomeMotorbike = () => {
 
             {/* Hero */}
             <MotorHero />
-
             {/* End Hero */}
 
             {/* Featured Product  */}
-            <section className="car-category">
+            <section className="featured-product">
                 <div className="container">
                     <div className="row justify-content-center">
                         <div className="col-lg-8">
                             <div className="main-title text-center">
-                                <h2>Sản phẩm bán chạy</h2>
+                                <h2>Xe bán chạy</h2>
                             </div>
                         </div>
                     </div>
@@ -64,12 +74,12 @@ const HomeMotorbike = () => {
                     </div>
                     {/* End .row */}
 
-                    <div className="row">
+                    <div className="row  mt20">
                         <div className="col-lg-12">
-                            <div className="text-center">
+                            <div className="text-center ">
                                 <Link
-                                    href="/listing-v1/?type=motorbike"
-                                    className="more_listing"
+                                    href="/page-list-v1"
+                                    className="more_listing "
                                 >
                                     Xem tất cả{" "}
                                     <span className="icon">
@@ -79,9 +89,10 @@ const HomeMotorbike = () => {
                             </div>
                         </div>
                     </div>
+                    {/* End .row */}
                 </div>
+                {/* End .container */}
             </section>
-
             {/* End Featured Product  */}
 
             {/* Our Partners */}
@@ -106,6 +117,50 @@ const HomeMotorbike = () => {
             </section>
             {/* End Our Partners */}
 
+            {/* Category Product  */}
+            <section className="featured-product">
+                <div className="container">
+                    <div className="row justify-content-center">
+                        <div className="col-lg-8">
+                            <div className="main-title text-center">
+                                <h2>Cách loại xe máy điện</h2>
+                            </div>
+                        </div>
+                    </div>
+                    {/* End .row */}
+
+                    <div className="row">
+                        <div
+                            className="col-lg-12"
+                            data-aos-delay="100"
+                            data-aos="fade-up"
+                        >
+                            <MotorBikeTypeList data={filterOptions} />
+                        </div>
+                    </div>
+                    {/* End .row */}
+
+                    <div className="row mt20 ">
+                        <div className="col-lg-12 ">
+                            <div className="text-center mt-20">
+                                <Link
+                                    href="/page-list-v1"
+                                    className="more_listing"
+                                >
+                                    Xem tất cả{" "}
+                                    <span className="icon">
+                                        <span className="fas fa-plus" />
+                                    </span>
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                    {/* End .row */}
+                </div>
+                {/* End .container */}
+            </section>
+            {/* End Category Product  */}
+
             {/* Sale Banner  */}
             <section className="our-blog pb90 pt-0">
                 <div className="container">
@@ -127,7 +182,7 @@ const HomeMotorbike = () => {
             {/* End Sale Banner  */}
 
             {/* Why Chose us  */}
-            <section className="why-chose pt0">
+            <section className="why-chose pt0 pb90">
                 <div className="container">
                     <div className="row justify-content-center">
                         <div className="col-lg-8">
@@ -185,4 +240,3 @@ const HomeMotorbike = () => {
 };
 
 export default HomeMotorbike;
-// <h2>Cách loại xe máy điện</h2>

@@ -15,13 +15,14 @@ import CustomizeTab from "src/components/common/CustomizeTab";
 import { reaction, toJS } from "mobx";
 import { generateUUIDV4, getErrorMessage } from "src/utils";
 import { CategoryResponseType } from "src/stores/categories.store";
-import ModalCreateProduct, {
-    IFormListRowData,
-    modalCreateProductStore,
-    TreeSelectType,
-} from "src/components/products/detail/ModalCreateProduct/ModalCreateProduct";
+import { modalCreateProductStore } from "src/components/products/detail/ModalCreateProduct/ModalCreateProduct.store";
+import ModalCreateProduct from "src/components/products/detail/ModalCreateProduct/ModalCreateProduct";
 import ModalUpdateProduct from "src/components/products/detail/ModalUpdateProduct/ModalUpdateProduct";
 import BaseAPI from "src/api/base";
+import {
+    IFormListRowData,
+    TreeSelectType,
+} from "src/components/products/detail/ModalCreateProduct/ModalCreateProduct.type";
 
 type product_brand_type = {
     id: string;
@@ -87,13 +88,6 @@ export const generateRandomString = (length: number): string => {
     }
     return result;
 };
-
-// export const getCategoriesTreeSelect = (data: CategoryResponseType[]) =>
-//     data?.map((item) => ({
-//         value: item.id,
-//         title: item.name,
-//         children: item.children ? getCategoriesTreeSelect(item.children) : [],
-//     }));
 
 export const getCategoriesTreeSelect = (
     data: CategoryResponseType[],
@@ -434,9 +428,9 @@ const Products = () => {
                                         cancelText="Hủy"
                                         form={createProductForm}
                                         subForm={subCreateProductForm}
-                                        categorySelectData={getCategoriesTreeSelect(
+                                        categorySelectData={
                                             categoriesStore.data
-                                        )}
+                                        }
                                         brandSelectData={getSelectOption(
                                             brandStore.data
                                         )}
@@ -464,9 +458,9 @@ const Products = () => {
                                         cancelText="Hủy"
                                         form={updateProductForm}
                                         subForm={subUpdateProductForm}
-                                        categorySelectData={getCategoriesTreeSelect(
+                                        categorySelectData={
                                             categoriesStore.data
-                                        )}
+                                        }
                                         brandSelectData={getSelectOption(
                                             brandStore.data
                                         )}

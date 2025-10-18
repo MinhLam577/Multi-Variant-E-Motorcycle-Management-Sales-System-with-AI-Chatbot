@@ -16,10 +16,6 @@ export const RequestStatus = {
 export const keyStorageAccount = "account";
 export const ColorList = ["#f56a00", "#7265e6", "#ffbf00", "#00a2ae"];
 export const UserRoleConstant = {
-    //   ADMIN: "admin",
-    //   USER: "user",
-    //   SALES: "sales",
-
     Staff: "Staff",
     warehouse_manager: "warehouse_manager",
     delivery_staff: "delivery_staff",
@@ -242,7 +238,7 @@ export const AUTH_STORAGE_KEYS = {
 };
 
 export const SUCCESS_STATUSES = [200, 201, 204];
-
+export const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
 export const AcceptImageTypes = [
     "image/jpeg",
     "image/png",

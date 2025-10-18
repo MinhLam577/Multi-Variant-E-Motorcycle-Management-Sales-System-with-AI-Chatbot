@@ -4,16 +4,22 @@ import {
     PlusOutlined,
     SaveOutlined,
 } from "@ant-design/icons";
-import { Button, Card, Divider, Form, Input, message, TreeSelect } from "antd";
-import PropTypes from "prop-types";
+import {
+    Button,
+    Card,
+    Divider,
+    Form,
+    Input,
+    message,
+    Select,
+    TreeSelect,
+} from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import {
     ProcessModalName,
     processWithModals,
 } from "../../containers/processWithModals";
-import apiClient from "../../api/apiClient";
-import endpoints from "../../api/endpoints";
 import { useStore } from "../../stores";
 import { observer } from "mobx-react-lite";
 import { toJS } from "mobx";
@@ -25,6 +31,7 @@ import {
 } from "../../pages/products";
 import AdminBreadCrumb from "../../components/common/AdminBreadCrumb";
 import { getBreadcrumbItems } from "../../containers/layout";
+import { EnumProductStore, EnumProductType } from "../../stores/product.store";
 export const CategoriesDetailMode = {
     View: 1,
     Add: 2,
@@ -194,13 +201,13 @@ const CategoriesDetail = ({ mode }) => {
         const dto = {
             ...values,
         };
-
         if (mode === CategoriesDetailMode.Add) {
             processWithModals(ProcessModalName.ConfirmCreateNews)(async () => {
                 try {
                     const response = await categoriesStore.createCategory(dto);
+
                     if (response) {
-                        message.success("Tạo danh mục thành công.");
+                        // message.success("Tạo danh mục thành công.");
                         navigate("/categories");
                     } else {
                         throw new Error(
@@ -222,7 +229,7 @@ const CategoriesDetail = ({ mode }) => {
                 try {
                     const res = await categoriesStore.updateCategory(id, dto);
                     if (res) {
-                        message.success("Cập nhật danh mục thành công.");
+                        // message.success("Cập nhật danh mục thành công.");
                         navigate("/categories");
                     }
                 } catch (error) {
@@ -320,6 +327,20 @@ const CategoriesDetail = ({ mode }) => {
                         <Input
                             readOnly={isReadOnly()}
                             placeholder="Nhập mô tả danh mục"
+                        />
+                    </Form.Item>
+                    <Form.Item label="Kiểu danh mục" name="type">
+                        <Select
+                            defaultValue={
+                                form.getFieldValue("type") ||
+                                EnumProductStore.CAR
+                            }
+                            options={Object.keys(EnumProductType).map(
+                                (key) => ({
+                                    label: EnumProductType[key],
+                                    value: EnumProductStore[key],
+                                })
+                            )}
                         />
                     </Form.Item>
 

@@ -1057,9 +1057,11 @@ asynckit@^0.4.0:
     axios "^1.8.3"
     bootstrap "^5.2.3"
     chart.js "^4.3.0"
+    clsx "^2.1.1"
     dotenv "^16.4.7"
     eslint "8.41.0"
     eslint-config-next "^14.1.0"
+    iconsax-reactjs "^0.0.8"
     js-base64 "^3.7.7"
     lodash.debounce "^4.0.8"
     mobx "^6.13.7"
@@ -1265,8 +1267,10 @@ classnames@^2.2.1, classnames@^2.2.3, classnames@^2.2.5, classnames@^2.2.6, clas
 client-only@0.0.1:
   version "0.0.1"
 
-clsx@^2.0.0:
+clsx@^2.0.0, clsx@^2.1.1:
   version "2.1.1"
+  resolved "https://registry.npmjs.org/clsx/-/clsx-2.1.1.tgz"
+  integrity sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA==
 
 color-convert@^2.0.1:
   version "2.0.1"
@@ -2097,6 +2101,11 @@ html-url-attributes@^3.0.0:
   version "3.0.1"
   resolved "https://registry.npmjs.org/html-url-attributes/-/html-url-attributes-3.0.1.tgz"
   integrity sha512-ol6UPyBWqsrO6EJySPz2O7ZSr856WDrEzM5zMqp+FJJLGMW35cLYmmZnl0vztAZxRUoNZJFTCohfjuIJ8I4QBQ==
+
+iconsax-reactjs@^0.0.8:
+  version "0.0.8"
+  resolved "https://registry.npmjs.org/iconsax-reactjs/-/iconsax-reactjs-0.0.8.tgz"
+  integrity sha512-cb+uTMxbkSFNbu8ZclX7BWQVfOWQt8+m/PsDjnsm/H+mcYrnfTYMjHxiof1FB43k7UAgt1ds+0oFeMVKdqyslw==
 
 ignore@^5.2.0, ignore@^5.3.1:
   version "5.3.2"

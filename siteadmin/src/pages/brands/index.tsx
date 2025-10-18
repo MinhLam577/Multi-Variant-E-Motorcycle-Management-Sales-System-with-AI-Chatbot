@@ -18,7 +18,6 @@ import {
     filterEmptyFields,
     getBase64,
     getErrorMessage,
-    urlToBase64,
 } from "src/utils";
 import BaseAPI from "src/api/base";
 import "./index.css";

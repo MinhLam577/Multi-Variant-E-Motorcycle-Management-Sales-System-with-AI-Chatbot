@@ -15,7 +15,7 @@ import {
 import { useStore } from "src/stores";
 import { AcceptImageTypes } from "src/constants";
 import { DeleteOutlined, UploadOutlined } from "@ant-design/icons";
-import { SelectType } from "../products/detail/ModalCreateProduct/ModalCreateProduct";
+import { SelectType } from "../products/detail/ModalCreateProduct/ModalCreateProduct.type";
 import { observer } from "mobx-react-lite";
 import { reaction } from "mobx";
 import {

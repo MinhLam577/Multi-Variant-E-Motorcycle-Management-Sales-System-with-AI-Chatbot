@@ -1,5 +1,5 @@
 import { Button, Col, Form, FormListFieldData, Input, Row, Select } from "antd";
-import { SelectType } from "./ModalCreateProduct/ModalCreateProduct";
+import { SelectType } from "./ModalCreateProduct/ModalCreateProduct.type";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { CloseOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { FormInstance } from "antd/lib";

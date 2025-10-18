@@ -57,9 +57,14 @@ const getColumnsConfig = ({ hanleDeleteNews, handleUpdateNews }) => {
                             placement="topLeft"
                             trigger={["hover", "focus"]}
                             color="#fff"
-                            overlayStyle={{
-                                maxWidth: "300px",
-                                wordBreak: "break-word",
+                            styles={{
+                                root: {
+                                    maxWidth: "300px",
+                                    maxHeight: "150px",
+                                    overflow: "hidden",
+                                    textOverflow: "ellipsis",
+                                    wordBreak: "break-word",
+                                },
                             }}
                         >
                             <div className="text-sm truncate max-h-24">

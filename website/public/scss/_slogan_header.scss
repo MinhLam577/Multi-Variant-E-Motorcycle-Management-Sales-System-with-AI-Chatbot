@@ -1,0 +1,17 @@
+p.slogan-header {
+    color: white;
+    width: 100%;
+    align-items: center;
+    padding: 10px 0;
+    font-weight: 600;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    span {
+        display: inline-flex;
+        width: 100%;
+        position: absolute;
+        white-space: nowrap;
+        will-change: transform;
+    }
+}

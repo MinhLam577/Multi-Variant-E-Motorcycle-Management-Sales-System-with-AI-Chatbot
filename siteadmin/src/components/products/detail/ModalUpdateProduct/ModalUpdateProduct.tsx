@@ -1,8 +1,7 @@
-import ModalCreateProduct, {
-    IModalCreateProductProps,
-} from "../ModalCreateProduct/ModalCreateProduct";
+import ModalCreateProduct from "../ModalCreateProduct/ModalCreateProduct";
 import React from "react";
 import { observer } from "mobx-react-lite";
+import { IModalCreateProductProps } from "../ModalCreateProduct/ModalCreateProduct.type";
 
 interface IModalUpdateProductProps extends IModalCreateProductProps {
     productId: string;

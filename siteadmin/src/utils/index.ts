@@ -1,9 +1,12 @@
 import moment from "moment";
 import numbro from "numbro";
-import { DateTimeFormat } from "src/constants";
+import { AcceptImageTypes, DateTimeFormat, MAX_FILE_SIZE } from "src/constants";
 import { MessageInstance } from "antd/es/message/interface";
 import { MessageStore } from "src/stores/base";
 import { v4 as uuidv4 } from "uuid";
+import BaseAPI from "src/api/base";
+import { ResponseImage } from "src/api";
+import { ResponseFailure } from "src/api";
 export const generateFileName = (fileName) => {
     const fileExtensions = fileName.split(".");
     const fileType = "." + fileExtensions[fileExtensions.length - 1];
@@ -19,11 +22,22 @@ export const sleepFuntions = async (time) => {
     );
 };
 
-export const getBase64: (file: File) => Promise<string> = async (file: File) =>
+export const getBase64 = async (
+    file: File,
+    callback?: (result: string) => void
+): Promise<string> =>
     new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result as string);
+        reader.onload = () => {
+            if (typeof reader.result === "string") {
+                if (callback) {
+                    callback(reader.result);
+                }
+                return resolve(reader.result);
+            }
+            return reject(new Error("Failed to read file as Data URL"));
+        };
         reader.onerror = (error) => reject(error);
     });
 
@@ -238,44 +252,39 @@ export const convertBase64ToFile = async (
     }
 };
 
-export const urlToBase64 = async (
-    url: string
-): Promise<string | ArrayBuffer> => {
-    try {
-        const response = await fetch(url, { mode: "cors" });
-        if (!response.ok) {
-            const status = response.status;
-            if (status === 404) {
-                throw new Error("URL không hợp lệ hoặc không tồn tại");
-            }
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
+export const CheckFileInput = (file: File) => {
+    const messageError = {
+        FILE_NOT_EMPTY: "Vui lòng chọn ít nhất 1 file",
+        INVALID_TYPE: `File không thuộc định dạng ${AcceptImageTypes.join(", ")}`,
+        LIMIT_SIZE: `Ảnh phải nhỏ hơn ${MAX_FILE_SIZE / (1024 * 1024)}MB!`,
+    };
+    if (!file) {
+        return { isValid: false, errorMessage: messageError.FILE_NOT_EMPTY };
+    }
+    const validImageType = AcceptImageTypes.includes(file.type);
+    if (!validImageType) {
+        return { isValid: false, errorMessage: messageError.INVALID_TYPE };
+    }
+    const isLtMaxSize = file.size < MAX_FILE_SIZE;
+    if (!isLtMaxSize) {
+        return { isValid: false, errorMessage: messageError.LIMIT_SIZE };
+    }
+    return { isValid: true, errorMessage: null };
+};
 
-        // Kiểm tra MIME type
-        const contentType = response.headers.get("content-type");
-        if (!contentType || !contentType.startsWith("image/")) {
-            throw new Error(`Phản hồi không phải ảnh: ${contentType}`);
-        }
-
-        // Chuyển dữ liệu ảnh thành blob
-        const blob = await response.blob();
-
-        // Tạo promise để đọc blob thành base64
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                // Trả về chuỗi base64 (bao gồm data URI)
-                resolve(reader.result);
-            };
-            reader.onerror = reject;
-            reader.readAsDataURL(blob);
-        });
-    } catch (error: any) {
-        console.error("Error converting URL to base64:", error);
-        const errorMessage =
-            error instanceof Error
-                ? error.message
-                : "Có lỗi xảy ra trong quá trình chuyển đổi URL thành base64";
+export const isUploadFailure = (
+    response: ResponseImage[] | ResponseFailure
+): response is ResponseFailure => {
+    return "path" in response;
+};
+export const handleUploadFileUtils = async (file: File) => {
+    const responseUpload = await BaseAPI.uploadImagesToServer([file]);
+    if (isUploadFailure(responseUpload)) {
+        const { message } = responseUpload;
+        const errorMessage = Array.isArray(message)
+            ? message.join(", ")
+            : message;
         throw new Error(errorMessage);
     }
+    return responseUpload.map((file: ResponseImage) => file.url);
 };

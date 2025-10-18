@@ -3,7 +3,7 @@ import { debounce } from "lodash";
 import { Col, Form, Input, Row, Select, DatePicker } from "antd";
 import { observer } from "mobx-react-lite";
 import { globalFilterExportDataType } from "src/stores/exports.store";
-import { SelectType } from "../products/detail/ModalCreateProduct/ModalCreateProduct";
+import { SelectType } from "../products/detail/ModalCreateProduct/ModalCreateProduct.type";
 const { RangePicker } = DatePicker;
 const ExportSearch: React.FC<{
     setFilters: Dispatch<SetStateAction<globalFilterExportDataType>>;

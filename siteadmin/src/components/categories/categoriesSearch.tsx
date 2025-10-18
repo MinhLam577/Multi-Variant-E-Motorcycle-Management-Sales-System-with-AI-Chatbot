@@ -2,7 +2,7 @@ import { Col, DatePicker, Form, Input, Row, Select } from "antd";
 import { debounce } from "lodash";
 import { useCallback } from "react";
 import { EnumProductStore, EnumProductType } from "src/stores/product.store";
-import { SelectType } from "../products/detail/ModalCreateProduct/ModalCreateProduct";
+import { SelectType } from "../products/detail/ModalCreateProduct/ModalCreateProduct.type";
 import {
     CategoryResponseLabel,
     CategoryResponseTypeEnum,

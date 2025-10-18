@@ -1,11 +1,9 @@
 import { Dispatch, SetStateAction, useCallback, useEffect } from "react";
 import { debounce } from "lodash";
 import { Col, Form, Input, Row, Select, DatePicker } from "antd";
-import { useStore } from "src/stores";
-import { getSelectOption } from "src/pages/products";
 import { globalFiltersImportDataType } from "src/stores/imports.store";
 import { observer } from "mobx-react-lite";
-import { SelectType } from "../products/detail/ModalCreateProduct/ModalCreateProduct";
+import { SelectType } from "../products/detail/ModalCreateProduct/ModalCreateProduct.type";
 const { RangePicker } = DatePicker;
 const ImportSearch: React.FC<{
     setFilters: Dispatch<SetStateAction<globalFiltersImportDataType>>;

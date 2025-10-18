@@ -11,17 +11,16 @@ import PopoverAvatar from "../popover/avatar";
 import { useStore } from "@/src/stores";
 import { observer } from "mobx-react-lite";
 import { useRouter } from "next/navigation";
+import SearchBox from "../common/SearchBox";
 const Header = observer(() => {
     const router = useRouter();
-const pathname = usePathname();
+    const pathname = usePathname();
     const searchParams = useSearchParams();
     const value = useContext(ThemeContext);
     const [keyword, setKeyword] = useState("");
     const handleSearch = () => {
-       
-        const isMotorbikePage =
-      pathname === "/home-motorbike" ;
-        if (isMotorbikePage ) {
+        const isMotorbikePage = pathname === "/home-motorbike";
+        if (isMotorbikePage) {
             if (keyword.trim()) {
                 const encodedValue = encodeURIComponent(`${keyword}`);
                 router.push(
@@ -60,12 +59,7 @@ const pathname = usePathname();
         fetchData();
     }, []);
     return (
-        <header
-            className="transparent w-full xl:block lg:block md:hidden sm:hidden xs:hidden hidden"
-            style={{
-                borderTop: "1px solid white",
-            }}
-        >
+        <header className="transparent w-full xl:block lg:block md:hidden sm:hidden xs:hidden hidden">
             {/* Ace Responsive Menu */}
             <nav
                 style={{ backgroundColor: `var(--${value.theme})` }}
@@ -164,6 +158,22 @@ const pathname = usePathname();
                 </div>
             </nav>
         </header>
+        // <header className="w-full bg-[#1b51a3]">
+        //     <div className="wrap_content flex items-center justify-between">
+        //         <div className="hidden flex-shrink-0 md:flex md:items-center md:justify-center md:w-[187px]">
+        //             <Link href="/" onClick={() => {}}>
+        //                 <img
+        //                     src="/images/logo.webp"
+        //                     alt="Logo"
+        //                     className="object-cover h-[63px] cursor-pointer w-full"
+        //                 />
+        //             </Link>
+        //         </div>
+        //         <div className="">
+        //             <SearchBox />
+        //         </div>
+        //     </div>
+        // </header>
     );
 });
 

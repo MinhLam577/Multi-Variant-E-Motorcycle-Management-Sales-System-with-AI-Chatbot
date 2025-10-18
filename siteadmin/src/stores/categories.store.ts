@@ -146,6 +146,7 @@ export default class CategoriesObservable {
             if (success_status.includes(status)) {
                 this.rootStore.status = status;
                 this.rootStore.successMsg = message;
+                this.rootStore.showSuccessMsg = true;
                 this.isOpenDetail = false;
                 yield this.getListCategories({
                     ...this.pagination,
@@ -157,6 +158,7 @@ export default class CategoriesObservable {
                 this.rootStore.errorMsg = Array.isArray(message)
                     ? message[0]
                     : message;
+                this.rootStore.showSuccessMsg = false;
                 return false;
             }
         } catch (e: any) {
@@ -177,10 +179,13 @@ export default class CategoriesObservable {
             this.loading = true;
             const response = yield CategoriesAPI.update(id, data);
             const { data: resData, status, message } = response;
+            console.log("response", message);
+
             const success_status = [200, 201, 204];
             if (success_status.includes(status)) {
                 this.rootStore.status = status;
                 this.rootStore.successMsg = message;
+                this.rootStore.showSuccessMsg = true;
                 this.isOpenDetail = false;
                 yield this.getListCategories({
                     ...this.pagination,
@@ -192,6 +197,7 @@ export default class CategoriesObservable {
                 this.rootStore.errorMsg = Array.isArray(message)
                     ? message[0]
                     : message;
+                this.rootStore.showSuccessMsg = false;
                 return false;
             }
         } catch (e: any) {

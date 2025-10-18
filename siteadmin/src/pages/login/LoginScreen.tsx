@@ -190,13 +190,4 @@ const LoginScreen = ({
     );
 };
 
-LoginScreen.propTypes = {
-    onFinish: PropTypes.func,
-    onFinishFailed: PropTypes.func,
-    isLoading: PropTypes.bool,
-    showForgotPasswordModal: PropTypes.bool,
-    setShowForgotPasswordModal: PropTypes.func,
-    onFinishForgotPassword: PropTypes.func,
-    form: PropTypes.object,
-};
 export default LoginScreen;

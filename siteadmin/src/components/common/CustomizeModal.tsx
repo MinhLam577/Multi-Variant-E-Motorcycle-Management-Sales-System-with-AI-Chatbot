@@ -1,7 +1,7 @@
-import { Modal } from "antd";
+import { Modal, ModalProps } from "antd";
 import { observer } from "mobx-react-lite";
 import React from "react";
-interface CustomizeModalProps {
+interface CustomizeModalProps extends ModalProps {
     isOpen: boolean;
     title?: string;
     handleCloseModal?: () => void;
@@ -24,7 +24,6 @@ const CustomizeModal: React.FC<CustomizeModalProps> = ({
 }) => {
     return (
         <Modal
-            {...res}
             open={isOpen}
             onCancel={handleCloseModal || undefined}
             onOk={handleSaveModal || undefined}
@@ -33,6 +32,7 @@ const CustomizeModal: React.FC<CustomizeModalProps> = ({
             destroyOnClose={true}
             title={title}
             forceRender={true}
+            {...res}
         >
             {children}
         </Modal>
