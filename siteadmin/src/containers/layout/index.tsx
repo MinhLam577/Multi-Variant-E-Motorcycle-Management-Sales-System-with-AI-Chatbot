@@ -156,7 +156,7 @@ const AppLayout = (props) => {
 
     const fetchData = async () => {
         await AccountStore.getAccount();
-        await loginObservable.getAccountApi(AccountStore.account.email);
+        // await loginObservable.getAccountApi(AccountStore.account.email);
     };
     useEffect(() => {
         fetchData();

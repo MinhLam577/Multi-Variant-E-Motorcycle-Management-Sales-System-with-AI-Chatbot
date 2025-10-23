@@ -1,83 +1,216 @@
 import { makeAutoObservable } from "mobx";
 import { RootStore } from "./base";
-import { getErrorMessage } from "src/utils";
+import { flattenObject, getErrorMessage } from "src/utils";
 import LoginAPI from "src/api/login.api";
+import { ApiResponse } from "src/types/api-response.type";
+import {
+    ForgotPassword,
+    LoginResponse,
+    LoginStatus,
+} from "src/types/userLogin.type";
+import {
+    ResetPassword,
+    VerifyResetPassword,
+} from "src/types/auth-validate.type";
+import { SUCCESS_STATUSES } from "src/constants";
+import { AxiosResponse } from "axios";
 
 export class LoginObservable {
     errorMsg: string = "";
-    status: string = "initial";
+    status: LoginStatus | ForgotPassword | number = LoginStatus.INITIAL;
     successMsg: string = "";
     rootStore: RootStore;
     constructor(rootStore: RootStore) {
         makeAutoObservable(this);
         this.rootStore = rootStore;
     }
+
+    // Hàm tổng quát để xử lý API call
+    private *handleApiCall<T extends object>({
+        apiCall,
+        successStatus,
+        errorStatus,
+        defaultErrorMessage,
+        onSuccess,
+    }: {
+        apiCall: () => Promise<AxiosResponse<ApiResponse<T>, any>>;
+        successStatus: LoginStatus | ForgotPassword | number;
+        errorStatus: LoginStatus | ForgotPassword | number;
+        defaultErrorMessage: string;
+        onSuccess?: (data: T, message: string) => Promise<void> | void;
+    }) {
+        try {
+            const { data, status, message }: ApiResponse<T> = yield apiCall();
+            const msg =
+                typeof message === "string" ? message : message?.join(", ");
+            const isSuccess =
+                status &&
+                typeof status === "number" &&
+                SUCCESS_STATUSES.includes(status);
+            if (!isSuccess) {
+                this.status = errorStatus;
+                this.errorMsg = msg;
+                return;
+            }
+
+            if (onSuccess) {
+                yield onSuccess(data, msg);
+            }
+
+            this.status = successStatus;
+            this.successMsg = msg;
+        } catch (error) {
+            const errorMessage = getErrorMessage(error, defaultErrorMessage);
+            this.status = errorStatus;
+            this.errorMsg = errorMessage;
+            console.error(defaultErrorMessage, error);
+        }
+    }
+
     // call api login
     *login(email: string, password: string) {
-        this.status = "submitting";
-        try {
-            const { data, status, message } = yield LoginAPI.login(
-                email,
-                password
-            );
-
-            if (status !== 200 && !data?.userId) {
-                this.status = "loginFailed";
-                this.errorMsg = message;
-                return;
-            }
-            yield this.rootStore.accountObservable.setAccount(data);
-            this.status = "loginSuccess";
-            this.successMsg = message;
-        } catch (error) {
-            const errorMessage = getErrorMessage(error, "Đăng nhập thất bại");
-            this.status = "loginFailed";
-            this.errorMsg = errorMessage;
-        }
+        // this.status = LoginStatus.SUBMITTING;
+        // try {
+        //     const response: ApiResponse<LoginResponse> = yield LoginAPI.login(
+        //         email,
+        //         password
+        //     );
+        //     const { data: resData, status, message } = response;
+        //     const msg =
+        //         typeof message === "string" ? message : message?.join(", ");
+        //     if (status !== 200 && !resData?.user.userId) {
+        //         this.status = LoginStatus.LOGIN_FAILED;
+        //         this.errorMsg = msg;
+        //         return;
+        //     }
+        //     yield this.rootStore.accountObservable.setAccount(
+        //         flattenObject(resData)
+        //     );
+        //     this.status = LoginStatus.LOGIN_SUCCESS;
+        //     this.successMsg = msg;
+        // } catch (error) {
+        //     const errorMessage = getErrorMessage(error, "Đăng nhập thất bại");
+        //     this.status = LoginStatus.LOGIN_FAILED;
+        //     this.errorMsg = errorMessage;
+        // }
+        yield this.handleApiCall<LoginResponse>({
+            apiCall: () => {
+                this.status = LoginStatus.SUBMITTING;
+                return LoginAPI.login(email, password);
+            },
+            successStatus: LoginStatus.LOGIN_SUCCESS,
+            errorStatus: LoginStatus.LOGIN_FAILED,
+            defaultErrorMessage: "Đăng nhập thất bại",
+            onSuccess: (data) => {
+                if (data && data.user?.userId) {
+                    return this.rootStore.accountObservable.setAccount(
+                        flattenObject(data)
+                    );
+                }
+                this.status = LoginStatus.LOGIN_FAILED;
+                this.errorMsg = "Không tìm thấy thông tin người dùng";
+            },
+        });
     }
 
-    *getAccountApi(email: string) {
-        this.status = "submitting";
-        try {
-            const { data, status, message } = yield LoginAPI.getAccount(email);
-            if (status !== 200 && !data?.userId) {
-                this.status = "loginFailed";
-                this.errorMsg = message;
-                return;
-            }
-            yield this.rootStore.accountObservable.setAccount(data);
-
-            this.status = "loginSuccess";
-            this.successMsg = message;
-        } catch (error) {
-            const errorMessage = getErrorMessage(
-                error,
-                "Lấy thông tin tài khoản thất bại"
-            );
-            this.status = "loginFailed";
-            this.errorMsg = errorMessage;
-        }
-    }
+    // *getAccountApi(email: string) {
+    //     this.status = "submitting";
+    //     try {
+    //         const { data, status, message } = yield LoginAPI.getAccount(email);
+    //         if (status !== 200 && !data?.userId) {
+    //             this.status = "loginFailed";
+    //             this.errorMsg = message;
+    //             return;
+    //         }
+    //         yield this.rootStore.accountObservable.setAccount(data);
+    //         this.status = "loginSuccess";
+    //         this.successMsg = message;
+    //     } catch (error) {
+    //         const errorMessage = getErrorMessage(
+    //             error,
+    //             "Lấy thông tin tài khoản thất bại"
+    //         );
+    //         this.status = "loginFailed";
+    //         this.errorMsg = errorMessage;
+    //     }
+    // }
     //forgot password
     *forgotPassword(email: string) {
-        try {
-            const { data, status } = yield LoginAPI.forgotPassword(email);
-            if (status !== 200) {
-                this.status = "forgotPasswordFailed";
-                this.errorMsg = "Email không tồn tại!";
-                return;
-            }
-            this.status = "forgotPasswordSuccess";
-        } catch (error) {
-            const errorMessage = getErrorMessage(
-                error,
-                "Quên mật khẩu thất bại"
-            );
-            this.status = "forgotPasswordFailed";
-            this.errorMsg = errorMessage;
-        }
+        // try {
+        //     const { status, message } = yield LoginAPI.forgotPassword(email);
+        //     if (status !== 200) {
+        //         this.status = ForgotPassword.FORGOT_PASSWORD_FAILED;
+        //         this.errorMsg = message;
+        //         return;
+        //     }
+        //     this.status = ForgotPassword.FORGOT_PASSWORD_SUCCESS;
+        // } catch (error) {
+        //     const errorMessage = getErrorMessage(
+        //         error,
+        //         "Quên mật khẩu thất bại"
+        //     );
+        //     this.status = ForgotPassword.FORGOT_PASSWORD_FAILED;
+        //     this.errorMsg = errorMessage;
+        // }
+        yield this.handleApiCall({
+            apiCall: () => LoginAPI.forgotPassword(email),
+            errorStatus: ForgotPassword.FORGOT_PASSWORD_FAILED,
+            successStatus: ForgotPassword.FORGOT_PASSWORD_SUCCESS,
+            defaultErrorMessage: "Quên mật khẩu thất bại",
+        });
     }
 
+    *verifyResetPassword(verifyData: VerifyResetPassword) {
+        // try {
+        //     const { status, message, data } =
+        //         yield LoginAPI.verifyResetPassword(verifyData);
+        //     this.status = status;
+        //     if (!SUCCESS_STATUSES.includes(status)) {
+        //         this.errorMsg = message;
+        //         return;
+        //     }
+        //     this.successMsg = message;
+        // } catch (error) {
+        //     console.error("Lỗi khi xác thực reset password", error);
+        //     const errorMessage = getErrorMessage(
+        //         error,
+        //         "Lỗi khi xác thực reset password"
+        //     );
+        //     (this.status = 500), (this.errorMsg = errorMessage);
+        // }
+        yield this.handleApiCall({
+            apiCall: () => LoginAPI.verifyResetPassword(verifyData),
+            defaultErrorMessage:
+                "Xác thực người dùng thất bại. Vui lòng thử lại sau",
+            errorStatus: 500,
+            successStatus: 200,
+        });
+    }
+    *resetPassword(resetData: ResetPassword) {
+        // try {
+        //     const response = yield LoginAPI.resetPassword(resetData);
+        //     const { status, message } = response;
+        //     this.status = status;
+        //     if (!SUCCESS_STATUSES.includes(status)) {
+        //         this.errorMsg = message;
+        //         return;
+        //     }
+        //     this.successMsg = message;
+        // } catch (error) {
+        //     console.error("Lỗi khi reset password", error);
+        //     const errorMessage = getErrorMessage(
+        //         error,
+        //         "Lỗi khi reset password"
+        //     );
+        //     (this.status = 500), (this.errorMsg = errorMessage);
+        // }
+        yield this.handleApiCall({
+            apiCall: () => LoginAPI.resetPassword(resetData),
+            defaultErrorMessage: "Reset mật khẩu thất bại",
+            errorStatus: 500,
+            successStatus: 200,
+        });
+    }
     *logout() {
         yield this.rootStore.accountObservable.clearAccount();
     }

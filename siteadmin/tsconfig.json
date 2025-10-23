@@ -20,7 +20,9 @@
         "strictBindCallApply": false,
         "forceConsistentCasingInFileNames": false,
         "noFallthroughCasesInSwitch": false,
-        "jsx": "react-jsx"
+        "jsx": "react-jsx",
+        "allowJs": true,
+        "checkJs": true
     },
     "include": [
         "./src/**/*",
@@ -28,5 +30,5 @@
         "./typings/**/*",
         "./node_modules/@types/**/*.d.ts"
     ],
-    "exclude": ["./node_modules", "./dist", "./test", "**/*spec.ts"]
+    "exclude": ["./node_modules", "./dist"]
 }

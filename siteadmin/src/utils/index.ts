@@ -14,12 +14,14 @@ export const generateFileName = (fileName) => {
     return _fileName.replace(/[^a-zA-Z0-9]/g, "_") + fileType;
 };
 
-export const sleepFuntions = async (time) => {
-    return new Promise((resolve) =>
-        setTimeout(() => {
-            resolve("result");
-        }, time)
-    );
+export const delayFunction = ({
+    time,
+    callback,
+}: {
+    time?: number;
+    callback: () => void;
+}) => {
+    return setTimeout(() => callback(), time);
 };
 
 export const getBase64 = async (
@@ -124,7 +126,7 @@ export const getErrorMessage = (e: unknown, customMessage?: string) => {
 export const displayMessage = (
     messageApi: MessageInstance,
     status: number,
-    store: MessageStore,
+    store?: MessageStore,
     isDisplaySuccess: boolean = false,
     duration: number = 5
 ) => {
@@ -287,4 +289,15 @@ export const handleUploadFileUtils = async (file: File) => {
         throw new Error(errorMessage);
     }
     return responseUpload.map((file: ResponseImage) => file.url);
+};
+
+export const flattenObject = (data: any, res: object = {}) => {
+    for (const [key, value] of Object.entries(data)) {
+        if (typeof value === "object" && value && !Array.isArray(value))
+            flattenObject(value, res);
+        else {
+            res[key] = value;
+        }
+    }
+    return res;
 };
