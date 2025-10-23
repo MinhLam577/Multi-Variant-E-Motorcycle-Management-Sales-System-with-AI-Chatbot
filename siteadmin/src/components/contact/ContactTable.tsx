@@ -4,7 +4,6 @@ import { useStore } from "src/stores";
 
 import { Grid } from "antd";
 import { ContactResponseType } from "src/stores/contact.store";
-import { title } from "process";
 import Access from "src/access/access";
 import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
 const { useBreakpoint } = Grid;
@@ -86,16 +85,17 @@ const ContactTable: React.FC<ContactTableProps> = ({
                                     <DeleteTwoTone
                                         twoToneColor="#ff4d4f"
                                         onClick={() =>
-                                            processWithModals(
-                                                ProcessModalName.ConfirmCustomContent
-                                            )(
-                                                "Xác nhận",
-                                                `Bạn có chắc chắn muốn xóa user #${record.id} không?`
-                                            )(() => {
-                                                if (handleDeleteContact)
-                                                    handleDeleteContact(
-                                                        record.id
-                                                    );
+                                            processWithModals({
+                                                modalName:
+                                                    ProcessModalName.ConfirmCustomContent,
+                                                title: "Xác nhận",
+                                                content: `Bạn có chắc chắn muốn xóa user #${record.id} không?`,
+                                                onOk: () => {
+                                                    if (handleDeleteContact)
+                                                        handleDeleteContact(
+                                                            record.id
+                                                        );
+                                                },
                                             })
                                         }
                                     />

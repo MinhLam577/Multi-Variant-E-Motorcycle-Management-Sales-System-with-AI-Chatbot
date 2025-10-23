@@ -6,84 +6,77 @@ import {
     Input,
     Select,
     Row,
+    message,
     InputNumber,
+    notification,
 } from "antd";
-import React, { useEffect } from "react";
+import PropTypes from "prop-types";
+import { useEffect } from "react";
 import {
+    CustomerType,
     GenderType,
     RegExps,
     RoleEnum,
     RoleEnumValue,
 } from "../../../constants";
-// import UploadAvatarGetUrlWithImgCrop, {
-//     UploadAvatarGetUrlWithImgCropRemoteMode,
-// } from "../../../containers/UploadAvatarGetUrlWithImgCrop";
+import UploadAvatarGetUrlWithImgCrop, {
+    UploadAvatarGetUrlWithImgCropRemoteMode,
+} from "../../../containers/UploadAvatarGetUrlWithImgCrop";
 import dayjs from "dayjs";
+import apiClient from "../../../api/apiClient";
+import endpoints from "../../../api/endpoints";
 import { useNavigate } from "react-router";
-import { useStore } from "src/stores";
-import { UpdateUserDto, UserStaffResponseType } from "src/stores/user.store";
-import { observer } from "mobx-react-lite";
-import UserAPI from "src/api/user.api";
-interface UserFormProps {
-    userBasicInfo: UserStaffResponseType;
-}
-type UserFormType = Omit<UserStaffResponseType, "birthday" | "roles"> & {
-    birthday: dayjs.Dayjs | null;
-    roles: RoleEnum | null;
+import { ApiResponse } from "src/types/api-response.type";
+
+const formItemLayout = {
+    labelCol: {
+        xs: { span: 24 },
+    },
+    wrapperCol: {
+        xs: { span: 24 },
+    },
 };
-const UserForm: React.FC<UserFormProps> = ({ userBasicInfo }) => {
+
+const UserForm = ({ userBasicInfo }) => {
     const navigate = useNavigate();
-    const [form] = Form.useForm<UserFormType>();
-    const store = useStore();
-    const handleFormFinish = async (values: UserFormType) => {
-        const updateInfo: UpdateUserDto = {
+    const [form] = Form.useForm();
+
+    const handleFormFinish = async (values) => {
+        const updateInfo = {
             username: values.username || userBasicInfo.username,
-            age: values.age || userBasicInfo.age,
-            address: values.address || userBasicInfo.address,
             phoneNumber: values.phoneNumber || userBasicInfo.phoneNumber,
             gender: values.gender || userBasicInfo.gender,
-            Roles: values.roles,
+            Roles: values.Roles,
             birthday: values.birthday
                 ? values.birthday.format("YYYY-MM-DD")
                 : null,
         };
+
         try {
-            const res = await UserAPI.update(values.id, updateInfo);
-            if (res) {
-                store.setStatusMessage(
-                    200,
-                    "",
-                    "Cật nhật thông tin người dùng thành công",
-                    true
-                );
-                navigate("/users", { replace: true });
+            const data: ApiResponse = await apiClient.patch(
+                endpoints.customers.update(values.id),
+                updateInfo
+            );
+            if (data.status == 200) {
+                message.success(data.message);
+                navigate("/customer");
             } else {
-                store.setStatusMessage(
-                    500,
-                    "Có lỗi xảy ra khi cập nhật thông tin người dùng.",
-                    "",
-                    false
-                );
+                message.error(data?.message[0] || data?.message);
             }
         } catch (error) {
-            console.error("Lỗi cập nhật thông tin người dùng:", error);
-            store.setStatusMessage(
-                500,
-                "Có lỗi xảy ra khi cập nhật thông tin người dùng.",
-                "",
-                false
-            );
+            message.error("Lỗi cập nhật, vui lòng thử lại sau");
+            throw new Error("Lỗi cập nhật");
         }
     };
 
     useEffect(() => {
-        if (userBasicInfo) {
+        if (userBasicInfo && Object.keys(userBasicInfo).length > 0) {
             form.setFieldsValue({
                 ...userBasicInfo,
-                birthday: userBasicInfo.birthday
+                birthday: userBasicInfo?.birthday
                     ? dayjs(userBasicInfo.birthday)
                     : null,
-                roles: userBasicInfo.roles?.[0]?.name || null,
+                Roles: userBasicInfo?.Roles?.name,
             });
         }
     }, [userBasicInfo, form]);
@@ -96,12 +89,12 @@ const UserForm: React.FC<UserFormProps> = ({ userBasicInfo }) => {
             onFinish={handleFormFinish}
         >
             {/* Avatar */}
-            {/* <Form.Item className="flex justify-center" name="avatarUrl">
+            <Form.Item className="flex justify-center" name="avatarUrl">
                 <UploadAvatarGetUrlWithImgCrop
                     remoteMode={UploadAvatarGetUrlWithImgCropRemoteMode.Private}
                     disabled={true}
                 />
-            </Form.Item> */}
+            </Form.Item>
 
             {/* Chia thành 2 cột */}
             <Col span={12}>
@@ -161,39 +154,18 @@ const UserForm: React.FC<UserFormProps> = ({ userBasicInfo }) => {
                     <Form.Item label="Ngày sinh" name="birthday">
                         <DatePicker
                             placeholder="Chọn ngày sinh"
-                            format="DD/MM/YYYY"
+                            format="YYYY-MM-DD"
                             style={{ width: "100%" }}
                         />
                     </Form.Item>
                 </Col>
-
-                <Col span={12}>
-                    <Form.Item label="Địa chỉ" name="address">
-                        <Input placeholder="Địa chỉ" />
-                    </Form.Item>
-                </Col>
-
                 <Col span={12}>
                     <Form.Item label="Email" name="email">
                         <Input placeholder="Email" disabled={true} />
                     </Form.Item>
                 </Col>
 
-                <Col span={12}>
-                    <Form.Item
-                        label="Tuổi"
-                        name="age"
-                        rules={[{ required: true, message: "Hãy nhập tuổi" }]}
-                    >
-                        <InputNumber
-                            placeholder="Nhập số tuổi"
-                            style={{ width: "100%" }}
-                            min={1} // Giới hạn số tuổi không âm
-                        />
-                    </Form.Item>
-                </Col>
-
-                <Col span={12}>
+                <Col push={12} span={12}>
                     <Form.Item label="Giới tính" name="gender">
                         <Select
                             allowClear
@@ -207,30 +179,7 @@ const UserForm: React.FC<UserFormProps> = ({ userBasicInfo }) => {
                     </Form.Item>
                 </Col>
 
-                <Col span={12}>
-                    <Form.Item
-                        label="Loại người dùng"
-                        name="roles"
-                        initialValue={
-                            form.getFieldValue("roles")
-                                ? form.getFieldValue("roles")
-                                : undefined
-                        }
-                    >
-                        <Select
-                            allowClear
-                            optionFilterProp="label"
-                            options={Object.keys(RoleEnum)
-                                .map((item) => ({
-                                    value: RoleEnum[item],
-                                    label: RoleEnumValue[item],
-                                }))
-                                .filter((item) => item.value !== RoleEnum.USER)}
-                            placeholder="Chọn loại người dùng"
-                        />
-                    </Form.Item>
-                </Col>
-                <Col push={12} span={12} className="flex justify-end">
+                <Col span={24} className="flex justify-end">
                     <Form.Item>
                         <Button type="primary" htmlType="submit">
                             Cập nhật
@@ -242,4 +191,4 @@ const UserForm: React.FC<UserFormProps> = ({ userBasicInfo }) => {
     );
 };
 
-export default observer(UserForm);
+export default UserForm;

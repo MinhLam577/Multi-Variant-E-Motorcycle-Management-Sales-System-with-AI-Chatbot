@@ -9,7 +9,7 @@ import { DateTimeFormat } from "src/constants";
 import {
     ProcessModalName,
     processWithModals,
-} from "../../containers/processWithModals.js";
+} from "../../containers/processWithModals";
 import { ALL_MODULES } from "src/constants/permissions";
 const { useBreakpoint } = Grid;
 export interface IBrandsTableProps {
@@ -92,12 +92,13 @@ const BrandsTable: React.FC<IBrandsTableProps> = ({
                     return (
                         <GroupActionButton
                             handleDelete={() => {
-                                processWithModals(
-                                    ProcessModalName.ConfirmCustomContent
-                                )(
-                                    "Xác nhận",
-                                    `Bạn có chắc chắn muốn xóa nhãn hàng "${item.name}"?`
-                                )(() => handleDeleteBrands(item.id));
+                                processWithModals({
+                                    modalName:
+                                        ProcessModalName.ConfirmCustomContent,
+                                    title: "Xác nhận",
+                                    content: `Bạn có chắc chắn muốn xóa nhãn hàng "${item.name}"?`,
+                                    onOk: () => handleDeleteBrands(item.id),
+                                });
                             }}
                             handleUpdate={handleEditBrands}
                             item={item}

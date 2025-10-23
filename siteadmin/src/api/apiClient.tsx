@@ -5,7 +5,6 @@ import { AccountObservable } from "../stores/account.store";
 import endpoints from "./endpoints";
 let isRefreshing = false;
 let refreshSubscribers = [];
-
 const apiClient = axios.create({
     baseURL: process.env.REACT_APP_API_BASE_URL,
     timeout: 10000,
@@ -135,7 +134,10 @@ const refreshToken = async () => {
 };
 
 const checkLogout = async () => {
-    await secureLocalStorage.removeItem(keyStorageAccount);
+    secureLocalStorage.removeItem(keyStorageAccount);
+    if (window.location.pathname !== "/login") {
+        window.location.href = "/login";
+    }
 };
 
 apiClient.interceptors.response.use(handleSuccess, handleError);

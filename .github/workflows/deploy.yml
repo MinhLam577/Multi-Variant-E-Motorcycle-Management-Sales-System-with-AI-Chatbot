@@ -3,7 +3,7 @@ name: Deploy Admin App To Netlify
 on:
     push:
         branches:
-            - main
+            - develop_minh
     workflow_dispatch:
 
 jobs:
@@ -20,21 +20,18 @@ jobs:
               with:
                   node-version: "18"
             - name: Install dependencies and clear npm cache
-              working-directory: ./siteadmin
               run: |
                   npm cache clean --force
                   npm install
                   npm install -g netlify-cli
 
             - name: Build
-              working-directory: ./siteadmin
               env:
                   NODE_OPTIONS: --max-old-space-size=6144 # Tăng lên 6GB
                   GENERATE_SOURCEMAP: false # Tắt source map
               run: npm run build
 
             - name: Deploy to Netlify
-              working-directory: ./siteadmin
               run: netlify deploy --dir=build --site=$NETLIFY_SITE_ID --auth=$NETLIFY_AUTH_TOKEN --prod
               env:
                   NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}

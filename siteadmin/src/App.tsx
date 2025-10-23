@@ -1,0 +1,519 @@
+import { Suspense } from "react";
+import { BrowserRouter, Route, Routes } from "react-router";
+import "./reset.css";
+import "./App.css";
+import { WareHouseDetailMode } from "./constants";
+import Loading from "./containers/Loading";
+import ProtectedRoute from "./containers/ProtectedRoute";
+import AuthProvider from "./contexts/AuthProvider";
+import Page404 from "./pages/404";
+import Forbidden from "./pages/Forbidden";
+import Policy from "./pages/Policy";
+import Profile from "./pages/Profile";
+import Categories from "./pages/categories";
+import CategoriesDetail, {
+    CategoriesDetailMode,
+} from "./pages/categories/CategoriesDetail";
+import Customer from "./pages/customers";
+import Login from "./pages/login";
+import News from "./pages/news";
+import NewsDetail, { NewsDetailMode } from "./pages/news/NewsDetail";
+import Orders from "./pages/orders";
+import User from "./pages/users";
+import UserDetail from "./pages/users/UserDetail";
+import Vouchers from "./pages/vouchers";
+import VoucherDetail, {
+    VoucherDetailMode,
+} from "./pages/vouchers/VoucherDetail";
+import WareHouses from "./pages/warehouses";
+import WareHouseDetail from "./pages/warehouses/WareHouseDetail";
+import { StoreProvider } from "./stores";
+import GlobalProvider from "./contexts/global";
+import CustomerDetail from "./pages/customers/CustomerDetail";
+import NetworkError from "./pages/NetworkError";
+import PermissionPage from "./pages/permission/permission";
+import RolePage from "./pages/role/role";
+import ContactPage from "./pages/contact";
+// import Role from
+import CategoriesNews from "./pages/categoriesNews";
+import CategoriesNewsDetail from "./pages/categoriesNews/CategoriesNewsDetail";
+
+import Setting from "./pages/setting/index";
+import Products from "./pages/products";
+import Overview from "./pages/adminOverview/Overview";
+import ImportPage from "./pages/imports";
+import ExportPage from "./pages/exports";
+import VariantPage from "./pages/variants";
+import BrandsPage from "./pages/brands";
+import ResetPassword from "./pages/resetPassword/reset-password";
+function App() {
+    return (
+        <StoreProvider>
+            <BrowserRouter>
+                <AuthProvider>
+                    <GlobalProvider>
+                        <Suspense fallback={<Loading />}>
+                            <Routes>
+                                <Route path="/login" element={<Login />} />
+                                <Route path="/policy" element={<Policy />} />
+                                <Route
+                                    path="/Forbidden"
+                                    element={<Forbidden />}
+                                />
+                                <Route
+                                    path="/"
+                                    element={
+                                        <ProtectedRoute>
+                                            <Overview />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/statistic"
+                                    element={
+                                        <ProtectedRoute>
+                                            <Overview />
+                                        </ProtectedRoute>
+                                    }
+                                />
+
+                                <Route path="/warehouse">
+                                    <Route
+                                        index
+                                        element={
+                                            <ProtectedRoute>
+                                                <WareHouses />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="add"
+                                        element={
+                                            <ProtectedRoute>
+                                                <WareHouseDetail
+                                                    mode={
+                                                        WareHouseDetailMode.Add
+                                                    }
+                                                />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path=":id"
+                                        element={
+                                            <ProtectedRoute>
+                                                <WareHouseDetail
+                                                    mode={
+                                                        WareHouseDetailMode.View
+                                                    }
+                                                />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path=":id/edit"
+                                        element={
+                                            <ProtectedRoute>
+                                                <WareHouseDetail
+                                                    mode={
+                                                        WareHouseDetailMode.Edit
+                                                    }
+                                                />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                </Route>
+
+                                <Route
+                                    path="user"
+                                    element={
+                                        <ProtectedRoute>
+                                            <User />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="customer"
+                                    element={
+                                        <ProtectedRoute>
+                                            <Customer />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/vouchers"
+                                    element={
+                                        <ProtectedRoute>
+                                            <Vouchers />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/vouchers/add"
+                                    element={
+                                        <ProtectedRoute>
+                                            <VoucherDetail
+                                                mode={VoucherDetailMode.Add}
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/vouchers/:id"
+                                    element={
+                                        <ProtectedRoute>
+                                            <VoucherDetail
+                                                mode={VoucherDetailMode.View}
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/vouchers/:id/edit"
+                                    element={
+                                        <ProtectedRoute>
+                                            <VoucherDetail
+                                                mode={VoucherDetailMode.Edit}
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
+
+                                <Route path="users">
+                                    <Route
+                                        index
+                                        element={
+                                            <ProtectedRoute>
+                                                <User />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="add"
+                                        element={
+                                            <ProtectedRoute>
+                                                <UserDetail />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path=":id"
+                                        element={
+                                            <ProtectedRoute>
+                                                <UserDetail />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path=":id/edit"
+                                        element={
+                                            <ProtectedRoute>
+                                                <UserDetail />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                </Route>
+
+                                <Route path="customer">
+                                    <Route
+                                        index
+                                        element={
+                                            <ProtectedRoute>
+                                                <Customer />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="add"
+                                        element={
+                                            <ProtectedRoute>
+                                                <CustomerDetail />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path=":id"
+                                        element={
+                                            <ProtectedRoute>
+                                                <CustomerDetail />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path=":id/edit"
+                                        element={
+                                            <ProtectedRoute>
+                                                <CustomerDetail />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                </Route>
+
+                                <Route
+                                    path="/profile"
+                                    element={
+                                        <ProtectedRoute>
+                                            <Profile />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/products"
+                                    element={
+                                        <ProtectedRoute>
+                                            <Products />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/categories"
+                                    element={
+                                        <ProtectedRoute>
+                                            <Categories />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/categories/add"
+                                    element={
+                                        <ProtectedRoute>
+                                            <CategoriesDetail
+                                                mode={CategoriesDetailMode.Add}
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/categories/:id"
+                                    element={
+                                        <ProtectedRoute>
+                                            <CategoriesDetail
+                                                mode={CategoriesDetailMode.View}
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/categories/:id/edit"
+                                    element={
+                                        <ProtectedRoute>
+                                            <CategoriesDetail
+                                                mode={CategoriesDetailMode.Edit}
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
+
+                                <Route
+                                    path="/categorynews"
+                                    element={
+                                        <ProtectedRoute>
+                                            <CategoriesNews />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/categorynews/add"
+                                    element={
+                                        <ProtectedRoute>
+                                            <CategoriesNewsDetail
+                                                mode={NewsDetailMode.Add}
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/categorynews/:id"
+                                    element={
+                                        <ProtectedRoute>
+                                            <CategoriesNewsDetail
+                                                mode={NewsDetailMode.View}
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
+
+                                <Route
+                                    path="/categorynews/:id/edit"
+                                    element={
+                                        <ProtectedRoute>
+                                            <CategoriesNewsDetail
+                                                mode={NewsDetailMode.Edit}
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
+
+                                <Route
+                                    path="/categorynews/:id/news"
+                                    element={
+                                        <ProtectedRoute>
+                                            <News />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/categorynews/:id/news/add"
+                                    element={
+                                        <ProtectedRoute>
+                                            <NewsDetail
+                                                mode={NewsDetailMode.Add}
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/categorynews/:id/news/:idblog"
+                                    element={
+                                        <ProtectedRoute>
+                                            <NewsDetail
+                                                mode={NewsDetailMode.View}
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/categorynews/:id/news/:idblog/edit"
+                                    element={
+                                        <ProtectedRoute>
+                                            <NewsDetail
+                                                mode={NewsDetailMode.Edit}
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/orders"
+                                    element={
+                                        <ProtectedRoute>
+                                            <Orders />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                {/* <Route
+                                    path="/orders/:id"
+                                    element={
+                                        <ProtectedRoute>
+                                            <OrderDetail
+                                                mode={OrderDetailMode.View}
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/orders/:id/edit"
+                                    element={
+                                        <ProtectedRoute>
+                                            <OrderDetail
+                                                mode={OrderDetailMode.Edit}
+                                            />
+                                        </ProtectedRoute>
+                                    }
+                                /> */}
+
+                                <Route
+                                    path="/setting"
+                                    element={
+                                        <ProtectedRoute>
+                                            <Setting />
+                                        </ProtectedRoute>
+                                    }
+                                />
+
+                                <Route
+                                    path="/variants"
+                                    element={
+                                        <ProtectedRoute>
+                                            <VariantPage />
+                                        </ProtectedRoute>
+                                    }
+                                />
+
+                                <Route
+                                    path="/setting/role"
+                                    element={
+                                        <ProtectedRoute>
+                                            <RolePage />
+                                        </ProtectedRoute>
+                                    }
+                                />
+
+                                <Route
+                                    path="/setting/profile"
+                                    element={
+                                        <ProtectedRoute>
+                                            <Profile />
+                                        </ProtectedRoute>
+                                    }
+                                />
+
+                                <Route
+                                    path="/setting/permission"
+                                    element={
+                                        <ProtectedRoute>
+                                            <PermissionPage />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/network-error"
+                                    element={<NetworkError />}
+                                />
+                                <Route path="/:404" element={<Page404 />} />
+                                <Route
+                                    path="/import"
+                                    element={
+                                        <ProtectedRoute>
+                                            <ImportPage />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/export"
+                                    element={
+                                        <ProtectedRoute>
+                                            <ExportPage />
+                                        </ProtectedRoute>
+                                    }
+                                />
+
+                                <Route
+                                    path="/brands"
+                                    element={
+                                        <ProtectedRoute>
+                                            <BrandsPage />
+                                        </ProtectedRoute>
+                                    }
+                                />
+
+                                <Route
+                                    path="/PaymentSuccess"
+                                    element={<div>Payment Success</div>}
+                                />
+
+                                <Route
+                                    path="/PaymentFailed"
+                                    element={<div>Payment Failed</div>}
+                                />
+                                <Route
+                                    path="/contact"
+                                    element={
+                                        <ProtectedRoute>
+                                            <ContactPage />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/reset-password"
+                                    element={<ResetPassword />}
+                                />
+                            </Routes>
+                        </Suspense>
+                    </GlobalProvider>
+                </AuthProvider>
+            </BrowserRouter>
+        </StoreProvider>
+    );
+}
+
+export default App;

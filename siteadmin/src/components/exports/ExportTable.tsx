@@ -8,7 +8,7 @@ import GroupActionButton from "../GroupActionButton";
 import {
     processWithModals,
     ProcessModalName,
-} from "../../containers/processWithModals.js";
+} from "../../containers/processWithModals";
 import { ExportResponseType } from "src/stores/exports.store";
 import { ALL_MODULES } from "src/constants/permissions";
 
@@ -79,26 +79,27 @@ const ExportPage: React.FC<ExportPageProps> = ({
                     return (
                         <GroupActionButton
                             handleDelete={() => {
-                                processWithModals(
-                                    ProcessModalName.ConfirmCustomContent
-                                )(
-                                    "Xác nhận",
-                                    `Bạn có chắc chắn muốn xóa phiếu xuất hàng #${item.id} không?`
-                                )(async () => {
-                                    try {
-                                        await handleDelete(item.id);
-                                    } catch (e: any) {
-                                        console.error(e);
-                                        const errorMessage =
-                                            e?.message ||
-                                            "Có lỗi xảy ra trong quá trình xóa phiếu xuất hàng, vui lòng thử lại sau.";
-                                        store.setStatusMessage(
-                                            500,
-                                            errorMessage,
-                                            "",
-                                            false
-                                        );
-                                    }
+                                processWithModals({
+                                    modalName:
+                                        ProcessModalName.ConfirmCustomContent,
+                                    title: "Xác nhận",
+                                    content: `Bạn có chắc chắn muốn xóa phiếu xuất hàng #${item.id} không?`,
+                                    onOk: async () => {
+                                        try {
+                                            await handleDelete(item.id);
+                                        } catch (e: any) {
+                                            console.error(e);
+                                            const errorMessage =
+                                                e?.message ||
+                                                "Có lỗi xảy ra trong quá trình xóa phiếu xuất hàng, vui lòng thử lại sau.";
+                                            store.setStatusMessage(
+                                                500,
+                                                errorMessage,
+                                                "",
+                                                false
+                                            );
+                                        }
+                                    },
                                 });
                             }}
                             handleUpdate={handleUpdate}

@@ -18,7 +18,7 @@ import { observer } from "mobx-react-lite";
 import {
     processWithModals,
     ProcessModalName,
-} from "../../containers/processWithModals.js";
+} from "../../containers/processWithModals";
 import { getErrorMessage } from "src/utils";
 const Categories = () => {
     const navigate = useNavigate();
@@ -66,10 +66,12 @@ const Categories = () => {
     };
 
     const handleDeleteCategories = (id: string) => {
-        processWithModals(ProcessModalName.ConfirmCustomContent)(
-            "Xác nhận",
-            "Bạn chắc chắn muốn xóa danh mục này?"
-        )(() => removeCategory(id));
+        processWithModals({
+            modalName: ProcessModalName.ConfirmCustomContent,
+            title: "Xác nhận",
+            content: "Bạn chắc chắn muốn xóa danh mục này?",
+            onOk: () => removeCategory(id),
+        });
     };
 
     const removeCategory = async (id: string) => {

@@ -207,27 +207,27 @@ export const ALL_PERMISSIONS = {
         GET_PAGINATE: {
             method: "GET",
             path: "/api/v1/vouchers",
-            module: "VOURCHERS",
+            module: "VOUCHERS",
         },
         CREATE: {
             method: "POST",
             path: "/api/v1/vouchers",
-            module: "VOURCHERS",
+            module: "VOUCHERS",
         },
         UPDATE: {
             method: "PATCH",
             path: "/api/v1/vouchers/:id",
-            module: "VOURCHERS",
+            module: "VOUCHERS",
         },
         DELETE: {
             method: "DELETE",
             path: "/api/v1/vouchers/:id",
-            module: "VOURCHERS",
+            module: "VOUCHERS",
         },
         CREATE_FOR_CUSTOMER: {
             method: "POST",
             path: "/api/v1/vouchers/give_customer/:id",
-            module: "VOURCHERS",
+            module: "VOUCHERS",
         },
     },
     WAREHOUSE: {
@@ -414,7 +414,7 @@ export const ALL_MODULES = {
     BLOGCATEGORY: "BLOGCATEGORY",
     BLOGS: "BLOGS",
     ORDERS: "ORDERS",
-    VOURCHERS: "VOURCHERS",
+    VOURCHERS: "VOUCHERS",
     WAREHOUSE: "WAREHOUSE",
     BRANDS: "BRANDS",
     PERMISSIONS: "PERMISSIONS",

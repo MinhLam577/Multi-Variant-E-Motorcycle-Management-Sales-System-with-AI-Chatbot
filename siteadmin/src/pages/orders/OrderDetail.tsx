@@ -4,7 +4,7 @@ import { useReactToPrint } from "react-to-print";
 import OrderPrint from "../../components/orders/detail/OrderPrint";
 import OrderProductsTable from "../../components/orders/detail/OrderProductsTable";
 import { EnumOrderStatusesValue, EnumOrderSteps } from "src/constants";
-import { reaction, toJS } from "mobx";
+import { reaction } from "mobx";
 import "./OrderDetail.css";
 import {
     CheckOutlined,
@@ -21,7 +21,6 @@ import OrderObservable, {
     OrderDetailResponseType,
 } from "../../stores/order.store";
 import SkusObservable from "../../stores/skus.store";
-import { CreateDetailExport, ExportOrder } from "src/api/order.api";
 import { useStore } from "src/stores";
 import Access from "src/access/access";
 import { ALL_PERMISSIONS } from "src/constants/permissions";
@@ -344,21 +343,6 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
                                 </Button>
                             </Access>
                         )}
-                        {/* {order_store.OrderDetailStatus ===
-                            EnumOrderStatusesValue.CONFIRMED && (
-                            <Access
-                                permission={ALL_PERMISSIONS.ORDERS.EXPORTED}
-                                hideChildren
-                            >
-                                <Button
-                                    onClick={() => {
-                                        handleExportOrderStatus(orderNo);
-                                    }}
-                                >
-                                    Xuất hàng ra kho
-                                </Button>
-                            </Access>
-                        )} */}
                         {order_store.OrderDetailStatus ===
                             EnumOrderStatusesValue.EXPORTED && (
                             <Access
@@ -481,7 +465,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
                 <CustomerDescription orderDetail={orderDetail} />
             </div>
             <div className="hidden">
-                <OrderPrint ref={elementPrintOrder} data={order_store} />
+                <OrderPrint ref={elementPrintOrder} />
             </div>
         </div>
     );
