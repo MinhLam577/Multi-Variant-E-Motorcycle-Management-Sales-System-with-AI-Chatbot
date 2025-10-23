@@ -25,9 +25,9 @@ const Access = observer((props: IProps) => {
             if (!AccountStore.account?.email) {
                 await AccountStore.getAccount();
             }
-            if (!AccountStore.account?.permissions?.length) {
-                await loginObservable.getAccountApi(AccountStore.account.email);
-            }
+            // if (!AccountStore.account?.permissions?.length) {
+            //     await loginObservable.getAccountApi(AccountStore.account.email);
+            // }
         };
 
         fetchData();
@@ -50,9 +50,11 @@ const Access = observer((props: IProps) => {
                     item?.method === permission.method &&
                     item?.module === permission.module
             );
-            if (check) {
-                setAllow(true);
-            } else setAllow(false);
+            if (!check) {
+                setAllow(false);
+                return;
+            }
+            setAllow(true);
         }
     }, [permissions]);
 

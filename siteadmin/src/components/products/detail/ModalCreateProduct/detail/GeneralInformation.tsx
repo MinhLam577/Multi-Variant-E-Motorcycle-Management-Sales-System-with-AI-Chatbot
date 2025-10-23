@@ -143,23 +143,23 @@ const GeneralInformation: React.FC<IGeneralInformation> = observer(
                 }
                 form.setFieldsValue(formInitialValues);
                 const imageList = form.getFieldValue("image") || [];
-                if (Array.isArray(imageList)) {
-                    setFormImageList(
-                        imageList.map((item: string | UploadFile) => {
-                            if (typeof item === "string") {
-                                return {
-                                    uid: item,
-                                    name: item.split("/").pop() || "image",
-                                    status: "done",
-                                    url: item,
-                                };
-                            }
-                            return item;
-                        })
-                    );
-                } else {
+                if (!Array.isArray(imageList)) {
                     setFormImageList([]);
+                    return;
                 }
+                setFormImageList(
+                    imageList.map((item: string | UploadFile) => {
+                        if (typeof item === "string") {
+                            return {
+                                uid: item,
+                                name: item.split("/").pop() || "image",
+                                status: "done",
+                                url: item,
+                            };
+                        }
+                        return item;
+                    })
+                );
             }
         }, [formInitialValues, form, subForm]);
         useEffect(() => {
@@ -169,6 +169,7 @@ const GeneralInformation: React.FC<IGeneralInformation> = observer(
             ) {
                 form.setFieldValue("image", formImageList);
             }
+            console.log("imageList", formImageList);
         }, [formImageList]);
         const productTypeOption: SelectType[] = Object.keys(
             EnumProductType
@@ -311,17 +312,12 @@ const GeneralInformation: React.FC<IGeneralInformation> = observer(
                     <Form.Item
                         label="Hình ảnh sản phẩm"
                         name="image"
-                        tooltip={`Ảnh nhận định dạng ${AcceptImageTypes.map((image) => "." + image.split("/")[1]).join(", ")}, có tỷ lệ 1:1 (Ảnh vuông) và được chọn tối đa 5 hình ảnh`}
-                        getValueFromEvent={(e) => {
-                            if (Array.isArray(e)) {
-                                return e;
-                            }
-                            return e && e.fileList;
-                        }}
+                        tooltip={`Ảnh nhận định dạng ${AcceptImageTypes.map((image) => "." + image.split("/")[1]).join(", ")}và được chọn tối đa 5 hình ảnh`}
                         rules={[
                             {
                                 validator: (_, value) => {
                                     if (!modalCreateProductStore.hasSkus) {
+                                        console.log("imageValue:", value);
                                         return value && value.length > 0
                                             ? Promise.resolve()
                                             : Promise.reject(
@@ -338,8 +334,7 @@ const GeneralInformation: React.FC<IGeneralInformation> = observer(
                         <div className="w-full min-h-32">
                             <label
                                 htmlFor="uploadImageFile"
-                                className={`h-32 flex flex-col items-center justify-center w-full border border-dashed border-gray-300 rounded-md cursor-pointer hover:border-gray-400 transition-all duration-500 ease-in-out
-                            ${formImageList.length === 0 ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-32"} origin-top`}
+                                className={`h-32 flex flex-col items-center justify-center w-full border border-dashed border-gray-300 rounded-md cursor-pointer hover:border-gray-400 transition-all duration-500 ease-in-out ${Number(formImageList?.length) === 0 ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-32"} origin-top`}
                             >
                                 <UploadOutlined className={`text-2xl`} />
                                 <span className={`text-sm text-gray-500`}>
@@ -397,9 +392,7 @@ const GeneralInformation: React.FC<IGeneralInformation> = observer(
                                         }}
                                         fileList={
                                             Array.isArray(formImageList)
-                                                ? formImageList.length > 0
-                                                    ? formImageList
-                                                    : undefined
+                                                ? formImageList
                                                 : undefined
                                         }
                                         customRequest={async ({
@@ -411,15 +404,16 @@ const GeneralInformation: React.FC<IGeneralInformation> = observer(
                                         }}
                                         onPreview={handlePreview}
                                         onRemove={(file) => {
-                                            setFormImageList((prev) =>
-                                                prev.filter(
+                                            console.log("fileRemove", file);
+                                            setFormImageList((prev) => [
+                                                ...prev.filter(
                                                     (item) =>
                                                         item.uid !== file.uid
-                                                )
-                                            );
+                                                ),
+                                            ]);
                                         }}
                                         className={`absolute top-0 left-0 w-full transition-all duration-500 ease-in-out ${
-                                            formImageList.length !== 0
+                                            Number(formImageList?.length) !== 0
                                                 ? "opacity-100 scale-100 translate-y-0"
                                                 : "opacity-0 scale-0 -translate-y-32 pointer-events-none"
                                         }`}

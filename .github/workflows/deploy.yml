@@ -1,0 +1,33 @@
+name: Deploy Admin App To Netlify
+
+on:
+    push:
+        branches:
+            - main
+    workflow_dispatch:
+
+jobs:
+    build-and-deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout branch
+              uses: actions/checkout@v4
+            - name: Set up node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20.19.4
+            - name: Install dependencies, build project and add netlify.toml
+              working-directory: ./siteadmin
+              run: |
+                  npm ci
+                  npm run build
+                  cp netlify.toml build/
+
+            - name: Deploy to Netlify
+              working-directory: ./siteadmin
+              run: |
+                  npm install -g netlify-cli
+                  netlify deploy --dir=build --site=$NETLIFY_SITE_ID --auth=$NETLIFY_AUTH_TOKEN --prod
+              env:
+                  NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+                  NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}

@@ -49,6 +49,7 @@ import ImportPage from "./pages/imports";
 import ExportPage from "./pages/exports";
 import VariantPage from "./pages/variants";
 import BrandsPage from "./pages/brands";
+import ResetPassword from "./pages/resetPassword/reset-password";
 function App() {
     return (
         <StoreProvider>
@@ -572,6 +573,10 @@ function App() {
                                             <ContactPage />
                                         </ProtectedRoute>
                                     }
+                                />
+                                <Route
+                                    path="/reset-password"
+                                    element={<ResetPassword />}
                                 />
                             </Routes>
                         </Suspense>

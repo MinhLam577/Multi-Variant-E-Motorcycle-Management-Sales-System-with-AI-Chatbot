@@ -1,17 +1,30 @@
+import { ApiResponse } from "src/types/api-response.type";
 import apiClient from "./apiClient";
 import endpoints from "./endpoints";
+import { LoginResponse } from "src/types/userLogin.type";
+import { AxiosResponse } from "axios";
+import {
+    ResetPassword,
+    VerifyResetPassword,
+} from "src/types/auth-validate.type";
 const loginEndpoints = endpoints.authAdmin;
 
 const LoginAPI = {
-    login: async (email: string, password: string) => {
+    login: async (
+        email: string,
+        password: string
+    ): Promise<AxiosResponse<ApiResponse<LoginResponse>, any>> => {
         try {
-            const response = await apiClient.post(loginEndpoints.login, {
-                email,
-                password,
-            });
+            const response = await apiClient.post<ApiResponse<LoginResponse>>(
+                loginEndpoints.login,
+                {
+                    email,
+                    password,
+                }
+            );
             return Promise.resolve(response);
         } catch (error) {
-            return Promise.reject(error); // Trả về error.response nếu có
+            return Promise.reject(error);
         }
     },
     getAccount: async (email: string) => {
@@ -36,6 +49,29 @@ const LoginAPI = {
             return Promise.resolve(response);
         } catch (error) {
             return Promise.reject(error);
+        }
+    },
+
+    verifyResetPassword: async (data: VerifyResetPassword) => {
+        try {
+            const response = apiClient.post(
+                loginEndpoints.verifyResetPassword,
+                data
+            );
+            return Promise.resolve(response);
+        } catch (error) {
+            return Promise.reject(error);
+        }
+    },
+    resetPassword: async (data: ResetPassword) => {
+        try {
+            const response = await apiClient.post(
+                loginEndpoints.resetPassword,
+                data
+            );
+            return Promise.resolve(response);
+        } catch (e) {
+            return Promise.reject(e);
         }
     },
 };
