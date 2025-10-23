@@ -47,7 +47,7 @@ const endpoints = {
         remove: (id: string) => `/users/${id}`,
         setRole: (id: string) => `/users/${id}`,
         changePassword: (id: string) => `/users/${id}`,
-        uploadAvatar: () => "/users/upload",
+        uploadAvatar: () => "/users/",
         list: (query: string) => `/users?${query}`,
         callBulkCreateUser: "/users/callBulkCreateUser",
         // tạo customer

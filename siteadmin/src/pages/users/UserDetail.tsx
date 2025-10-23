@@ -1,6 +1,5 @@
 import { Spin, Tabs } from "antd";
 import { useParams } from "react-router";
-import AddressUserTable from "../../components/users/detail/AddressUserTable";
 import UserForm from "../../components/users/detail/UserForm";
 import { useEffect } from "react";
 import { useStore } from "src/stores";

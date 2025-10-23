@@ -67,6 +67,7 @@ export class AccountObservable {
     }
 
     get permissions() {
+        this.getAccount();
         return toJS(this.account?.permissions || []);
     }
 }

@@ -77,9 +77,10 @@ const HeaderComponent = () => {
                         ),
                         title: "Đăng xuất",
                         onClick: () => {
-                            processWithModals(ProcessModalName.ConfirmLogout)(
-                                handleLogout
-                            );
+                            processWithModals({
+                                modalName: ProcessModalName.ConfirmLogout,
+                                onOk: handleLogout,
+                            });
                         },
                     },
                 ]}

@@ -11,11 +11,6 @@ export const StoreProvider = ({ children }) => {
         <StoreContext.Provider value={store}>{children}</StoreContext.Provider>
     );
 };
-
-StoreProvider.propTypes = {
-    children: PropTypes.any,
-};
-
 export const useStore = () => {
     const store = useContext(StoreContext);
 

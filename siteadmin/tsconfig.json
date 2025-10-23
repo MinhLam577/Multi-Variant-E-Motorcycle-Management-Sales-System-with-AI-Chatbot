@@ -20,7 +20,9 @@
         "strictBindCallApply": false,
         "forceConsistentCasingInFileNames": false,
         "noFallthroughCasesInSwitch": false,
-        "jsx": "react-jsx"
+        "jsx": "react-jsx",
+        "allowJs": true,
+        "checkJs": true
     },
     "include": [
         "./src/**/*",

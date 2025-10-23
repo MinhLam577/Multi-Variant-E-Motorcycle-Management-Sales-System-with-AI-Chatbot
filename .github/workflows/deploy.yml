@@ -3,7 +3,7 @@ name: Deploy Admin App To Netlify
 on:
     push:
         branches:
-            - main
+            - develop_minh
     workflow_dispatch:
 
 jobs:

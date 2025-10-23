@@ -202,8 +202,11 @@ const NewsDetail = ({ mode }) => {
 
     const handleCancel = () => {
         if (mode === NewsDetailMode.Edit) {
-            processWithModals(ProcessModalName.ConfirmCancelEditing)(() => {
-                navigate(`/categorynews/${idblogcategory}/news`);
+            processWithModals({
+                modalName: ProcessModalName.ConfirmCancelEditing,
+                onOk: () => {
+                    navigate(`/categorynews/${idblogcategory}/news`);
+                },
             });
         } else {
             navigate(`/categorynews/${idblogcategory}/news`);
@@ -239,8 +242,9 @@ const NewsDetail = ({ mode }) => {
             };
 
             if (mode === NewsDetailMode.Add) {
-                processWithModals(ProcessModalName.ConfirmCreateNews)(
-                    async () => {
+                processWithModals({
+                    modalName: ProcessModalName.ConfirmCreateNews,
+                    onOk: async () => {
                         try {
                             const response = await apiClient.post(
                                 endpoints.blogs.create(),
@@ -261,11 +265,12 @@ const NewsDetail = ({ mode }) => {
                         } catch (error) {
                             message.error("Tạo bài viết thất bại!");
                         }
-                    }
-                );
+                    },
+                });
             } else if (mode === NewsDetailMode.Edit) {
-                processWithModals(ProcessModalName.ConfirmUpdateNews)(
-                    async () => {
+                processWithModals({
+                    modalName: ProcessModalName.ConfirmUpdateNews,
+                    onOk: async () => {
                         try {
                             const response = await apiClient.put(
                                 endpoints.blogs.update(id),
@@ -279,8 +284,8 @@ const NewsDetail = ({ mode }) => {
                         } catch (error) {
                             message.error("Cập nhật bài viết thất bại!");
                         }
-                    }
-                );
+                    },
+                });
             }
         } catch (error) {
             console.error("Error during form submission:", error);

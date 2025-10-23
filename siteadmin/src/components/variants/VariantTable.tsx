@@ -6,7 +6,7 @@ import GroupActionButton from "../GroupActionButton";
 import {
     processWithModals,
     ProcessModalName,
-} from "src/containers/processWithModals.js";
+} from "src/containers/processWithModals";
 import { DetailImportResponseType } from "src/stores/imports.store";
 import { Image, Tooltip, Grid } from "antd";
 import { getErrorMessage } from "src/utils";
@@ -140,27 +140,29 @@ const VariantTable: React.FC<VariantTableProps> = ({
                     return (
                         <GroupActionButton
                             handleDelete={() => {
-                                processWithModals(
-                                    ProcessModalName.ConfirmCustomContent
-                                )(
-                                    "Xác nhận",
-                                    `Bạn có chắc chắn muốn xóa phiếu nhập hàng #${item.id} không?`
-                                )(async () => {
-                                    try {
-                                        await handleDelete(item.id);
-                                    } catch (e: any) {
-                                        console.error(e);
-                                        const errorMessage = getErrorMessage(
-                                            e,
-                                            "Có lỗi xảy ra trong quá trình xóa biến thể, vui lòng thử lại sau."
-                                        );
-                                        store.setStatusMessage(
-                                            500,
-                                            errorMessage,
-                                            "",
-                                            false
-                                        );
-                                    }
+                                processWithModals({
+                                    modalName:
+                                        ProcessModalName.ConfirmCustomContent,
+                                    title: "Xác nhận",
+                                    content: `Bạn có chắc chắn muốn xóa phiếu nhập hàng #${item.id} không?`,
+                                    onOk: async () => {
+                                        try {
+                                            await handleDelete(item.id);
+                                        } catch (e: any) {
+                                            console.error(e);
+                                            const errorMessage =
+                                                getErrorMessage(
+                                                    e,
+                                                    "Có lỗi xảy ra trong quá trình xóa biến thể, vui lòng thử lại sau."
+                                                );
+                                            store.setStatusMessage(
+                                                500,
+                                                errorMessage,
+                                                "",
+                                                false
+                                            );
+                                        }
+                                    },
                                 });
                             }}
                             handleUpdate={handleUpdate}

@@ -30,3 +30,10 @@ export enum LoginStatus {
     LOGIN_FAILED = "loginFailed",
     LOGIN_SUCCESS = "loginSuccess",
 }
+
+export enum UpdateProfileStatus {
+    INITIAL = "initial",
+    SUBMITTING = "submitting",
+    UPDATE_FAILED = "updateFailed",
+    UPDATE_SUCCESS = "updateSuccess",
+}

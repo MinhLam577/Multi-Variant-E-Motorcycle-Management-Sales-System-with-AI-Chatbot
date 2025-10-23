@@ -5,11 +5,12 @@ import endpoints from "../api/endpoints";
 import { keyStorageAccount } from "../constants";
 import { paginationData, RootStore } from "./base";
 import { getErrorMessage } from "src/utils";
+import { LoginStatus, UpdateProfileStatus } from "src/types/userLogin.type";
 
 class UserObservable {
     roles = null;
     me = null;
-    status = null;
+    status: UpdateProfileStatus = null;
     rootStore: RootStore = null;
     errorMsg: string = "";
     account = null;
@@ -27,35 +28,15 @@ class UserObservable {
         this.rootStore = rootStore;
     }
 
-    // async getMe(userId: string) {
-    //     this.status = "submitting";
-    //     try {
-    //         const { data, status } = await apiClient.get(
-    //             endpoints.user.me(userId)
-    //         );
-
-    //         if (status !== 200) {
-    //             this.status = "fetchFailed";
-    //             this.errorMsg = "Email hoặc mật khẩu không đúng!";
-    //             return;
-    //         }
-    //         this.me = data;
-    //         this.status = "fetchSuccess";
-    //     } catch (error) {
-    //         this.status = "fetchFailed";
-    //         this.errorMsg = error?.message;
-    //     }
-    // }
-
     async updateUserProfile(dto, userId) {
-        this.status = "submitting";
+        this.status = UpdateProfileStatus.SUBMITTING;
         try {
             const { data, status } = await apiClient.patch(
                 endpoints.user.update(userId),
                 dto
             );
             if (status !== 200) {
-                this.status = "updateFailed";
+                this.status = UpdateProfileStatus.UPDATE_FAILED;
                 this.errorMsg = "Cập nhật thông tin thất bại!";
                 return;
             }
@@ -79,14 +60,14 @@ class UserObservable {
                 };
                 await this.rootStore.accountObservable.setAccount(newData);
             }
-            this.status = "updateSuccess";
+            this.status = UpdateProfileStatus.UPDATE_SUCCESS;
         } catch (error) {
             console.log("error", error);
             const errorMessage = getErrorMessage(
                 error,
                 "Cập nhật thông tin người dùng thất bại"
             );
-            this.status = "updateFailed";
+            this.status = UpdateProfileStatus.UPDATE_FAILED;
             this.errorMsg = errorMessage;
         }
     }

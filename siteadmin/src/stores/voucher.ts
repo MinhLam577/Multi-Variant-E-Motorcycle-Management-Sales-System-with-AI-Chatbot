@@ -42,6 +42,7 @@ interface Voucher {
     start_date: string;
     end_date: string;
     count_user_get: number;
+    type_voucher?: TypeVoucher;
 }
 export default class VoucherObservable implements MessageStore {
     status?: number;
@@ -52,7 +53,7 @@ export default class VoucherObservable implements MessageStore {
     data: Voucher[] = null;
     dataUser = null;
     typeVoucher: TypeVoucher[] = [];
-    dataDetail: Voucher[] = [];
+    dataDetail: Voucher;
     dataListCustomer_no_voucher = [];
     idVoucher: string = "";
     pagination: paginationData = {
@@ -144,6 +145,7 @@ export default class VoucherObservable implements MessageStore {
             const response: ResponsePromise = yield voucherApi.getById(id);
             const { data, status, message } = response;
             const success_status = [200, 201, 204];
+
             if (success_status.includes(status)) {
                 this.dataDetail = data;
             } else {

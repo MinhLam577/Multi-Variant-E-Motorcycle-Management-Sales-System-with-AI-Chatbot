@@ -17,6 +17,7 @@ const Access = observer((props: IProps) => {
     const AccountStore = store.accountObservable;
     // Lấy permissions từ store, tránh object mới mỗi lần
     const permissions = useMemo(() => {
+        console.log("permission: ", AccountStore.account.permission);
         return toJS(AccountStore.account?.permissions || []);
     }, [AccountStore.account?.permissions]);
 
@@ -34,6 +35,8 @@ const Access = observer((props: IProps) => {
     }, []);
 
     useEffect(() => {
+        console.log("permission: ", permissions);
+
         if (permissions?.length) {
             if (
                 !permission ||

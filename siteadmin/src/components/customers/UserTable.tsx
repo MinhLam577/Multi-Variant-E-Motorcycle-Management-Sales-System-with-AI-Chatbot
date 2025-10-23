@@ -1,30 +1,24 @@
-import { Button, Popconfirm } from "antd";
+import { Button, message, notification, Popconfirm } from "antd";
+import PropTypes from "prop-types";
 import { useNavigate } from "react-router";
+import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
 import {
     ProcessModalName,
     processWithModals,
 } from "../../containers/processWithModals";
 import TableComponent from "../../containers/TableComponent";
-import { RoleType, UserStaffResponseType } from "src/stores/user.store";
-import React from "react";
-import { useStore } from "src/stores";
-import { observer } from "mobx-react-lite";
-import { RoleEnumValue } from "src/constants";
-import Access from "src/access/access";
-import { ALL_PERMISSIONS } from "src/constants/permissions";
-import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
-
-interface IColumnsConfig {
-    handleViewUser: (user: UserStaffResponseType) => void;
-    handleDeleteUser?: (id: string) => void;
-    handleUpdateUser?: (user: UserStaffResponseType) => void;
-}
-
+import { useState } from "react";
+import apiClient from "../../api/apiClient";
+import endpoints from "../../api/endpoints";
+import UserStaffObservable from "../../stores/user.store";
+import Access from "../../access/access";
+import { ALL_PERMISSIONS } from "../../constants/permissions";
+import { formatVNDMoney, getErrorMessage } from "../../utils";
 const getColumnsConfig = ({
+    handleUpdateUser,
     handleViewUser,
     handleDeleteUser,
-    handleUpdateUser,
-}: IColumnsConfig) => {
+}) => {
     return [
         {
             title: "Họ tên",
@@ -41,61 +35,65 @@ const getColumnsConfig = ({
                     </Button>
                 );
             },
-        },
-        {
-            title: "Email",
-            dataIndex: "email",
-            key: "email",
-            ellipsis: true,
-            responsive: ["lg"],
+            width: "150px",
         },
         {
             title: "Số điện thoại",
             dataIndex: "phoneNumber",
             key: "phoneNumber",
+            width: "140px",
             ellipsis: true,
             responsive: ["lg"],
         },
-
         {
-            title: "Ngày sinh",
-            dataIndex: "birthday",
-            key: "birthday",
+            title: "Địa chỉ nhận hàng",
+            dataIndex: "receive_address",
+            key: "receive_address",
+            width: "250px",
             ellipsis: true,
-            render: (value) => {
-                return value
-                    ? new Date(value).toLocaleDateString("vi-VN", {
-                          year: "numeric",
-                          month: "2-digit",
-                          day: "2-digit",
-                      })
-                    : "Chưa có ngày sinh";
+            render: (address) => {
+                if (
+                    !address ||
+                    !address?.street ||
+                    !address?.ward ||
+                    !address?.district ||
+                    !address?.province
+                ) {
+                    return "Chưa có địa chỉ nhận hàng";
+                }
+                return [
+                    address?.street,
+                    address?.ward,
+                    address?.district,
+                    address?.province,
+                ].join(", ");
             },
             responsive: ["xl"],
         },
-
         {
-            title: "Vai trò",
-            dataIndex: "roles",
-            key: "roles",
+            title: "SL Đơn hàng",
+            dataIndex: "total_order",
+            key: "total_order",
             ellipsis: true,
-            render: (Roles: RoleType[]) => {
-                if (!Roles || Roles.length === 0) return "Chưa có vai trò";
-                const roleName = Roles.map(
-                    (role) => role?.name
-                )[0]?.toUpperCase();
-                return roleName ? RoleEnumValue[roleName] : "Chưa có vai trò";
+            responsive: ["sm"],
+        },
+        {
+            title: "Tổng chi tiêu",
+            dataIndex: "total_spending",
+            key: "total_spending",
+            ellipsis: true,
+            render: (totalSpending) => {
+                return <span>{formatVNDMoney(totalSpending)}</span>;
             },
             responsive: ["sm"],
         },
-
         {
             title: "Action",
-            render: (text, record, index) => {
+            render: (text, record) => {
                 return (
                     <>
                         <Access
-                            permission={ALL_PERMISSIONS.USER.DELETE}
+                            permission={ALL_PERMISSIONS.CUSTOMERS.DELETE}
                             hideChildren
                         >
                             <span
@@ -111,7 +109,7 @@ const getColumnsConfig = ({
                                             modalName:
                                                 ProcessModalName.ConfirmCustomContent,
                                             title: "Xác nhận",
-                                            content: `Bạn có chắc chắn muốn xóa user #${record.id} không?`,
+                                            content: `Bạn có chắc chắn muốn xóa khách hàng #${record.id} không?`,
                                             onOk: () => {
                                                 if (handleDeleteUser)
                                                     handleDeleteUser(record.id);
@@ -122,7 +120,7 @@ const getColumnsConfig = ({
                             </span>
                         </Access>
                         <Access
-                            permission={ALL_PERMISSIONS.USER.UPDATE}
+                            permission={ALL_PERMISSIONS.CUSTOMERS.UPDATE}
                             hideChildren
                         >
                             <EditTwoTone
@@ -140,23 +138,25 @@ const getColumnsConfig = ({
     ];
 };
 
-interface IUserTableProps {
-    data: UserStaffResponseType[];
-    handleDeleteUser: (id: string) => Promise<void>;
-    handleUpdateUser: (user: UserStaffResponseType) => void;
-    handleViewUser: (user: UserStaffResponseType) => void;
-}
-
-const UserTable: React.FC<IUserTableProps> = ({
-    data,
+const CustomerTable = ({
+    globalFilters,
     handleUpdateUser,
     handleViewUser,
-    handleDeleteUser,
+    data,
+    loading,
+    fetchCustomer,
 }) => {
     const navigate = useNavigate();
-    const store = useStore();
-    const userStore = store.userStaffObservable;
-    const handleResetPassword = (id: string) => {
+    const [openModalCreate, setOpenModalCreate] = useState(false);
+    const [openViewDetail, setOpenViewDetail] = useState(false);
+    const [dataViewDetail, setDataViewDetail] = useState(null);
+
+    const [openModalImport, setOpenModalImport] = useState(false);
+
+    const [openModalUpdate, setOpenModalUpdate] = useState(false);
+    const [dataUpdate, setDataUpdate] = useState(null);
+
+    const handleResetPassword = () => {
         processWithModals({
             modalName: ProcessModalName.ConfirmCustomContent,
             title: "Xác nhận",
@@ -165,11 +165,33 @@ const UserTable: React.FC<IUserTableProps> = ({
         });
     };
 
-    const hanleAddressUser = (item) => {
+    const handleDeleteUser = async (id) => {
+        try {
+            const res = await apiClient.delete(endpoints.customers.delete(id));
+            if (res && res.data) {
+                message.success("Xóa khách hàng thành công");
+                setOpenModalCreate(false);
+                await fetchCustomer();
+            } else {
+                const errorMessage = getErrorMessage(
+                    res,
+                    "Lỗi xảy ra khi xóa khách hàng, vui lòng thử lại sau."
+                );
+                message.error(errorMessage);
+            }
+        } catch (error) {
+            const errorMessage = getErrorMessage(
+                error,
+                "Lỗi xảy ra khi xóa khách hàng, vui lòng thử lại sau."
+            );
+            message.error(errorMessage);
+        }
+    };
+    const handleAddressUser = (item) => {
         navigate(`/users/${item}/address`, { replace: true });
     };
 
-    const hanleActivateUser = (id) => {
+    const hanleActivateUser = () => {
         processWithModals({
             modalName: ProcessModalName.ConfirmCustomContent,
             title: "Xác nhận",
@@ -180,21 +202,25 @@ const UserTable: React.FC<IUserTableProps> = ({
     return (
         <>
             <TableComponent
-                loading={userStore.loading}
+                loading={loading}
                 filtersInput="filters"
                 getColumnsConfig={getColumnsConfig}
+                filterValue={globalFilters}
                 loadData={() => {}}
                 data={data}
+                observableName={UserStaffObservable.name}
                 handleResetPassword={handleResetPassword}
                 handleDeleteUser={handleDeleteUser}
                 handleUpdateUser={handleUpdateUser}
                 handleViewUser={handleViewUser}
                 hanleActivateUser={hanleActivateUser}
-                hanleAddressUser={hanleAddressUser}
+                handleAddressUser={handleAddressUser}
+                setOpenModalUpdate={setOpenModalUpdate}
+                setDataUpdate={setDataUpdate}
                 scroll={{ y: "200px" }}
-                observableName={userStore.constructor.name}
             />
         </>
     );
 };
-export default observer(UserTable);
+
+export default CustomerTable;
