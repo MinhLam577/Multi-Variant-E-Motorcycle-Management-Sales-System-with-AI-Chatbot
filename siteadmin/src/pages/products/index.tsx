@@ -418,62 +418,6 @@ const Products = () => {
                                             )}
                                         />
                                     </div>
-                                    <ModalCreateProduct
-                                        key={"modal-create-product"}
-                                        isOpen={isOpenCreateProductModal}
-                                        onClose={handleCloseCreateProductModal}
-                                        onSave={handleSaveCreateProductModal}
-                                        loadingData={fetchOnlyProducts}
-                                        okText="Tạo mới"
-                                        cancelText="Hủy"
-                                        form={createProductForm}
-                                        subForm={subCreateProductForm}
-                                        categorySelectData={
-                                            categoriesStore.data
-                                        }
-                                        brandSelectData={getSelectOption(
-                                            brandStore.data
-                                        )}
-                                        warehouseSelectData={getSelectOption(
-                                            warehouseStore.data
-                                        )}
-                                        optionSelectData={getSelectOption(
-                                            optionStore.data
-                                        )}
-                                        formInitialValues={{
-                                            price_import: 0,
-                                            price_sold: 0,
-                                            price_compare: 0,
-                                        }}
-                                        messageWhenSave="Tạo mới sản phẩm thành công"
-                                    />
-
-                                    <ModalUpdateProduct
-                                        key={`modal-update-product-${productId}`}
-                                        isOpen={isOpenUpdateProductModal}
-                                        onClose={handleCloseUpdateProductModal}
-                                        onSave={handleSaveUpdateProductModal}
-                                        loadingData={fetchOnlyProducts}
-                                        okText="Cập nhật"
-                                        cancelText="Hủy"
-                                        form={updateProductForm}
-                                        subForm={subUpdateProductForm}
-                                        categorySelectData={
-                                            categoriesStore.data
-                                        }
-                                        brandSelectData={getSelectOption(
-                                            brandStore.data
-                                        )}
-                                        warehouseSelectData={getSelectOption(
-                                            warehouseStore.data
-                                        )}
-                                        optionSelectData={getSelectOption(
-                                            optionStore.data
-                                        )}
-                                        productId={productId}
-                                        initialData={initialData}
-                                        messageWhenSave="Cập nhật sản phẩm thành công"
-                                    />
 
                                     <ProductsTable
                                         data={filterData}
@@ -496,6 +440,48 @@ const Products = () => {
                     ]}
                 />
             </div>
+            {productId ? (
+                <ModalUpdateProduct
+                    key={`modal-update-product-${productId}`}
+                    isOpen={isOpenUpdateProductModal}
+                    onClose={handleCloseUpdateProductModal}
+                    onSave={handleSaveUpdateProductModal}
+                    loadingData={fetchOnlyProducts}
+                    okText="Cập nhật"
+                    cancelText="Hủy"
+                    form={updateProductForm}
+                    subForm={subUpdateProductForm}
+                    categorySelectData={categoriesStore.data}
+                    brandSelectData={getSelectOption(brandStore.data)}
+                    warehouseSelectData={getSelectOption(warehouseStore.data)}
+                    optionSelectData={getSelectOption(optionStore.data)}
+                    productId={productId}
+                    initialData={initialData}
+                    messageWhenSave="Cập nhật sản phẩm thành công"
+                />
+            ) : (
+                <ModalCreateProduct
+                    key={"modal-create-product"}
+                    isOpen={isOpenCreateProductModal}
+                    onClose={handleCloseCreateProductModal}
+                    onSave={handleSaveCreateProductModal}
+                    loadingData={fetchOnlyProducts}
+                    okText="Tạo mới"
+                    cancelText="Hủy"
+                    form={createProductForm}
+                    subForm={subCreateProductForm}
+                    categorySelectData={categoriesStore.data}
+                    brandSelectData={getSelectOption(brandStore.data)}
+                    warehouseSelectData={getSelectOption(warehouseStore.data)}
+                    optionSelectData={getSelectOption(optionStore.data)}
+                    formInitialValues={{
+                        price_import: 0,
+                        price_sold: 0,
+                        price_compare: 0,
+                    }}
+                    messageWhenSave="Tạo mới sản phẩm thành công"
+                />
+            )}
         </section>
     );
 };

@@ -11,19 +11,20 @@ import {
     Grid,
 } from "antd";
 const { useBreakpoint } = Grid;
-import PropTypes from "prop-types";
+
 const LoginScreen = ({
     onFinish,
     onFinishFailed,
     isLoading,
+    onFinishForgotPassword,
     showForgotPasswordModal,
     setShowForgotPasswordModal,
-    onFinishForgotPassword,
     form,
+    forgotPasswordForm,
+    isForgotLoading,
 }) => {
     const backgroundImage = "/images/login-background.png";
     const screens = useBreakpoint();
-
     return (
         <>
             <Row className="h-screen fixed w-full">
@@ -92,13 +93,12 @@ const LoginScreen = ({
                                     wrapperCol={{ span: 24 }}
                                     layout={"vertical"}
                                     initialValues={{
-                                        remember: true,
-                                        email: "ngodinhphuoc100@gmail.com",
-                                        password: "123456",
+                                        remember: false,
                                     }}
                                     onFinish={onFinish}
                                     onFinishFailed={onFinishFailed}
-                                    autoComplete="off"
+                                    autoComplete="on"
+                                    form={form}
                                 >
                                     <Form.Item
                                         label="Email"
@@ -158,16 +158,17 @@ const LoginScreen = ({
             <Modal
                 title="Quên mật khẩu?"
                 open={showForgotPasswordModal}
+                confirmLoading={isForgotLoading}
                 onOk={() => {
-                    form.submit();
-                    setShowForgotPasswordModal(false);
+                    forgotPasswordForm.submit();
                 }}
                 onCancel={() => {
+                    forgotPasswordForm.resetFields();
                     setShowForgotPasswordModal(false);
                 }}
             >
                 <Form
-                    form={form}
+                    form={forgotPasswordForm}
                     name="basic"
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 24 }}

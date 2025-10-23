@@ -294,7 +294,7 @@ const ModalCreateProduct: React.FC<IModalCreateProductProps> = ({
         return uploadedFiles.map((file: ResponseImage) => file.url);
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (values) => {
         try {
             store.setLoading(true);
             const skusFormValue = form.getFieldValue("skus");

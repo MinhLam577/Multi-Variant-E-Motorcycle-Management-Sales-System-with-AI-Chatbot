@@ -34,9 +34,11 @@ const endpoints = {
     authAdmin: {
         login: "/auth/admin/login",
         logout: "/auth/admin/logout",
-        refreshToken: "/auth/refresh",
-        forgotPassword: "/auth/forgot-password",
-        changePassword: "/auth/change-password",
+        refreshToken: "/auth/admin/refresh",
+        verifyResetPassword: "/auth/admin/verify-reset-password",
+        resetPassword: "auth/admin/reset-password",
+        forgotPassword: "/auth/admin/forgot-password",
+        changePassword: "/auth/admin/change-password",
         getAccount: "/auth/admin/getAccount",
     },
     user: {

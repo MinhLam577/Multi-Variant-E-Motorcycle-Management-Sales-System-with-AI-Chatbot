@@ -12,10 +12,10 @@ const ModalUpdateProduct: React.FC<IModalUpdateProductProps> = observer(
     ({ productId, initialData, ...props }: IModalUpdateProductProps) => {
         return (
             <ModalCreateProduct
-                {...props}
                 title="Cật nhật sản phẩm"
                 formInitialValues={initialData ? initialData : {}}
                 productId={productId}
+                {...props}
             />
         );
     }
