@@ -1,27 +1,12 @@
 "use client";
-import React, { useContext, useEffect, useState } from "react";
-import { notification, Space, Tabs } from "antd";
-
-// import { Link, Navigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { notification } from "antd";
 import { Empty } from "antd";
 import { Divider } from "antd";
 import Link from "next/link";
 import { formatCurrency } from "@/utils";
 import { useStore } from "@/context/store.context";
 import { observer } from "mobx-react-lite";
-import { AccountObservable } from "@/src/stores/account";
-// import { useMutation, useQuery } from "@tanstack/react-query";
-// import OrderApi from "../../../../Api/user/order";
-// import { formatCurrency } from "../../../../until";
-// import CartAPI from "../../../../Api/user/cart";
-// import { toast } from "react-toastify";
-// import { queryClient } from "../../../..";
-// import { useNavigate } from "react-router-dom";
-// import { AuthContext } from "../../../../context/app.context";
-// import ModalReviewProduct from "./ModalReviewProduct";
-// import { Helmet } from "react-helmet-async";
-// import useQueryParams from "../../../../hook/useSearchParam";
-// import paymentAPI from "../../../../Api/user/payment.js";
 import { useRouter } from "next/navigation";
 
 export enum order_status {
@@ -68,7 +53,6 @@ const OrderHistory = observer(() => {
         const fetchData = async () => {
             await AccountStore.getAccount(); // chờ lấy account trước
             const account = AccountStore.account;
-            //  await StoreOrder.getListOrderCustomer( account?.userId ,""); // ví dụ dùng account để truyền query
             await StoreOrder.getListOrder({ search: account?.user?.email }); // ví dụ dùng account để truyền query
             setDataAll(StoreOrder.data.orders);
             const urlParams = new URLSearchParams(window.location.search);
@@ -116,7 +100,6 @@ const OrderHistory = observer(() => {
     };
 
     const handleBuyAgain = async (order_detail) => {
-        let arrayIdCart = []; // Declare the array before the loop
         await StoreCart.clearSelectedCart();
         try {
             for (const element of order_detail) {
@@ -307,14 +290,6 @@ const OrderHistory = observer(() => {
                 {dataAll?.length === 0 && (
                     <Empty style={{ marginTop: "50px" }} />
                 )}
-                {/* <ModalReviewProduct
-          isModalOpen={isModalOpen}
-          setIsModalOpen={setIsModalOpen}
-          setIdOrder={setIdOrder}
-          setIdProduct={setIdProduct}
-          IdOrder={IdOrder}
-          IdProduct={IdProduct}
-        /> */}
             </div>
         </div>
     );

@@ -23,9 +23,9 @@ import {
     processWithModals,
 } from "../../containers/processWithModals";
 import apiClient from "../../api/apiClient";
-import endpoints from "../../api/endpoints.ts";
-import AdminBreadCrumb from "../../components/common/AdminBreadCrumb.tsx";
-import { getBreadcrumbItems } from "../../containers/layout/index.tsx";
+import endpoints from "../../api/endpoints";
+import AdminBreadCrumb from "../../components/common/AdminBreadCrumb";
+import { getBreadcrumbItems } from "../../containers/layout/index";
 
 export const CategoriesDetailMode = {
     View: 1,
@@ -162,8 +162,13 @@ const WareHouseDetail = ({ mode }) => {
 
     const handleCancel = () => {
         if (mode === CategoriesDetailMode.Edit) {
-            processWithModals(ProcessModalName.ConfirmCancelEditing)(() => {
-                navigate(`/warehouse`);
+            processWithModals({
+                modalName: ProcessModalName.ConfirmCancelEditing,
+                title: "Xác nhận",
+                content: "Bạn có chắc muốn hủy chỉnh sửa không?",
+                onOk: () => {
+                    navigate(`/warehouse`);
+                },
             });
         } else {
             navigate("/warehouse");

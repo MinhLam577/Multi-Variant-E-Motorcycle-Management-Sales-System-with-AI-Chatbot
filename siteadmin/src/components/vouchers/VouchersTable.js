@@ -1,18 +1,11 @@
 import { CopyTwoTone, DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Button, message, Popconfirm, Slider, Space, Switch, Tag } from "antd";
-import moment from "moment";
+import { Button, message, Popconfirm, Slider, Space, Tag } from "antd";
 import PropTypes from "prop-types";
-import { DateTimeFormat } from "../../constants";
-import {
-    ProcessModalName,
-    processWithModals,
-} from "../../containers/processWithModals";
 import TableComponent from "../../containers/TableComponent";
 import ModalVouchers from "./modal.vouchers";
 import { useEffect, useState } from "react";
 import VoucherforCustomer from "./modal_table_user_vourcher";
 import { Send } from "iconsax-react";
-import { useStore } from "../../stores";
 import Access from "../../access/access";
 import { ALL_PERMISSIONS } from "../../constants/permissions";
 const getColumnsConfig = ({
@@ -93,7 +86,7 @@ const getColumnsConfig = ({
             key: "uses",
             ellipsis: true,
             width: "100px",
-            
+
             render: (inputValue, record) => {
                 const limit = record.limit ?? 0; // fallback nếu limit null
                 return (
@@ -107,58 +100,52 @@ const getColumnsConfig = ({
                             value={
                                 typeof inputValue === "number" ? inputValue : 0
                             }
-                            handle={null}
                         />
                     </div>
                 );
             },
             responsive: ["sm"],
         },
-         {
+        {
             title: "Khách đã nhận",
             dataIndex: "count_user_get",
             key: "count_user_get",
             ellipsis: true,
             width: "100px",
 
-             align: "center", // ✅ Căn giữa toàn cột
+            align: "center", // ✅ Căn giữa toàn cột
             render: (count_user_get) => {
-                
                 return (
-                    
-                        <div className="flex justify-center">
-                           <span>
-                            {count_user_get}
-                            </span> 
-                        </div>
-
-                
+                    <div className="flex justify-center">
+                        <span>{count_user_get}</span>
+                    </div>
                 );
             },
             responsive: ["sm"],
-        },{
-  title: "Áp dụng",
-  key: "period",
-  dataIndex: "start_date", // hoặc để null cũng được vì dùng record
-  ellipsis: true,
-  width: "140px",
-  align: "center",
-  render: (_, record) => {
-    const start = record.start_date
-      ? new Date(record.start_date).toLocaleDateString("vi-VN")
-      : "Chưa có";
-    const end = record.end_date
-      ? new Date(record.end_date).toLocaleDateString("vi-VN")
-      : "Chưa có";
+        },
+        {
+            title: "Áp dụng",
+            key: "period",
+            dataIndex: "start_date", // hoặc để null cũng được vì dùng record
+            ellipsis: true,
+            width: "140px",
+            align: "center",
+            render: (_, record) => {
+                const start = record.start_date
+                    ? new Date(record.start_date).toLocaleDateString("vi-VN")
+                    : "Chưa có";
+                const end = record.end_date
+                    ? new Date(record.end_date).toLocaleDateString("vi-VN")
+                    : "Chưa có";
 
-    return (
-      <div className="">
-        {start} - {end}
-      </div>
-    );
-  },
-  responsive: ["sm"],
-},
+                return (
+                    <div className="">
+                        {start} - {end}
+                    </div>
+                );
+            },
+            responsive: ["sm"],
+        },
 
         {
             title: "Action",

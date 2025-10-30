@@ -4,23 +4,11 @@ import { Divider } from "antd";
 import { Descriptions } from "antd";
 import Link from "next/link";
 import { generateNameId } from "@/utils";
-import { useParams } from "next/navigation";
 import { useStore } from "@/context/store.context";
-// import { Link, useParams } from "react-router-dom";
-// import { useQuery } from "@tanstack/react-query";
-// import OrderApi from "../../../../Api/user/order";
-// import { IdcardFilled } from "@ant-design/icons";
-// import { generateNameId } from "../../../../until";
 export default function DetailOrderHistory({ slug }) {
     const [data, setData] = useState(null);
     const store = useStore();
     const OrderStore = store.orderObservable;
-    // const { data } = useQuery({
-    //   queryKey: ["getDetailOrder", slug],
-    //   queryFn: () => {
-    //     return OrderApi.getDatailCartOrder(slug);
-    //   },
-    // });
 
     // Để đảm bảo setData chỉ được gọi khi OrderStore.data.order_detail đã có dữ liệu, bạn nên:
     useEffect(() => {

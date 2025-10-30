@@ -8,7 +8,7 @@ import LoginSignupModal from "@/app/components/common/login-signup";
 import ListingTabContent from "@/app/components/dashboard/my-listing/ListingTabContent";
 
 export const metadata = {
-    title: "hongson ",
+    title: "minhdeptrai.site ",
 };
 
 const MyListing = () => {

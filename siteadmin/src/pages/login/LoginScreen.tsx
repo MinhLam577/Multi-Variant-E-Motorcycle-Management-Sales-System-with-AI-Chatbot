@@ -56,7 +56,7 @@ const LoginScreen = ({
                             Welcome to
                         </span>
                         <span className="font-bold text-4xl text-white">
-                            Hồng Sơn Auto
+                            minhdeptrai.site
                         </span>
                     </div>
                 </Col>

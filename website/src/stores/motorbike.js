@@ -1,6 +1,6 @@
 import { flow, makeObservable, observable } from "mobx";
 import apiClient from "../api/apiClient";
-import endpoints from "../api/endpoints.ts";
+import endpoints from "../api/endpoints";
 import { RequestStatus } from "../constants";
 
 class EMotorbikeObservable {

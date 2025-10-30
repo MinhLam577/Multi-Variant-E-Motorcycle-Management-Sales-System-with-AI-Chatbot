@@ -19,7 +19,7 @@ const VoucherSection = observer(({ storeVoucher }: any) => {
             <div className="flex justify-between items-center py-4 border-b mt-4">
                 <div className="flex items-center space-x-3">
                     <span className="text-lg font-semibold text-gray-800">
-                        Hồng Sơn Voucher
+                        minhdeptrai.site Voucher
                     </span>
                 </div>
                 <button

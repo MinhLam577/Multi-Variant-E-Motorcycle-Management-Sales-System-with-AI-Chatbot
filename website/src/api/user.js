@@ -1,5 +1,5 @@
 import apiClient from "./apiClient";
-import endpoints from "./endpoints.ts";
+import endpoints from "./endpoints";
 
 export const getListUser = async ({ page, size }) => {
     const response = await apiClient.get(endpoints.user.list(page, size));
@@ -27,30 +27,30 @@ export const updateImage = async (id) => {
 };
 
 export const callBulkCreateUser = async (data) => {
-  const response = await apiClient.post(
-    endpoints.user.callBulkCreateUser,
-    data
-  );
-  return response;
+    const response = await apiClient.post(
+        endpoints.user.callBulkCreateUser,
+        data
+    );
+    return response;
 };
 
 export const uploadUserImage = async (file) => {
-  try {
-    const formData = new FormData();
-    formData.append("file", file);
-    const response = await apiClient.post(
-      endpoints.user.uploadAvatar(),
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+    try {
+        const formData = new FormData();
+        formData.append("file", file);
+        const response = await apiClient.post(
+            endpoints.user.uploadAvatar(),
+            formData,
+            {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            }
+        );
 
-    return response?.data;
-  } catch (error) {
-    console.error("Error uploading image:", error);
-    throw error;
-  }
+        return response?.data;
+    } catch (error) {
+        console.error("Error uploading image:", error);
+        throw error;
+    }
 };

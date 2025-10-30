@@ -2,15 +2,9 @@ import { message, notification, Popconfirm, Table } from "antd";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { AntdTableLocale } from "../../../constants";
-import {
-    ProcessModalName,
-    processWithModals,
-} from "../../../containers/processWithModals";
 import apiClient from "../../../api/apiClient";
-import endpoints from "../../../api/endpoints.ts";
-import GroupActionButton from "../../GroupActionButton";
+import endpoints from "../../../api/endpoints";
 import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
-import UserModalUpdate from "../UserModalUpdate";
 import { Button } from "antd";
 import AddressModalCreate from "../../customers/AddressModalCreate";
 import AddressModalUpdate from "../../customers/AddressModalUpdate";
@@ -165,9 +159,9 @@ const AddressUserTable = () => {
                 className="table-fixed"
                 columns={getColumnsConfig({
                     hanleDeleteAddress,
-                    setOpenModalUpdate,
                     setAddressDataUpdate,
                     setOpenAddressModalUpdate,
+                    setDataUpdate,
                 })}
                 loading={loading}
                 key={0}

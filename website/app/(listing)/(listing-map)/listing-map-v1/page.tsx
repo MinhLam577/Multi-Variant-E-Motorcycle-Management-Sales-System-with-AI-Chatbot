@@ -10,7 +10,7 @@ import Map from "@/app/components/common/Map";
 import { EnumProductStore } from "@/src/stores/productStore";
 
 // export const metadata = {
-//     title: "Hongson ",
+//     title: "minhdeptrai.site ",
 // };
 
 const ListingMapV1 = () => {

@@ -1,7 +1,6 @@
 "use client";
 import { useStore } from "@/context/store.context";
 import AddressDefault from "./addressDefault";
-import BillingDetails from "./BillingDetails";
 import OrderAmountDetails from "./OrderAmountDetails";
 import PaymentWidget from "./PaymentWidget";
 import { useEffect } from "react";
@@ -10,7 +9,6 @@ import VoucherSection from "./voucher";
 import { useRouter } from "next/navigation"; // nếu dùng App Router: 'next/navigation'
 import { notification } from "antd";
 import { observer } from "mobx-react-lite";
-import { toJS } from "mobx";
 
 const BillingMain = () => {
     const router = useRouter();
@@ -31,7 +29,7 @@ const BillingMain = () => {
             await storeVoucher.getListVoucher_of_User();
             await storeCart.initSelectedItemsFromStorage();
             setTimeout(async () => {
-                const idCustomer = storeAccount.account?.userId;
+                const idCustomer = storeAccount.account?.user.userId;
                 if (idCustomer) {
                     await storeAddress.getAddressDefault(idCustomer);
                     await storeAddress.getListAddress(idCustomer);
@@ -44,7 +42,7 @@ const BillingMain = () => {
 
     const handlePlaceOrder = async () => {
         let addressDefault = "";
-        const customer_id = storeAccount.account?.userId;
+        const customer_id = storeAccount.account?.user.userId;
         const subtotal = storeCart?.listDataSelected.reduce(
             (sum, item) =>
                 sum + Number(item.skus.price_sold || 0) * item.quantity,

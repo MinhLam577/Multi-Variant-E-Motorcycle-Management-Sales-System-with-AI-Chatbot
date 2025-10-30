@@ -8,8 +8,6 @@ const SearchBox = () => {
     return (
         <div className="relative flex justify-center items-center text-neutral-600 bg-white w-full rounded-md">
             <Button
-                variant={null}
-                size={null}
                 className="hover:text-blue-600 focus:text-blue-600 absolute left-0 top-0 h-[2.5rem] py-[.25rem]
                 px-[.625rem] text-neutral-600"
             >
@@ -24,11 +22,7 @@ const SearchBox = () => {
                 }
             />
             {searchText && (
-                <Button
-                    variant={null}
-                    size={null}
-                    className="hover:text-blue-600 focus:text-blue-600 absolute right-0 top-0 text-neutral-700"
-                >
+                <Button className="hover:text-blue-600 focus:text-blue-600 absolute right-0 top-0 text-neutral-700">
                     <CloseCircle
                         size="18"
                         color="currentColor"

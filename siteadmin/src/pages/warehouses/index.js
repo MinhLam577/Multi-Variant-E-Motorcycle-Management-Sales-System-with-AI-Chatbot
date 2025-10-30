@@ -1,11 +1,5 @@
-import {
-    DeleteOutlined,
-    EditOutlined,
-    EditTwoTone,
-    PlusOutlined,
-    PushpinOutlined,
-} from "@ant-design/icons";
-import { Button, message, Space, Tag, Tooltip } from "antd";
+import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
+import { Button, message, Tag, Tooltip } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import {
@@ -14,16 +8,15 @@ import {
 } from "../../containers/processWithModals";
 import TableComponent from "../../containers/TableComponent";
 import { GlobalContext } from "../../contexts/global";
-import { useStore } from "../../stores";
 import apiClient from "../../api/apiClient";
-import endpoints from "../../api/endpoints.ts";
-import AdminBreadCrumb from "../../components/common/AdminBreadCrumb.tsx";
-import { getBreadcrumbItems } from "../../containers/layout/index.tsx";
-import CustomizeTab from "../../components/common/CustomizeTab.tsx";
-import Access from "../../access/access.tsx";
-import { ALL_PERMISSIONS } from "../../constants/permissions.ts";
-import { convertDate } from "../../utils/index.ts";
-import { DateTimeFormat } from "../../constants/index.ts";
+import endpoints from "../../api/endpoints";
+import AdminBreadCrumb from "../../components/common/AdminBreadCrumb";
+import { getBreadcrumbItems } from "../../containers/layout/index";
+import CustomizeTab from "../../components/common/CustomizeTab";
+import Access from "../../access/access";
+import { ALL_PERMISSIONS } from "../../constants/permissions";
+import { convertDate } from "../../utils/index";
+import { DateTimeFormat } from "../../constants/index";
 
 const WareHouses = () => {
     const navigate = useNavigate();
@@ -60,10 +53,12 @@ const WareHouses = () => {
     };
 
     const handleDeleteProducts = (id) => {
-        processWithModals(ProcessModalName.ConfirmCustomContent)(
-            "Xác nhận",
-            "Bạn chắc chắn muốn xóa kho hàng này?"
-        )(() => removeCategory(id));
+        processWithModals({
+            modalName: ProcessModalName.ConfirmCustomContent,
+            title: "Xác nhận",
+            content: "Bạn chắc chắn muốn xóa kho hàng này?",
+            onOk: () => removeCategory(id),
+        });
     };
 
     const removeCategory = async (id) => {
@@ -165,7 +160,6 @@ const WareHouses = () => {
                         <div className="flex gap-x-4 ">
                             <Tooltip title="Xoá địa chỉ">
                                 <Button
-                                    variant="danger"
                                     icon={<DeleteOutlined />}
                                     onClick={() =>
                                         handleDeleteProducts(item.id)

@@ -16,7 +16,7 @@ const SellerDetail = () => {
 
             <div className="flex-grow-1 ms-3">
                 <h5 className="mt0 mb5 fz16 heading-color fw600">
-                    Ôtô hồng sơn, Đà Nẵng
+                    minhdeptrai.site, Đà Nẵng
                 </h5>
                 <p className="mb0 tdu">
                     <span className="flaticon-phone-call pr5 vam" />

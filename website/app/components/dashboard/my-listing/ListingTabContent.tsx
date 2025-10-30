@@ -1,4 +1,3 @@
-import Pagination from "../../common/Pagination";
 import ListingContent from "./ListingContent";
 
 const ListingTabContent = () => {
