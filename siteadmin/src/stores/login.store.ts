@@ -44,9 +44,9 @@ export class LoginObservable {
             const msg =
                 typeof message === "string" ? message : message?.join(", ");
             const isSuccess =
-                status &&
-                typeof status === "number" &&
-                SUCCESS_STATUSES.includes(status);
+                status ||
+                (typeof status === "number" &&
+                    SUCCESS_STATUSES.includes(status));
             if (!isSuccess) {
                 this.status = errorStatus;
                 this.errorMsg = msg;
@@ -69,30 +69,6 @@ export class LoginObservable {
 
     // call api login
     *login(email: string, password: string) {
-        // this.status = LoginStatus.SUBMITTING;
-        // try {
-        //     const response: ApiResponse<LoginResponse> = yield LoginAPI.login(
-        //         email,
-        //         password
-        //     );
-        //     const { data: resData, status, message } = response;
-        //     const msg =
-        //         typeof message === "string" ? message : message?.join(", ");
-        //     if (status !== 200 && !resData?.user.userId) {
-        //         this.status = LoginStatus.LOGIN_FAILED;
-        //         this.errorMsg = msg;
-        //         return;
-        //     }
-        //     yield this.rootStore.accountObservable.setAccount(
-        //         flattenObject(resData)
-        //     );
-        //     this.status = LoginStatus.LOGIN_SUCCESS;
-        //     this.successMsg = msg;
-        // } catch (error) {
-        //     const errorMessage = getErrorMessage(error, "Đăng nhập thất bại");
-        //     this.status = LoginStatus.LOGIN_FAILED;
-        //     this.errorMsg = errorMessage;
-        // }
         yield this.handleApiCall<LoginResponse>({
             apiCall: () => {
                 this.status = LoginStatus.SUBMITTING;

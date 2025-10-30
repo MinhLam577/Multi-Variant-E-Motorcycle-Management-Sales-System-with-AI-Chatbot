@@ -1,71 +1,142 @@
-import axios from "axios";
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import secureLocalStorage from "react-secure-storage";
 import { keyStorageAccount } from "../constants/index";
+import { jwtDecode } from "jwt-decode";
 import endpoints from "./endpoints";
+import { LoginResponse } from "@/types/auth-validate.type";
+import { JwtPayload } from "@/types/jwt.type";
 import { AccountObservable } from "../stores/account";
-
 let isRefreshing = false;
-let refreshSubscribers = [];
+let refreshSubscribers: ((token: string) => void)[] = [];
+const subscribeTokenRefresh = (cb: (token: string) => void) => {
+    console.log("🟦 [subscribeTokenRefresh] Thêm callback mới vào hàng chờ");
+    refreshSubscribers.push(cb);
+};
+
+const onRefreshed = (token: string) => {
+    console.log(
+        "🟩 [onRefreshed] Refresh xong, phát token mới cho tất cả subscriber"
+    );
+    refreshSubscribers.forEach((cb) => cb(token));
+    refreshSubscribers = [];
+};
+
+const isTokenExpired = (token: string) => {
+    try {
+        const decoded: JwtPayload = jwtDecode(token);
+        const currentTime = Math.floor(Date.now() / 1000);
+        return decoded.exp && decoded.exp < currentTime + 30; // còn < 30s coi như sắp hết hạn
+    } catch {
+        return true;
+    }
+};
 
 const apiClient = axios.create({
     baseURL: process.env.NEXT_PUBLIC_BACK_END_API_BASE_URL,
-    timeout: 10000,
+    timeout: 30000,
     headers: {
         "Content-Type": "application/json",
     },
 });
 apiClient.interceptors.request.use(
     async (config) => {
-        let account = await new AccountObservable().getAccount();
+        // ✅ Bỏ qua nếu là endpoint public
+        if (
+            config.url?.includes(endpoints.auth.login) ||
+            config.url?.includes(endpoints.auth.register) ||
+            config.url?.includes(endpoints.auth.forgotPassword)
+        ) {
+            return config;
+        }
+        const accountObservable = new AccountObservable();
 
-        config.headers.Authorization = "Bearer " + account?.access_token;
+        const account =
+            (await (accountObservable.getAccount() as any)) as LoginResponse | null;
 
-        return { ...config };
+        // ✅ Nếu chưa đăng nhập => không thêm Authorization, nhưng KHÔNG reject
+        if (!account?.access_token) {
+            return config;
+        }
+
+        // Nếu token sắp hết hạn, refresh trước khi gửi request
+        if (isTokenExpired(account.access_token)) {
+            if (!isRefreshing) {
+                isRefreshing = true;
+                try {
+                    const newToken = await refreshToken();
+                    if (newToken) {
+                        apiClient.defaults.headers.Authorization = `Bearer ${newToken}`;
+                        onRefreshed(newToken);
+                    } else {
+                        checkLogout();
+                    }
+                } catch (err) {
+                    checkLogout();
+                } finally {
+                    isRefreshing = false;
+                }
+            }
+        }
+
+        // ✅ Nếu có token, thêm vào header
+        config.headers.Authorization = `Bearer ${account.access_token}`;
+        return config;
     },
     (err) => {
         return Promise.reject(err);
     }
 );
 
-const handleSuccess = async (response) => {
+const handleSuccess = async <T>(response: AxiosResponse<T>): Promise<T> => {
     return response.data;
 };
 
-const handleError = async (error) => {
-    const respData = error?.response?.data;
-    const respStatus = error?.response ? error?.response.status : -1;
-    const originalRequest = error?.config;
+const handleError = async (error: AxiosError<any>): Promise<any> => {
+    const respData = error.response?.data;
+    const respStatus = error.response?.status ?? -1;
+    const originalRequest = error.config as AxiosRequestConfig & {
+        _retry?: boolean;
+    };
 
     switch (respStatus) {
         case 400:
-            return respData;
-        case 403:
+            return Promise.reject(respData);
         case 401:
+        case 403:
             return handleError401(originalRequest, error);
-        case 404: {
-            return respData;
-        }
-
+        case 404:
+            return Promise.reject(respData);
         default:
-            break;
+            return Promise.reject(respData || error);
     }
-    return Promise.reject(respData);
 };
 
-const handleError401 = async (originalRequest, error) => {
-    if (originalRequest._retry) {
-        return;
-    }
-
-    if (originalRequest.url.includes(endpoints.auth.refreshToken)) {
-        checkLogout();
-        return;
+const handleError401 = async (
+    originalRequest: AxiosRequestConfig & { _retry?: boolean },
+    error: AxiosError
+): Promise<any> => {
+    console.log("🚫 [401] Nhận lỗi 401 từ:", originalRequest.url);
+    if (
+        originalRequest._retry ||
+        originalRequest.url?.includes(endpoints.auth.login) ||
+        originalRequest.url?.includes(endpoints.auth.refreshToken) ||
+        originalRequest.url?.includes(endpoints.auth.forgotPassword) ||
+        originalRequest.url?.includes(endpoints.auth.register)
+    ) {
+        console.log(
+            "🚫 [401] Bỏ qua refresh (login hoặc refreshToken request)"
+        );
+        return Promise.reject(error);
     }
 
     if (isRefreshing) {
+        console.log(
+            "🟨 [401] Đang refresh, request này sẽ chờ (được đưa vào hàng đợi)"
+        );
         return new Promise((resolve) => {
-            refreshSubscribers.push((token) => {
-                originalRequest.headers.Authorization = `Bearer ${token}`;
+            subscribeTokenRefresh((token: string) => {
+                if (!originalRequest.headers) originalRequest.headers = {};
+                originalRequest.headers["Authorization"] = `Bearer ${token}`;
                 resolve(apiClient(originalRequest));
             });
         });
@@ -73,59 +144,76 @@ const handleError401 = async (originalRequest, error) => {
 
     originalRequest._retry = true;
     isRefreshing = true;
+    console.log("🔄 [401] Bắt đầu refresh token...");
 
     try {
-        const newAccessToken = "";
+        const newAccessToken = await refreshToken();
+        if (!newAccessToken) {
+            console.log("❌ [401] Refresh thất bại -> logout");
+            return Promise.reject(error);
+        }
+        console.log("✅ [401] Refresh thành công, token mới:", newAccessToken);
+        apiClient.defaults.headers.common[
+            "Authorization"
+        ] = `Bearer ${newAccessToken}`;
+        if (!originalRequest.headers) originalRequest.headers = {};
+        originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
 
-        await refreshToken();
-        if (!newAccessToken) return Promise.reject(error);
-
-        apiClient.defaults.headers.Authorization = `Bearer ${newAccessToken}`;
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-
-        refreshSubscribers.forEach((callback) => callback(newAccessToken));
-        refreshSubscribers = [];
+        onRefreshed(newAccessToken);
         isRefreshing = false;
-
+        console.log("🟢 [401] Retry request gốc:", originalRequest.url);
         return apiClient(originalRequest);
     } catch (err) {
+        console.log("🔥 [401] Lỗi khi refresh token:", err);
         return Promise.reject(err);
     }
 };
 
 const refreshToken = async () => {
     try {
-        let { setAccount, getAccount } = new AccountObservable();
-        const account = await getAccount();
+        const accountObservable = new AccountObservable();
+        const account =
+            (await (accountObservable.getAccount() as any)) as LoginResponse | null;
+
+        if (!account?.refresh_token || isTokenExpired(account.refresh_token)) {
+            checkLogout();
+            return null;
+        }
 
         // get api
         const { data } = await apiClient.get(endpoints.auth.refreshToken, {
             headers: {
-                //          Authorization: `Bearer ${account?.refresh_token}`,
+                Authorization: `Bearer ${account.refresh_token}`,
             },
         });
 
         const newAccessToken = data?.access_token;
         // Kiểm tra nếu token không tồn tại thì sẽ chuyển về màn hình login
         if (!newAccessToken) {
+            console.error("No access token in refresh response:", data);
             checkLogout();
-            return;
+            throw new Error(
+                "Failed to refresh token: No access token provided"
+            );
         }
         // lưu access token mới vào local storage
-        const updateNewToken = { ...account, access_token: newAccessToken };
+        const updateNewToken: LoginResponse = {
+            ...account,
+            access_token: newAccessToken,
+        };
 
-        await setAccount(updateNewToken);
+        await accountObservable.setAccount(updateNewToken);
         return newAccessToken;
     } catch (e) {
+        console.error("Refresh token error:", e);
         checkLogout();
+        return null;
     }
 };
-
+apiClient.interceptors.response.use(handleSuccess, handleError);
 const checkLogout = async () => {
     await secureLocalStorage.removeItem(keyStorageAccount);
-    window.location.href = "/login";
+    if (window.location.pathname !== "/login") window.location.href = "/login";
 };
-
-apiClient.interceptors.response.use(handleSuccess, handleError);
 
 export default apiClient;

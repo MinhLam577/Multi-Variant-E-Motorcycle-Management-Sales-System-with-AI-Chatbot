@@ -1,6 +1,6 @@
 "use client";
 import { observer } from "mobx-react-lite";
-import { useStore } from "@/src/stores";
+import { useStore } from "@/context/store.context";
 import { toCurrency } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";

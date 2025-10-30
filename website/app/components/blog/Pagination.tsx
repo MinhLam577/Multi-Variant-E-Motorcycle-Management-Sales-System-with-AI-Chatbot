@@ -1,5 +1,5 @@
 "use client";
-import { useStore } from "@/src/stores";
+import { useStore } from "@/context/store.context";
 import classNames from "classnames";
 import { useState } from "react";
 const RANGE = 2;

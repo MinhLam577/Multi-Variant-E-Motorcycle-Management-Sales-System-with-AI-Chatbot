@@ -5,7 +5,7 @@ import { message, Modal, notification, Popconfirm } from "antd";
 import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
 import { Pagination, Spin, Flex } from "antd";
 import { AddressApi } from "@/src/api/address";
-import { useStore } from "@/src/stores";
+import { useStore } from "@/context/store.context";
 import { observer } from "mobx-react-lite";
 import AddressModalCreate from "./AddressModalCreate";
 import AddressModalUpdate from "./AddressModalUpdate";
@@ -29,7 +29,7 @@ const Address = observer(() => {
     }, []);
     const fetchData = async () => {
         await storeAccount.getAccount();
-        const idCustomer = storeAccount?.account?.userId;
+        const idCustomer = storeAccount?.account?.user.userId;
         if (idCustomer) {
             const data = await AddressApi.getListAddressByCustomer(idCustomer);
             setAddress(data);
@@ -234,7 +234,7 @@ const Address = observer(() => {
                 openModalCreate={openModalCreate}
                 setOpenModalCreate={setOpenModalCreate}
                 fetchUser={fetchData}
-                userID={storeAccount?.account?.userId}
+                userID={storeAccount?.account?.user?.userId}
             />
 
             <AddressModalUpdate
@@ -243,7 +243,7 @@ const Address = observer(() => {
                 dataAddressUpdate={dataAddressUpdate}
                 setAddressDataUpdate={setAddressDataUpdate}
                 fetchUser={fetchData}
-                userID={storeAccount?.account?.userId}
+                userID={storeAccount?.account?.user?.userId}
             />
         </div>
     );

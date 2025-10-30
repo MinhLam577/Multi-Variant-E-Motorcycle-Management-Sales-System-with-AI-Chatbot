@@ -1,10 +1,9 @@
 "use client";
-import { useContext } from "react";
 import MovingSloganLeftToRight from "./SloganHeaderMovingLeftToRight";
-import { ThemeContext } from "@/app/layout/ThemeContext";
 import { observer } from "mobx-react-lite";
+import { useTheme } from "@/context/theme.context";
 const TopHeader = observer(() => {
-    const { theme } = useContext(ThemeContext);
+    const { theme } = useTheme();
     return (
         <div
             className={`py-[15px]`}

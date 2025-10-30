@@ -1,5 +1,5 @@
 "use client";
-import { useStore } from "@/src/stores";
+import { useStore } from "@/context/store.context";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";

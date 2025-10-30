@@ -5,7 +5,7 @@ import { Descriptions } from "antd";
 import Link from "next/link";
 import { generateNameId } from "@/utils";
 import { useParams } from "next/navigation";
-import { useStore } from "@/src/stores";
+import { useStore } from "@/context/store.context";
 // import { Link, useParams } from "react-router-dom";
 // import { useQuery } from "@tanstack/react-query";
 // import OrderApi from "../../../../Api/user/order";
@@ -101,8 +101,8 @@ export default function DetailOrderHistory({ slug }) {
                             DELIVERING: "Đang vận chuyển",
                             SHIPPING: "Đang giao hàng",
                             DELIVERED: "Đã giao",
-                            HAND_OVERED: 'Đã bàn giao cho vận chuyển',
-                            FAILED_DELIVERY: 'Giao hàng thất bại'
+                            HAND_OVERED: "Đã bàn giao cho vận chuyển",
+                            FAILED_DELIVERY: "Giao hàng thất bại",
                         };
                         return (
                             statusMap[data?.order_status] ||

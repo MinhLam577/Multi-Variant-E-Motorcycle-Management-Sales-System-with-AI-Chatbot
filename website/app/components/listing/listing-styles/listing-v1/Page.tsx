@@ -10,7 +10,7 @@ import ListGridFilter from "@/app/components/listing/ListGridFilter";
 import CarItems from "@/app/components/listing/listing-styles/listing-v1/CarItems";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { useStore } from "@/src/stores";
+import { useStore } from "@/context/store.context";
 import { paginationData } from "@/src/stores/order.store";
 import {
     EnumProductSortBy,
@@ -24,7 +24,7 @@ import { headerWithActionsStore } from "@/app/components/common/HeaderWidthActio
 const ListingV1 = observer(() => {
     const store = useStore();
     const storeProduct = store.productObservable;
-  const [queryObject, setQueryObject] = useState<
+    const [queryObject, setQueryObject] = useState<
         globalFilterType & paginationData
     >({
         brandID: undefined,
@@ -105,7 +105,7 @@ const ListingV1 = observer(() => {
         window.history.replaceState(null, "", `?${newQueryParams.toString()}`);
     };
 
-       const handleClearAllFilters = () => {
+    const handleClearAllFilters = () => {
         setQueryObject({
             brandID: undefined,
             categoryID: undefined,
@@ -175,7 +175,7 @@ const ListingV1 = observer(() => {
             {/* Advance_search_menu_sectn*/}
             <section className="advance_search_menu_sectn bgc-thm2 pt20 pb0 mt70-992 filter-style_two z-50 lg:z-0">
                 <div className="container">
-                 <AdvanceFilter
+                    <AdvanceFilter
                         handleFilterChange={setQueryObject}
                         handleClearAllFilters={handleClearAllFilters}
                         queryObject={queryObject}

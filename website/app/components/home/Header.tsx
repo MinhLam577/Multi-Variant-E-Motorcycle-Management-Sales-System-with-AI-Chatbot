@@ -1,22 +1,21 @@
 "use client";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import MainMenu from "../common/MainMenu";
-import { ThemeContext } from "@/app/layout/ThemeContext";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { Badge } from "antd";
 import PopoverCart from "../popover/cart";
 import PopoverAvatar from "../popover/avatar";
-import { useStore } from "@/src/stores";
+import { useStore } from "@/context/store.context";
 import { observer } from "mobx-react-lite";
 import { useRouter } from "next/navigation";
-import SearchBox from "../common/SearchBox";
+import { useTheme } from "@/context/theme.context";
+import { LoginResponse } from "@/types/auth-validate.type";
 const Header = observer(() => {
     const router = useRouter();
     const pathname = usePathname();
-    const searchParams = useSearchParams();
-    const value = useContext(ThemeContext);
+    const value = useTheme();
     const [keyword, setKeyword] = useState("");
     const handleSearch = () => {
         const isMotorbikePage = pathname === "/home-motorbike";
@@ -40,14 +39,14 @@ const Header = observer(() => {
             handleSearch();
         }
     };
-    const [user, setUser] = useState("");
+    const [user, setUser] = useState<LoginResponse>();
 
     const store = useStore();
     const AccountStore = store.accountObservable;
     const cartStore = store.cartObservable;
     useEffect(() => {
         const fetchData = async () => {
-            await AccountStore?.getAccount(); // lấy thông tin người dùng
+            await AccountStore?.getAccount();
             const account = AccountStore?.account;
             setUser(account);
 
@@ -127,7 +126,7 @@ const Header = observer(() => {
                                         <div className="flex items-center gap-4">
                                             <img
                                                 src={
-                                                    AccountStore?.account
+                                                    AccountStore?.account?.user
                                                         ?.avatarUrl ||
                                                     "https://res.cloudinary.com/diwacy6yr/image/upload/v1728441530/User/default.png"
                                                 }

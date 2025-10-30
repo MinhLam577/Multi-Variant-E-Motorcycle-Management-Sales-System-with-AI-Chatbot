@@ -1,14 +1,15 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { message } from "antd";
-import { useStore } from "@/src/stores";
+import { useStore } from "@/context/store.context";
 import { observer } from "mobx-react-lite";
 import ModalReactive from "../../modal/modal.reactive";
 import ModalChangePassword from "../../modal/modal.changePassword";
 
 import { useRouter } from "next/navigation";
+import { LoginStatusProps } from "@/types/auth-validate.type";
 const Form = observer(() => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [reactivate, setReactivate] = useState(false);
     const [userEmail, setUserEmail] = useState("");
     const [changePassword, setChangePassword] = useState(false);
 
@@ -16,7 +17,6 @@ const Form = observer(() => {
     const [password, setPassword] = useState("");
     const [remember, setRemember] = useState(false);
     const { loginObservable } = useStore();
-
     const router = useRouter();
     const validateEmail = (email) => {
         // Regex cơ bản để kiểm tra định dạng email
@@ -27,7 +27,6 @@ const Form = observer(() => {
     const onSubmit = async (e) => {
         e.preventDefault();
         setUserEmail("");
-
         if (!email || !password) {
             message.error("Vui lòng nhập đầy đủ thông tin.");
             return;
@@ -42,20 +41,25 @@ const Form = observer(() => {
             message.error("Mật khẩu phải có ít nhất 6 ký tự.");
             return;
         }
-        await loginObservable.login(email, password);
+        await loginObservable.login({ email, password });
 
-        if (loginObservable.status == "loginSuccess") {
+        if (loginObservable.status === LoginStatusProps.LOGIN_SUCCESS) {
             message.success(loginObservable.successMsg);
             router.push("/");
         } else {
             message.error(loginObservable.errorMsg);
             // cần kích hoạt
-            if (loginObservable.code == 2) {
-                setIsModalOpen(true);
+            if (!loginObservable.data?.user?.isActice) {
+                setReactivate(true);
                 setUserEmail(email);
                 return;
             }
         }
+        loginObservable.status = LoginStatusProps.INITIAL;
+    };
+    const onCloseReactivate = () => {
+        setReactivate(false);
+        setUserEmail("");
     };
     return (
         <form onSubmit={onSubmit}>
@@ -106,13 +110,15 @@ const Form = observer(() => {
                 Sign in
             </button>
             <ModalReactive
-                isModalOpen={isModalOpen}
-                setIsModalOpen={setIsModalOpen}
+                isModalOpen={reactivate}
+                setIsModalOpen={setReactivate}
                 userEmail={userEmail}
+                onCloseReactivate={onCloseReactivate}
             />
             <ModalChangePassword
                 isModalOpen={changePassword}
                 setIsModalOpen={setChangePassword}
+                onCloseModal={() => setEmail("")}
             />
         </form>
     );

@@ -1,11 +1,11 @@
 "use client";
-import { ThemeContext } from "@/app/layout/ThemeContext";
+import { useTheme } from "@/context/theme.context";
 import { EnumProductStore } from "@/src/stores/productStore";
 import { makeAutoObservable, reaction } from "mobx";
 import { observer } from "mobx-react-lite";
 import Image from "next/image";
 import Link from "next/link";
-import { use, useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 
 class HeaderWithActionsStore {
     type: EnumProductStore = EnumProductStore.CAR;
@@ -27,7 +27,7 @@ class HeaderWithActionsStore {
 export const headerWithActionsStore = new HeaderWithActionsStore();
 
 export const HeaderWithActions = observer(() => {
-    const { onChangeTheme, theme } = useContext(ThemeContext);
+    const { onChangeTheme, theme } = useTheme();
 
     const handleLeftClick = () => {
         onChangeTheme("primary-car");

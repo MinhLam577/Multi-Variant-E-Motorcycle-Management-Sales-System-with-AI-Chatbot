@@ -1,6 +1,5 @@
 "use client";
-import blogPosts from "@/data/blog";
-import { useStore } from "@/src/stores";
+import { useStore } from "@/context/store.context";
 import { observer } from "mobx-react-lite";
 import Image from "next/image";
 import Link from "next/link";
@@ -30,7 +29,7 @@ const Blog = observer(() => {
                         <div className="for_blog">
                             <div className="relative w-full thumb cursor-pointer">
                                 <div className="absolute top-2 left-2 bg-blue-600 text-white text-xs font-medium px-2 py-1 rounded z-10">
-                                    {post.tag}
+                                    tag
                                 </div>
 
                                 <Image
@@ -49,20 +48,20 @@ const Blog = observer(() => {
                                             <li className="list-inline-item">
                                                 <a href="#">
                                                     <span className="flaticon-user" />
-                                                    {post.author}
+                                                    author-name
                                                 </a>
                                             </li>
                                             <li className="list-inline-item">
                                                 <a href="#">
                                                     <span className="flaticon-chat" />
-                                                    {post.numComments} Bình luận
+                                                    {10} Bình luận
                                                 </a>
                                             </li>
 
                                             <li className="list-inline-item">
                                                 <a href="#">
                                                     <span className="flaticon-calendar-1" />
-                                                    {post.date}
+                                                    {Date.now()}
                                                 </a>
                                             </li>
                                         </ul>

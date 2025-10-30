@@ -1,6 +1,6 @@
 "use client";
 
-import { useStore } from "@/src/stores";
+import { useStore } from "@/context/store.context";
 import { useEffect } from "react";
 
 const Categories = () => {

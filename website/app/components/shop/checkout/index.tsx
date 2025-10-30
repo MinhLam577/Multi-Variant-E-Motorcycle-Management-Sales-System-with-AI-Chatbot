@@ -1,5 +1,5 @@
 "use client";
-import { useStore } from "@/src/stores";
+import { useStore } from "@/context/store.context";
 import AddressDefault from "./addressDefault";
 import BillingDetails from "./BillingDetails";
 import OrderAmountDetails from "./OrderAmountDetails";
@@ -29,7 +29,7 @@ const BillingMain = () => {
             await storeDelivery.getListDelivery();
             await storePayment.getListPaymentMethod();
             await storeVoucher.getListVoucher_of_User();
-            await storeCart.initSelectedItemsFromStorage()
+            await storeCart.initSelectedItemsFromStorage();
             setTimeout(async () => {
                 const idCustomer = storeAccount.account?.userId;
                 if (idCustomer) {

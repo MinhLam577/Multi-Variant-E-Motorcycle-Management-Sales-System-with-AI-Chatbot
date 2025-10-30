@@ -7,7 +7,7 @@ import { Empty } from "antd";
 import { Divider } from "antd";
 import Link from "next/link";
 import { formatCurrency } from "@/utils";
-import { useStore } from "@/src/stores";
+import { useStore } from "@/context/store.context";
 import { observer } from "mobx-react-lite";
 import { AccountObservable } from "@/src/stores/account";
 // import { useMutation, useQuery } from "@tanstack/react-query";
@@ -25,16 +25,16 @@ import { AccountObservable } from "@/src/stores/account";
 import { useRouter } from "next/navigation";
 
 export enum order_status {
-  CANCELLED = -1, // Đã hủy đơn hàng
-  PENDING = 0, // Đang chờ xử lí
-  CONFIRMED = 1, // Đã xác nhận đơn hàng và chờ hàng xuất kho
-  EXPORTED = 2, // Đã xuất kho thành công và chuẩn bị bàn giao cho đơn vị vận chuyển
-  HAND_OVERED = 3, // Đã bàn giao hàng cho đơn vị vận chuyển
-  DELIVERING = 4, // Đang vận chuyển hàng từ nơi xa về gần nơi của khách hàng
-  SHIPPING = 5, // Hàng đã đến gần khách và đang trong quá trình giao trực tiếp
-  DELIVERED = 6, // Đã giao hàng thành công
-  FAILED_DELIVERY = 7, // Giao hàng thất bại
-  All = undefined
+    CANCELLED = -1, // Đã hủy đơn hàng
+    PENDING = 0, // Đang chờ xử lí
+    CONFIRMED = 1, // Đã xác nhận đơn hàng và chờ hàng xuất kho
+    EXPORTED = 2, // Đã xuất kho thành công và chuẩn bị bàn giao cho đơn vị vận chuyển
+    HAND_OVERED = 3, // Đã bàn giao hàng cho đơn vị vận chuyển
+    DELIVERING = 4, // Đang vận chuyển hàng từ nơi xa về gần nơi của khách hàng
+    SHIPPING = 5, // Hàng đã đến gần khách và đang trong quá trình giao trực tiếp
+    DELIVERED = 6, // Đã giao hàng thành công
+    FAILED_DELIVERY = 7, // Giao hàng thất bại
+    All = undefined,
 }
 const OrderHistory = observer(() => {
     const router = useRouter();
@@ -52,7 +52,7 @@ const OrderHistory = observer(() => {
         // đang chờ khách hàng  thanh toán , chuyển khoản  :
         { name: "Đang chờ", status: "PENDING" },
         // admin xác nhận đơn đã gói hàng cb vận chuyển
-        { name: "Đã xác nhận", status: "CONFIRMED"  },
+        { name: "Đã xác nhận", status: "CONFIRMED" },
         // shiper lấy hàng và đang giao đơn hàng  : vận chuyển
         // { name: "Xuất kho", status: "EXPORTED" },
         // {name : "Đã bàn giao cho vận chuyển",status :"HAND_OVERED"},
@@ -62,31 +62,27 @@ const OrderHistory = observer(() => {
         { name: "Đã giao", status: "DELIVERED" },
         // hủy ở giai đoạn
         { name: "Đã hủy", status: "CANCELLED" },
-        
     ];
-
-
-
 
     useEffect(() => {
         const fetchData = async () => {
             await AccountStore.getAccount(); // chờ lấy account trước
             const account = AccountStore.account;
-          //  await StoreOrder.getListOrderCustomer( account?.userId ,""); // ví dụ dùng account để truyền query
-            await StoreOrder.getListOrder( {search:account?.email }); // ví dụ dùng account để truyền query
+            //  await StoreOrder.getListOrderCustomer( account?.userId ,""); // ví dụ dùng account để truyền query
+            await StoreOrder.getListOrder({ search: account?.user?.email }); // ví dụ dùng account để truyền query
             setDataAll(StoreOrder.data.orders);
             const urlParams = new URLSearchParams(window.location.search);
             const status = urlParams.get("status");
-            const orderCode= urlParams.get("orderCode");
+            const orderCode = urlParams.get("orderCode");
             if (status === "PAID") {
                 notification.success({
                     message: "Thanh toán thành công",
                     description: "Đơn hàng của bạn đã thanh toán thành công.",
                 });
             } else if (status == "CANCELLED") {
-                await StoreCart.cancel_order_payos(orderCode)
+                await StoreCart.cancel_order_payos(orderCode);
                 const success_status = [200, 201, 204];
-                if(success_status.includes(StoreCart.status)){
+                if (success_status.includes(StoreCart.status)) {
                     notification.error({
                         message: "Thanh toán thất bại",
                         description: "Đơn hàng của bạn đã bị huỷ.",
@@ -102,23 +98,22 @@ const OrderHistory = observer(() => {
     useEffect(() => {
         const account = AccountStore.account;
         if (isActive && isActive !== "All") {
-        fetchData({search :account?.email ,order_status: order_status[isActive]})
+            fetchData({
+                search: account?.user?.email,
+                order_status: order_status[isActive],
+            });
         } else if (isActive == "All") {
-             
-            fetchData({search :account?.email })
-            
+            fetchData({ search: account?.user?.email });
         }
-    }, [ isActive]);
+    }, [isActive]);
 
-
-    const fetchData = async (query ?: {
-        search ?: string ,
-        order_status ?: order_status
-    } ) => { 
-            await StoreOrder.getListOrder(query); 
-            setDataAll(StoreOrder.data.orders);
-    }
-
+    const fetchData = async (query?: {
+        search?: string;
+        order_status?: order_status;
+    }) => {
+        await StoreOrder.getListOrder(query);
+        setDataAll(StoreOrder.data.orders);
+    };
 
     const handleBuyAgain = async (order_detail) => {
         let arrayIdCart = []; // Declare the array before the loop

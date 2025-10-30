@@ -7,7 +7,7 @@ import MobileMenu from "@/app/components/common/MobileMenu";
 import LoginSignupModal from "@/app/components/common/login-signup";
 import CartItems from "@/app/components/shop/cart/CartItems";
 import CartTotal from "@/app/components/shop/cart/CartTotal";
-import { useStore } from "@/src/stores";
+import { useStore } from "@/context/store.context";
 import { useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { Empty } from "antd";

@@ -1,6 +1,6 @@
 "use client";
 import { getAllCategory } from "@/src/api/categories";
-import { useStore } from "@/src/stores";
+import { useStore } from "@/context/store.context";
 import { CategoryResponseTypeEnum } from "@/src/stores/categories";
 import Image from "next/image";
 import Link from "next/link";

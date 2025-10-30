@@ -1,25 +1,20 @@
 "use client";
 import Aos from "aos";
 import React, { Suspense, useEffect } from "react";
-import { Montserrat } from "next/font/google";
 import "../node_modules/react-modal-video/scss/modal-video.scss";
 import "aos/dist/aos.css";
 import "../public/scss/main.scss";
 import ScrollToTop from "./components/common/ScrollTop";
 import styled from "styled-components";
-import ThemeProvider from "@/app/layout/ThemeContext";
-import { StoreProvider } from "@/src/stores";
+import ThemeProvider from "@/context/theme.context";
+import { StoreProvider } from "@/context/store.context";
 import "./globals.css";
 import Chatbox from "./(pages)/chatbot/page";
 if (typeof window !== "undefined") {
     import("bootstrap");
 }
 
-const montserrat = Montserrat({ subsets: ["latin"] });
-
 const Body = styled.body`
-    font-family: ${montserrat.family};
-    font-size: ${montserrat.fontSize};
     margin: 0;
     padding: 0;
 `;

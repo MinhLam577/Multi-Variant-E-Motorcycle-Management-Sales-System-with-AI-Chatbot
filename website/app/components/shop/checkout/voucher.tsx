@@ -3,7 +3,7 @@
 import { useState } from "react";
 import ModalVoucher from "./modalVoucher/modalVoucher";
 import { observer } from "mobx-react-lite";
-import { useStore } from "@/src/stores";
+import { useStore } from "@/context/store.context";
 
 const VoucherSection = observer(({ storeVoucher }: any) => {
     const store = useStore();

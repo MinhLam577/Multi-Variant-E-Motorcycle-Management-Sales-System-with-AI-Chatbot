@@ -2,7 +2,6 @@
 import React from "react";
 const SocialLogin = () => {
     const handleLoginGoogle = (url) => {
-        console.log("Google url", process.env.NEXT_PUBLIC__URL_GOOGLE);
         window.location.href = url; // Gửi đến NestJS
     };
     const socialBtns = [

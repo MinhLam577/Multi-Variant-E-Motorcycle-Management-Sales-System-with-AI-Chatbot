@@ -1,6 +1,6 @@
 "use client";
 
-import { useStore } from "@/src/stores";
+import { useStore } from "@/context/store.context";
 import { observer } from "mobx-react-lite";
 
 const Pagination = () => {
