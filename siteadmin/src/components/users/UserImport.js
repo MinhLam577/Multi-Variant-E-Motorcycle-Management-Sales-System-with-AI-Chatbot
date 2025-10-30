@@ -1,18 +1,16 @@
-import { Descriptions, Modal, notification, Table } from "antd";
+import { Modal, notification, Table } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
 import { message, Upload } from "antd";
 import PropTypes from "prop-types";
 const { Dragger } = Upload;
 import * as XLSX from "xlsx";
 import { useState } from "react";
-import { callBulkCreateUser } from "../../api/user.api";
-import templateFile from "./test_user.xlsx?url";
+import templateFile from "./test_user.xlsx";
 import apiClient from "../../api/apiClient";
 import endpoints from "../../api/endpoints";
 const UserImport = (props) => {
     const { setOpenModalImport, openModalImport } = props;
     const [dataExcel, setDataExcel] = useState([]);
-    // https://stackoverflow.com/questions/51514757/action-function-is-required-with-antd-upload-control-but-i-dont-need-it
     const dummyRequest = ({ file, onSuccess }) => {
         setTimeout(() => {
             onSuccess("ok");
@@ -73,7 +71,7 @@ const UserImport = (props) => {
                         json.forEach((item) => {
                             if (item.birthday) {
                                 const parsedDate = new Date(item.birthday);
-                                if (!isNaN(parsedDate)) {
+                                if (!isNaN(parsedDate.getTime())) {
                                     item.birthday =
                                         parsedDate.toLocaleDateString("en-US", {
                                             year: "numeric",

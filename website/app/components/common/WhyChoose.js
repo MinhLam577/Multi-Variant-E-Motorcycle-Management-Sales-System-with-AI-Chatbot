@@ -12,7 +12,7 @@ const WhyChoose = () => {
             iconClass: "flaticon-car",
             title: "Sự Tin Tưởng Từ Hàng Ngàn Khách Hàng",
             description:
-                "Ô Tô Hồng Sơn đã và đang nhận được sự tin yêu của hàng ngàn khách hàng nhờ chất lượng dịch vụ vượt trội, đảm bảo sự hài lòng ở mọi bước giao dịch.",
+                "minhdeptrai.site đã và đang nhận được sự tin yêu của hàng ngàn khách hàng nhờ chất lượng dịch vụ vượt trội, đảm bảo sự hài lòng ở mọi bước giao dịch.",
             delay: 200,
             style: "style2",
         },

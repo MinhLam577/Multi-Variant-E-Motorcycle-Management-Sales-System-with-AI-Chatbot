@@ -1,5 +1,5 @@
 import apiClient from "./apiClient";
-import endpoints from "./endpoints.ts";
+import endpoints from "./endpoints";
 
 export const getListStore = async ({ page, size }) => {
     const response = await apiClient.get(endpoints.cars.list(page, size));

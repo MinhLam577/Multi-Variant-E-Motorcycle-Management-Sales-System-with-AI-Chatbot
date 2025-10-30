@@ -24,7 +24,7 @@ const Logo = ({ handleClick, collapsed }) => {
                 <span
                     className={`text-xl text-white font-semibold ${collapsed ? "hidden" : ""}`}
                 >
-                    Ô tô hồng sơn
+                    minhdeptrai.site
                 </span>
             </button>
         </div>

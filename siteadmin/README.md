@@ -1,8 +1,8 @@
-# HongSon Admin - Web Site
+# Minhdeptrai Admin - Web Site
 
 ## 🚀 Giới Thiệu
 
-HongSon Admin
+Minhdeptrai Admin
 
 ## 📌 Cấu Hình Dự Án
 
@@ -28,7 +28,7 @@ npm install -g yarn
 ### 2️⃣ **Clone dự án**
 
 ````sh
-git clone git@github.com:OpenverseHQ/hongson-fe.git
+git clone git@github.com:OpenverseHQ/Minhdeptrai-fe.git
 
 ### 3️⃣ **Cài đặt dependencies**
 

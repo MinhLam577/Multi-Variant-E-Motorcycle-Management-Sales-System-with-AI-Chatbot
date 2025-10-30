@@ -1,12 +1,5 @@
-import { Descriptions, Tag } from "antd";
-import {
-    DateTimeFormat,
-    EnumOrderColorStatuses,
-    EnumOrderStatuses,
-    EnumPaymentStatusColors,
-    PaymentStatus,
-} from "../../../constants";
-import { convertDate, formatVNDMoney } from "../../../utils";
+import { Descriptions } from "antd";
+import { DateTimeFormat } from "../../../constants";
 import PropTypes from "prop-types";
 
 const getDescriptionCustomerItems = (orderDetail) => [

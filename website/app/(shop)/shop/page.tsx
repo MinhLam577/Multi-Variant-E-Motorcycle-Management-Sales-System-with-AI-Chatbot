@@ -10,7 +10,7 @@ import Pagination from "@/app/components/common/Pagination";
 import Products from "@/app/components/shop/shop-page/Products";
 
 export const metadata = {
-    title: "Shop || hongson ",
+    title: "Shop || minhdeptrai.site ",
 };
 
 const Shop = () => {

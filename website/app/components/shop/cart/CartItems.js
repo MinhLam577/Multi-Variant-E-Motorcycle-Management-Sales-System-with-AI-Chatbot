@@ -2,16 +2,14 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Button, Input, message, Popconfirm } from "antd";
-import { debounce } from "lodash";
-import { useCallback, useEffect } from "react";
+import { message, Popconfirm } from "antd";
+import { useEffect } from "react";
 import { Empty } from "antd";
 import { formatCurrency } from "@/utils";
 import QuantityExceedModal from "../../modal/modal.quantity.Cart_DetailProduct";
 const CartItems = ({
     cartListObserver,
     selectedItems,
-    setSelectedItems,
     setSelectedAllItems,
     cartObservable,
 }) => {
@@ -80,24 +78,6 @@ const CartItems = ({
             setCartItems(cartListObserver);
         }
     }, [cartListObserver]); // Chạy lại mỗi khi cartList thay đổi
-
-    // dùng state bình thuong
-    // const handleCheckboxChange = (itemId) => {
-    // setSelectedItems((prevSelected) => {
-    //     let newSelected;
-    //     if (prevSelected.includes(itemId)) {
-    //       newSelected = prevSelected.filter((id) => id !== itemId); // Bỏ chọn
-    //     } else {
-    //       newSelected = [...prevSelected, itemId]; // Thêm chọn
-    //     }
-
-    //     // Sau khi cập nhật xong selectedItems, kiểm tra luôn
-    //     setSelectedAllItems(newSelected.length === cartListObserver.length);
-
-    //     return newSelected;
-    //   });
-    // };
-
     const handleCheckboxChange = async (itemId) => {
         const prevSelected = await cartObservable.getSelectedItems(); // 🟢 Lấy giá trị cũ từ observable , giá trị đã chọn trước đó
         let newSelected;
@@ -209,9 +189,7 @@ const CartItems = ({
             ))}
 
             <QuantityExceedModal
-                showModal={showModal}
                 handleOk={handleOk}
-                setIsModalOpen={setIsModalOpen}
                 isModalOpen={isModalOpen}
                 type="cart"
                 quantity_Limit={quantity_Limit}

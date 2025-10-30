@@ -9,7 +9,7 @@ import SocialLogin from "@/app/components/pages/login/SocialLogin";
 import Link from "next/link";
 
 export const metadata = {
-    title: "Log In - HongSon",
+    title: "Log In - minhdeptrai.site",
 };
 
 const LogIn = () => {

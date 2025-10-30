@@ -105,6 +105,20 @@ export class LoginObservable {
         });
     }
 
+    *changePassword(data) {
+        yield this.handleApiCall<null>({
+            apiCall: async () => {
+                return await apiClient.post(
+                    endpoints.auth.changePassword,
+                    data
+                );
+            },
+            successStatus: 200,
+            errorStatus: 400,
+            defaultErrorMessage: "Đổi mật khẩu thất bại",
+        });
+    }
+
     // call api login
     *getProfile_ByGoogle(token) {
         this.status = LoginStatusProps.LOGIN_SUCCESS;

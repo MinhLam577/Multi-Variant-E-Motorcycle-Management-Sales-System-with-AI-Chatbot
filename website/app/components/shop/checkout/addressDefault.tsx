@@ -171,16 +171,14 @@ const AddressDefault = observer(() => {
                 title="Địa chỉ của tôi"
                 getAddress={storeAddress?.data?.listAddress}
                 storeAddress={storeAddress}
-                idCustomer={storeAccount.account?.userId}
-                // valueAddress={valueAddress}
-                // setValueAddress={setvalueAddress}
+                idCustomer={storeAccount.account?.user.userId}
             />
 
             <AddressModalCheckoutCreate
                 openModalCreate={openModalCreate}
                 setOpenModalCreate={setOpenModalCreate}
                 fetchUser={storeAddress?.data?.listAddress}
-                userID={storeAccount?.account?.userId}
+                userID={storeAccount?.account?.user.userId}
             />
         </>
     );

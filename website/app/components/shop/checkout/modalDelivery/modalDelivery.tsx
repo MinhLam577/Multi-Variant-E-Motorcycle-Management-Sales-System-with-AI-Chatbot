@@ -32,7 +32,7 @@ export default function ModalDelivery({
             >
                 <div className="py-2">
                     <h3 className="text-gray-500 uppercase text-sm font-medium mb-3">
-                        PHƯƠNG THỨC VẬN CHUYỂN LIÊN KẾT VỚI Ô Tô Hồng Sơn
+                        PHƯƠNG THỨC VẬN CHUYỂN LIÊN KẾT VỚI minhdeptrai.site
                     </h3>
                     {listDelivery.map((element) => {
                         const isSelected = element.id === selectedDelivery;

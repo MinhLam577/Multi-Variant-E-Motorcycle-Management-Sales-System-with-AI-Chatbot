@@ -12,8 +12,8 @@ import SaleBanner from "@/app/components/home/SaleBanner";
 import Link from "next/link";
 import SearchMobile from "@/app/components/common/SearchMobile";
 export const metadata = {
-    title: "Ô Tô Hồng Sơn | Mua Bán Xe Máy Điện Uy Tín & Chất Lượng",
-    description: `Ô Tô Hồng Sơn - Địa chỉ uy tín chuyên cung cấp các dòng xe hơi chất lượng cao, dịch vụ chăm sóc khách hàng chuyên nghiệp, giá cả cạnh tranh.`,
+    title: "minhdeptrai.site | Mua Bán Xe Máy Điện Uy Tín & Chất Lượng",
+    description: `minhdeptrai.site - Địa chỉ uy tín chuyên cung cấp các dòng xe hơi chất lượng cao, dịch vụ chăm sóc khách hàng chuyên nghiệp, giá cả cạnh tranh.`,
 };
 
 const Home_1 = () => {

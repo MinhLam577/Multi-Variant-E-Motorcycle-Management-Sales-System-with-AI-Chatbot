@@ -90,7 +90,7 @@ const OrderPrint = forwardRef(
 
         return (
             <div ref={ref} className="px-16 pt-3">
-                <div className="font-bold">CÔNG TY TNHH Ô tô hồng sơn</div>
+                <div className="font-bold">CÔNG TY TNHH minhdeptrai.site</div>
                 <div className="font-semibold text-xl my-1 text-center">
                     HÓA ĐƠN BÁN LẺ
                 </div>

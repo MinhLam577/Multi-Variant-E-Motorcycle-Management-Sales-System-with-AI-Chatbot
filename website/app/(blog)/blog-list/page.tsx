@@ -8,7 +8,7 @@ import Pagination from "@/app/components/blog/Pagination";
 import Sidebar from "@/app/components/blog/Sidebar";
 import BlogList from "@/app/components/blog/BlogList";
 export const metadata = {
-    title: "Blog List || hongson ",
+    title: "Blog List || minhdeptrai.site",
 };
 
 const Blog = () => {

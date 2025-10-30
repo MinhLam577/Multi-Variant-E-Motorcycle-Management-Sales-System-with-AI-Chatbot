@@ -1,5 +1,5 @@
 import apiClient from "./apiClient";
-import endpoints from "./endpoints.ts";
+import endpoints from "./endpoints";
 
 export const getListBranch = async ({ pageSize, current }) => {
     const response = await apiClient.get(
@@ -17,7 +17,6 @@ export const createBranch = async (carData) => {
     const response = await apiClient.post(endpoints.branch.create, carData);
     return response.data;
 };
-
 
 export const deleteStore = async (id) => {
     const response = await apiClient.delete(endpoints.branch.delete(id));

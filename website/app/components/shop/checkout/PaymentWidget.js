@@ -1,7 +1,7 @@
 "use client";
 import { observer } from "mobx-react-lite";
 import { useStore } from "@/context/store.context";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 const PaymentWidget = observer(() => {
     // const [selectedPayment, setSelectedPayment] = useState("");

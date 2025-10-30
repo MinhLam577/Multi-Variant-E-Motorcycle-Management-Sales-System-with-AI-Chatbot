@@ -10,7 +10,7 @@ import Meta from "@/app/components/blog/blog-single/Meta";
 import Pagination from "@/app/components/blog/blog-single/Pagination";
 
 export const metadata = {
-    title: "Ô Tô Hồng Sơn || Chuyên mua bán và trao đổi xe ô tô uy tín",
+    title: "minhdeptrai.site || Chuyên mua bán và trao đổi xe ô tô uy tín",
 };
 
 const BlogDynamicSingle = () => {

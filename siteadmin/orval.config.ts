@@ -6,7 +6,7 @@ module.exports = {
     ilum: {
         output: {
             mode: "tags-split",
-            target: "src/generated/index.ts",
+            target: "src/generated/index",
             filters: {
                 // Exclude endpoints with "healthcheck" in their tags
                 tags: [/^(?!.*healthcheck).*$/],
@@ -20,7 +20,7 @@ module.exports = {
                     "Do not edit manually.",
                 ],
                 mutator: {
-                    path: "src/lib/api.ts",
+                    path: "src/lib/api",
                     name: "axiosMutator",
                 },
                 operationName: (operation: any) => {

@@ -1,5 +1,5 @@
 {
-    "name": "autohongson",
+    "name": "minhdeptrai-site",
     "version": "1.0.0",
     "private": true,
     "scripts": {
@@ -19,7 +19,7 @@
         "@popperjs/core": "^2.11.7",
         "antd": "^5.25.0",
         "aos": "^2.3.4",
-        "autohongson": "file:",
+        "minhdeptrai-site": "file:",
         "axios": "^1.8.3",
         "bootstrap": "^5.2.3",
         "chart.js": "^4.3.0",
