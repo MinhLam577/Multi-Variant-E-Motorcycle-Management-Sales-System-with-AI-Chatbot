@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
-import { useStore } from "@/src/stores";
+import { useStore } from "@/context/store.context";
 import { formatCurrency } from "@/utils";
 import ModalDelivery from "./modalDelivery/modalDelivery";
 const Delivery = observer(() => {

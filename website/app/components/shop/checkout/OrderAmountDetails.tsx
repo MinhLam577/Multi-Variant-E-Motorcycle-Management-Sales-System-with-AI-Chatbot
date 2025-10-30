@@ -39,7 +39,7 @@
 
 // export default OrderAmountDetails;
 "use client";
-import { useStore } from "@/src/stores";
+import { useStore } from "@/context/store.context";
 import { CartItemResponseType } from "@/src/stores/cart";
 import { formatCurrency } from "@/utils"; // Hàm định dạng tiền nếu có
 import { toJS } from "mobx";

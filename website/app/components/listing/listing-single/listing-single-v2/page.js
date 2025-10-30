@@ -10,7 +10,7 @@ import BreadCrumb from "@/app/components/listing/listing-single/BreadCrumb";
 import DescriptionsMotor from "@/app/components/listing/listing-single/DescriptionsMotor";
 import ProductGallery from "@/app/components/listing/listing-single/listing-single-v2/ProductGallery";
 import ReleatedMotor from "@/app/components/listing/listing-single/ReleatedMotor";
-import { useStore } from "@/src/stores";
+import { useStore } from "@/context/store.context";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";

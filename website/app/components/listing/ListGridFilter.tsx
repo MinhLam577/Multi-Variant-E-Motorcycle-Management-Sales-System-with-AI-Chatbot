@@ -1,4 +1,4 @@
-import { useStore } from "@/src/stores";
+import { useStore } from "@/context/store.context";
 import {
     EnumProductSortBy,
     globalFilterType,

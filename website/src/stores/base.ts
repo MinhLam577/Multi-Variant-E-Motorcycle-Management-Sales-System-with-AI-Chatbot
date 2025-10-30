@@ -3,7 +3,7 @@ import BrandObservable from "./brand";
 import LoginObservable from "./login";
 import ProductObservable from "./productStore";
 import UploadImageObservable from "./uploadImage";
-import UserObservable from "./user";
+// import UserObservable from "./user";
 import OrderObservable from "./order.store";
 import PaymentMethodObservable from "./paymentMethod";
 import SkusObservable from "./skus";
@@ -24,7 +24,6 @@ export class RootStore {
     orderObservable: OrderObservable;
     accountObservable: AccountObservable;
     loginObservable: LoginObservable;
-    userObservable: UserObservable;
     uploadImageObservable: UploadImageObservable;
     brandObservable: BrandObservable;
     productObservable: ProductObservable;
@@ -45,7 +44,6 @@ export class RootStore {
         this.orderObservable = new OrderObservable(this);
         this.accountObservable = new AccountObservable();
         this.loginObservable = new LoginObservable(this);
-        this.userObservable = new UserObservable(this);
 
         this.brandObservable = new BrandObservable(this);
         this.productObservable = new ProductObservable(this);

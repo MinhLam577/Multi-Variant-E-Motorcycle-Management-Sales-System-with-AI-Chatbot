@@ -9,7 +9,7 @@ import Blog from "@/app/components/common/Blog";
 import Meta from "@/app/components/blog/blog-single/Meta";
 import Pagination from "@/app/components/blog/blog-single/Pagination";
 import { useParams } from "next/navigation";
-import { useStore } from "@/src/stores";
+import { useStore } from "@/context/store.context";
 import { useEffect } from "react";
 import { observer } from "mobx-react-lite";
 

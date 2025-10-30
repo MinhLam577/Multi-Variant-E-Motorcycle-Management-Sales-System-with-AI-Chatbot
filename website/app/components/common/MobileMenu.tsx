@@ -1,5 +1,5 @@
 "use client";
-import { useStore } from "@/src/stores";
+import { useStore } from "@/context/store.context";
 import { CategoryResponseType } from "@/src/stores/categories";
 import { isParentActive } from "@/utils/isMenuActive";
 import Image from "next/image";
@@ -12,6 +12,7 @@ import PopoverAvatar from "../popover/avatar";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import PopoverCart from "../popover/cart";
 import { Badge } from "antd";
+import { LoginResponse } from "@/types/auth-validate.type";
 
 export interface IMenuItems {
     label: string;
@@ -65,7 +66,7 @@ const MobileMenu = () => {
     ];
 
     const store = useStore();
-    const [user, setUser] = useState("");
+    const [user, setUser] = useState<LoginResponse>();
 
     const AccountStore = store.accountObservable;
     const cartStore = store.cartObservable;
@@ -226,7 +227,7 @@ const MobileMenu = () => {
                                                 <img
                                                     src={
                                                         AccountStore?.account
-                                                            ?.avatarUrl ||
+                                                            ?.user?.avatarUrl ||
                                                         "https://res.cloudinary.com/diwacy6yr/image/upload/v1728441530/User/default.png"
                                                     }
                                                     alt="Avatar"

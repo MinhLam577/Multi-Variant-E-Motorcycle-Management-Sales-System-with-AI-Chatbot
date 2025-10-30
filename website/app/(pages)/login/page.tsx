@@ -17,7 +17,7 @@ const LogIn = () => {
         <div className="wrapper">
             <div
                 className="offcanvas offcanvas-end"
-                tabIndex="-1"
+                tabIndex={-1}
                 id="offcanvasRight"
                 aria-labelledby="offcanvasRightLabel"
             >

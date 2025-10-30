@@ -1,5 +1,4 @@
 import { useLocalObservable } from "mobx-react-lite";
-import PropTypes from "prop-types";
 import { createContext, useContext } from "react";
 import { RootStore } from "./base";
 

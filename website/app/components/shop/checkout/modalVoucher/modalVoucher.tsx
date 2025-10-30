@@ -7,7 +7,7 @@ import {
     ExclamationCircleOutlined,
 } from "@ant-design/icons";
 import { observer } from "mobx-react-lite";
-import { useStore } from "@/src/stores";
+import { useStore } from "@/context/store.context";
 import { formatCurrency } from "@/utils";
 interface Props {
     setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;

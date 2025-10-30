@@ -8,11 +8,12 @@ import PopoverCart from "../popover/cart";
 import { Badge } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
-import { useStore } from "@/src/stores";
+import { useStore } from "@/context/store.context";
 import PopoverAvatar from "../popover/avatar";
+import { LoginResponse } from "@/types/auth-validate.type";
 
 const DefaultHeader = () => {
-    const [user, setUser] = useState("");
+    const [user, setUser] = useState<LoginResponse>();
 
     const store = useStore();
     const AccountStore = store.accountObservable;
@@ -99,7 +100,7 @@ const DefaultHeader = () => {
                                         <div className="flex items-center gap-4">
                                             <img
                                                 src={
-                                                    AccountStore?.account
+                                                    AccountStore?.account?.user
                                                         ?.avatarUrl ||
                                                     "https://res.cloudinary.com/diwacy6yr/image/upload/v1728441530/User/default.png"
                                                 }

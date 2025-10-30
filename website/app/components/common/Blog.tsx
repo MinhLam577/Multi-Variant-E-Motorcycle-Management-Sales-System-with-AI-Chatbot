@@ -1,6 +1,6 @@
 "use client";
 import { formatDate } from "@/src/lib/utils";
-import { useStore } from "@/src/stores";
+import { useStore } from "@/context/store.context";
 import { observer } from "mobx-react-lite";
 import Image from "next/image";
 import Link from "next/link";

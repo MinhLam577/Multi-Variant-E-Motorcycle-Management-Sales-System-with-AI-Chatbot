@@ -15,7 +15,7 @@ import Link from "next/link";
 import ReleatedCar from "../ReleatedCar";
 import { Footer } from "antd/es/layout/layout";
 import LoginSignupModal from "@/app/components/common/login-signup";
-import { useStore } from "@/src/stores";
+import { useStore } from "@/context/store.context";
 import React, { useEffect, useState } from "react";
 
 import { useParams } from "next/navigation";

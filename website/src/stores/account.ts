@@ -1,44 +1,31 @@
 import { Base64 } from "js-base64";
-import { action, makeObservable, observable, runInAction } from "mobx";
 import secureLocalStorage from "react-secure-storage";
 import { keyStorageAccount } from "../constants";
+import { makeAutoFlow } from "@/utils/mobx-func.utils";
+import { LoginResponse } from "@/types/auth-validate.type";
 
 class AccountObservable {
-    loadingAccount = true;
-    account = null;
+    loadingAccount: boolean = true;
+    account: LoginResponse = null;
 
     constructor() {
-        makeObservable(this, {
-            account: observable,
-            loadingAccount: observable,
-            setAccount: action.bound,
-            getAccount: action.bound,
-            clearAccount: action.bound,
-            init: action.bound,
-        });
+        makeAutoFlow<AccountObservable>(this);
     }
 
-    async init() {
-        await this.getAccount();
+    *init() {
+        const existing = yield this.getAccount();
+        if (existing) {
+            this.account = existing;
+        }
+        return existing;
     }
 
-    async setAccount(data) {
+    *setAccount(data: LoginResponse) {
         try {
-            // // Chuyển object thành chuỗi JSON
             const jsonValue = JSON.stringify(data);
-            // Mã hóa chuỗi JSON bằng Base64
             const dataEncoded = Base64.encode(jsonValue);
-            // Lưu vào secureLocalStorage với key đã định nghĩa
             secureLocalStorage.setItem(keyStorageAccount, dataEncoded);
-
-            // Cập nhật observable MobX (nếu bạn đang dùng MobX)
-
-            runInAction(() => {
-                this.account = data;
-            });
-
-            // xí về check
-
+            this.account = data;
             return data;
         } catch (e) {
             console.error("Error setting account:", e);
@@ -46,16 +33,16 @@ class AccountObservable {
         }
     }
 
-    async getAccount() {
+    *getAccount(): Generator<any, LoginResponse | null, unknown> {
         try {
+            if (this.account) return this.account;
             const dataEncoded = secureLocalStorage.getItem(keyStorageAccount);
-            if (!dataEncoded) return null;
-
-            const value = Base64.decode(String(dataEncoded));
-            const jsonValue = JSON.parse(value);
-
+            if (!dataEncoded) {
+                return null;
+            }
+            const decoded = Base64.decode(String(dataEncoded));
+            const jsonValue = JSON.parse(decoded) as LoginResponse;
             this.account = jsonValue;
-
             return jsonValue;
         } catch (e) {
             console.error("Error getting account:", e);
@@ -63,14 +50,13 @@ class AccountObservable {
         }
     }
 
-    async clearAccount() {
-        secureLocalStorage.removeItem(keyStorageAccount);
-
-        runInAction(() => {
+    *clearAccount() {
+        try {
+            secureLocalStorage.removeItem(keyStorageAccount);
             this.account = null;
-        });
+        } catch (e) {
+            console.error("Error clearing account:", e);
+        }
     }
 }
 export { AccountObservable };
-
-//export default new AccountObservable();

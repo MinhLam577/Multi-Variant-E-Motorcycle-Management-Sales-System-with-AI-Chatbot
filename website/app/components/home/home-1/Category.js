@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { observer } from "mobx-react-lite";
-import { useStore } from "@/src/stores";
+import { useStore } from "@/context/store.context";
 const categories = [
     {
         imgSrc: "/images/category-item/1.png",
