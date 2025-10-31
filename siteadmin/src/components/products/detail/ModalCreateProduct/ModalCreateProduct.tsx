@@ -1,33 +1,12 @@
-import {
-    Button,
-    Col,
-    Form,
-    FormInstance,
-    Image,
-    Input,
-    Row,
-    Table,
-    UploadFile,
-} from "antd";
+import { Button, Form, UploadFile } from "antd";
 import CustomizeModal from "../../../common/CustomizeModal";
 import "./ModalCreateProduct.css";
 import { useStore } from "src/stores";
-import React, { useCallback, useEffect, useState } from "react";
+import React from "react";
 import { observer } from "mobx-react-lite";
 import GeneralInformation from "./detail/GeneralInformation";
-import {
-    DeleteOutlined,
-    PlusOutlined,
-    UploadOutlined,
-} from "@ant-design/icons";
-import { ColumnsType } from "antd/es/table";
-import {
-    convertBase64ToFile,
-    filterEmptyFields,
-    generateUUIDV4,
-} from "src/utils";
+import { convertBase64ToFile, filterEmptyFields } from "src/utils";
 import debounce from "lodash.debounce";
-import { AcceptImageTypes } from "src/constants";
 import BaseAPI from "src/api/base";
 import {
     CreateProductDto,
@@ -36,15 +15,13 @@ import {
     SkusDetailImportDto,
     UpdateProductDto,
     VariantCombinationDto,
-} from "src/stores/product.store";
+} from "src/types/product.type";
 import { ResponseImage } from "src/api";
-import FormListSelectOrInput from "../FormListSelectOrInput";
 import { useNavigate } from "react-router";
-import { CategoryResponseType } from "src/stores/categories.store";
+import { CategoryResponseType } from "src/types/categories.type";
 import {
     IFormSkuCustomData,
     IModalCreateProductProps,
-    IVariantCombination,
     SelectType,
     UpdateProductPriceType,
     UpdateProductValueFunc,

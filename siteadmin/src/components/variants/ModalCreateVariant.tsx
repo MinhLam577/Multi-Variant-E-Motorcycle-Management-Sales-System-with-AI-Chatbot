@@ -21,8 +21,8 @@ import { reaction } from "mobx";
 import {
     SkusDetailImportDto,
     VariantCombinationDto,
-} from "src/stores/product.store";
-import { CreateSkusDto, UpdateSkusDto } from "src/stores/skus.store";
+} from "src/types/product.type";
+import { CreateSkusDto, UpdateSkusDto } from "src/types/skus.type";
 import BaseAPI from "src/api/base";
 interface ModalCreateVariantProps {
     defaultForm: FormInstance;

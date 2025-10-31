@@ -1,109 +1,15 @@
-import { makeAutoObservable, toJS } from "mobx";
+import { flow, makeAutoObservable } from "mobx";
 import { convertDate, getErrorMessage } from "../utils";
 import { DateTimeFormat, EnumOrderStatusesValue } from "../constants";
-import OrderAPI, { ExportOrder } from "../api/order.api";
+import OrderAPI from "../api/order.api";
 import { paginationData, RootStore } from "./base";
 import { ResponsePromise } from "src/api";
-import { SkusDataResponseType } from "./product.store";
-import { CustomerResponseType, ReceiveAddressResponseType } from "./user.store";
-import { PaymentMethodResponseType } from "./paymentMethod";
 import {
-    EnumTypeOfTimeStatistics,
-    StatisticsResponse,
-} from "src/pages/adminOverview/Overview";
+    globalFiltersDataOrder,
+    orderData,
+    RevenueProfitStatisticsDto,
+} from "src/types/order.type";
 
-export class order_detail_dto {
-    skus_id: string;
-    quantity: number;
-}
-
-export type CreateOrderDto = {
-    customer_id: string;
-    receive_address_id: string;
-    total_price: number;
-    discount_price: number;
-    order_note?: string;
-    payment_method_id: string;
-    delivery_method_id: string;
-    order_details: order_detail_dto[];
-};
-
-export type RevenueProfitStatisticsDto = {
-    time_type: EnumTypeOfTimeStatistics;
-    year?: number;
-    startMonth?: number;
-    endMonth?: number;
-    month?: number;
-    startDay?: number;
-    endDay?: number;
-};
-
-export type OrderDetailResponseType = {
-    id: string;
-    customer: CustomerResponseType;
-    receive_address: ReceiveAddressResponseType;
-    order_status: string;
-    note: string | null;
-    order_details: OrderDetailDataResponseType[];
-    total_price: number;
-    discount_price: number;
-    payment_method: PaymentMethodResponseType;
-    payment_status: string;
-    delivery_method: DeliveryMethodResponseType;
-    delivery_time: string | null;
-    refund_time: string | null;
-    createdAt: string;
-    updatedAt: string;
-    deletedAt: string | null;
-};
-
-export type DeliveryMethodResponseType = {
-    id: string;
-    name: string;
-    description: string;
-    logo: string | null;
-};
-export type OrderStatusStaticsResponseType = {
-    [K in Exclude<keyof typeof EnumOrderStatusesValue, "All">]: number;
-};
-export type OrderStatus = {
-    key?: string;
-};
-
-export type OrderDetailDataResponseType = {
-    id: string;
-    quantity: number;
-    skus: SkusDataResponseType & {
-        product: {
-            id: string;
-            title: string;
-        };
-    };
-};
-
-export type globalFiltersDataOrder = {
-    search?: string;
-    sortOrder?: string;
-    sortBy?: string;
-    order_status?: Omit<EnumOrderStatusesValue, "All">;
-    payment_status?: string;
-    payment_method?: string;
-    delivery_method?: string;
-    created_from?: string;
-    created_to?: string;
-};
-
-export type orderData = {
-    orders: OrderDetailResponseType[];
-    order_status: EnumOrderStatusesValue[];
-    order_status_selected?: string;
-    order_selected?: string;
-    order_detail?: OrderDetailResponseType;
-    confirm_order_data?: ExportOrder;
-    revenue_profit_statistics?: StatisticsResponse;
-    total_revenue_by_year?: number;
-    order_status_statics?: OrderStatusStaticsResponseType[];
-};
 export default class OrderObservable {
     rootStore: RootStore;
     data: orderData = {
@@ -135,8 +41,27 @@ export default class OrderObservable {
     loading: boolean = false;
     isOpenDetail: boolean = false;
     constructor(rootStore: RootStore) {
-        makeAutoObservable(this, {}, { autoBind: true });
         this.rootStore = rootStore;
+        makeAutoObservable(
+            this,
+            {
+                getListOrder: flow,
+                getOrderDetail: flow,
+                getOrderStatusStatics: flow,
+                getRevenueProfitStatistics: flow,
+                getTotalRevenueByYear: flow,
+                updateOrderStatus: flow,
+                cancelOrder: flow,
+                confirmOrder: flow,
+                deliverOrder: flow,
+                exportOrder: flow,
+                failedDelivery: flow,
+                handOverOrder: flow,
+                shipSuccess: flow,
+                shipOrder: flow,
+            },
+            { autoBind: true }
+        );
     }
 
     private validateQuery(query?: string | object): string {

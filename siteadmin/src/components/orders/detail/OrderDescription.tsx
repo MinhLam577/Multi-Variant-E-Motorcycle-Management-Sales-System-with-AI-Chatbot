@@ -7,7 +7,6 @@ import {
     PaymentStatus,
 } from "../../../constants";
 import { convertDate, formatVNDMoney } from "../../../utils";
-import PropTypes from "prop-types";
 
 const getDescriptionOrderItems = (orderDetail) => [
     {
@@ -103,10 +102,6 @@ const OrderDescription = ({ orderDetail }) => {
             items={getDescriptionOrderItems(orderDetail)}
         />
     );
-};
-
-OrderDescription.propTypes = {
-    orderDetail: PropTypes.object,
 };
 
 export default OrderDescription;

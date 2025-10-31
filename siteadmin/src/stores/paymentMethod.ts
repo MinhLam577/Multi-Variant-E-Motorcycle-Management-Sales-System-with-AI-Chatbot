@@ -1,27 +1,10 @@
-import { makeAutoObservable, toJS } from "mobx";
+import { flow, makeAutoObservable, toJS } from "mobx";
 import apiClient from "../api/apiClient";
 import endpoints from "../api/endpoints";
 import { RootStore } from "./base";
-import { paginationData } from "./voucher";
+import { paginationData } from "./base";
 import { filterEmptyFields, getErrorMessage } from "src/utils";
-
-export type DeliveryMethodResponseType = {
-    id: string;
-    name: string;
-    description: string;
-    fee: number;
-    logo: string | null;
-    updatedAt: string;
-    createdAt: string;
-    deletedAt: string | null;
-};
-
-export type PaymentMethodResponseType = {
-    id: string;
-    name: string;
-    description: string;
-    logo: string | null;
-};
+import { DeliveryMethodResponseType } from "src/types/order.type";
 
 export default class PaymentMethodObservable {
     status: number = null;
@@ -41,8 +24,17 @@ export default class PaymentMethodObservable {
     deliveryMethodData: DeliveryMethodResponseType[] = [];
 
     constructor(rootStore: RootStore) {
-        makeAutoObservable(this, {}, { autoBind: true });
         this.rootStore = rootStore;
+        makeAutoObservable(
+            this,
+            {
+                getListDeliveryMethod: flow,
+                getMethods: flow,
+                getPaymentStatus: flow,
+                getListPaymentMethod: flow,
+            },
+            { autoBind: true }
+        );
     }
 
     private validateQuery(query?: string | object): string {

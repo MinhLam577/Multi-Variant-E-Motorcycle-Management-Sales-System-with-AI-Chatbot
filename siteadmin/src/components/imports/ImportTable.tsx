@@ -4,7 +4,7 @@ import TableComponent from "../../containers/TableComponent";
 import React from "react";
 import { useStore } from "src/stores";
 import { observer } from "mobx-react-lite";
-import { ImportResponseType } from "src/stores/imports.store";
+import { ImportResponseType } from "src/types/import.type";
 import GroupActionButton from "../GroupActionButton";
 import {
     processWithModals,

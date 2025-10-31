@@ -13,11 +13,9 @@ const Access = observer((props: IProps) => {
     const { permission, hideChildren = false } = props;
     const [allow, setAllow] = useState<boolean>(true);
     const store = useStore();
-    const loginObservable = store.loginObservable;
     const AccountStore = store.accountObservable;
     // Lấy permissions từ store, tránh object mới mỗi lần
     const permissions = useMemo(() => {
-        console.log("permission: ", AccountStore.account.permission);
         return toJS(AccountStore.account?.permissions || []);
     }, [AccountStore.account?.permissions]);
 
@@ -26,17 +24,12 @@ const Access = observer((props: IProps) => {
             if (!AccountStore.account?.email) {
                 await AccountStore.getAccount();
             }
-            // if (!AccountStore.account?.permissions?.length) {
-            //     await loginObservable.getAccountApi(AccountStore.account.email);
-            // }
         };
 
         fetchData();
     }, []);
 
     useEffect(() => {
-        console.log("permission: ", permissions);
-
         if (permissions?.length) {
             if (
                 !permission ||

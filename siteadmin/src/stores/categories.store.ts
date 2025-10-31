@@ -1,36 +1,14 @@
-import { makeAutoObservable, toJS } from "mobx";
+import { flow, makeAutoObservable } from "mobx";
 import { paginationData, RootStore } from "./base";
 import CategoriesAPI from "src/api/categories.api";
 import { filterEmptyFields, getErrorMessage } from "src/utils";
-import { EnumProductStore } from "./product.store";
+import { EnumProductStore } from "src/types/product.type";
+import {
+    CategoryResponseType,
+    CategoryResponseTypeEnum,
+    globalFilterCategoryType,
+} from "src/types/categories.type";
 
-export enum CategoryResponseTypeEnum {
-    TREE = "tree",
-    FLAT = "flat",
-}
-
-export enum CategoryResponseLabel {
-    TREE = "Cây danh mục",
-    FLAT = "Danh sách",
-}
-
-export type globalFilterCategoryType = {
-    search?: string;
-    type?: string;
-    status?: boolean;
-    responseType?: CategoryResponseTypeEnum;
-};
-
-export type CategoryResponseType = {
-    id: string;
-    name: string;
-    description: string;
-    parentCategoryId: string | null;
-    deletedAt: string | null;
-    slug: string;
-    type: EnumProductStore;
-    children?: CategoryResponseType[];
-};
 export default class CategoriesObservable {
     rootStore: RootStore;
     data: CategoryResponseType[] | null = null;
@@ -42,8 +20,18 @@ export default class CategoriesObservable {
     loading: boolean = false;
     isOpenDetail: boolean = false;
     constructor(rootStore: RootStore) {
-        makeAutoObservable(this, {}, { autoBind: true });
         this.rootStore = rootStore;
+        makeAutoObservable(
+            this,
+            {
+                getListCategories: flow,
+                getCategoryDetail: flow,
+                createCategory: flow,
+                updateCategory: flow,
+                removeCategory: flow,
+            },
+            { autoBind: true }
+        );
     }
 
     private validateQuery(query?: string | object): string {

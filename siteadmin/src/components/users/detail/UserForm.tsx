@@ -15,13 +15,13 @@ import {
     RoleEnum,
     RoleEnumValue,
 } from "../../../constants";
-// import UploadAvatarGetUrlWithImgCrop, {
-//     UploadAvatarGetUrlWithImgCropRemoteMode,
-// } from "../../../containers/UploadAvatarGetUrlWithImgCrop";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router";
 import { useStore } from "src/stores";
-import { UpdateUserDto, UserStaffResponseType } from "src/stores/user.store";
+import {
+    UpdateUserDto,
+    UserStaffResponseType,
+} from "src/types/user-staff.type";
 import { observer } from "mobx-react-lite";
 import UserAPI from "src/api/user.api";
 interface UserFormProps {

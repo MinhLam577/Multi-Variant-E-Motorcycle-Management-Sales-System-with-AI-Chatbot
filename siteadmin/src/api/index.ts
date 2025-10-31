@@ -1,6 +1,3 @@
-import { SUCCESS_STATUSES } from "src/constants";
-import apiClient from "./apiClient";
-
 export type ResponsePromise = {
     status: number;
     message: string;
@@ -13,11 +10,11 @@ export type ResponseImage = {
 };
 
 export type ResponseFailure = {
-  status: number;
-  message: string[] | string;
-  path: string;
-  success: boolean;  
-}
+    status: number;
+    message: string[] | string;
+    path: string;
+    success: boolean;
+};
 
 export type ResponseImageUpload = {
     status: number;

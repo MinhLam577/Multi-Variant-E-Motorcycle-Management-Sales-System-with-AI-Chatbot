@@ -3,7 +3,7 @@ import TableComponent from "src/containers/TableComponent";
 import { useStore } from "src/stores";
 
 import { Grid } from "antd";
-import { ContactResponseType } from "src/stores/contact.store";
+import { ContactResponseType } from "src/types/contact.type";
 import Access from "src/access/access";
 import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
 const { useBreakpoint } = Grid;

@@ -17,9 +17,10 @@ const getColumnsConfig = ({ handleViewProducts }) => {
                             src={order_details?.image}
                             alt={order_details?.name}
                             onError={(e) => {
-                                e.target.onerror = null; // Prevent infinite loop
-                                e.target.src =
-                                    "http://static.tapchitaichinh.vn/w640/images/upload/08122020/honda-crv-7-1312-1597115159_860x0_5b796724.jpg"; // Placeholder image
+                                const target = e.target as HTMLImageElement;
+                                target.onerror = null;
+                                target.src =
+                                    "http://static.tapchitaichinh.vn/w640/images/upload/08122020/honda-crv-7-1312-1597115159_860x0_5b796724.jpg";
                             }}
                             width={48}
                             height={48}

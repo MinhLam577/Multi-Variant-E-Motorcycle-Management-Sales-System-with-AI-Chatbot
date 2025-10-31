@@ -17,14 +17,13 @@ import OrderDescription from "../../components/orders/detail/OrderDescription";
 import CustomerDescription from "../../components/orders/detail/CustomerDescription";
 import ModalConfirmReason from "src/components/orders/detail/ModalConfirmReason";
 import ModalExportOrder from "src/components/orders/detail/ModalExportOrder";
-import OrderObservable, {
-    OrderDetailResponseType,
-} from "../../stores/order.store";
+import OrderObservable from "../../stores/order.store";
 import SkusObservable from "../../stores/skus.store";
 import { useStore } from "src/stores";
 import Access from "src/access/access";
 import { ALL_PERMISSIONS } from "src/constants/permissions";
 import { getErrorMessage } from "src/utils";
+import { OrderDetailResponseType } from "src/types/order.type";
 export const OrderDetailMode = {
     View: 1,
     Edit: 2,

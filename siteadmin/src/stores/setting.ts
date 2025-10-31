@@ -1,39 +1,10 @@
-import { makeAutoObservable } from "mobx";
-import OrderAPI, { ExportOrder } from "src/api/order.api";
+import { flow, makeAutoObservable } from "mobx";
 
 import { paginationData, RootStore } from "./base";
 import voucherApi from "src/api/voucher";
 import { IPermission, IRole } from "src/types/backend";
 import RoleApi from "src/api/setting";
 import { ResponsePromise } from "src/api";
-
-export type OrderStatus = {
-    key?: string;
-};
-
-export type globalFiltersData = {
-    search?: string;
-    sortOrder?: string;
-    sortBy?: string;
-    order_status?: string;
-    payment_status?: string;
-    payment_method?: string;
-    created_from?: string;
-    created_to?: string;
-};
-export type TypeVoucher = {
-    id: string;
-    name_type_voucher: string;
-};
-
-export type orderData = {
-    orders: any[];
-    order_status: OrderStatus[];
-    order_status_selected?: string;
-    order_selected?: string;
-    order_detail?: any;
-    confirm_order_data?: ExportOrder;
-};
 
 export default class SettingObservable {
     status: number | null = null;
@@ -62,16 +33,6 @@ export default class SettingObservable {
     dataListCustomer_no_voucher = [];
     idRole: string = "";
 
-    globalFilters: globalFiltersData = {
-        search: null,
-        sortOrder: null,
-        sortBy: null,
-        order_status: null,
-        payment_status: null,
-        payment_method: null,
-        created_from: null,
-        created_to: null,
-    };
     pagination: paginationData = {
         current: 1,
         pageSize: 100,
@@ -79,7 +40,17 @@ export default class SettingObservable {
     loading: boolean = false;
     isOpenDetail: boolean = false;
     constructor(rootStore: RootStore) {
-        makeAutoObservable(this, {}, { autoBind: true });
+        makeAutoObservable(
+            this,
+            {
+                getListRole: flow,
+                fetchRoleById: flow,
+                editRole: flow,
+                deleteRoleByID: flow,
+                createVoucher: flow,
+            },
+            { autoBind: true }
+        );
 
         this.rootStore = rootStore;
     }
@@ -231,13 +202,6 @@ export default class SettingObservable {
         if (successMsg) {
             this.successMsg = successMsg;
         }
-    }
-
-    setGlobalFilters(filters: globalFiltersData) {
-        this.globalFilters = {
-            ...this.globalFilters,
-            ...filters,
-        };
     }
 
     setPagination(page: number, pageSize: number) {

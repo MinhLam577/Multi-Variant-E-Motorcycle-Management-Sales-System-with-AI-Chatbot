@@ -5,7 +5,7 @@ import {
     processWithModals,
 } from "../../containers/processWithModals";
 import TableComponent from "../../containers/TableComponent";
-import { RoleType, UserStaffResponseType } from "src/stores/user.store";
+import { RoleType, UserStaffResponseType } from "src/types/user-staff.type";
 import React from "react";
 import { useStore } from "src/stores";
 import { observer } from "mobx-react-lite";

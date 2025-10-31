@@ -12,15 +12,14 @@ import { RegExps } from "src/constants";
 import { ALL_PERMISSIONS } from "src/constants/permissions";
 import { getBreadcrumbItems } from "src/containers/layout";
 import { useStore } from "src/stores";
-import { UpdateBrandDto } from "src/stores/brand.store";
 import {
     ContactResponseType,
     CreateContactDto,
     EnumContact,
     globalFilterContactType,
     UpdateContactDto,
-} from "src/stores/contact.store";
-import { paginationData } from "src/stores/voucher";
+} from "src/types/contact.type";
+import { paginationData } from "src/stores/base";
 
 const ContactPage = () => {
     const store = useStore();

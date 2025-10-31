@@ -2,7 +2,7 @@ import { Button, Image, Grid } from "antd";
 import { observer } from "mobx-react-lite";
 import TableComponent from "src/containers/TableComponent";
 import { useStore } from "src/stores";
-import { BrandResponseType } from "src/stores/brand.store";
+import { BrandResponseType } from "src/types/brand.type";
 import GroupActionButton from "src/components/GroupActionButton";
 import moment from "moment";
 import { DateTimeFormat } from "src/constants";

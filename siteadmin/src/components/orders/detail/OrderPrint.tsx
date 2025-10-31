@@ -4,7 +4,7 @@ import { formatVNDMoney } from "../../../utils";
 import dayjs from "dayjs";
 import { useStore } from "src/stores";
 import { ColumnType } from "antd/es/table";
-import { OrderDetailDataResponseType } from "src/stores/order.store";
+import { OrderDetailDataResponseType } from "src/types/order.type";
 
 interface OrderPrintProps {}
 

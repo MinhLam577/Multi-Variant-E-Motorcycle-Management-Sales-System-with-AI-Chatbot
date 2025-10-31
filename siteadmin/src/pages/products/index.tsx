@@ -9,12 +9,12 @@ import {
     CreateProductDto,
     globalFilterType,
     SkusDataResponseType,
-} from "src/stores/product.store";
+} from "src/types/product.type";
 import ProductHeader from "src/components/products/ProductHeader";
 import CustomizeTab from "src/components/common/CustomizeTab";
 import { reaction, toJS } from "mobx";
 import { generateUUIDV4, getErrorMessage } from "src/utils";
-import { CategoryResponseType } from "src/stores/categories.store";
+import { CategoryResponseType } from "src/types/categories.type";
 import { modalCreateProductStore } from "src/components/products/detail/ModalCreateProduct/ModalCreateProduct.store";
 import ModalCreateProduct from "src/components/products/detail/ModalCreateProduct/ModalCreateProduct";
 import ModalUpdateProduct from "src/components/products/detail/ModalUpdateProduct/ModalUpdateProduct";
