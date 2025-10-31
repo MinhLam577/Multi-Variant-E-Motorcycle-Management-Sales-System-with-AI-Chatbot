@@ -6,6 +6,7 @@ import endpoints from "./endpoints";
 import { LoginResponse } from "@/types/auth-validate.type";
 import { JwtPayload } from "@/types/jwt.type";
 import { AccountObservable } from "../stores/account";
+import { BACKEND_BASE } from "../config/api.config";
 let isRefreshing = false;
 let refreshSubscribers: ((token: string) => void)[] = [];
 const subscribeTokenRefresh = (cb: (token: string) => void) => {
@@ -32,7 +33,7 @@ const isTokenExpired = (token: string) => {
 };
 
 const apiClient = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_BACK_END_API_BASE_URL,
+    baseURL: BACKEND_BASE,
     timeout: 30000,
     headers: {
         "Content-Type": "application/json",
