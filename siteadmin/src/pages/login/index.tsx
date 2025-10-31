@@ -1,24 +1,25 @@
 import { Form, message, MessageArgsProps } from "antd";
 import { reaction } from "mobx";
 import { observer } from "mobx-react-lite";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAuth } from "../../contexts/AuthProvider";
 import { useStore } from "../../stores";
 import { regexEmail } from "../../utils/regex";
-import LoginScreen from "./LoginScreen";
+import LoginScreen from "../../components/login/LoginScreen";
 import { ForgotPassword, LoginStatus } from "src/types/userLogin.type";
-import { getErrorMessage } from "src/utils";
+import ModalForgotPassword from "src/components/login/detail/ModalForgotPassword";
+import ModalRetryActive, {
+    ModalHandle,
+} from "src/components/login/detail/ModalRetryActive";
 
 const Login = () => {
     const [messageApi, contextHolder] = message.useMessage();
     const { loginObservable } = useStore();
     const [isLoading, setIsLoading] = useState(false);
-    const [isForgotLoading, setIsForgotLoading] = useState(false);
-    const [showForgotPasswordModal, setShowForgotPasswordModal] =
-        useState(false);
+    // Retry active
     const [form] = Form.useForm();
-    const [forgotPasswordForm] = Form.useForm();
     const auth = useAuth();
+    const [showRegisterModal, setShowRegisterModal] = useState(false);
     const displayMessage = ({
         content,
         duration = 5,
@@ -106,11 +107,12 @@ const Login = () => {
     };
 
     const formSubmit = (values) => {
-        if (!regexEmail.test(values.email)) {
+        const { email, password, remember } = values;
+        if (!regexEmail.test(email)) {
             displayMessage({ content: "Email không hợp lệ", status: 400 });
             return;
         }
-        loginObservable.login(values?.email, values?.password);
+        loginObservable.login(email, password, remember);
     };
 
     const onFinish = (values) => {
@@ -120,51 +122,27 @@ const Login = () => {
         });
     };
 
-    const onFinishForgotPassword = async (values) => {
-        try {
-            setIsForgotLoading(true);
-            if (!regexEmail.test(values?.email)) {
-                displayMessage({ content: "Email không hợp lệ", status: 400 });
-                return;
-            }
-            await loginObservable.forgotPassword(values?.email);
-            if (
-                loginObservable.status === ForgotPassword.FORGOT_PASSWORD_FAILED
-            ) {
-                displayMessage({
-                    content: loginObservable.errorMsg,
-                    status: 400,
-                });
-                return;
-            }
-            forgotPasswordForm.resetFields();
-            setIsForgotLoading(false);
-            setShowForgotPasswordModal(false);
-        } catch (error) {
-            console.error("Lỗi submit quên mật khẩu", error);
-            const msg = getErrorMessage(error, "Lỗi submit quên mật khẩu");
-            message.error(msg);
-        } finally {
-            setIsForgotLoading(false);
-        }
-    };
+    // Tạo ref cho ModalForgotPassword
+    const forgotPasswordModalRef = useRef<ModalHandle>(null);
 
-    const onFinishFailed = (errorInfo) => {};
+    const retryActiveModalRef = useRef<ModalHandle>(null);
 
     return (
         <>
             {contextHolder}
             <LoginScreen
                 onFinish={onFinish}
-                onFinishFailed={onFinishFailed}
                 isLoading={isLoading}
-                isForgotLoading={isForgotLoading}
-                onFinishForgotPassword={onFinishForgotPassword}
-                showForgotPasswordModal={showForgotPasswordModal}
-                setShowForgotPasswordModal={setShowForgotPasswordModal}
                 form={form}
-                forgotPasswordForm={forgotPasswordForm}
+                setShowForgotPasswordModal={() =>
+                    forgotPasswordModalRef.current?.open()
+                }
+                setShowRetryActive={() => retryActiveModalRef.current?.open()}
+                setShowRegisterModal={setShowRegisterModal}
+                showRegisterModal={showRegisterModal}
             />
+            <ModalForgotPassword ref={forgotPasswordModalRef} />
+            <ModalRetryActive ref={retryActiveModalRef} />
         </>
     );
 };

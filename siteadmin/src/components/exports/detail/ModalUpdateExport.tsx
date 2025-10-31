@@ -1,7 +1,6 @@
 import {
     Button,
     Col,
-    Empty,
     Form,
     Image,
     Input,
@@ -19,14 +18,13 @@ import { FormInstance } from "antd/lib";
 import { DeleteOutlined } from "@ant-design/icons";
 import { toJS } from "mobx";
 import { lotOptionType } from "src/components/orders/detail/ModalExportOrder";
-import { SkusDetailImportResponseType } from "src/stores/skus.store";
+import { SkusDetailImportResponseType } from "src/types/skus.type";
 import {
     ExportResponseType,
     UpdateExportDetailDto,
     UpdateExportDto,
-} from "src/stores/exports.store";
+} from "src/types/export.type";
 import { useStore } from "src/stores";
-import { CreateDetailExport } from "src/api/order.api";
 
 interface ModalUpdateExportProps {
     open: boolean;

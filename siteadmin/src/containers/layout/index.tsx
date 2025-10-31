@@ -446,6 +446,7 @@ const AppLayout = (props) => {
                 if (!current_status) return;
                 const { status: newStatus, showSuccessMsg: newShowSuccess } =
                     current_status || {};
+                console.log("current_status: ", current_status);
                 displayMessage(messageApi, newStatus, store, newShowSuccess, 5);
             }
         );

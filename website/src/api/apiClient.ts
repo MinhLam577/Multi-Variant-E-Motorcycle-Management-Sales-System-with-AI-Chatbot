@@ -10,14 +10,10 @@ import { BACKEND_BASE } from "../config/api.config";
 let isRefreshing = false;
 let refreshSubscribers: ((token: string) => void)[] = [];
 const subscribeTokenRefresh = (cb: (token: string) => void) => {
-    console.log("🟦 [subscribeTokenRefresh] Thêm callback mới vào hàng chờ");
     refreshSubscribers.push(cb);
 };
 
 const onRefreshed = (token: string) => {
-    console.log(
-        "🟩 [onRefreshed] Refresh xong, phát token mới cho tất cả subscriber"
-    );
     refreshSubscribers.forEach((cb) => cb(token));
     refreshSubscribers = [];
 };
@@ -116,7 +112,6 @@ const handleError401 = async (
     originalRequest: AxiosRequestConfig & { _retry?: boolean },
     error: AxiosError
 ): Promise<any> => {
-    console.log("🚫 [401] Nhận lỗi 401 từ:", originalRequest.url);
     if (
         originalRequest._retry ||
         originalRequest.url?.includes(endpoints.auth.login) ||
@@ -124,16 +119,10 @@ const handleError401 = async (
         originalRequest.url?.includes(endpoints.auth.forgotPassword) ||
         originalRequest.url?.includes(endpoints.auth.register)
     ) {
-        console.log(
-            "🚫 [401] Bỏ qua refresh (login hoặc refreshToken request)"
-        );
         return Promise.reject(error);
     }
 
     if (isRefreshing) {
-        console.log(
-            "🟨 [401] Đang refresh, request này sẽ chờ (được đưa vào hàng đợi)"
-        );
         return new Promise((resolve) => {
             subscribeTokenRefresh((token: string) => {
                 if (!originalRequest.headers) originalRequest.headers = {};
@@ -145,15 +134,12 @@ const handleError401 = async (
 
     originalRequest._retry = true;
     isRefreshing = true;
-    console.log("🔄 [401] Bắt đầu refresh token...");
 
     try {
         const newAccessToken = await refreshToken();
         if (!newAccessToken) {
-            console.log("❌ [401] Refresh thất bại -> logout");
             return Promise.reject(error);
         }
-        console.log("✅ [401] Refresh thành công, token mới:", newAccessToken);
         apiClient.defaults.headers.common[
             "Authorization"
         ] = `Bearer ${newAccessToken}`;
@@ -162,7 +148,6 @@ const handleError401 = async (
 
         onRefreshed(newAccessToken);
         isRefreshing = false;
-        console.log("🟢 [401] Retry request gốc:", originalRequest.url);
         return apiClient(originalRequest);
     } catch (err) {
         console.log("🔥 [401] Lỗi khi refresh token:", err);

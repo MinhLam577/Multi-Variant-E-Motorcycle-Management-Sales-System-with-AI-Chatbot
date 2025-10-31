@@ -26,8 +26,8 @@ import {
     CreateImportDto,
     globalFiltersImportDataType,
     ImportResponseType,
-} from "src/stores/imports.store";
-import { paginationData } from "src/stores/voucher";
+} from "src/types/import.type";
+import { paginationData } from "src/stores/base";
 import { productTableFilterDataType } from "../products";
 import {
     globalFilterType,
@@ -35,7 +35,7 @@ import {
     SkusDetailImportDtoV2,
     UpdateDetailImportDto,
     UpdateImportDto,
-} from "src/stores/product.store";
+} from "src/types/product.type";
 import { ColumnsType } from "antd/es/table";
 import {
     DeleteOutlined,

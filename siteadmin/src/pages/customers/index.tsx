@@ -12,8 +12,8 @@ import CustomizeTab from "src/components/common/CustomizeTab";
 import Access from "src/access/access";
 import { ALL_PERMISSIONS } from "src/constants/permissions";
 import CustomerSearch from "src/components/customers/CustomerSearch";
-import { GenderEnum } from "src/stores/user.store";
-import { paginationData } from "src/stores/voucher";
+import { GenderEnum } from "src/types/user-staff.type";
+import { paginationData } from "src/stores/base";
 import { convertDate, filterEmptyFields } from "src/utils";
 import { DateTimeFormat } from "src/constants";
 export enum SpendingEnumRange {

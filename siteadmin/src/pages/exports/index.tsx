@@ -17,7 +17,7 @@ import {
     CreateExportDto,
     ExportResponseType,
     globalFilterExportDataType,
-} from "src/stores/exports.store";
+} from "src/types/export.type";
 
 interface ExportPageProps {}
 

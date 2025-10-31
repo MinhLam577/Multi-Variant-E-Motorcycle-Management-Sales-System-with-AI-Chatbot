@@ -2,7 +2,7 @@ import { Base64 } from "js-base64";
 import { makeAutoObservable, runInAction, toJS } from "mobx";
 import secureLocalStorage from "react-secure-storage";
 import { keyStorageAccount } from "../constants";
-import { PermissionResponseType } from "./permission.store";
+import { PermissionResponseType } from "src/types/permission.type";
 
 export class AccountObservable {
     loadingAccount: boolean = true;
@@ -29,7 +29,16 @@ export class AccountObservable {
         try {
             const jsonValue = JSON.stringify(data);
             const dataEncoded = Base64.encode(jsonValue);
-            secureLocalStorage.setItem(keyStorageAccount, dataEncoded);
+
+            if (data.remember) {
+                // Lưu lâu dài
+                secureLocalStorage.setItem(keyStorageAccount, dataEncoded);
+                sessionStorage.removeItem(keyStorageAccount);
+            } else {
+                // Lưu tạm cho session
+                sessionStorage.setItem(keyStorageAccount, dataEncoded);
+                secureLocalStorage.removeItem(keyStorageAccount);
+            }
             runInAction(() => {
                 this.account = data;
             });
@@ -42,17 +51,19 @@ export class AccountObservable {
 
     async getAccount() {
         try {
-            const dataEncoded = secureLocalStorage.getItem(keyStorageAccount);
+            const dataEncoded =
+                secureLocalStorage.getItem(keyStorageAccount) ||
+                sessionStorage.getItem(keyStorageAccount);
             if (!dataEncoded) return null;
 
-            const value = Base64.decode(dataEncoded as string);
-            const jsonValue = JSON.parse(value);
+            const dataDecoded = Base64.decode(dataEncoded as string);
+            const account = JSON.parse(dataDecoded);
 
             runInAction(() => {
-                this.account = jsonValue;
+                this.account = account;
             });
 
-            return jsonValue;
+            return account;
         } catch (e) {
             console.error("Error getting account:", e);
             return null;
@@ -61,6 +72,7 @@ export class AccountObservable {
 
     async clearAccount() {
         secureLocalStorage.removeItem(keyStorageAccount);
+        sessionStorage.removeItem(keyStorageAccount);
         runInAction(() => {
             this.account = null;
         });

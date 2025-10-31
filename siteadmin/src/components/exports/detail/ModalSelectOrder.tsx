@@ -12,8 +12,8 @@ import {
 } from "src/constants";
 import TableComponent from "src/containers/TableComponent";
 import { useStore } from "src/stores";
-import { globalFiltersDataOrder } from "src/stores/order.store";
-import { paginationData } from "src/stores/voucher";
+import { globalFiltersDataOrder } from "src/types/order.type";
+import { paginationData } from "src/stores/base";
 import { formatVNDMoney } from "src/utils";
 
 export interface ModalSelectOrderProps {

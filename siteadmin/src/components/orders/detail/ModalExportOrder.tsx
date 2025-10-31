@@ -4,7 +4,7 @@ import { AntdTableLocale } from "../../../constants";
 import { formatVNDMoney, getErrorMessage } from "../../../utils";
 import React from "react";
 import { useStore } from "src/stores";
-import { OrderDetailResponseType } from "src/stores/order.store";
+import { OrderDetailResponseType } from "src/types/order.type";
 
 interface ModalExportOrderProps {
     orderDetail: OrderDetailResponseType;

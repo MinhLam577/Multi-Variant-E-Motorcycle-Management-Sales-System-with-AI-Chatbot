@@ -11,9 +11,6 @@ import { ALL_PERMISSIONS } from "../../constants/permissions";
 const getColumnsConfig = ({
     handleViewVouchers,
     hanleDeleteVouchers,
-    setOpenModal,
-    setDataInit,
-    showModal,
     handleEditVouchers,
     handlegetIDVoucher,
 }) => {
@@ -255,13 +252,13 @@ const VouchersTable = ({
     ];
 
     const dataSource = resetDataSource
-        ? voucherStore.dataListCustomer_no_voucher?.map((element, i) => ({
+        ? voucherStore.dataListCustomer_no_voucher?.map((element) => ({
               key: element.id,
               name: ` ${element.username}`,
               phoneNumber: `${element.phoneNumber}`,
               email: `${element.email}`,
           }))
-        : voucherStore.dataListCustomer_no_voucher?.map((element, i) => ({
+        : voucherStore.dataListCustomer_no_voucher?.map((element) => ({
               key: element.id,
               name: ` ${element.username}`,
               phoneNumber: `${element.phoneNumber}`,

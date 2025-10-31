@@ -1,21 +1,24 @@
-import { flow, makeAutoObservable } from "mobx";
+import { makeAutoObservable, flow } from "mobx";
 
 export const makeAutoFlow = <T extends object>(
-    obj: T,
-    config: object = { autoBind: true }
+    target: T,
+    overrides: Record<string, any> = {},
+    config: { autoBind?: boolean } = { autoBind: true }
 ) => {
-    const flowMap: Record<string, any> = {};
-    const proto = Object.getPrototypeOf(obj);
-    Object.getOwnPropertyNames(proto).forEach((key) => {
-        if (key === "constructor") return;
-        const desc = Object.getOwnPropertyDescriptor(proto, key);
-        const value = desc?.value;
+    const flowMap: Record<string, typeof flow> = { ...overrides };
+    const proto = Object.getPrototypeOf(target);
+
+    for (const key of Object.getOwnPropertyNames(proto)) {
+        if (key === "constructor") continue;
+        const value = (proto as any)[key];
         if (
             typeof value === "function" &&
-            value?.constructor?.name === "GeneratorFunction"
+            Object.prototype.toString.call(value) ===
+                "[object GeneratorFunction]"
         ) {
             flowMap[key] = flow;
         }
-    });
-    makeAutoObservable(obj, flowMap, config);
+    }
+
+    makeAutoObservable(target, flowMap, config);
 };

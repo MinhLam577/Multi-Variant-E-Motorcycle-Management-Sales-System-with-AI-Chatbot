@@ -46,6 +46,7 @@ import ExportPage from "./pages/exports";
 import VariantPage from "./pages/variants";
 import BrandsPage from "./pages/brands";
 import ResetPassword from "./pages/resetPassword/reset-password";
+import VerifyCode from "./pages/VerifyCode";
 function App() {
     return (
         <StoreProvider>
@@ -390,27 +391,6 @@ function App() {
                                         </ProtectedRoute>
                                     }
                                 />
-                                {/* <Route
-                                    path="/orders/:id"
-                                    element={
-                                        <ProtectedRoute>
-                                            <OrderDetail
-                                                mode={OrderDetailMode.View}
-                                            />
-                                        </ProtectedRoute>
-                                    }
-                                />
-                                <Route
-                                    path="/orders/:id/edit"
-                                    element={
-                                        <ProtectedRoute>
-                                            <OrderDetail
-                                                mode={OrderDetailMode.Edit}
-                                            />
-                                        </ProtectedRoute>
-                                    }
-                                /> */}
-
                                 <Route
                                     path="/setting"
                                     element={
@@ -461,6 +441,10 @@ function App() {
                                 />
                                 <Route path="/:404" element={<Page404 />} />
                                 <Route
+                                    path="/verify-code"
+                                    element={<VerifyCode />}
+                                />
+                                <Route
                                     path="/import"
                                     element={
                                         <ProtectedRoute>
@@ -484,16 +468,6 @@ function App() {
                                             <BrandsPage />
                                         </ProtectedRoute>
                                     }
-                                />
-
-                                <Route
-                                    path="/PaymentSuccess"
-                                    element={<div>Payment Success</div>}
-                                />
-
-                                <Route
-                                    path="/PaymentFailed"
-                                    element={<div>Payment Failed</div>}
                                 />
                                 <Route
                                     path="/contact"

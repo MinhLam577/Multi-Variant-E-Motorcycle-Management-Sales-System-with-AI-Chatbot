@@ -1,7 +1,8 @@
 import endpoints from "./endpoints";
 import apiClient from "./apiClient";
 import { ResponsePromise } from ".";
-import { CreateSkusDto, UpdateSkusDto } from "src/stores/skus.store";
+import { CreateSkusDto } from "src/types/product.type";
+import { UpdateSkusDto } from "src/types/skus.type";
 const skusEndpoints = endpoints.skus;
 
 const SkusAPI: {

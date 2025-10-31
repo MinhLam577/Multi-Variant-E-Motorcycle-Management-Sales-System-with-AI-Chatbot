@@ -5,7 +5,7 @@ import endpoints from "../api/endpoints";
 import { keyStorageAccount } from "../constants";
 import { paginationData, RootStore } from "./base";
 import { getErrorMessage } from "src/utils";
-import { LoginStatus, UpdateProfileStatus } from "src/types/userLogin.type";
+import { UpdateProfileStatus } from "src/types/userLogin.type";
 
 class UserObservable {
     roles = null;
@@ -19,13 +19,12 @@ class UserObservable {
         pageSize: 10,
     };
     constructor(rootStore: RootStore) {
+        this.rootStore = rootStore;
         makeObservable(this, {
-            // getMe: action.bound,
             me: observable,
             status: observable,
             updateUserProfile: action.bound,
         });
-        this.rootStore = rootStore;
     }
 
     async updateUserProfile(dto, userId) {

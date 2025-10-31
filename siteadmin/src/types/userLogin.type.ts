@@ -37,3 +37,14 @@ export enum UpdateProfileStatus {
     UPDATE_FAILED = "updateFailed",
     UPDATE_SUCCESS = "updateSuccess",
 }
+
+export type RegisterDto = {
+    username: string;
+    email: string;
+    password: string;
+};
+
+export type VerifyCodeDto = {
+    codeId: string;
+    id: string;
+};

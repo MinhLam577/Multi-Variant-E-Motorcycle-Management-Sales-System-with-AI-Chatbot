@@ -1,7 +1,11 @@
 import { ApiResponse } from "src/types/api-response.type";
 import apiClient from "./apiClient";
 import endpoints from "./endpoints";
-import { LoginResponse } from "src/types/userLogin.type";
+import {
+    LoginResponse,
+    RegisterDto,
+    VerifyCodeDto,
+} from "src/types/userLogin.type";
 import { AxiosResponse } from "axios";
 import {
     ResetPassword,
@@ -21,6 +25,17 @@ const LoginAPI = {
                     email,
                     password,
                 }
+            );
+            return Promise.resolve(response);
+        } catch (error) {
+            return Promise.reject(error);
+        }
+    },
+    register: async (data: RegisterDto) => {
+        try {
+            const response = await apiClient.post(
+                loginEndpoints.register,
+                JSON.stringify(data)
             );
             return Promise.resolve(response);
         } catch (error) {
@@ -68,6 +83,28 @@ const LoginAPI = {
             const response = await apiClient.post(
                 loginEndpoints.resetPassword,
                 data
+            );
+            return Promise.resolve(response);
+        } catch (e) {
+            return Promise.reject(e);
+        }
+    },
+    verifyCode: async (data: VerifyCodeDto) => {
+        try {
+            const response = await apiClient.post(
+                loginEndpoints.verifyActiveCode,
+                JSON.stringify(data)
+            );
+            return Promise.resolve(response);
+        } catch (e) {
+            return Promise.reject(e);
+        }
+    },
+    retryAccount: async (email: string) => {
+        try {
+            const response = await apiClient.post(
+                loginEndpoints.retryAccount,
+                JSON.stringify({ email })
             );
             return Promise.resolve(response);
         } catch (e) {

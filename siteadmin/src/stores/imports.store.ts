@@ -1,52 +1,15 @@
-import { makeAutoObservable, toJS } from "mobx";
+import { flow, makeAutoObservable } from "mobx";
 import { paginationData, RootStore } from "./base";
 import ImportAPI from "src/api/imports.api";
 import { convertDate, filterEmptyFields } from "src/utils";
 import { DateTimeFormat } from "src/constants";
-import { warehouseResponseType } from "./warehouse.store";
-import { SkusDataResponseType, UpdateImportDto } from "./product.store";
+import { UpdateImportDto } from "src/types/product.type";
+import {
+    CreateImportDto,
+    globalFiltersImportDataType,
+    ImportResponseType,
+} from "src/types/import.type";
 
-export type globalFiltersImportDataType = {
-    search?: string;
-    warehouse_id?: string;
-    start_date?: string;
-    end_date?: string;
-    product_id?: string;
-    skus_id?: string;
-};
-export type DetailImportResponseType = {
-    id: string;
-    price_import: string;
-    quantity_import: number;
-    quantity_sold: number;
-    lot_name: string;
-    quantity_remaining: number;
-    created_at: string;
-    updated_at: string;
-    deleted_at: null | string;
-    warehouse?: warehouseResponseType;
-    skus?: SkusDataResponseType;
-};
-export type ImportResponseType = {
-    id: string;
-    createdAt: string;
-    note: string;
-    updatedAt: string;
-    detail_imports: DetailImportResponseType[];
-};
-
-export type CreateDetailImportDto = {
-    skus_id: string;
-    price_import: number;
-    quantity_import: number;
-    warehouse_id: string;
-    lot_name?: string;
-};
-
-export type CreateImportDto = {
-    note?: string;
-    detail_import: CreateDetailImportDto[];
-};
 export default class ImportObservable {
     rootStore: RootStore;
     data: ImportResponseType[] | null = null;
@@ -57,8 +20,18 @@ export default class ImportObservable {
     };
     loading: boolean = false;
     constructor(rootStore: RootStore) {
-        makeAutoObservable(this, {}, { autoBind: true });
         this.rootStore = rootStore;
+        makeAutoObservable(
+            this,
+            {
+                getImportDetails: flow,
+                getListImports: flow,
+                createImport: flow,
+                updateImport: flow,
+                deleteImport: flow,
+            },
+            { autoBind: true }
+        );
     }
     private validateQuery(query?: string | object): string {
         // Xử lý chuyển đổi query string thành object

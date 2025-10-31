@@ -1,8 +1,8 @@
 import { Col, DatePicker, Form, Input, Row, Select, Tooltip } from "antd";
 import { PaymentStatus } from "../../constants";
 import { observer } from "mobx-react-lite";
-import { makeAutoObservable, toJS } from "mobx";
-import { DeliveryMethodResponseType } from "src/stores/paymentMethod";
+import { makeAutoObservable } from "mobx";
+import { DeliveryMethodResponseType } from "src/types/payment.type";
 import { useCallback } from "react";
 import { debounce } from "lodash";
 // Khai báo store nhỏ cho trạng thái focus

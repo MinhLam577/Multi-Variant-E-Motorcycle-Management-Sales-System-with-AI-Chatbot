@@ -1,7 +1,4 @@
 import { Descriptions } from "antd";
-import { DateTimeFormat } from "../../../constants";
-import PropTypes from "prop-types";
-
 const getDescriptionCustomerItems = (orderDetail) => [
     {
         key: "1",
@@ -70,10 +67,6 @@ const CustomerDescription = ({ orderDetail }) => {
             items={getDescriptionCustomerItems(orderDetail)}
         />
     );
-};
-
-CustomerDescription.propTypes = {
-    orderDetail: PropTypes.object,
 };
 
 export default CustomerDescription;

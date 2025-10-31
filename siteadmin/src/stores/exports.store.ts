@@ -1,57 +1,15 @@
-import { makeAutoObservable, toJS } from "mobx";
+import { flow, makeAutoObservable } from "mobx";
 import { RootStore } from "./base";
-import { paginationData } from "./voucher";
+import { paginationData } from "./base";
 import { convertDate, filterEmptyFields } from "src/utils";
 import { DateTimeFormat, SUCCESS_STATUSES } from "src/constants";
 import ExportAPI from "src/api/exports.api";
-import { SkusDataResponseType } from "./product.store";
-import { warehouseResponseType } from "./warehouse.store";
-import { CreateDetailExport } from "src/api/order.api";
-import { DetailImportResponseType } from "./imports.store";
-
-export type CreateExportDto = {
-    note?: string | null;
-    detail_export: CreateDetailExport[];
-};
-
-export type UpdateExportDetailDto = {
-    detail_export_id: string;
-    detail_import_id: string;
-    quantity_export: number;
-};
-
-export type UpdateExportDto = {
-    note?: string | null;
-    export_details: UpdateExportDetailDto[];
-};
-
-export type globalFilterExportDataType = {
-    search?: string;
-    warehouse_id?: string;
-    skus_id?: string;
-    product_id?: string;
-    start_date?: string;
-    end_date?: string;
-};
-
-export type DetailExportResponseType = {
-    id: string;
-    createdAt: string;
-    updatedAt: string;
-    deletedAt: null | string;
-    quantity_export: number;
-    detail_import?: DetailImportResponseType;
-    skus?: SkusDataResponseType;
-    wareHouse?: warehouseResponseType;
-};
-export type ExportResponseType = {
-    id: string;
-    createdAt: string;
-    updatedAt: string;
-    deletedAt: null | string;
-    note: string;
-    detail_export: DetailExportResponseType[];
-};
+import {
+    CreateExportDto,
+    ExportResponseType,
+    globalFilterExportDataType,
+    UpdateExportDto,
+} from "src/types/export.type";
 
 export default class ExportObservable {
     rootStore: RootStore;
@@ -62,8 +20,17 @@ export default class ExportObservable {
     };
     loading: boolean = false;
     constructor(rootStore: RootStore) {
-        makeAutoObservable(this, {}, { autoBind: true });
         this.rootStore = rootStore;
+        makeAutoObservable(
+            this,
+            {
+                getListExport: flow,
+                createExport: flow,
+                deleteExport: flow,
+                updateExport: flow,
+            },
+            { autoBind: true }
+        );
     }
 
     private validateQuery(query?: string | object): string {
