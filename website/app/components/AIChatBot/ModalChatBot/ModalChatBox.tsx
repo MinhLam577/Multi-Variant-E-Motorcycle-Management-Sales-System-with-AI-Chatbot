@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import ReactMarkdown from "react-markdown";
 import TextareaAutosize from "react-textarea-autosize";
+import { CHATBOT_BASE } from "@/src/config/api.config";
 interface Message {
     type: "user" | "bot";
     text: string;
@@ -32,20 +33,17 @@ export default function ModalChatBox() {
             setInput("");
             setIsLoading(true);
             try {
-                const response = await fetch(
-                    process.env.NEXT_PUBLIC_CHATBOT_API_BASE_URL,
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            Accept: "application/json",
-                        },
-                        body: JSON.stringify({
-                            prompt: input,
-                            sessionId: sessionId,
-                        }),
-                    }
-                );
+                const response = await fetch(CHATBOT_BASE, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Accept: "application/json",
+                    },
+                    body: JSON.stringify({
+                        prompt: input,
+                        sessionId: sessionId,
+                    }),
+                });
                 if (!response.ok)
                     throw new Error(`HTTP error! status: ${response.status}`);
 

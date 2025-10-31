@@ -394,9 +394,6 @@ const ListingSingleV2 = observer(() => {
                                         })()}
                                     </div>
                                 </div>
-                                {/* Mã giảm giá */}
-                                {/* Chính sách */}
-                                {/* Hiển thỉ biến thể : Màu sắc , kích thước */}
                                 <div className="space-y-6">
                                     <OptionSelector
                                         optionValues={storeProduct?.data?.optionValues?.optionValues?.map(

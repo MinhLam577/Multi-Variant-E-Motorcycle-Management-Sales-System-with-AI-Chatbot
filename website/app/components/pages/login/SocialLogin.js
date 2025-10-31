@@ -1,4 +1,5 @@
 "use client";
+import { AUTH_URLS } from "@/src/config/api.config";
 import React from "react";
 const SocialLogin = () => {
     const handleLoginGoogle = (url) => {
@@ -9,13 +10,13 @@ const SocialLogin = () => {
             className: "btn btn_fb",
             iconClass: "fab fa-facebook-f",
             text: "Log In via Facebook",
-            link: process.env.NEXT_PUBLIC__URL_FACEBOOK,
+            link: AUTH_URLS.facebook,
         },
         {
             className: "btn btn_google",
             iconClass: "fab fa-google",
             text: "Log In via Google+",
-            link: process.env.NEXT_PUBLIC__URL_GOOGLE,
+            link: AUTH_URLS.google,
         },
     ];
 
