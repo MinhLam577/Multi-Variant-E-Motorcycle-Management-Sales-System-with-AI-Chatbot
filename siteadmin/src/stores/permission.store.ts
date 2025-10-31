@@ -1,25 +1,12 @@
-import { makeAutoObservable } from "mobx";
-import { paginationData } from "./voucher";
+import { flow, makeAutoObservable } from "mobx";
+import { paginationData } from "./base";
 import { RootStore } from "./base";
 import { filterEmptyFields, getErrorMessage } from "src/utils";
 import PermissionAPI from "src/api/permission.api";
-
-export type PermissionResponseType = {
-    id: string;
-    createdAt: string;
-    updatedAt: string;
-    deletedAt: string | null;
-    name: string;
-    path: string;
-    method: string;
-    module: string;
-};
-
-export type globalFilterPermissionType = {
-    search?: string;
-    method?: string;
-    module?: string;
-};
+import {
+    globalFilterPermissionType,
+    PermissionResponseType,
+} from "src/types/permission.type";
 
 export default class PermissionObservable {
     status: number = null;
@@ -32,8 +19,14 @@ export default class PermissionObservable {
         pageSize: 100,
     };
     constructor(rootStore: RootStore) {
-        makeAutoObservable(this, {}, { autoBind: true });
         this.rootStore = rootStore;
+        makeAutoObservable(
+            this,
+            {
+                getListPermission: flow,
+            },
+            { autoBind: true }
+        );
     }
 
     private validateQuery(query?: string | object): string {

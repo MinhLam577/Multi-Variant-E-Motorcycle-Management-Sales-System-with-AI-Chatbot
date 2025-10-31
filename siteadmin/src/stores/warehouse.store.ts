@@ -1,6 +1,5 @@
-import { makeAutoObservable, toJS } from "mobx";
-import { MessageStore, paginationData, RootStore } from "./base";
-import BrandAPI from "src/api/brand.api";
+import { flow, makeAutoObservable } from "mobx";
+import { paginationData, RootStore } from "./base";
 import WarehouseAPI from "src/api/warehouse.api";
 
 export type warehouseResponseType = {
@@ -21,7 +20,13 @@ class WarehouseObservable {
     data: warehouseResponseType[] = [];
     constructor(rootStore: RootStore) {
         this.rootStore = rootStore;
-        makeAutoObservable(this);
+        makeAutoObservable(
+            this,
+            {
+                getListWarehouse: flow,
+            },
+            { autoBind: true }
+        );
     }
 
     *getListWarehouse() {

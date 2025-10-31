@@ -1,8 +1,8 @@
-import { CreateImportDto } from "src/stores/imports.store";
 import { ResponsePromise } from ".";
 import apiClient from "./apiClient";
 import endpoints from "./endpoints";
-import { UpdateImportDto } from "src/stores/product.store";
+import { CreateImportDto } from "src/types/import.type";
+import { UpdateImportDto } from "src/types/product.type";
 const importEndpoint = endpoints.import;
 
 type ImportAPI = {

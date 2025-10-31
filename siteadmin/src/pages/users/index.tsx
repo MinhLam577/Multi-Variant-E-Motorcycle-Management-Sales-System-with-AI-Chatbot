@@ -4,22 +4,18 @@ import UserTable from "src/components/users/UserTable";
 import { GlobalContext } from "../../contexts/global";
 import UserSearch from "../../components/users/UserSearch";
 import { Button, message } from "antd";
-import {
-    CloudUploadOutlined,
-    ExportOutlined,
-    PlusOutlined,
-} from "@ant-design/icons";
+import { ExportOutlined, PlusOutlined } from "@ant-design/icons";
 import { CSVLink } from "react-csv";
-import UserImport from "../../components/users/UserImport";
 import UserModalCreate from "../../components/users/UserModalCreate";
 import dayjs from "dayjs";
 import AdminBreadCrumb from "src/components/common/AdminBreadCrumb";
 import { getBreadcrumbItems } from "src/containers/layout";
-import { paginationData } from "src/stores/voucher";
+import { paginationData } from "src/stores/base";
+
 import {
     globalFiltersDataUserStaff,
     UserStaffResponseType,
-} from "src/stores/user.store";
+} from "src/types/user-staff.type";
 import { useStore } from "src/stores";
 import { observer } from "mobx-react-lite";
 import CustomizeTab from "src/components/common/CustomizeTab";
@@ -35,7 +31,6 @@ const User = () => {
     const { globalDispatch } = useContext<any>(GlobalContext);
     const [dataFile, setDataFile] = useState([]);
     const [openModalCreate, setOpenModalCreate] = useState(false);
-    const [openModalImport, setOpenModalImport] = useState(false); // import user
     const handleEditUser = (usersData: UserStaffResponseType) => {
         globalDispatch({
             type: "breadcrum",
@@ -110,10 +105,9 @@ const User = () => {
             age: item.age,
             address: item.address,
             phoneNumber: item.phoneNumber || "",
-            avatarUrl: item.avatarUrl,
             birthday: item.birthday
                 ? dayjs(item.birthday).format("MM/DD/YYYY")
-                : "", // Định dạng ngày
+                : "",
             isActive: item.isActive ? "TRUE" : "FALSE",
             role: item?.roles?.[0]?.name || "N/A",
         }));
@@ -144,32 +138,14 @@ const User = () => {
                     items={[...getBreadcrumbItems(location.pathname)]}
                 />
                 <div className="flex justify-end items-center">
-                    <Access
-                        permission={ALL_PERMISSIONS.USER.CREATE}
-                        hideChildren={true}
-                    >
-                        <Button
-                            icon={<CloudUploadOutlined />}
-                            type="primary"
-                            style={{
-                                backgroundColor: "green",
-                                borderColor: "green",
-                                marginRight: 8,
-                            }}
-                            onClick={() => setOpenModalImport(true)}
-                        >
-                            Import
-                        </Button>
-                    </Access>
-
                     <CSVLink
                         data={dataFile}
-                        filename={"danh-sach.csv"}
+                        filename={"danh-sach-user.csv"}
                         asyncOnClick={true}
                         onClick={getUsers}
                         headers={headers}
                     >
-                        <Button className="mr-2 bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded">
+                        <Button className="mr-2 bg-yellow-500 hover:!bg-yellow-600 hover:!text-white text-white px-4 py-2 rounded">
                             <ExportOutlined />
                             Export
                         </Button>
@@ -202,11 +178,6 @@ const User = () => {
                                         handleUpdateUser={handleEditUser}
                                         handleViewUser={handleViewUser}
                                         handleDeleteUser={handleDeleteUser}
-                                    />
-                                    <UserImport
-                                        openModalImport={openModalImport}
-                                        setOpenModalImport={setOpenModalImport}
-                                        fetchUser={fetchUsers}
                                     />
                                     <UserModalCreate
                                         openModalCreate={openModalCreate}

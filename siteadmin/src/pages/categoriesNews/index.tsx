@@ -11,7 +11,7 @@ import { getBreadcrumbItems } from "src/containers/layout";
 import CustomizeTab from "src/components/common/CustomizeTab";
 import Access from "src/access/access";
 import { ALL_PERMISSIONS } from "src/constants/permissions";
-import { paginationData } from "src/stores/voucher";
+import { paginationData } from "src/stores/base";
 import { convertDate, filterEmptyFields } from "src/utils";
 import { DateTimeFormat } from "src/constants";
 

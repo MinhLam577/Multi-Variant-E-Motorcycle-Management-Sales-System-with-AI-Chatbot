@@ -2,7 +2,7 @@ import { Base64 } from "js-base64";
 import { makeAutoObservable, runInAction, toJS } from "mobx";
 import secureLocalStorage from "react-secure-storage";
 import { keyStorageAccount } from "../constants";
-import { PermissionResponseType } from "./permission.store";
+import { PermissionResponseType } from "src/types/permission.type";
 
 export class AccountObservable {
     loadingAccount: boolean = true;

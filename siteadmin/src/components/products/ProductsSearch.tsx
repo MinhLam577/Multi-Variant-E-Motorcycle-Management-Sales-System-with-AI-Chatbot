@@ -15,7 +15,7 @@ import {
 import React from "react";
 import { useStore } from "src/stores";
 import debounce from "lodash/debounce";
-import { EnumProductStore, EnumProductType } from "src/stores/product.store";
+import { EnumProductStore, EnumProductType } from "src/types/product.type";
 const { Search } = Input;
 
 type TreeSelectType = {

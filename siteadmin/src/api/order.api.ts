@@ -1,22 +1,8 @@
-import { RevenueProfitStatisticsDto } from "src/stores/order.store";
+import { RevenueProfitStatisticsDto } from "src/types/order.type";
 import { ResponsePromise } from ".";
 import apiClient from "./apiClient";
 import endpoints from "./endpoints";
 const orderEndpoints = endpoints.order;
-
-export interface CreateDetailExport {
-    quantity_export: number;
-    skus_id: string;
-    detail_import_id: string;
-    warehouse_id: string;
-    order_id?: string;
-}
-
-export interface ExportOrder {
-    note?: string;
-    order_id: string;
-    detail_export: CreateDetailExport[];
-}
 
 const OrderAPI: {
     getOrderList: (query: string) => Promise<ResponsePromise>;
@@ -109,18 +95,3 @@ const OrderAPI: {
 };
 
 export default OrderAPI;
-
-// confirmOrder: async (data: ExportOrder) => {
-//     const { note, ...res } = data;
-//     const saveData: ExportOrder = {
-//         ...res,
-//     };
-//     if (note) {
-//         saveData.note = note;
-//     }
-
-//     return await apiClient.patch(
-//         orderEndpoints.confirmOrder(),
-//         JSON.stringify(saveData)
-//     );
-// },

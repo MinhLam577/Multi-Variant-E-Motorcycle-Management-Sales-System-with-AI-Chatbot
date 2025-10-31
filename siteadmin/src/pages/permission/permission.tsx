@@ -24,7 +24,7 @@ import { observer } from "mobx-react-lite";
 import AdminBreadCrumb from "src/components/common/AdminBreadCrumb";
 import { getBreadcrumbItems } from "src/containers/layout";
 import { toJS } from "mobx";
-import { PermissionResponseType } from "src/stores/permission.store";
+import { PermissionResponseType } from "src/types/permission.type";
 
 const PermissionPage = observer(() => {
     const [openModal, setOpenModal] = useState<boolean>(false);

@@ -1,7 +1,6 @@
 import {
     Col,
     Form,
-    Image,
     Input,
     Row,
     Select,
@@ -19,16 +18,14 @@ import {
     TreeSelectType,
 } from "../ModalCreateProduct.type";
 import { modalCreateProductStore } from "../ModalCreateProduct.store";
-import { EnumProductStore, EnumProductType } from "src/stores/product.store";
+import { EnumProductStore, EnumProductType } from "src/types/product.type";
 import { UploadOutlined } from "@ant-design/icons";
 import { AcceptImageTypes } from "src/constants";
 import { FormInstance } from "antd/lib";
 import { useStore } from "src/stores";
 import CustomizeEditor from "src/components/common/CustomizeEditor";
 import ReactQuill from "react-quill-new";
-import { CategoryResponseType } from "src/stores/categories.store";
-import CustomizeModal from "src/components/common/CustomizeModal";
-import { cn } from "src/lib/utils";
+import { CategoryResponseType } from "src/types/categories.type";
 import ImageModal from "src/components/common/ImageModal";
 interface IGeneralInformation {
     form: FormInstance;

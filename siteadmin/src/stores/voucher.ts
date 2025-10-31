@@ -1,49 +1,9 @@
-import { makeAutoObservable, toJS } from "mobx";
-import { ExportOrder } from "src/api/order.api";
+import { flow, makeAutoObservable } from "mobx";
 import { ResponsePromise } from "src/api";
-import { MessageStore, RootStore } from "./base";
+import { MessageStore, paginationData, RootStore } from "./base";
 import voucherApi from "src/api/voucher";
+import { TypeVoucher, Voucher } from "src/types/voucher.type";
 
-export type globalFiltersData = {
-    search?: string;
-    sortOrder?: string;
-    sortBy?: string;
-    order_status?: string;
-    payment_status?: string;
-    payment_method?: string;
-    created_from?: string;
-    created_to?: string;
-};
-
-export type TypeVoucher = {
-    id: string;
-    name_type_voucher: string;
-};
-
-export type paginationData = {
-    current: number;
-    pageSize: number;
-};
-
-interface Voucher {
-    id: string;
-    createdAt: string;
-    updatedAt: string;
-    deletedAt: string | null;
-    voucher_code: string;
-    voucher_name: string;
-    description: string;
-    uses: number;
-    limit: number;
-    max_uses_user: number;
-    discount_amount: string;
-    fixed: boolean;
-    status: string;
-    start_date: string;
-    end_date: string;
-    count_user_get: number;
-    type_voucher?: TypeVoucher;
-}
 export default class VoucherObservable implements MessageStore {
     status?: number;
     successMsg?: string;
@@ -63,7 +23,21 @@ export default class VoucherObservable implements MessageStore {
     loading: boolean = false;
     isOpenDetail: boolean = false;
     constructor(rootStore: RootStore) {
-        makeAutoObservable(this, {}, { autoBind: true });
+        makeAutoObservable(
+            this,
+            {
+                getListCustomer_no_voucher: flow,
+                getListTypeVoucher: flow,
+                getListVoucher: flow,
+                getVoucherDetail: flow,
+                setID_ListCustomer_no_voucher: flow,
+                deleteVoucherByID: flow,
+                createVoucher: flow,
+                createVoucher_give_Customer: flow,
+                editVoucher: flow,
+            },
+            { autoBind: true }
+        );
         this.rootStore = rootStore;
     }
 
@@ -159,8 +133,6 @@ export default class VoucherObservable implements MessageStore {
         }
     }
 
-    // danh sách voucher
-
     *getListTypeVoucher() {
         try {
             this.loading = true;
@@ -183,7 +155,6 @@ export default class VoucherObservable implements MessageStore {
             this.loading = false;
         }
     }
-    // * : generator function
     *deleteVoucherByID(id: string) {
         try {
             // gọi một hàm bất đồng bộ (API)

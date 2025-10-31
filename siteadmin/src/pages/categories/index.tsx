@@ -13,7 +13,7 @@ import { useStore } from "src/stores";
 import {
     CategoryResponseTypeEnum,
     globalFilterCategoryType,
-} from "src/stores/categories.store";
+} from "src/types/categories.type";
 import { observer } from "mobx-react-lite";
 import {
     processWithModals,

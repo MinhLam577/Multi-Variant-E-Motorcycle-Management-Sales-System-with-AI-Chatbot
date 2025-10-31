@@ -1,54 +1,14 @@
-import { makeAutoObservable, toJS } from "mobx";
+import { flow, makeAutoObservable, toJS } from "mobx";
 import { paginationData, RootStore } from "./base";
 import { convertDate, filterEmptyFields, getErrorMessage } from "src/utils";
 import { DateTimeFormat } from "src/constants";
 import ContactAPI from "src/api/contact.api";
-
-export type CreateContactDto = {
-    name: string;
-    phone: string;
-    email: string;
-    note?: string;
-    product_name?: string | null;
-    service: EnumContact;
-    maintenance_date?: string;
-};
-
-export type UpdateContactDto = {
-    id: string;
-    name?: string;
-    phone?: string;
-    email?: string;
-    note?: string;
-    product_name?: string | null;
-    service?: EnumContact;
-    maintenance_date?: string;
-};
-
-export enum EnumContact {
-    Quote = "Báo giá sản phẩm",
-    Order = "Đặt hàng sản phẩm",
-    Maintenance = "Đặt lịch bảo dưỡng",
-}
-export type ContactResponseType = {
-    id: string;
-    name: string;
-    phone: string;
-    email: string;
-    note: string;
-    order_product_name: string | null;
-    service: EnumContact;
-    maintenance_date: string;
-    updatedAt: string;
-    createdAt: string;
-};
-
-export type globalFilterContactType = {
-    search?: string;
-    created_from?: string;
-    created_to?: string;
-    service?: EnumContact;
-};
+import {
+    ContactResponseType,
+    CreateContactDto,
+    globalFilterContactType,
+    UpdateContactDto,
+} from "src/types/contact.type";
 
 class ContactObservable {
     rootStore: RootStore;
@@ -60,7 +20,16 @@ class ContactObservable {
     loading: boolean = false;
     constructor(rootStore: RootStore) {
         this.rootStore = rootStore;
-        makeAutoObservable(this, {}, { autoBind: true });
+        makeAutoObservable(
+            this,
+            {
+                getListContact: flow,
+                createContact: flow,
+                updateContact: flow,
+                deleteContact: flow,
+            },
+            { autoBind: true }
+        );
     }
     private validateQuery(query?: string | object): string {
         // Xử lý chuyển đổi query string thành object

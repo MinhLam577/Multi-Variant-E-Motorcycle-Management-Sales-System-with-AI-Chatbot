@@ -1,13 +1,13 @@
 import { observer } from "mobx-react-lite";
 import TableComponent from "src/containers/TableComponent";
 import { useStore } from "src/stores";
-import { SkusResponseType } from "src/stores/skus.store";
+import { SkusResponseType } from "src/types/skus.type";
 import GroupActionButton from "../GroupActionButton";
 import {
     processWithModals,
     ProcessModalName,
 } from "src/containers/processWithModals";
-import { DetailImportResponseType } from "src/stores/imports.store";
+import { DetailImportResponseType } from "src/types/import.type";
 import { Image, Tooltip, Grid } from "antd";
 import { getErrorMessage } from "src/utils";
 import { ALL_MODULES } from "src/constants/permissions";

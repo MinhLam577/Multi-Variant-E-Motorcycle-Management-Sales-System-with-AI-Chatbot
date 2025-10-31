@@ -9,7 +9,7 @@ import {
     processWithModals,
     ProcessModalName,
 } from "../../containers/processWithModals";
-import { ExportResponseType } from "src/stores/exports.store";
+import { ExportResponseType } from "src/types/export.type";
 import { ALL_MODULES } from "src/constants/permissions";
 
 interface ExportPageProps {

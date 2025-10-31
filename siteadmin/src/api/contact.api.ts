@@ -1,7 +1,7 @@
 import endpoints from "./endpoints";
 import apiClient from "./apiClient";
 import { ResponsePromise } from ".";
-import { CreateContactDto, UpdateContactDto } from "src/stores/contact.store";
+import { CreateContactDto, UpdateContactDto } from "src/types/contact.type";
 const contactEndPoint = endpoints.contact;
 
 type ContactAPIType = {

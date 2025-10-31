@@ -5,7 +5,7 @@ import {
     getSpendingEnumRangeLabel,
     SpendingEnumRange,
 } from "src/pages/customers";
-import { GenderEnum } from "src/stores/user.store";
+import { GenderEnum } from "src/types/user-staff.type";
 const { RangePicker } = DatePicker;
 
 const CustomerSearch = ({ setFilters }) => {

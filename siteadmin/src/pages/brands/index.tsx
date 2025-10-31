@@ -8,7 +8,7 @@ import { getBreadcrumbItems } from "src/containers/layout";
 import { GlobalFilterCategoriesNews } from "../categoriesNews";
 import BrandsTable from "./BrandsTable";
 import { useStore } from "src/stores";
-import { BrandResponseType, CreateBrandDto } from "src/stores/brand.store";
+import { BrandResponseType, CreateBrandDto } from "src/types/brand.type";
 import { set, toJS } from "mobx";
 import { observer } from "mobx-react-lite";
 import CustomizeModal from "src/components/common/CustomizeModal";

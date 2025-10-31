@@ -1,4 +1,4 @@
-import { makeAutoObservable, toJS } from "mobx";
+import { flow, makeAutoObservable } from "mobx";
 import { RootStore } from "./base";
 import OptionsAPI from "src/api/options.api";
 
@@ -14,7 +14,13 @@ class OptionObservable {
     rootStore: RootStore;
     constructor(rootStore: RootStore) {
         this.rootStore = rootStore;
-        makeAutoObservable(this, {}, { autoBind: true });
+        makeAutoObservable(
+            this,
+            {
+                getListOptions: flow,
+            },
+            { autoBind: true }
+        );
     }
     loading: boolean = false;
     *getListOptions() {

@@ -9,7 +9,7 @@ import { ALL_MODULES } from "src/constants/permissions";
 import apiClient from "src/api/apiClient";
 import endpoints from "src/api/endpoints";
 import { useStore } from "src/stores";
-import { PermissionResponseType } from "src/stores/permission.store";
+import { PermissionResponseType } from "src/types/permission.type";
 
 interface IProps {
     openModal: boolean;

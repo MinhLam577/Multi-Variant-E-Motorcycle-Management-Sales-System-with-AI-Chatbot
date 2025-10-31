@@ -1,34 +1,14 @@
-import { makeAutoObservable } from "mobx";
+import { flow, makeAutoObservable } from "mobx";
 import { paginationData, RootStore } from "./base";
 import BrandAPI from "src/api/brand.api";
 import { convertDate, filterEmptyFields, getErrorMessage } from "src/utils";
 import { DateTimeFormat } from "src/constants";
-
-export class CreateBrandDto {
-    name: string;
-    description?: string;
-    thumbnailUrl: string;
-    slug: string;
-}
-
-export type UpdateBrandDto = Partial<CreateBrandDto>;
-
-export type BrandResponseType = {
-    id: string;
-    name: string;
-    description: string;
-    slug: string;
-    thumbnailUrl: string;
-    created_at: Date;
-    updated_at: Date;
-};
-
-export type globalFilterBrandType = {
-    search?: string;
-    created_from?: string;
-    created_to?: string;
-};
-
+import {
+    BrandResponseType,
+    CreateBrandDto,
+    globalFilterBrandType,
+    UpdateBrandDto,
+} from "src/types/brand.type";
 class BrandObservable {
     rootStore: RootStore;
     pagination: paginationData = {
@@ -39,7 +19,16 @@ class BrandObservable {
     loading: boolean = false;
     constructor(rootStore: RootStore) {
         this.rootStore = rootStore;
-        makeAutoObservable(this, {}, { autoBind: true });
+        makeAutoObservable(
+            this,
+            {
+                getListBrands: flow,
+                createBrand: flow,
+                deleteBrand: flow,
+                updateBrand: flow,
+            },
+            { autoBind: true }
+        );
     }
     private validateQuery(query?: string | object): string {
         // Xử lý chuyển đổi query string thành object

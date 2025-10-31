@@ -26,7 +26,7 @@ import { observer } from "mobx-react-lite";
 import { EnumOrderColorStatuses, EnumOrderStatuses } from "src/constants";
 import { getBreadcrumbItems } from "src/containers/layout";
 import AdminBreadCrumb from "src/components/common/AdminBreadCrumb";
-import { RevenueProfitStatisticsDto } from "src/stores/order.store";
+import { RevenueProfitStatisticsDto } from "src/types/order.type";
 import OrderAPI from "src/api/order.api";
 import { useStore } from "src/stores";
 import { filterEmptyFields, getErrorMessage } from "src/utils";

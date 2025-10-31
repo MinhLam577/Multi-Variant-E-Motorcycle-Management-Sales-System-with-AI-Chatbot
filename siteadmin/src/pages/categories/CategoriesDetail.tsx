@@ -23,15 +23,13 @@ import {
 import { useStore } from "../../stores";
 import { observer } from "mobx-react-lite";
 import { toJS } from "mobx";
-import { CategoryResponseTypeEnum } from "../../stores/categories.store";
+import { CategoryResponseTypeEnum } from "src/types/categories.type";
 import { getErrorMessage } from "../../utils";
-import {
-    getCategoriesTreeSelect,
-    CategoryResponseType,
-} from "../../pages/products";
+
+import { getCategoriesTreeSelect } from "../products";
 import AdminBreadCrumb from "../../components/common/AdminBreadCrumb";
 import { getBreadcrumbItems } from "../../containers/layout";
-import { EnumProductStore, EnumProductType } from "../../stores/product.store";
+import { EnumProductStore, EnumProductType } from "src/types/product.type";
 export const CategoriesDetailMode = {
     View: 1,
     Add: 2,
@@ -183,8 +181,11 @@ const CategoriesDetail = ({ mode }) => {
 
     const handleCancel = () => {
         if (mode === CategoriesDetailMode.Edit) {
-            processWithModals(ProcessModalName.ConfirmCancelEditing)(() => {
-                navigate(`/categories`);
+            processWithModals({
+                modalName: ProcessModalName.ConfirmCancelEditing,
+                onOk: () => {
+                    navigate(`/categories`);
+                },
             });
         } else {
             navigate("/categories");
@@ -202,43 +203,52 @@ const CategoriesDetail = ({ mode }) => {
             ...values,
         };
         if (mode === CategoriesDetailMode.Add) {
-            processWithModals(ProcessModalName.ConfirmCreateNews)(async () => {
-                try {
-                    const response = await categoriesStore.createCategory(dto);
+            processWithModals({
+                modalName: ProcessModalName.ConfirmCreateNews,
+                onOk: async () => {
+                    try {
+                        const response =
+                            await categoriesStore.createCategory(dto);
 
-                    if (response) {
-                        // message.success("Tạo danh mục thành công.");
-                        navigate("/categories");
-                    } else {
-                        throw new Error(
-                            "Có lỗi xảy ra khi tạo danh mục sản phẩm."
+                        if (response) {
+                            // message.success("Tạo danh mục thành công.");
+                            navigate("/categories");
+                        } else {
+                            throw new Error(
+                                "Có lỗi xảy ra khi tạo danh mục sản phẩm."
+                            );
+                        }
+                    } catch (error) {
+                        console.error("Lỗi khi tạo danh mục sản phẩm:", error);
+                        const errorMessage = getErrorMessage(
+                            error,
+                            "Lỗi khi tạo danh mục sản phẩm."
                         );
+                        message.error(errorMessage);
                     }
-                } catch (error) {
-                    console.error("Lỗi khi tạo danh mục sản phẩm:", error);
-                    const errorMessage = getErrorMessage(
-                        error,
-                        "Lỗi khi tạo danh mục sản phẩm."
-                    );
-                    message.error(errorMessage);
-                }
+                },
             });
         } else if (mode === CategoriesDetailMode.Edit) {
-            // mình đang chạy vào onCallback Oki
-            processWithModals(ProcessModalName.ConfirmUpdateNews)(async () => {
-                try {
-                    const res = await categoriesStore.updateCategory(id, dto);
-                    if (res) {
-                        // message.success("Cập nhật danh mục thành công.");
-                        navigate("/categories");
+            processWithModals({
+                modalName: ProcessModalName.ConfirmUpdateNews,
+                onOk: async () => {
+                    try {
+                        const res = await categoriesStore.updateCategory(
+                            id,
+                            dto
+                        );
+                        if (res) {
+                            // message.success("Cập nhật danh mục thành công.");
+                            navigate("/categories");
+                        }
+                    } catch (error) {
+                        const errorMessage = getErrorMessage(
+                            error,
+                            "Lỗi khi cập nhật danh mục sản phẩm."
+                        );
+                        message.error(errorMessage);
                     }
-                } catch (error) {
-                    const errorMessage = getErrorMessage(
-                        error,
-                        "Lỗi khi cập nhật danh mục sản phẩm."
-                    );
-                    message.error(errorMessage);
-                }
+                },
             });
         }
     };
@@ -348,7 +358,7 @@ const CategoriesDetail = ({ mode }) => {
                         <TreeSelect
                             allowClear
                             showSearch
-                            disable={isReadOnly()?.toString()}
+                            disabled={isReadOnly()}
                             treeData={[
                                 {
                                     title: "Root Category",

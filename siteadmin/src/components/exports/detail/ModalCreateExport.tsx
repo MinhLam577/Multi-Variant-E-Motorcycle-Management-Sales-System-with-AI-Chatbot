@@ -16,14 +16,14 @@ import { DeleteOutlined } from "@ant-design/icons";
 import { Add } from "iconsax-react";
 import { AntdTableLocale } from "src/constants";
 import { filterEmptyFields, formatVNDMoney } from "src/utils";
-import { OrderDetailResponseType } from "src/stores/order.store";
+import { OrderDetailResponseType } from "src/types/order.type";
 import { toJS } from "mobx";
 import { useStore } from "src/stores";
 import { lotOptionType } from "src/components/orders/detail/ModalExportOrder";
-import { SkusDetailImportResponseType } from "src/stores/skus.store";
+import { SkusDetailImportResponseType } from "src/types/skus.type";
 import { FormInstance } from "antd/lib";
-import { CreateExportDto } from "src/stores/exports.store";
-import { CreateDetailExport } from "src/api/order.api";
+import { CreateExportDto } from "src/types/export.type";
+import { CreateDetailExport } from "src/types/order.type";
 
 interface ModalCreateExportProps {
     open: boolean;

@@ -1,4 +1,4 @@
-import { UpdateUserDto } from "src/stores/user.store";
+import { UpdateUserDto } from "src/types/user-staff.type";
 import { ResponsePromise } from ".";
 import apiClient from "./apiClient";
 import endpoints from "./endpoints";
