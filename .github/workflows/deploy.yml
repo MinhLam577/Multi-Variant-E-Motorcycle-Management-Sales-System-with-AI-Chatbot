@@ -26,9 +26,6 @@ jobs:
                   npm install -g netlify-cli
 
             - name: Build
-              env:
-                  NODE_OPTIONS: --max-old-space-size=6144 # Tăng lên 6GB
-                  GENERATE_SOURCEMAP: false # Tắt source map
               run: npm run build
 
             - name: Deploy to Netlify
