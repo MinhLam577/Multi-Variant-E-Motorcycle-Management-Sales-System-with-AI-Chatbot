@@ -14,7 +14,7 @@ import PropTypes from "prop-types";
 import apiClient from "../../api/apiClient";
 import endpoints from "../../api/endpoints";
 import { useParams } from "react-router";
-import { ApiResponse } from "src/types/api-response.type";
+import { ApiResponse } from "@/types/api-response.type";
 
 const AddressModalCreate = (props) => {
     const { openModalCreate, setOpenModalCreate } = props;

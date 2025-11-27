@@ -2,19 +2,19 @@ import { CopyOutlined } from "@ant-design/icons";
 import { Checkbox, Tag } from "antd";
 import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
-import CustomizeModal from "src/components/common/CustomizeModal";
-import OrderSearch from "src/components/orders/OrderSearch";
-import { handleCopy } from "src/components/orders/OrdersTable";
+import CustomizeModal from "@/components/common/CustomizeModal";
+import OrderSearch from "@/components/orders/OrderSearch";
+import { handleCopy } from "@/components/orders/OrdersTable";
 import {
     EnumOrderColorStatuses,
     EnumOrderStatuses,
     EnumOrderStatusesValue,
-} from "src/constants";
-import TableComponent from "src/containers/TableComponent";
-import { useStore } from "src/stores";
-import { globalFiltersDataOrder } from "src/types/order.type";
-import { paginationData } from "src/stores/base";
-import { formatVNDMoney } from "src/utils";
+} from "@/constants";
+import TableComponent from "@/containers/TableComponent";
+import { useStore } from "@/stores";
+import { globalFiltersDataOrder } from "@/types/order.type";
+import { paginationData } from "@/stores/base";
+import { formatVNDMoney } from "@/utils";
 
 export interface ModalSelectOrderProps {
     open: boolean;

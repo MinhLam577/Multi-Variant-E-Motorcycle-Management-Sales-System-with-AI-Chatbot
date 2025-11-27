@@ -1,7 +1,7 @@
 import { Col, DatePicker, Form, Input, Row, Select } from "antd";
 import { debounce } from "lodash";
 import { useCallback } from "react";
-import { ALL_MODULES } from "src/constants/permissions";
+import { ALL_MODULES } from "@/constants/permissions";
 
 const PermissionSearch = ({ setFilters }) => {
     const debounceInputChange: (value: string) => void = useCallback(

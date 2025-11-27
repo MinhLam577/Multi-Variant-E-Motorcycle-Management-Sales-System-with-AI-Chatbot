@@ -1,13 +1,13 @@
 import { flow, makeAutoObservable } from "mobx";
 import { paginationData, RootStore } from "./base";
-import CategoriesAPI from "src/api/categories.api";
-import { filterEmptyFields, getErrorMessage } from "src/utils";
-import { EnumProductStore } from "src/types/product.type";
+import CategoriesAPI from "@/api/categories.api";
+import { filterEmptyFields, getErrorMessage } from "@/utils";
+import { EnumProductStore } from "@/types/product.type";
 import {
     CategoryResponseType,
     CategoryResponseTypeEnum,
     globalFilterCategoryType,
-} from "src/types/categories.type";
+} from "@/types/categories.type";
 
 export default class CategoriesObservable {
     rootStore: RootStore;
@@ -167,7 +167,6 @@ export default class CategoriesObservable {
             this.loading = true;
             const response = yield CategoriesAPI.update(id, data);
             const { data: resData, status, message } = response;
-            console.log("response", message);
 
             const success_status = [200, 201, 204];
             if (success_status.includes(status)) {

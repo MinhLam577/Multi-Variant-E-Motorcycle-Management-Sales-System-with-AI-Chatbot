@@ -1,12 +1,12 @@
 import { flow, makeAutoObservable } from "mobx";
 import { paginationData } from "./base";
 import { RootStore } from "./base";
-import { filterEmptyFields, getErrorMessage } from "src/utils";
-import PermissionAPI from "src/api/permission.api";
+import { filterEmptyFields, getErrorMessage } from "@/utils";
+import PermissionAPI from "@/api/permission.api";
 import {
     globalFilterPermissionType,
     PermissionResponseType,
-} from "src/types/permission.type";
+} from "@/types/permission.type";
 
 export default class PermissionObservable {
     status: number = null;

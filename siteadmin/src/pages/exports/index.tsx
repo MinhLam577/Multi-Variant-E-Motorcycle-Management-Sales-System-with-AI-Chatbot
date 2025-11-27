@@ -2,22 +2,22 @@ import { Button } from "antd";
 import { toJS } from "mobx";
 import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
-import Access from "src/access/access";
-import AdminBreadCrumb from "src/components/common/AdminBreadCrumb";
-import CustomizeTab from "src/components/common/CustomizeTab";
-import ModalCreateExport from "src/components/exports/detail/ModalCreateExport";
-import ModalUpdateExport from "src/components/exports/detail/ModalUpdateExport";
-import ExportSearch from "src/components/exports/ExportSearch";
-import ExportTable from "src/components/exports/ExportTable";
-import { SelectType } from "src/components/products/detail/ModalCreateProduct/ModalCreateProduct.type";
-import { ALL_PERMISSIONS } from "src/constants/permissions";
-import { getBreadcrumbItems } from "src/containers/layout";
-import { useStore } from "src/stores";
+import Access from "@/access/access";
+import AdminBreadCrumb from "@/components/common/AdminBreadCrumb";
+import CustomizeTab from "@/components/common/CustomizeTab";
+import ModalCreateExport from "@/components/exports/detail/ModalCreateExport";
+import ModalUpdateExport from "@/components/exports/detail/ModalUpdateExport";
+import ExportSearch from "@/components/exports/ExportSearch";
+import ExportTable from "@/components/exports/ExportTable";
+import { SelectType } from "@/components/products/detail/ModalCreateProduct/ModalCreateProduct.type";
+import { ALL_PERMISSIONS } from "@/constants/permissions";
+import { getBreadcrumbItems } from "@/containers/layout";
+import { useStore } from "@/stores";
 import {
     CreateExportDto,
     ExportResponseType,
     globalFilterExportDataType,
-} from "src/types/export.type";
+} from "@/types/export.type";
 
 interface ExportPageProps {}
 
@@ -153,7 +153,6 @@ const ExportPage: React.FC<ExportPageProps> = () => {
                 });
             }
         } catch (e) {
-            console.log(e);
             const errorMessage =
                 e instanceof Error
                     ? e.message

@@ -1,7 +1,7 @@
 import { Col, DatePicker, Form, Input, Row, Select } from "antd";
 import { debounce } from "lodash";
 import { useCallback } from "react";
-import { EnumContact } from "src/types/contact.type";
+import { EnumContact } from "@/types/contact.type";
 const { RangePicker } = DatePicker;
 
 const ContactSearch = ({ setFilters }) => {

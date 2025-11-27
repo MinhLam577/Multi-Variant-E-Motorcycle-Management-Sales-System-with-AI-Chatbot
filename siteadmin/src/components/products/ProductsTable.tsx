@@ -1,15 +1,15 @@
 import { Button, Dropdown, Grid, Image, Tag, Tooltip } from "antd";
 import GroupActionButton from "../GroupActionButton";
-import TableComponent from "src/containers/TableComponent";
+import TableComponent from "@/containers/TableComponent";
 import { formatVNDMoney } from "../../utils";
 import React from "react";
-import { useStore } from "src/stores";
+import { useStore } from "@/stores";
 import { toJS } from "mobx";
-import { Status, StatusColor } from "src/constants";
+import { Status, StatusColor } from "@/constants";
 import { observer } from "mobx-react-lite";
 import { Breakpoint } from "antd/lib";
-import { productTableFilterDataType } from "src/pages/products";
-import { ALL_MODULES } from "src/constants/permissions";
+import { productTableFilterDataType } from "@/pages/products";
+import { ALL_MODULES } from "@/constants/permissions";
 import {
     CloseCircleOutlined,
     DeleteOutlined,

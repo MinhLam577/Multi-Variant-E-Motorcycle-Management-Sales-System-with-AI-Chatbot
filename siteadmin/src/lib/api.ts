@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig } from "axios";
 import { tokenUtils } from "./utils";
 
 export const axiosInstance = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_URL, // Đặt URL backend của bạn
+    baseURL: import.meta.env.NEXT_PUBLIC_API_URL, // Đặt URL backend của bạn
     headers: {
         "Content-Type": "application/json",
     },

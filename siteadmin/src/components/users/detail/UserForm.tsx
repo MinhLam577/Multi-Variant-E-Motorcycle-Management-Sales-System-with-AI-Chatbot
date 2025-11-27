@@ -17,13 +17,10 @@ import {
 } from "../../../constants";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router";
-import { useStore } from "src/stores";
-import {
-    UpdateUserDto,
-    UserStaffResponseType,
-} from "src/types/user-staff.type";
+import { useStore } from "@/stores";
+import { UpdateUserDto, UserStaffResponseType } from "@/types/user-staff.type";
 import { observer } from "mobx-react-lite";
-import UserAPI from "src/api/user.api";
+import UserAPI from "@/api/user.api";
 interface UserFormProps {
     userBasicInfo: UserStaffResponseType;
 }

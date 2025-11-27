@@ -3,8 +3,8 @@ import CustomizeModal from "../../common/CustomizeModal";
 import { AntdTableLocale } from "../../../constants";
 import { formatVNDMoney, getErrorMessage } from "../../../utils";
 import React from "react";
-import { useStore } from "src/stores";
-import { OrderDetailResponseType } from "src/types/order.type";
+import { useStore } from "@/stores";
+import { OrderDetailResponseType } from "@/types/order.type";
 
 interface ModalExportOrderProps {
     orderDetail: OrderDetailResponseType;

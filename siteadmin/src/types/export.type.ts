@@ -1,6 +1,6 @@
-import { DetailImportResponseType } from "src/types/import.type";
+import { DetailImportResponseType } from "@/types/import.type";
 import { SkusDataResponseType } from "./product.type";
-import { warehouseResponseType } from "src/stores/warehouse.store";
+import { warehouseResponseType } from "@/stores/warehouse.store";
 import { CreateDetailExport } from "./order.type";
 
 export type CreateExportDto = {

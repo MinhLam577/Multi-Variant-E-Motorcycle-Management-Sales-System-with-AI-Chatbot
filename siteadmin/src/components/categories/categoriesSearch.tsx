@@ -1,13 +1,13 @@
 import { Col, DatePicker, Form, Input, Row, Select } from "antd";
 import { debounce } from "lodash";
 import { useCallback } from "react";
-import { EnumProductStore, EnumProductType } from "src/types/product.type";
+import { EnumProductStore, EnumProductType } from "@/types/product.type";
 import { SelectType } from "../products/detail/ModalCreateProduct/ModalCreateProduct.type";
 
 import {
     CategoryResponseLabel,
     CategoryResponseTypeEnum,
-} from "src/types/categories.type";
+} from "@/types/categories.type";
 const { RangePicker } = DatePicker;
 
 const CategoriesSearch = ({ setFilters }) => {

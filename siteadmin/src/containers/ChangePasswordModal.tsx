@@ -100,9 +100,4 @@ const ChangePasswordModal = ({ open = false, cancelCallback }) => {
         </>
     );
 };
-
-ChangePasswordModal.propTypes = {
-    open: PropTypes.bool,
-    cancelCallback: PropTypes.func,
-};
 export default ChangePasswordModal;

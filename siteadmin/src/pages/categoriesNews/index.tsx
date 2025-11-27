@@ -2,18 +2,18 @@ import { PlusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { Button, Col, message, Row } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import NewsSearch from "src/components/categories_blog/NewsSearch";
+import NewsSearch from "@/components/categories_blog/NewsSearch";
 import NewsTable from "../../components/categories_blog/NewsTable";
 import apiClient from "../../api/apiClient";
 import endpoints from "../../api/endpoints";
-import AdminBreadCrumb from "src/components/common/AdminBreadCrumb";
-import { getBreadcrumbItems } from "src/containers/layout";
-import CustomizeTab from "src/components/common/CustomizeTab";
-import Access from "src/access/access";
-import { ALL_PERMISSIONS } from "src/constants/permissions";
-import { paginationData } from "src/stores/base";
-import { convertDate, filterEmptyFields } from "src/utils";
-import { DateTimeFormat } from "src/constants";
+import AdminBreadCrumb from "@/components/common/AdminBreadCrumb";
+import { getBreadcrumbItems } from "@/containers/layout";
+import CustomizeTab from "@/components/common/CustomizeTab";
+import Access from "@/access/access";
+import { ALL_PERMISSIONS } from "@/constants/permissions";
+import { paginationData } from "@/stores/base";
+import { convertDate, filterEmptyFields } from "@/utils";
+import { DateTimeFormat } from "@/constants";
 
 export interface GlobalFilterCategoriesNews {
     search?: string;

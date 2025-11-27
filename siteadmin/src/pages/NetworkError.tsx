@@ -2,7 +2,7 @@ import { Button, Result } from "antd";
 import { useAuth } from "../contexts/AuthProvider";
 import { useNavigate } from "react-router";
 import { useEffect } from "react";
-import apiClient from "src/api/apiClient";
+import apiClient from "@/api/apiClient";
 
 const NetworkError = () => {
     const navigate = useNavigate();

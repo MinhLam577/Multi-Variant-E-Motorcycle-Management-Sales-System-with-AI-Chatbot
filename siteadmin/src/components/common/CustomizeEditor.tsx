@@ -8,10 +8,10 @@ import {
     useRef,
     useState,
 } from "react";
-import { resizeImage } from "src/utils";
-import BaseAPI from "src/api/base";
-import { AcceptImageTypes } from "src/constants";
-import { useStore } from "src/stores";
+import { resizeImage } from "@/utils";
+import BaseAPI from "@/api/base";
+import { AcceptImageTypes } from "@/constants";
+import { useStore } from "@/stores";
 import { observer } from "mobx-react-lite";
 import CustomizeModal from "./CustomizeModal";
 import { Button, Form, Select, Image, FormInstance } from "antd";

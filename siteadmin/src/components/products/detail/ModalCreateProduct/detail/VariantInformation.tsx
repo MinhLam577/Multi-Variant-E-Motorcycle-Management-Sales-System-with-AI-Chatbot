@@ -1,7 +1,7 @@
 import { Col, Form, FormInstance, Image, Input, Row } from "antd";
 import { observer } from "mobx-react-lite";
 import { useCallback, useEffect, useState } from "react";
-import { CheckFileInput, generateUUIDV4 } from "src/utils";
+import { CheckFileInput, generateUUIDV4 } from "@/utils";
 import { modalCreateProductStore } from "../ModalCreateProduct.store";
 import { ColumnsType } from "antd/es/table";
 import {
@@ -9,7 +9,7 @@ import {
     IVariantCombination,
     SelectType,
 } from "../ModalCreateProduct.type";
-import { AcceptImageTypes } from "src/constants";
+import { AcceptImageTypes } from "@/constants";
 import FormListSelectOrInput from "../../FormListSelectOrInput";
 import {
     DeleteOutlined,
@@ -17,9 +17,9 @@ import {
     UploadOutlined,
 } from "@ant-design/icons";
 import { Table } from "antd/lib";
-import CustomizeModal from "src/components/common/CustomizeModal";
+import CustomizeModal from "@/components/common/CustomizeModal";
 import debounce from "lodash.debounce";
-import { useStore } from "src/stores";
+import { useStore } from "@/stores";
 const VariantInformation: React.FC<{
     defaultForm: FormInstance;
     form: FormInstance;
@@ -770,8 +770,7 @@ const VariantInformation: React.FC<{
                                                                         ]}
                                                                         rules={[
                                                                             {
-                                                                                required:
-                                                                                    true,
+                                                                                required: true,
                                                                                 message: `Vui lòng nhập số lượng kho biến thể`,
                                                                             },
                                                                         ]}

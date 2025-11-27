@@ -29,7 +29,7 @@ import UploadAvatarGetUrlWithImgCrop, {
 import { useStore } from "../stores";
 import { regexPhone, regexUsername } from "../utils/regex";
 import { runInAction } from "mobx";
-import { LoginStatus, UpdateProfileStatus } from "src/types/userLogin.type";
+import { LoginStatus, UpdateProfileStatus } from "@/types/userLogin.type";
 import { Navigate, useNavigate } from "react-router";
 const Profile = () => {
     const [form] = Form.useForm();
@@ -49,7 +49,6 @@ const Profile = () => {
             navigate("/login");
             return;
         }
-        console.log("user_Data", user_data);
         form.setFieldsValue(user_data);
         setFormInit(user_data);
     };

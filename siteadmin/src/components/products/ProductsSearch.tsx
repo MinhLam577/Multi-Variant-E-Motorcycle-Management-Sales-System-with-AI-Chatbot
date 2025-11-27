@@ -13,9 +13,9 @@ import {
     GetProps,
 } from "antd";
 import React from "react";
-import { useStore } from "src/stores";
+import { useStore } from "@/stores";
 import debounce from "lodash/debounce";
-import { EnumProductStore, EnumProductType } from "src/types/product.type";
+import { EnumProductStore, EnumProductType } from "@/types/product.type";
 const { Search } = Input;
 
 type TreeSelectType = {

@@ -1,15 +1,15 @@
 import { flow, makeAutoObservable } from "mobx";
 import { RootStore } from "./base";
 import { paginationData } from "./base";
-import { convertDate, filterEmptyFields } from "src/utils";
-import { DateTimeFormat, SUCCESS_STATUSES } from "src/constants";
-import ExportAPI from "src/api/exports.api";
+import { convertDate, filterEmptyFields } from "@/utils";
+import { DateTimeFormat, SUCCESS_STATUSES } from "@/constants";
+import ExportAPI from "@/api/exports.api";
 import {
     CreateExportDto,
     ExportResponseType,
     globalFilterExportDataType,
     UpdateExportDto,
-} from "src/types/export.type";
+} from "@/types/export.type";
 
 export default class ExportObservable {
     rootStore: RootStore;

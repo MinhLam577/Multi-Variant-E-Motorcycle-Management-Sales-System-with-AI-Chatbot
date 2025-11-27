@@ -1,14 +1,14 @@
 import { flow, makeAutoObservable } from "mobx";
 import { paginationData, RootStore } from "./base";
-import BrandAPI from "src/api/brand.api";
-import { convertDate, filterEmptyFields, getErrorMessage } from "src/utils";
-import { DateTimeFormat } from "src/constants";
+import BrandAPI from "@/api/brand.api";
+import { convertDate, filterEmptyFields, getErrorMessage } from "@/utils";
+import { DateTimeFormat } from "@/constants";
 import {
     BrandResponseType,
     CreateBrandDto,
     globalFilterBrandType,
     UpdateBrandDto,
-} from "src/types/brand.type";
+} from "@/types/brand.type";
 class BrandObservable {
     rootStore: RootStore;
     pagination: paginationData = {

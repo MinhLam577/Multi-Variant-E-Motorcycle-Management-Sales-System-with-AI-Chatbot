@@ -1,8 +1,8 @@
 import { flow, makeAutoObservable } from "mobx";
-import { ResponsePromise } from "src/api";
+import { ResponsePromise } from "@/api";
 import { MessageStore, paginationData, RootStore } from "./base";
-import voucherApi from "src/api/voucher";
-import { TypeVoucher, Voucher } from "src/types/voucher.type";
+import voucherApi from "@/api/voucher";
+import { TypeVoucher, Voucher } from "@/types/voucher.type";
 
 export default class VoucherObservable implements MessageStore {
     status?: number;

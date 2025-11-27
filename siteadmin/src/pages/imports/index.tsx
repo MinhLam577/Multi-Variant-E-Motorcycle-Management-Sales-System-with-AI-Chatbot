@@ -13,21 +13,21 @@ import {
 import { Add } from "iconsax-react";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
-import AdminBreadCrumb from "src/components/common/AdminBreadCrumb";
-import CustomizeModal from "src/components/common/CustomizeModal";
-import CustomizeTab from "src/components/common/CustomizeTab";
-import ImportSearch from "src/components/imports/ImportSearch";
-import ImportTable from "src/components/imports/ImportTable";
-import { AntdTableLocale } from "src/constants";
-import { getBreadcrumbItems } from "src/containers/layout";
-import { useStore } from "src/stores";
+import AdminBreadCrumb from "@/components/common/AdminBreadCrumb";
+import CustomizeModal from "@/components/common/CustomizeModal";
+import CustomizeTab from "@/components/common/CustomizeTab";
+import ImportSearch from "@/components/imports/ImportSearch";
+import ImportTable from "@/components/imports/ImportTable";
+import { AntdTableLocale } from "@/constants";
+import { getBreadcrumbItems } from "@/containers/layout";
+import { useStore } from "@/stores";
 import {
     CreateDetailImportDto,
     CreateImportDto,
     globalFiltersImportDataType,
     ImportResponseType,
-} from "src/types/import.type";
-import { paginationData } from "src/stores/base";
+} from "@/types/import.type";
+import { paginationData } from "@/stores/base";
 import { productTableFilterDataType } from "../products";
 import {
     globalFilterType,
@@ -35,7 +35,7 @@ import {
     SkusDetailImportDtoV2,
     UpdateDetailImportDto,
     UpdateImportDto,
-} from "src/types/product.type";
+} from "@/types/product.type";
 import { ColumnsType } from "antd/es/table";
 import {
     DeleteOutlined,
@@ -44,12 +44,12 @@ import {
     SearchOutlined,
 } from "@ant-design/icons";
 import { toJS } from "mobx";
-import { filterEmptyFields, generateUUIDV4, getErrorMessage } from "src/utils";
+import { filterEmptyFields, generateUUIDV4, getErrorMessage } from "@/utils";
 import { FormInstance } from "antd/lib";
 import TextArea from "antd/es/input/TextArea";
-import { SelectType } from "src/components/products/detail/ModalCreateProduct/ModalCreateProduct.type";
-import Access from "src/access/access";
-import { ALL_PERMISSIONS } from "src/constants/permissions";
+import { SelectType } from "@/components/products/detail/ModalCreateProduct/ModalCreateProduct.type";
+import Access from "@/access/access";
+import { ALL_PERMISSIONS } from "@/constants/permissions";
 
 interface ImportPageProps {}
 
@@ -442,8 +442,7 @@ const ImportPage: React.FC<ImportPageProps> = () => {
                                                                     ]}
                                                                     rules={[
                                                                         {
-                                                                            required:
-                                                                                true,
+                                                                            required: true,
                                                                             message:
                                                                                 "Vui lòng chọn kho",
                                                                         },
@@ -482,8 +481,7 @@ const ImportPage: React.FC<ImportPageProps> = () => {
                                                                     ]}
                                                                     rules={[
                                                                         {
-                                                                            required:
-                                                                                true,
+                                                                            required: true,
                                                                             message:
                                                                                 "Vui lòng nhập số lượng nhập",
                                                                         },

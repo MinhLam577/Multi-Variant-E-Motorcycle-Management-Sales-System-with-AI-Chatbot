@@ -1,14 +1,14 @@
 import { flow, makeAutoObservable } from "mobx";
 import { paginationData, RootStore } from "./base";
-import ImportAPI from "src/api/imports.api";
-import { convertDate, filterEmptyFields } from "src/utils";
-import { DateTimeFormat } from "src/constants";
-import { UpdateImportDto } from "src/types/product.type";
+import ImportAPI from "@/api/imports.api";
+import { convertDate, filterEmptyFields } from "@/utils";
+import { DateTimeFormat } from "@/constants";
+import { UpdateImportDto } from "@/types/product.type";
 import {
     CreateImportDto,
     globalFiltersImportDataType,
     ImportResponseType,
-} from "src/types/import.type";
+} from "@/types/import.type";
 
 export default class ImportObservable {
     rootStore: RootStore;

@@ -23,13 +23,13 @@ import {
 import { useStore } from "../../stores";
 import { observer } from "mobx-react-lite";
 import { toJS } from "mobx";
-import { CategoryResponseTypeEnum } from "src/types/categories.type";
+import { CategoryResponseTypeEnum } from "@/types/categories.type";
 import { getErrorMessage } from "../../utils";
 
 import { getCategoriesTreeSelect } from "../products";
 import AdminBreadCrumb from "../../components/common/AdminBreadCrumb";
 import { getBreadcrumbItems } from "../../containers/layout";
-import { EnumProductStore, EnumProductType } from "src/types/product.type";
+import { EnumProductStore, EnumProductType } from "@/types/product.type";
 export const CategoriesDetailMode = {
     View: 1,
     Add: 2,

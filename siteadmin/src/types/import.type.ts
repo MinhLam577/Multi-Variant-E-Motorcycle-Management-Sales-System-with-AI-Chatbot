@@ -1,4 +1,4 @@
-import { warehouseResponseType } from "src/stores/warehouse.store";
+import { warehouseResponseType } from "@/stores/warehouse.store";
 import { SkusDataResponseType } from "./product.type";
 
 export type globalFiltersImportDataType = {

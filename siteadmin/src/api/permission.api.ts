@@ -1,4 +1,4 @@
-import { IPermission } from "src/types/backend";
+import { IPermission } from "@/types/backend";
 import apiClient from "./apiClient";
 import endpoints from "./endpoints";
 

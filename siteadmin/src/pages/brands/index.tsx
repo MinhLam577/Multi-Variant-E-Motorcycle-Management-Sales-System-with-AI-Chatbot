@@ -1,29 +1,29 @@
 import { PlusCircleOutlined, UploadOutlined } from "@ant-design/icons";
 import { Button, Form, Image, Input, Modal, Upload, UploadFile } from "antd";
 import { useEffect, useState } from "react";
-import NewsSearch from "src/components/categories_blog/NewsSearch";
-import AdminBreadCrumb from "src/components/common/AdminBreadCrumb";
-import CustomizeTab from "src/components/common/CustomizeTab";
-import { getBreadcrumbItems } from "src/containers/layout";
+import NewsSearch from "@/components/categories_blog/NewsSearch";
+import AdminBreadCrumb from "@/components/common/AdminBreadCrumb";
+import CustomizeTab from "@/components/common/CustomizeTab";
+import { getBreadcrumbItems } from "@/containers/layout";
 import { GlobalFilterCategoriesNews } from "../categoriesNews";
 import BrandsTable from "./BrandsTable";
-import { useStore } from "src/stores";
-import { BrandResponseType, CreateBrandDto } from "src/types/brand.type";
+import { useStore } from "@/stores";
+import { BrandResponseType, CreateBrandDto } from "@/types/brand.type";
 import { set, toJS } from "mobx";
 import { observer } from "mobx-react-lite";
-import CustomizeModal from "src/components/common/CustomizeModal";
-import { AcceptImageTypes } from "src/constants";
+import CustomizeModal from "@/components/common/CustomizeModal";
+import { AcceptImageTypes } from "@/constants";
 import {
     convertBase64ToFile,
     filterEmptyFields,
     getBase64,
     getErrorMessage,
-} from "src/utils";
-import BaseAPI from "src/api/base";
+} from "@/utils";
+import BaseAPI from "@/api/base";
 import "./index.css";
 import { UploadChangeParam } from "antd/lib/upload";
-import Access from "src/access/access";
-import { ALL_PERMISSIONS } from "src/constants/permissions";
+import Access from "@/access/access";
+import { ALL_PERMISSIONS } from "@/constants/permissions";
 
 const BrandsPage = () => {
     const [globalFilters, setGlobalFilters] =

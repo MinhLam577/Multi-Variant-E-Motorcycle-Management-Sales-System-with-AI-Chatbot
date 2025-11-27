@@ -1,10 +1,10 @@
 import { flow, makeAutoObservable } from "mobx";
 
 import { paginationData, RootStore } from "./base";
-import voucherApi from "src/api/voucher";
-import { IPermission, IRole } from "src/types/backend";
-import RoleApi from "src/api/setting";
-import { ResponsePromise } from "src/api";
+import voucherApi from "@/api/voucher";
+import { IPermission, IRole } from "@/types/backend";
+import RoleApi from "@/api/setting";
+import { ResponsePromise } from "@/api";
 
 export default class SettingObservable {
     status: number | null = null;

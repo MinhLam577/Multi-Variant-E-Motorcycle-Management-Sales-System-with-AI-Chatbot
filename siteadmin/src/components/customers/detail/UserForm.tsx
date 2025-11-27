@@ -26,7 +26,7 @@ import dayjs from "dayjs";
 import apiClient from "../../../api/apiClient";
 import endpoints from "../../../api/endpoints";
 import { useNavigate } from "react-router";
-import { ApiResponse } from "src/types/api-response.type";
+import { ApiResponse } from "@/types/api-response.type";
 
 const formItemLayout = {
     labelCol: {

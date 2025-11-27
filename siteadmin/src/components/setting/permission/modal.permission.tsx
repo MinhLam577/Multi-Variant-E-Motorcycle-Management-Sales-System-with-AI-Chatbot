@@ -5,11 +5,11 @@ import {
 } from "@ant-design/pro-components";
 import { Col, Form, Row, message } from "antd";
 import { isMobile } from "react-device-detect";
-import { ALL_MODULES } from "src/constants/permissions";
-import apiClient from "src/api/apiClient";
-import endpoints from "src/api/endpoints";
-import { useStore } from "src/stores";
-import { PermissionResponseType } from "src/types/permission.type";
+import { ALL_MODULES } from "@/constants/permissions";
+import apiClient from "@/api/apiClient";
+import endpoints from "@/api/endpoints";
+import { useStore } from "@/stores";
+import { PermissionResponseType } from "@/types/permission.type";
 
 interface IProps {
     openModal: boolean;
@@ -112,7 +112,7 @@ const ModalPermission = (props: IProps) => {
                     },
 
                     afterClose: () => handleReset(),
-                    destroyOnClose: true,
+                    destroyOnHidden: true,
                     width: isMobile ? "100%" : 900,
                     maskClosable: false,
                     okText: <>{dataInit?.id ? "Cập nhật" : "Tạo mới"}</>,

@@ -1,4 +1,4 @@
-import { RoleEnum } from "src/constants";
+import { RoleEnum } from "@/constants";
 
 export type ReceiveAddressResponseType = {
     id: string;

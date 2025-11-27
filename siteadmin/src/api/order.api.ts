@@ -1,4 +1,4 @@
-import { RevenueProfitStatisticsDto } from "src/types/order.type";
+import { RevenueProfitStatisticsDto } from "@/types/order.type";
 import { ResponsePromise } from ".";
 import apiClient from "./apiClient";
 import endpoints from "./endpoints";

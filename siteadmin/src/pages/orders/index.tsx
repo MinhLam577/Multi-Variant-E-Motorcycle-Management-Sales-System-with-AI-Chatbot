@@ -1,18 +1,18 @@
 import { Drawer, Form } from "antd";
 import { useEffect, useState } from "react";
 
-import OrderSearch from "src/components/orders/OrderSearch";
-import OrdersTable from "src/components/orders/OrdersTable";
+import OrderSearch from "@/components/orders/OrderSearch";
+import OrdersTable from "@/components/orders/OrdersTable";
 import OrderDetail from "./OrderDetail";
 import { useStore } from "../../stores";
 import { observer } from "mobx-react-lite";
 import OrderStatusSearch from "../../components/orders/OrderStatusSearch";
 import { getErrorMessage } from "../../utils";
-import AdminBreadCrumb from "src/components/common/AdminBreadCrumb";
-import { getBreadcrumbItems } from "src/containers/layout";
-import CustomizeTab from "src/components/common/CustomizeTab";
-import { globalFiltersDataOrder } from "src/types/order.type";
-import { paginationData } from "src/stores/base";
+import AdminBreadCrumb from "@/components/common/AdminBreadCrumb";
+import { getBreadcrumbItems } from "@/containers/layout";
+import CustomizeTab from "@/components/common/CustomizeTab";
+import { globalFiltersDataOrder } from "@/types/order.type";
+import { paginationData } from "@/stores/base";
 const Orders = () => {
     const store = useStore();
     const orderStore = store.orderObservable;
@@ -69,7 +69,6 @@ const Orders = () => {
         try {
             await orderStore.updateOrderStatus(id);
         } catch (e: any) {
-            console.log("Error updating order status:", e);
             const errorMessage = getErrorMessage(
                 e,
                 "Không thể cập nhật trạng thái đơn hàng."
@@ -82,7 +81,6 @@ const Orders = () => {
         try {
             await orderStore.confirmOrder(id);
         } catch (e: any) {
-            console.log("Error confirming order:", e);
             const errorMessage = getErrorMessage(
                 e,
                 "Không thể xác nhận đơn hàng."
@@ -95,7 +93,6 @@ const Orders = () => {
         try {
             await orderStore.exportOrder(id);
         } catch (e: any) {
-            console.log("Error exporting order:", e);
             const errorMessage = getErrorMessage(e, "Không thể xuất đơn hàng.");
             store.setStatusMessage(500, errorMessage, "");
         }
@@ -105,7 +102,6 @@ const Orders = () => {
         try {
             await orderStore.handOverOrder(id);
         } catch (e: any) {
-            console.log("Error handing over order:", e);
             const errorMessage = getErrorMessage(
                 e,
                 "Không thể bàn giao đơn hàng."
@@ -118,7 +114,6 @@ const Orders = () => {
         try {
             await orderStore.deliverOrder(id);
         } catch (e: any) {
-            console.log("Error handing over order:", e);
             const errorMessage = getErrorMessage(
                 e,
                 "Không thể cật nhật trạng thái vận chuyển hàng."
@@ -131,7 +126,6 @@ const Orders = () => {
         try {
             await orderStore.shipOrder(id);
         } catch (e: any) {
-            console.log("Error shipping order:", e);
             const errorMessage = getErrorMessage(
                 e,
                 "Không thể cập nhật trạng thái giao hàng."
@@ -144,7 +138,6 @@ const Orders = () => {
         try {
             await orderStore.shipSuccess(id);
         } catch (e: any) {
-            console.log("Error shipping success order:", e);
             const errorMessage = getErrorMessage(
                 e,
                 "Không thể cập nhật trạng thái giao hàng thành công."
@@ -157,7 +150,6 @@ const Orders = () => {
         try {
             await orderStore.cancelOrder(id, reason);
         } catch (e: any) {
-            console.log("Error canceling order:", e);
             const errorMessage = getErrorMessage(e, "Không thể hủy đơn hàng.");
             store.setStatusMessage(500, errorMessage, "");
         }
@@ -167,7 +159,6 @@ const Orders = () => {
         try {
             await orderStore.failedDelivery(id, reason);
         } catch (e: any) {
-            console.log("Error handling failed delivery:", e);
             const errorMessage = getErrorMessage(
                 e,
                 "Không thể xử lí đơn hàng giao thất bại."

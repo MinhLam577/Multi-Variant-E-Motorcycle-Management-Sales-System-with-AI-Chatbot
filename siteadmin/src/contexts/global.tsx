@@ -1,4 +1,3 @@
-import { node } from "prop-types";
 import { createContext, useEffect, useReducer } from "react";
 import { useStore } from "../stores";
 
@@ -8,8 +7,8 @@ const initValue = {
     user: null,
     name: null,
 };
-export const GlobalContext = createContext();
-export const NavigateContext = createContext();
+export const GlobalContext = createContext(null);
+export const NavigateContext = createContext(null);
 
 const GlobalReducer = (state, { type, data }) => {
     switch (type) {
@@ -67,10 +66,6 @@ const GlobalProvider = ({ children }) => {
             {children}
         </GlobalContext.Provider>
     );
-};
-
-GlobalProvider.propTypes = {
-    children: node,
 };
 
 export default GlobalProvider;

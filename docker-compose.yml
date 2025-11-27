@@ -1,0 +1,15 @@
+services:
+  website_admin:
+    container_name: website_admin
+    build:
+      context: ./siteadmin
+      dockerfile: Dockerfile
+      target: dev
+    env_file:
+      - ./siteadmin/.env
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./siteadmin:/app
+      - /app/node_modules
+    

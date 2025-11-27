@@ -5,13 +5,13 @@ import {
     processWithModals,
 } from "../../containers/processWithModals";
 import TableComponent from "../../containers/TableComponent";
-import { RoleType, UserStaffResponseType } from "src/types/user-staff.type";
+import { RoleType, UserStaffResponseType } from "@/types/user-staff.type";
 import React from "react";
-import { useStore } from "src/stores";
+import { useStore } from "@/stores";
 import { observer } from "mobx-react-lite";
-import { RoleEnumValue } from "src/constants";
-import Access from "src/access/access";
-import { ALL_PERMISSIONS } from "src/constants/permissions";
+import { RoleEnumValue } from "@/constants";
+import Access from "@/access/access";
+import { ALL_PERMISSIONS } from "@/constants/permissions";
 import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
 
 interface IColumnsConfig {

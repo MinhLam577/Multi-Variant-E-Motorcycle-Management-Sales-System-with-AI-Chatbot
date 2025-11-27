@@ -1,14 +1,14 @@
 import { flow, makeAutoObservable, toJS } from "mobx";
 import { paginationData, RootStore } from "./base";
-import { convertDate, filterEmptyFields, getErrorMessage } from "src/utils";
-import { DateTimeFormat } from "src/constants";
-import ContactAPI from "src/api/contact.api";
+import { convertDate, filterEmptyFields, getErrorMessage } from "@/utils";
+import { DateTimeFormat } from "@/constants";
+import ContactAPI from "@/api/contact.api";
 import {
     ContactResponseType,
     CreateContactDto,
     globalFilterContactType,
     UpdateContactDto,
-} from "src/types/contact.type";
+} from "@/types/contact.type";
 
 class ContactObservable {
     rootStore: RootStore;
@@ -98,7 +98,6 @@ class ContactObservable {
                 this.rootStore.errorMsg = message;
             }
         } catch (e: any) {
-            console.log("Error fetching contact data:", e);
             const errorMessage = getErrorMessage(
                 e,
                 "Lỗi khi lấy danh sách thông tin liên hệ"
@@ -126,7 +125,6 @@ class ContactObservable {
                 return false;
             }
         } catch (e: any) {
-            console.log("Error creating contact:", e);
             const errorMessage = getErrorMessage(
                 e,
                 "Lỗi khi tạo thông tin liên hệ"
@@ -151,7 +149,6 @@ class ContactObservable {
                     : message;
             }
         } catch (e: any) {
-            console.log("Error updating contact:", e);
             const errorMessage = getErrorMessage(
                 e,
                 "Lỗi khi cập nhật thông tin liên hệ"
@@ -177,7 +174,6 @@ class ContactObservable {
                 return false;
             }
         } catch (e: any) {
-            console.log("Error deleting contact:", e);
             const errorMessage = getErrorMessage(
                 e,
                 "Lỗi khi xóa thông tin liên hệ"

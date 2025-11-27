@@ -12,7 +12,7 @@ import {
 import { GenderType, RegExps, RoleEnum, RoleEnumValue } from "../../constants";
 import apiClient from "../../api/apiClient";
 import endpoints from "../../api/endpoints";
-import { getErrorMessage } from "src/utils";
+import { getErrorMessage } from "@/utils";
 
 const UserModalCreate = (props) => {
     const { openModalCreate, setOpenModalCreate } = props;

@@ -1,8 +1,8 @@
-import { EnumOrderStatusesValue } from "src/constants";
+import { EnumOrderStatusesValue } from "@/constants";
 import {
     EnumTypeOfTimeStatistics,
     StatisticsResponse,
-} from "src/pages/adminOverview/Overview";
+} from "@/pages/adminOverview/Overview";
 import { SkusDataResponseType } from "./product.type";
 import { PaymentMethodResponseType } from "./payment.type";
 

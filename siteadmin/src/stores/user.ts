@@ -4,8 +4,8 @@ import apiClient from "../api/apiClient";
 import endpoints from "../api/endpoints";
 import { keyStorageAccount } from "../constants";
 import { paginationData, RootStore } from "./base";
-import { getErrorMessage } from "src/utils";
-import { UpdateProfileStatus } from "src/types/userLogin.type";
+import { getErrorMessage } from "@/utils";
+import { UpdateProfileStatus } from "@/types/userLogin.type";
 
 class UserObservable {
     roles = null;
@@ -61,7 +61,6 @@ class UserObservable {
             }
             this.status = UpdateProfileStatus.UPDATE_SUCCESS;
         } catch (error) {
-            console.log("error", error);
             const errorMessage = getErrorMessage(
                 error,
                 "Cập nhật thông tin người dùng thất bại"

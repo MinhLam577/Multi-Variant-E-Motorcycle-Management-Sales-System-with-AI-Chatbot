@@ -2,10 +2,10 @@ import { Spin, Tabs } from "antd";
 import { useParams } from "react-router";
 import UserForm from "../../components/users/detail/UserForm";
 import { useEffect } from "react";
-import { useStore } from "src/stores";
+import { useStore } from "@/stores";
 import { observer } from "mobx-react-lite";
-import AdminBreadCrumb from "src/components/common/AdminBreadCrumb";
-import { getBreadcrumbItems } from "src/containers/layout";
+import AdminBreadCrumb from "@/components/common/AdminBreadCrumb";
+import { getBreadcrumbItems } from "@/containers/layout";
 const UserDetail = () => {
     const { id } = useParams();
     const store = useStore();

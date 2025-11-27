@@ -1,17 +1,17 @@
-import DataTable from "src/components/data-table";
-import { IRole } from "src/types/backend";
+import DataTable from "@/components/data-table";
+import { IRole } from "@/types/backend";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { ActionType, ProColumns } from "@ant-design/pro-components";
 import { Button, Popconfirm, Space, Tag, message, notification } from "antd";
 import { useState, useRef, useEffect } from "react";
 import dayjs from "dayjs";
 import queryString from "query-string";
-import ModalRole from "src/components/setting/role/modal.role";
-import { useStore } from "src/stores";
+import ModalRole from "@/components/setting/role/modal.role";
+import { useStore } from "@/stores";
 
 import { observer } from "mobx-react-lite";
-import AdminBreadCrumb from "src/components/common/AdminBreadCrumb";
-import { getBreadcrumbItems } from "src/containers/layout";
+import AdminBreadCrumb from "@/components/common/AdminBreadCrumb";
+import { getBreadcrumbItems } from "@/containers/layout";
 
 const RolePage = observer(() => {
     const [openModal, setOpenModal] = useState<boolean>(false);

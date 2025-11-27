@@ -1,4 +1,4 @@
-import { BrandResponseType } from "src/types/brand.type";
+import { BrandResponseType } from "@/types/brand.type";
 import { CategoryResponseType } from "./categories.type";
 import { DetailImportResponseType } from "./import.type";
 export enum EnumProductType {

@@ -1,4 +1,4 @@
-import { IPermission, IRole } from "src/types/backend";
+import { IPermission, IRole } from "@/types/backend";
 import apiClient from "./apiClient";
 import endpoints from "./endpoints";
 

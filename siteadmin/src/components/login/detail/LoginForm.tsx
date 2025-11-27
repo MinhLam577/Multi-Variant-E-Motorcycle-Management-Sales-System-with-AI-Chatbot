@@ -1,27 +1,25 @@
 import {
     Button,
     Card,
+    Checkbox,
     Col,
     Form,
+    Grid,
     Image,
     Input,
-    Modal,
     Row,
     Typography,
-    Grid,
 } from "antd";
+import { observer } from "mobx-react-lite";
 const { useBreakpoint } = Grid;
 
-const LoginScreen = ({
+const LoginForm = ({
     onFinish,
-    onFinishFailed,
-    isLoading,
-    onFinishForgotPassword,
-    showForgotPasswordModal,
-    setShowForgotPasswordModal,
     form,
-    forgotPasswordForm,
-    isForgotLoading,
+    setShowForgotPasswordModal,
+    setShowRetryActive,
+    isLoading,
+    setShowRegisterModal,
 }) => {
     const backgroundImage = "/images/login-background.png";
     const screens = useBreakpoint();
@@ -96,7 +94,6 @@ const LoginScreen = ({
                                         remember: false,
                                     }}
                                     onFinish={onFinish}
-                                    onFinishFailed={onFinishFailed}
                                     autoComplete="on"
                                     form={form}
                                 >
@@ -124,21 +121,35 @@ const LoginScreen = ({
                                     >
                                         <Input.Password placeholder="Nhập mật khẩu" />
                                     </Form.Item>
-                                    <Form.Item name="forgotPassword">
-                                        <Typography.Paragraph
-                                            style={{
-                                                color: "blue",
-                                                cursor: "pointer",
-                                            }}
-                                            onClick={() => {
-                                                setShowForgotPasswordModal(
-                                                    true
-                                                );
-                                            }}
-                                        >
-                                            Quên mật khẩu?
-                                        </Typography.Paragraph>
+                                    <Form.Item noStyle>
+                                        <div className="flex justify-between items-center mb-4">
+                                            <Form.Item
+                                                name="remember"
+                                                valuePropName="checked"
+                                                noStyle
+                                            >
+                                                <Checkbox>
+                                                    Ghi nhớ đăng nhập
+                                                </Checkbox>
+                                            </Form.Item>
+
+                                            <Typography.Paragraph
+                                                style={{
+                                                    color: "blue",
+                                                    cursor: "pointer",
+                                                    margin: 0,
+                                                }}
+                                                onClick={() =>
+                                                    setShowForgotPasswordModal(
+                                                        true
+                                                    )
+                                                }
+                                            >
+                                                Quên mật khẩu?
+                                            </Typography.Paragraph>
+                                        </div>
                                     </Form.Item>
+
                                     <Form.Item>
                                         <Button
                                             className="w-full"
@@ -146,49 +157,45 @@ const LoginScreen = ({
                                             htmlType="submit"
                                             loading={isLoading}
                                         >
-                                            Đăng Nhập
+                                            Đăng nhập
                                         </Button>
                                     </Form.Item>
+                                    {/* Đăng ký & Kích hoạt lại tài khoản */}
+                                    <div className="flex justify-between items-center mt-2">
+                                        <Typography.Paragraph
+                                            style={{
+                                                color: "blue",
+                                                cursor: "pointer",
+                                                margin: 0,
+                                            }}
+                                            onClick={() =>
+                                                setShowRegisterModal(true)
+                                            }
+                                        >
+                                            Người mới? Đăng ký
+                                        </Typography.Paragraph>
+
+                                        <Typography.Paragraph
+                                            style={{
+                                                color: "blue",
+                                                cursor: "pointer",
+                                                margin: 0,
+                                            }}
+                                            onClick={() => {
+                                                setShowRetryActive(true);
+                                            }}
+                                        >
+                                            Kích hoạt lại tài khoản
+                                        </Typography.Paragraph>
+                                    </div>
                                 </Form>
                             </div>
                         </Card>
                     </div>
                 </Col>
             </Row>
-            <Modal
-                title="Quên mật khẩu?"
-                open={showForgotPasswordModal}
-                confirmLoading={isForgotLoading}
-                onOk={() => {
-                    forgotPasswordForm.submit();
-                }}
-                onCancel={() => {
-                    forgotPasswordForm.resetFields();
-                    setShowForgotPasswordModal(false);
-                }}
-            >
-                <Form
-                    form={forgotPasswordForm}
-                    name="basic"
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 24 }}
-                    layout={"vertical"}
-                    initialValues={{ remember: true }}
-                    onFinish={onFinishForgotPassword}
-                    onFinishFailed={onFinishFailed}
-                    autoComplete="off"
-                >
-                    <Form.Item
-                        label="Email"
-                        name="email"
-                        rules={[{ required: true, message: "Hãy nhập Email!" }]}
-                    >
-                        <Input placeholder="Nhập Email" />
-                    </Form.Item>
-                </Form>
-            </Modal>
         </>
     );
 };
 
-export default LoginScreen;
+export default observer(LoginForm);

@@ -1,7 +1,7 @@
 import endpoints from "./endpoints";
 import { HeaderContentType, ResponseImage, ResponsePromise } from ".";
 import apiClient from "./apiClient";
-import { CreateProductDto, UpdateProductDto } from "src/types/product.type";
+import { CreateProductDto, UpdateProductDto } from "@/types/product.type";
 const productEndpoints = endpoints.product;
 
 const ProductAPI: {

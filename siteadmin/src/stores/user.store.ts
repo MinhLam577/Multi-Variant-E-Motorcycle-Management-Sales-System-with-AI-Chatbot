@@ -1,14 +1,14 @@
 import { flow, makeAutoObservable } from "mobx";
 import { RootStore } from "./base";
 import { paginationData } from "./base";
-import { convertDate, filterEmptyFields, getErrorMessage } from "src/utils";
-import { DateTimeFormat } from "src/constants";
-import UserAPI from "src/api/user.api";
+import { convertDate, filterEmptyFields, getErrorMessage } from "@/utils";
+import { DateTimeFormat } from "@/constants";
+import UserAPI from "@/api/user.api";
 import {
     globalFiltersDataUserStaff,
     UpdateUserDto,
     userStoreData,
-} from "src/types/user-staff.type";
+} from "@/types/user-staff.type";
 
 class UserStaffObservable {
     rootStore: RootStore;

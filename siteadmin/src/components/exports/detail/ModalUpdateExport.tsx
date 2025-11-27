@@ -11,20 +11,20 @@ import {
 } from "antd";
 import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
-import CustomizeModal from "src/components/common/CustomizeModal";
-import { AntdTableLocale } from "src/constants";
-import { formatVNDMoney } from "src/utils";
+import CustomizeModal from "@/components/common/CustomizeModal";
+import { AntdTableLocale } from "@/constants";
+import { formatVNDMoney } from "@/utils";
 import { FormInstance } from "antd/lib";
 import { DeleteOutlined } from "@ant-design/icons";
 import { toJS } from "mobx";
-import { lotOptionType } from "src/components/orders/detail/ModalExportOrder";
-import { SkusDetailImportResponseType } from "src/types/skus.type";
+import { lotOptionType } from "@/components/orders/detail/ModalExportOrder";
+import { SkusDetailImportResponseType } from "@/types/skus.type";
 import {
     ExportResponseType,
     UpdateExportDetailDto,
     UpdateExportDto,
-} from "src/types/export.type";
-import { useStore } from "src/stores";
+} from "@/types/export.type";
+import { useStore } from "@/stores";
 
 interface ModalUpdateExportProps {
     open: boolean;

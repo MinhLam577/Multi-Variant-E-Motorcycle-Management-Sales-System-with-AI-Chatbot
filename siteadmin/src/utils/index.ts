@@ -1,12 +1,13 @@
 import moment from "moment";
 import numbro from "numbro";
-import { AcceptImageTypes, DateTimeFormat, MAX_FILE_SIZE } from "src/constants";
+import { AcceptImageTypes, DateTimeFormat, MAX_FILE_SIZE } from "@/constants";
 import { MessageInstance } from "antd/es/message/interface";
-import { MessageStore } from "src/stores/base";
+import { MessageStore } from "@/stores/base";
 import { v4 as uuidv4 } from "uuid";
-import BaseAPI from "src/api/base";
-import { ResponseImage } from "src/api";
-import { ResponseFailure } from "src/api";
+import BaseAPI from "@/api/base";
+import { ResponseImage } from "@/api";
+import { ResponseFailure } from "@/api";
+import { AxiosError } from "axios";
 export const generateFileName = (fileName) => {
     const fileExtensions = fileName.split(".");
     const fileType = "." + fileExtensions[fileExtensions.length - 1];
@@ -74,14 +75,10 @@ export const convertDate = (
         }
         const momentDate = moment(date, dateFormatCheck, true);
         if (!momentDate.isValid()) {
-            console.log(
-                `Invalid date format: ${date} with format ${dateFormatCheck}`
-            );
             return null;
         }
         return momentDate.format(dateFormatToConvert);
     } catch (e) {
-        console.log(e);
         return null;
     }
 };
@@ -107,8 +104,9 @@ export const getStatusKeyByEnumType = (
 
 export const getErrorMessage = (e: unknown, customMessage?: string) => {
     const defaultMessage = "Có lỗi xảy ra, vui lòng thử lại sau.";
-    if (e instanceof Error) {
-        return e.message;
+    if (e instanceof AxiosError) {
+        const responseData = e?.response?.data;
+        return responseData?.message;
     }
 
     if (typeof e === "object" && "message" in e) {
@@ -119,6 +117,9 @@ export const getErrorMessage = (e: unknown, customMessage?: string) => {
         return Array.isArray(e.errorFields)
             ? "Vui lòng nhập đầy đủ và đúng thông tin"
             : customMessage || defaultMessage;
+    }
+    if (e instanceof Error) {
+        return e.message;
     }
     return customMessage || defaultMessage;
 };

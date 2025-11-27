@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Result } from "antd";
 import { observer } from "mobx-react-lite";
-import { useStore } from "src/stores";
+import { useStore } from "@/stores";
 import { toJS } from "mobx";
 interface IProps {
     hideChildren?: boolean;

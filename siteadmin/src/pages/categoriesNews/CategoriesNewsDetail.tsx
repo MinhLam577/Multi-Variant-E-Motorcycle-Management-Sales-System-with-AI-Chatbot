@@ -19,7 +19,7 @@ import AdminBreadCrumb from "../../components/common/AdminBreadCrumb";
 import { getBreadcrumbItems } from "../../containers/layout/index";
 import Access from "../../access/access";
 import { ALL_PERMISSIONS } from "../../constants/permissions";
-import { ApiResponse } from "src/types/api-response.type";
+import { ApiResponse } from "@/types/api-response.type";
 
 export const NewsDetailMode = {
     View: 1,

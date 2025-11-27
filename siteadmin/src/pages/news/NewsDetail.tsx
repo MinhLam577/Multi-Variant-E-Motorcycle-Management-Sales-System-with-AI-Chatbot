@@ -28,8 +28,8 @@ import { CheckFileInput, getBase64, handleUploadFileUtils } from "../../utils";
 import { UploadFile, GetProp } from "antd";
 import { UploadProps } from "antd/lib";
 import { UploadRequestOption } from "rc-upload/lib/interface";
-import { RootStore } from "src/stores/base";
-import BaseAPI from "src/api/base";
+import { RootStore } from "@/stores/base";
+import BaseAPI from "@/api/base";
 export const NewsDetailMode = {
     View: 1,
     Add: 2,

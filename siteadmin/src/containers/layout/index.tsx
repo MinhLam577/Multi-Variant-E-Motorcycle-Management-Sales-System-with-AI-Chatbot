@@ -30,10 +30,10 @@ import Logo from "../../components/Logo";
 import HeaderComponent from "./header";
 import "./index.css";
 import { makeAutoObservable, reaction } from "mobx";
-import { useStore } from "src/stores";
+import { useStore } from "@/stores";
 import { observer } from "mobx-react-lite";
-import { displayMessage } from "src/utils";
-import { ALL_PERMISSIONS } from "src/constants/permissions";
+import { displayMessage } from "@/utils";
+import { ALL_PERMISSIONS } from "@/constants/permissions";
 
 const { Content, Sider } = Layout;
 const { useBreakpoint } = Grid;
@@ -524,7 +524,7 @@ const AppLayout = (props) => {
                         placement="left"
                         open={appLayoutStore.openDrawer}
                         closeIcon={null}
-                        destroyOnClose={true}
+                        destroyOnHidden={true}
                         onClose={() => {
                             appLayoutStore.setOpenDrawer(false);
                         }}

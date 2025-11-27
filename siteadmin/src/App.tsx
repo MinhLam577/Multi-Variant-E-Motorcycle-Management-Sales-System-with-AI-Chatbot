@@ -1,51 +1,52 @@
 import { Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router";
-import "./reset.css";
-import "./App.css";
-import { WareHouseDetailMode } from "./constants";
-import Loading from "./containers/Loading";
-import ProtectedRoute from "./containers/ProtectedRoute";
-import AuthProvider from "./contexts/AuthProvider";
-import Page404 from "./pages/404";
-import Forbidden from "./pages/Forbidden";
-import Policy from "./pages/Policy";
-import Profile from "./pages/Profile";
-import Categories from "./pages/categories";
+import "@/reset.css";
+import "@/App.css";
+import { WareHouseDetailMode } from "@/constants";
+import Loading from "@/containers/Loading";
+import ProtectedRoute from "@/containers/ProtectedRoute";
+import AuthProvider from "@/contexts/AuthProvider";
+import Page404 from "@/pages/404";
+import Forbidden from "@/pages/Forbidden";
+import Policy from "@/pages/Policy";
+import Profile from "@/pages/Profile";
+import Categories from "@/pages/categories";
 import CategoriesDetail, {
     CategoriesDetailMode,
-} from "./pages/categories/CategoriesDetail";
-import Customer from "./pages/customers";
-import Login from "./pages/login";
-import News from "./pages/news";
-import NewsDetail, { NewsDetailMode } from "./pages/news/NewsDetail";
-import Orders from "./pages/orders";
-import User from "./pages/users";
-import UserDetail from "./pages/users/UserDetail";
-import Vouchers from "./pages/vouchers";
+} from "@/pages/categories/CategoriesDetail";
+import Customer from "@/pages/customers";
+import Login from "@/pages/login";
+import News from "@/pages/news";
+import NewsDetail, { NewsDetailMode } from "@/pages/news/NewsDetail";
+import Orders from "@/pages/orders";
+import User from "@/pages/users";
+import UserDetail from "@/pages/users/UserDetail";
+import Vouchers from "@/pages/vouchers";
 import VoucherDetail, {
     VoucherDetailMode,
-} from "./pages/vouchers/VoucherDetail";
-import WareHouses from "./pages/warehouses";
-import WareHouseDetail from "./pages/warehouses/WareHouseDetail";
-import { StoreProvider } from "./stores";
-import GlobalProvider from "./contexts/global";
-import CustomerDetail from "./pages/customers/CustomerDetail";
-import NetworkError from "./pages/NetworkError";
-import PermissionPage from "./pages/permission/permission";
-import RolePage from "./pages/role/role";
-import ContactPage from "./pages/contact";
+} from "@/pages/vouchers/VoucherDetail";
+import WareHouses from "@/pages/warehouses";
+import WareHouseDetail from "@/pages/warehouses/WareHouseDetail";
+import { StoreProvider } from "@/stores";
+import GlobalProvider from "@/contexts/global";
+import CustomerDetail from "@/pages/customers/CustomerDetail";
+import NetworkError from "@/pages/NetworkError";
+import PermissionPage from "@/pages/permission/permission";
+import RolePage from "@/pages/role/role";
+import ContactPage from "@/pages/contact";
 // import Role from
-import CategoriesNews from "./pages/categoriesNews";
-import CategoriesNewsDetail from "./pages/categoriesNews/CategoriesNewsDetail";
+import CategoriesNews from "@/pages/categoriesNews";
+import CategoriesNewsDetail from "@/pages/categoriesNews/CategoriesNewsDetail";
 
-import Setting from "./pages/setting/index";
-import Products from "./pages/products";
-import Overview from "./pages/adminOverview/Overview";
-import ImportPage from "./pages/imports";
-import ExportPage from "./pages/exports";
-import VariantPage from "./pages/variants";
-import BrandsPage from "./pages/brands";
-import ResetPassword from "./pages/resetPassword/reset-password";
+import Setting from "@/pages/setting/index";
+import Products from "@/pages/products";
+import Overview from "@/pages/adminOverview/Overview";
+import ImportPage from "@/pages/imports";
+import ExportPage from "@/pages/exports";
+import VariantPage from "@/pages/variants";
+import BrandsPage from "@/pages/brands";
+import ResetPassword from "@/pages/resetPassword/reset-password";
+import VerifyCode from "@/pages/VerifyCode";
 function App() {
     return (
         <StoreProvider>
@@ -390,27 +391,6 @@ function App() {
                                         </ProtectedRoute>
                                     }
                                 />
-                                {/* <Route
-                                    path="/orders/:id"
-                                    element={
-                                        <ProtectedRoute>
-                                            <OrderDetail
-                                                mode={OrderDetailMode.View}
-                                            />
-                                        </ProtectedRoute>
-                                    }
-                                />
-                                <Route
-                                    path="/orders/:id/edit"
-                                    element={
-                                        <ProtectedRoute>
-                                            <OrderDetail
-                                                mode={OrderDetailMode.Edit}
-                                            />
-                                        </ProtectedRoute>
-                                    }
-                                /> */}
-
                                 <Route
                                     path="/setting"
                                     element={
@@ -461,6 +441,10 @@ function App() {
                                 />
                                 <Route path="/:404" element={<Page404 />} />
                                 <Route
+                                    path="/verify-code"
+                                    element={<VerifyCode />}
+                                />
+                                <Route
                                     path="/import"
                                     element={
                                         <ProtectedRoute>
@@ -484,16 +468,6 @@ function App() {
                                             <BrandsPage />
                                         </ProtectedRoute>
                                     }
-                                />
-
-                                <Route
-                                    path="/PaymentSuccess"
-                                    element={<div>Payment Success</div>}
-                                />
-
-                                <Route
-                                    path="/PaymentFailed"
-                                    element={<div>Payment Failed</div>}
                                 />
                                 <Route
                                     path="/contact"
