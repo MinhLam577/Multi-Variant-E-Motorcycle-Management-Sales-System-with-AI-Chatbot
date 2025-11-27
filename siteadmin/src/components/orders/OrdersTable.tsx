@@ -1,12 +1,12 @@
 import { CopyOutlined, EditOutlined } from "@ant-design/icons";
 import { Button, Tag, Tooltip, message } from "antd";
 import { EnumOrderColorStatuses, EnumOrderStatuses } from "../../constants";
-import TableComponent from "src/containers/TableComponent";
+import TableComponent from "@/containers/TableComponent";
 import { formatVNDMoney } from "../../utils";
-import { useStore } from "src/stores";
+import { useStore } from "@/stores";
 import GroupActionButton from "../GroupActionButton";
-import { ALL_MODULES, ALL_PERMISSIONS } from "src/constants/permissions";
-import Access from "src/access/access";
+import { ALL_MODULES, ALL_PERMISSIONS } from "@/constants/permissions";
+import Access from "@/access/access";
 
 export const handleCopy = (text) => {
     navigator.clipboard.writeText(text);

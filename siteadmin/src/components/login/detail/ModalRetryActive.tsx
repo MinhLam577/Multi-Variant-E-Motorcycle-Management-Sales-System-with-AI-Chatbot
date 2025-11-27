@@ -1,10 +1,10 @@
 import { Button, message } from "antd";
 import { observer } from "mobx-react-lite";
 import { forwardRef, useImperativeHandle } from "react";
-import { useEmailVerifyModal } from "src/hooks/useEmailVerifyModal";
-import { useStore } from "src/stores";
-import { getErrorMessage } from "src/utils";
-import { regexEmail } from "src/utils/regex";
+import { useEmailVerifyModal } from "@/hooks/useEmailVerifyModal";
+import { useStore } from "@/stores";
+import { getErrorMessage } from "@/utils";
+import { regexEmail } from "@/utils/regex";
 
 export interface ModalHandle {
     open: () => void;

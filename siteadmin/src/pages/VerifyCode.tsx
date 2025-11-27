@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router";
-import Loading from "src/containers/Loading";
-import { useStore } from "src/stores";
+import Loading from "@/containers/Loading";
+import { useStore } from "@/stores";
 import { CheckCircle, XCircle, AlertTriangle, Loader2 } from "lucide-react"; // icon đẹp
 export interface VerifyCodeProps {}
 const VerifyCodeStatus = {

@@ -1,7 +1,7 @@
 import { ResponsePromise } from ".";
 import apiClient from "./apiClient";
 import endpoints from "./endpoints";
-import { CreateExportDto, UpdateExportDto } from "src/types/export.type";
+import { CreateExportDto, UpdateExportDto } from "@/types/export.type";
 const exportEndpoint = endpoints.export;
 
 type ExportAPI = {

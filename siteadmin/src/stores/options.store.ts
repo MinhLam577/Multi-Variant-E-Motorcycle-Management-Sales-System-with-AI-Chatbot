@@ -1,6 +1,6 @@
 import { flow, makeAutoObservable } from "mobx";
 import { RootStore } from "./base";
-import OptionsAPI from "src/api/options.api";
+import OptionsAPI from "@/api/options.api";
 
 type OptionType = {
     id: string;

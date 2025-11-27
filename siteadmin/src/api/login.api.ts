@@ -1,16 +1,13 @@
-import { ApiResponse } from "src/types/api-response.type";
+import { ApiResponse } from "@/types/api-response.type";
 import apiClient from "./apiClient";
 import endpoints from "./endpoints";
 import {
     LoginResponse,
     RegisterDto,
     VerifyCodeDto,
-} from "src/types/userLogin.type";
+} from "@/types/userLogin.type";
 import { AxiosResponse } from "axios";
-import {
-    ResetPassword,
-    VerifyResetPassword,
-} from "src/types/auth-validate.type";
+import { ResetPassword, VerifyResetPassword } from "@/types/auth-validate.type";
 const loginEndpoints = endpoints.authAdmin;
 
 const LoginAPI = {

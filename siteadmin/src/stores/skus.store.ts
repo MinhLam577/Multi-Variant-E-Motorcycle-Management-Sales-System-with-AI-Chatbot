@@ -1,17 +1,17 @@
 import { flow, makeAutoObservable } from "mobx";
 import { RootStore } from "./base";
 import SkusAPI from "../api/skus.api";
-import { SUCCESS_STATUSES } from "src/constants";
-import { ResponsePromise } from "src/api";
+import { SUCCESS_STATUSES } from "@/constants";
+import { ResponsePromise } from "@/api";
 import { paginationData } from "./base";
-import { filterEmptyFields, getErrorMessage } from "src/utils";
+import { filterEmptyFields, getErrorMessage } from "@/utils";
 import {
     globalFiltersDataSkus,
     SkusDetailImportResponseType,
     SkusResponseType,
     UpdateSkusDto,
-} from "src/types/skus.type";
-import { CreateSkusDto } from "src/types/product.type";
+} from "@/types/skus.type";
+import { CreateSkusDto } from "@/types/product.type";
 
 export default class SkusObservable {
     rootStore: RootStore;

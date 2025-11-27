@@ -33,9 +33,9 @@ const AuthProvider = observer(({ children }: AuthProviderProps) => {
     }, [accountObservable?.account]);
 
     const getLocal = () => {
-        const dataEncoded = secureLocalStorage.getItem(
-            keyStorageAccount
-        ) as string;
+        const dataEncoded =
+            (secureLocalStorage.getItem(keyStorageAccount) as string) ||
+            (sessionStorage.getItem(keyStorageAccount) as string);
         if (!dataEncoded) return null;
         const value = Base64.decode(dataEncoded);
         const jsonValue = JSON.parse(value);

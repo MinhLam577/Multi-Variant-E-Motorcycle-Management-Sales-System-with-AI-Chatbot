@@ -1,17 +1,17 @@
 import { observer } from "mobx-react-lite";
-import TableComponent from "src/containers/TableComponent";
-import { useStore } from "src/stores";
+import TableComponent from "@/containers/TableComponent";
+import { useStore } from "@/stores";
 
 import { Grid } from "antd";
-import { ContactResponseType } from "src/types/contact.type";
-import Access from "src/access/access";
+import { ContactResponseType } from "@/types/contact.type";
+import Access from "@/access/access";
 import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
 const { useBreakpoint } = Grid;
 import {
     ProcessModalName,
     processWithModals,
-} from "src/containers/processWithModals";
-import { ALL_PERMISSIONS } from "src/constants/permissions";
+} from "@/containers/processWithModals";
+import { ALL_PERMISSIONS } from "@/constants/permissions";
 interface ContactTableProps {
     data: ContactResponseType[];
     handleUpdateContact?: (item: ContactResponseType) => void;

@@ -3,7 +3,7 @@ import CustomizeModal from "../common/CustomizeModal";
 import {
     FormValueCreateVariantType,
     OptionValueOfProductType,
-} from "src/pages/variants";
+} from "@/pages/variants";
 import "./ModalCreateVariant.css";
 import { useCallback, useEffect, useState } from "react";
 import {
@@ -11,9 +11,9 @@ import {
     filterEmptyFields,
     generateUUIDV4,
     getErrorMessage,
-} from "src/utils";
-import { useStore } from "src/stores";
-import { AcceptImageTypes } from "src/constants";
+} from "@/utils";
+import { useStore } from "@/stores";
+import { AcceptImageTypes } from "@/constants";
 import { DeleteOutlined, UploadOutlined } from "@ant-design/icons";
 import { SelectType } from "../products/detail/ModalCreateProduct/ModalCreateProduct.type";
 import { observer } from "mobx-react-lite";
@@ -21,9 +21,9 @@ import { reaction } from "mobx";
 import {
     SkusDetailImportDto,
     VariantCombinationDto,
-} from "src/types/product.type";
-import { CreateSkusDto, UpdateSkusDto } from "src/types/skus.type";
-import BaseAPI from "src/api/base";
+} from "@/types/product.type";
+import { CreateSkusDto, UpdateSkusDto } from "@/types/skus.type";
+import BaseAPI from "@/api/base";
 interface ModalCreateVariantProps {
     defaultForm: FormInstance;
     open?: boolean;
@@ -309,7 +309,6 @@ const ModalCreateVariant: React.FC<ModalCreateVariantProps> = ({
                 }
             }
         } catch (e) {
-            console.log("error", e);
             const errorMessage = getErrorMessage(
                 e,
                 "Lỗi trong quá trình tạo hoặc sửa biến thể, vui lòng thử lại sau"

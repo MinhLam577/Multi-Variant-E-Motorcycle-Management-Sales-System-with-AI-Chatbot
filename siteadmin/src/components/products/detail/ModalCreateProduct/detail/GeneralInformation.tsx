@@ -10,7 +10,7 @@ import {
 } from "antd";
 import { observer } from "mobx-react-lite";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { CheckFileInput, getBase64 } from "src/utils";
+import { CheckFileInput, getBase64 } from "@/utils";
 import {
     DEFAULT_MAX_IMAGE_UPLOAD_PRODUCT,
     IFormSkuCustomData,
@@ -18,15 +18,15 @@ import {
     TreeSelectType,
 } from "../ModalCreateProduct.type";
 import { modalCreateProductStore } from "../ModalCreateProduct.store";
-import { EnumProductStore, EnumProductType } from "src/types/product.type";
+import { EnumProductStore, EnumProductType } from "@/types/product.type";
 import { UploadOutlined } from "@ant-design/icons";
-import { AcceptImageTypes } from "src/constants";
+import { AcceptImageTypes } from "@/constants";
 import { FormInstance } from "antd/lib";
-import { useStore } from "src/stores";
-import CustomizeEditor from "src/components/common/CustomizeEditor";
+import { useStore } from "@/stores";
+import CustomizeEditor from "@/components/common/CustomizeEditor";
 import ReactQuill from "react-quill-new";
-import { CategoryResponseType } from "src/types/categories.type";
-import ImageModal from "src/components/common/ImageModal";
+import { CategoryResponseType } from "@/types/categories.type";
+import ImageModal from "@/components/common/ImageModal";
 interface IGeneralInformation {
     form: FormInstance;
     formInitialValues: Record<string, any>;
@@ -166,7 +166,6 @@ const GeneralInformation: React.FC<IGeneralInformation> = observer(
             ) {
                 form.setFieldValue("image", formImageList);
             }
-            console.log("imageList", formImageList);
         }, [formImageList]);
         const productTypeOption: SelectType[] = Object.keys(
             EnumProductType
@@ -314,7 +313,6 @@ const GeneralInformation: React.FC<IGeneralInformation> = observer(
                             {
                                 validator: (_, value) => {
                                     if (!modalCreateProductStore.hasSkus) {
-                                        console.log("imageValue:", value);
                                         return value && value.length > 0
                                             ? Promise.resolve()
                                             : Promise.reject(
@@ -401,7 +399,6 @@ const GeneralInformation: React.FC<IGeneralInformation> = observer(
                                         }}
                                         onPreview={handlePreview}
                                         onRemove={(file) => {
-                                            console.log("fileRemove", file);
                                             setFormImageList((prev) => [
                                                 ...prev.filter(
                                                     (item) =>

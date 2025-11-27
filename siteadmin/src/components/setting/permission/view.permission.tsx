@@ -1,6 +1,6 @@
 import { Descriptions, Drawer } from "antd";
 import dayjs from "dayjs";
-import { PermissionResponseType } from "src/types/permission.type";
+import { PermissionResponseType } from "@/types/permission.type";
 
 interface IProps {
     onClose: (v: boolean) => void;

@@ -3,8 +3,8 @@ import { Modal, Spin, Upload, message } from "antd";
 import ImgCrop from "antd-img-crop";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import BaseAPI from "src/api/base";
-import { isUploadFailure } from "src/utils";
+import BaseAPI from "@/api/base";
+import { isUploadFailure } from "@/utils";
 
 export const UploadAvatarGetUrlWithImgCropRemoteMode = {
     Private: "private",

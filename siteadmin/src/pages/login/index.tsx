@@ -6,11 +6,11 @@ import { useAuth } from "../../contexts/AuthProvider";
 import { useStore } from "../../stores";
 import { regexEmail } from "../../utils/regex";
 import LoginScreen from "../../components/login/LoginScreen";
-import { ForgotPassword, LoginStatus } from "src/types/userLogin.type";
-import ModalForgotPassword from "src/components/login/detail/ModalForgotPassword";
+import { ForgotPassword, LoginStatus } from "@/types/userLogin.type";
+import ModalForgotPassword from "@/components/login/detail/ModalForgotPassword";
 import ModalRetryActive, {
     ModalHandle,
-} from "src/components/login/detail/ModalRetryActive";
+} from "@/components/login/detail/ModalRetryActive";
 
 const Login = () => {
     const [messageApi, contextHolder] = message.useMessage();

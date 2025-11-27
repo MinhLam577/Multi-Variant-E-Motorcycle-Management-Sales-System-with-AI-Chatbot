@@ -1,22 +1,22 @@
 import { Button, Form, Select } from "antd";
 import { toJS } from "mobx";
 import { useEffect, useState } from "react";
-import AdminBreadCrumb from "src/components/common/AdminBreadCrumb";
-import CustomizeTab from "src/components/common/CustomizeTab";
-import VariantSearch from "src/components/variants/VariantSearch";
-import { getBreadcrumbItems } from "src/containers/layout";
-import { useStore } from "src/stores";
-import { globalFiltersDataSkus, SkusResponseType } from "src/types/skus.type";
+import AdminBreadCrumb from "@/components/common/AdminBreadCrumb";
+import CustomizeTab from "@/components/common/CustomizeTab";
+import VariantSearch from "@/components/variants/VariantSearch";
+import { getBreadcrumbItems } from "@/containers/layout";
+import { useStore } from "@/stores";
+import { globalFiltersDataSkus, SkusResponseType } from "@/types/skus.type";
 import { getSelectOption } from "../products";
 import { observer } from "mobx-react-lite";
-import VariantTable from "src/components/variants/VariantTable";
-import ModalCreateVariant from "src/components/variants/ModalCreateVariant";
-import CustomizeModal from "src/components/common/CustomizeModal";
-import { ProductDataResponseType } from "src/types/product.type";
-import { getErrorMessage } from "src/utils";
+import VariantTable from "@/components/variants/VariantTable";
+import ModalCreateVariant from "@/components/variants/ModalCreateVariant";
+import CustomizeModal from "@/components/common/CustomizeModal";
+import { ProductDataResponseType } from "@/types/product.type";
+import { getErrorMessage } from "@/utils";
 import { useLocation } from "react-router";
-import { ALL_PERMISSIONS } from "src/constants/permissions";
-import Access from "src/access/access";
+import { ALL_PERMISSIONS } from "@/constants/permissions";
+import Access from "@/access/access";
 
 export type OptionValueOfProductType = {
     id: string;
@@ -250,9 +250,7 @@ const VariantsPage = () => {
                 ...prev,
                 search: "",
             }));
-        } catch (e) {
-            console.log(e);
-        }
+        } catch (e) {}
     };
     return (
         <section className="w-full flex flex-col">

@@ -149,9 +149,9 @@ import secureLocalStorage from "react-secure-storage";
 import { keyStorageAccount } from "../constants/index";
 import { jwtDecode } from "jwt-decode";
 import endpoints from "./endpoints";
-import { LoginResponse } from "src/types/userLogin.type";
-import { AccountObservable } from "src/stores/account.store";
-import { BACKEND_BASE } from "src/config/api.config";
+import { LoginResponse } from "@/types/userLogin.type";
+import { AccountObservable } from "@/stores/account.store";
+import { BACKEND_BASE } from "@/config/api.config";
 let isRefreshing = false;
 let refreshSubscribers: ((token: string) => void)[] = [];
 const subscribeTokenRefresh = (cb: (token: string) => void) => {

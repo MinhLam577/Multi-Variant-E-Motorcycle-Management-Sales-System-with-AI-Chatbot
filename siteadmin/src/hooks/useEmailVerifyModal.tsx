@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from "react";
 import { Form, ModalProps } from "antd";
-import ModalVerifyByEmail from "src/components/common/ModalVerifyByEmail";
+import ModalVerifyByEmail from "@/components/common/ModalVerifyByEmail";
 
 export interface UseEmailVerifyModalProps extends ModalProps {
     title?: string;

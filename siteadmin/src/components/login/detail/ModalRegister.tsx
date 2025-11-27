@@ -2,10 +2,10 @@ import { EyeInvisibleFilled, EyeTwoTone } from "@ant-design/icons";
 import { Form, Input, message, Modal } from "antd";
 import { RuleObject } from "antd/es/form";
 import { Dispatch, SetStateAction, useState } from "react";
-import { useStore } from "src/stores";
-import { RegisterDto } from "src/types/userLogin.type";
-import { getErrorMessage } from "src/utils";
-import { validateEmail } from "src/utils/validate-format";
+import { useStore } from "@/stores";
+import { RegisterDto } from "@/types/userLogin.type";
+import { getErrorMessage } from "@/utils";
+import { validateEmail } from "@/utils/validate-format";
 
 export interface ModalRegister {
     showRegisterForm: boolean;
@@ -69,7 +69,7 @@ const ModalRegister = ({
                 form.submit();
             }}
             confirmLoading={isLoading}
-            destroyOnClose={true}
+            destroyOnHidden={true}
             title={"Đăng kí tài khoản"}
         >
             <Form

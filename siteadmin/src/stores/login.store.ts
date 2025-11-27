@@ -1,19 +1,16 @@
 import { flow, makeAutoObservable } from "mobx";
 import { RootStore } from "./base";
-import { flattenObject, getErrorMessage } from "src/utils";
-import LoginAPI from "src/api/login.api";
-import { ApiResponse } from "src/types/api-response.type";
+import { flattenObject, getErrorMessage } from "@/utils";
+import LoginAPI from "@/api/login.api";
+import { ApiResponse } from "@/types/api-response.type";
 import {
     ForgotPassword,
     LoginResponse,
     LoginStatus,
     RegisterDto,
-} from "src/types/userLogin.type";
-import {
-    ResetPassword,
-    VerifyResetPassword,
-} from "src/types/auth-validate.type";
-import { SUCCESS_STATUSES } from "src/constants";
+} from "@/types/userLogin.type";
+import { ResetPassword, VerifyResetPassword } from "@/types/auth-validate.type";
+import { SUCCESS_STATUSES } from "@/constants";
 import { AxiosResponse } from "axios";
 import { VerifyCodeDto } from "../types/userLogin.type";
 

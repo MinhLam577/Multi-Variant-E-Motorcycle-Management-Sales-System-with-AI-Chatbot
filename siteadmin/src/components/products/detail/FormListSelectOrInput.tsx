@@ -3,7 +3,7 @@ import { SelectType } from "./ModalCreateProduct/ModalCreateProduct.type";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { CloseOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { FormInstance } from "antd/lib";
-import { useStore } from "src/stores";
+import { useStore } from "@/stores";
 import debounce from "lodash.debounce";
 
 const DEFAULT_MAX_VALUES_EACH_ROW = 1;

@@ -1,9 +1,9 @@
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { Button } from "antd";
-import { getBreadcrumbItems } from "src/containers/layout";
+import { getBreadcrumbItems } from "@/containers/layout";
 import AdminBreadCrumb from "../common/AdminBreadCrumb";
-import Access from "src/access/access";
-import { ALL_PERMISSIONS } from "src/constants/permissions";
+import Access from "@/access/access";
+import { ALL_PERMISSIONS } from "@/constants/permissions";
 
 interface ProductHeaderProps {
     onCreateNew: (event: React.MouseEvent<HTMLElement>) => void;

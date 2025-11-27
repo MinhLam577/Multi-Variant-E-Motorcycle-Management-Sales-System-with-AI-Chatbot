@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import OrderPrint from "../../components/orders/detail/OrderPrint";
 import OrderProductsTable from "../../components/orders/detail/OrderProductsTable";
-import { EnumOrderStatusesValue, EnumOrderSteps } from "src/constants";
+import { EnumOrderStatusesValue, EnumOrderSteps } from "@/constants";
 import { reaction } from "mobx";
 import "./OrderDetail.css";
 import {
@@ -15,15 +15,15 @@ import { CustomizeButton } from "../../components/common/CustomizeButton";
 import { observer } from "mobx-react-lite";
 import OrderDescription from "../../components/orders/detail/OrderDescription";
 import CustomerDescription from "../../components/orders/detail/CustomerDescription";
-import ModalConfirmReason from "src/components/orders/detail/ModalConfirmReason";
-import ModalExportOrder from "src/components/orders/detail/ModalExportOrder";
+import ModalConfirmReason from "@/components/orders/detail/ModalConfirmReason";
+import ModalExportOrder from "@/components/orders/detail/ModalExportOrder";
 import OrderObservable from "../../stores/order.store";
 import SkusObservable from "../../stores/skus.store";
-import { useStore } from "src/stores";
-import Access from "src/access/access";
-import { ALL_PERMISSIONS } from "src/constants/permissions";
-import { getErrorMessage } from "src/utils";
-import { OrderDetailResponseType } from "src/types/order.type";
+import { useStore } from "@/stores";
+import Access from "@/access/access";
+import { ALL_PERMISSIONS } from "@/constants/permissions";
+import { getErrorMessage } from "@/utils";
+import { OrderDetailResponseType } from "@/types/order.type";
 export const OrderDetailMode = {
     View: 1,
     Edit: 2,

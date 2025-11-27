@@ -1,12 +1,12 @@
 import moment from "moment";
 import numbro from "numbro";
-import { AcceptImageTypes, DateTimeFormat, MAX_FILE_SIZE } from "src/constants";
+import { AcceptImageTypes, DateTimeFormat, MAX_FILE_SIZE } from "@/constants";
 import { MessageInstance } from "antd/es/message/interface";
-import { MessageStore } from "src/stores/base";
+import { MessageStore } from "@/stores/base";
 import { v4 as uuidv4 } from "uuid";
-import BaseAPI from "src/api/base";
-import { ResponseImage } from "src/api";
-import { ResponseFailure } from "src/api";
+import BaseAPI from "@/api/base";
+import { ResponseImage } from "@/api";
+import { ResponseFailure } from "@/api";
 import { AxiosError } from "axios";
 export const generateFileName = (fileName) => {
     const fileExtensions = fileName.split(".");
@@ -75,14 +75,10 @@ export const convertDate = (
         }
         const momentDate = moment(date, dateFormatCheck, true);
         if (!momentDate.isValid()) {
-            console.log(
-                `Invalid date format: ${date} with format ${dateFormatCheck}`
-            );
             return null;
         }
         return momentDate.format(dateFormatToConvert);
     } catch (e) {
-        console.log(e);
         return null;
     }
 };

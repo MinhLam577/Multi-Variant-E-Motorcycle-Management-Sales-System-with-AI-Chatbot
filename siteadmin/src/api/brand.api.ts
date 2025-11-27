@@ -1,7 +1,7 @@
 import endpoints from "./endpoints";
 import apiClient from "./apiClient";
 import { ResponsePromise } from ".";
-import { CreateBrandDto, UpdateBrandDto } from "src/types/brand.type";
+import { CreateBrandDto, UpdateBrandDto } from "@/types/brand.type";
 const brandEndpoints = endpoints.brand;
 
 type BrandAPIType = {

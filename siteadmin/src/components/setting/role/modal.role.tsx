@@ -9,13 +9,13 @@ import {
 import { Col, Form, Row, message, notification } from "antd";
 import { isMobile } from "react-device-detect";
 // import { callCreateRole, callFetchPermission, callUpdateRole } from "@/config/api";
-import { IPermission } from "src/types/backend";
+import { IPermission } from "@/types/backend";
 import { CheckSquareOutlined } from "@ant-design/icons";
 // import ModuleApi from "./module.api";
 import { useState, useEffect } from "react";
 import _ from "lodash";
-import { useStore } from "src/stores";
-import RoleApi from "src/api/setting";
+import { useStore } from "@/stores";
+import RoleApi from "@/api/setting";
 import ModuleApi from "./module.api";
 import { observer } from "mobx-react-lite";
 // import { useAppDispatch, useAppSelector } from "@/redux/hooks";
@@ -178,7 +178,7 @@ const ModalRole = observer((props: IProps) => {
                         handleReset();
                     },
                     afterClose: () => handleReset(),
-                    destroyOnClose: true,
+                    destroyOnHidden: true,
                     width: isMobile ? "100%" : 900,
                     keyboard: false,
                     maskClosable: false,

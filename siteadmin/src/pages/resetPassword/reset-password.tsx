@@ -2,10 +2,10 @@ import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import { Button, Form, Input, message, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
-import { ForgotPassword } from "src/types/userForgotPassword.type";
-import { useStore } from "src/stores";
-import { ResetPassword } from "src/types/auth-validate.type";
-import { delayFunction } from "src/utils";
+import { ForgotPassword } from "@/types/userForgotPassword.type";
+import { useStore } from "@/stores";
+import { ResetPassword } from "@/types/auth-validate.type";
+import { delayFunction } from "@/utils";
 
 const ResetPasswordPage = () => {
     const [params] = useSearchParams();

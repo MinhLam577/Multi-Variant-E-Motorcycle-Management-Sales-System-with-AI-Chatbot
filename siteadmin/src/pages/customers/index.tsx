@@ -6,16 +6,16 @@ import { PlusOutlined } from "@ant-design/icons";
 import apiClient from "../../api/apiClient";
 import endpoints from "../../api/endpoints";
 import CustomerModalCreate from "../../components/customers/CustomerModalCreate";
-import AdminBreadCrumb from "src/components/common/AdminBreadCrumb";
-import { getBreadcrumbItems } from "src/containers/layout";
-import CustomizeTab from "src/components/common/CustomizeTab";
-import Access from "src/access/access";
-import { ALL_PERMISSIONS } from "src/constants/permissions";
-import CustomerSearch from "src/components/customers/CustomerSearch";
-import { GenderEnum } from "src/types/user-staff.type";
-import { paginationData } from "src/stores/base";
-import { convertDate, filterEmptyFields } from "src/utils";
-import { DateTimeFormat } from "src/constants";
+import AdminBreadCrumb from "@/components/common/AdminBreadCrumb";
+import { getBreadcrumbItems } from "@/containers/layout";
+import CustomizeTab from "@/components/common/CustomizeTab";
+import Access from "@/access/access";
+import { ALL_PERMISSIONS } from "@/constants/permissions";
+import CustomerSearch from "@/components/customers/CustomerSearch";
+import { GenderEnum } from "@/types/user-staff.type";
+import { paginationData } from "@/stores/base";
+import { convertDate, filterEmptyFields } from "@/utils";
+import { DateTimeFormat } from "@/constants";
 export enum SpendingEnumRange {
     BELOW_1M = "BELOW_1M",
     FROM_1M_TO_5M = "FROM_1M_TO_5M",

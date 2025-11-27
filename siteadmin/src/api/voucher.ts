@@ -1,4 +1,4 @@
-import { TypeVoucherResponse, VoucherResponse } from "src/types/voucher.type";
+import { TypeVoucherResponse, VoucherResponse } from "@/types/voucher.type";
 import apiClient from "./apiClient";
 import endpoints from "./endpoints";
 const voucherApi = {

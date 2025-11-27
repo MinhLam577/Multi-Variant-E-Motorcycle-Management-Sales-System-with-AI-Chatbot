@@ -1,6 +1,6 @@
 import { FormInstance } from "antd";
-import { CategoryResponseType } from "src/types/categories.type";
-import { VariantCombinationDto } from "src/types/product.type";
+import { CategoryResponseType } from "@/types/categories.type";
+import { VariantCombinationDto } from "@/types/product.type";
 
 export type TreeSelectType = {
     title: string;

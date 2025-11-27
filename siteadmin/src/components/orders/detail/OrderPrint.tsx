@@ -2,9 +2,9 @@ import { ConfigProvider, Table } from "antd";
 import { ForwardedRef, forwardRef } from "react";
 import { formatVNDMoney } from "../../../utils";
 import dayjs from "dayjs";
-import { useStore } from "src/stores";
+import { useStore } from "@/stores";
 import { ColumnType } from "antd/es/table";
-import { OrderDetailDataResponseType } from "src/types/order.type";
+import { OrderDetailDataResponseType } from "@/types/order.type";
 
 interface OrderPrintProps {}
 

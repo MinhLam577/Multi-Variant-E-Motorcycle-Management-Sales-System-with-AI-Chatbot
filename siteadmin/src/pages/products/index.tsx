@@ -1,28 +1,28 @@
 import { Form } from "antd";
 import { useEffect, useState } from "react";
-import ProductsSearch from "src/components/products/ProductsSearch";
-import ProductsTable from "src/components/products/ProductsTable";
+import ProductsSearch from "@/components/products/ProductsSearch";
+import ProductsTable from "@/components/products/ProductsTable";
 import { useStore } from "../../stores";
 import { observer } from "mobx-react-lite";
-import { paginationData } from "src/stores/base";
+import { paginationData } from "@/stores/base";
 import {
     CreateProductDto,
     globalFilterType,
     SkusDataResponseType,
-} from "src/types/product.type";
-import ProductHeader from "src/components/products/ProductHeader";
-import CustomizeTab from "src/components/common/CustomizeTab";
+} from "@/types/product.type";
+import ProductHeader from "@/components/products/ProductHeader";
+import CustomizeTab from "@/components/common/CustomizeTab";
 import { reaction, toJS } from "mobx";
-import { generateUUIDV4, getErrorMessage } from "src/utils";
-import { CategoryResponseType } from "src/types/categories.type";
-import { modalCreateProductStore } from "src/components/products/detail/ModalCreateProduct/ModalCreateProduct.store";
-import ModalCreateProduct from "src/components/products/detail/ModalCreateProduct/ModalCreateProduct";
-import ModalUpdateProduct from "src/components/products/detail/ModalUpdateProduct/ModalUpdateProduct";
-import BaseAPI from "src/api/base";
+import { generateUUIDV4, getErrorMessage } from "@/utils";
+import { CategoryResponseType } from "@/types/categories.type";
+import { modalCreateProductStore } from "@/components/products/detail/ModalCreateProduct/ModalCreateProduct.store";
+import ModalCreateProduct from "@/components/products/detail/ModalCreateProduct/ModalCreateProduct";
+import ModalUpdateProduct from "@/components/products/detail/ModalUpdateProduct/ModalUpdateProduct";
+import BaseAPI from "@/api/base";
 import {
     IFormListRowData,
     TreeSelectType,
-} from "src/components/products/detail/ModalCreateProduct/ModalCreateProduct.type";
+} from "@/components/products/detail/ModalCreateProduct/ModalCreateProduct.type";
 
 type product_brand_type = {
     id: string;

@@ -10,21 +10,21 @@ import {
 import viVN from "antd/lib/locale/vi_VN";
 import { useState, useRef, useEffect } from "react";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
-import { colorMethod } from "src/constants/until";
+import { colorMethod } from "@/constants/until";
 import queryString from "query-string";
-import DataTable from "src/components/data-table";
-import apiClient from "src/api/apiClient";
-import endpoints from "src/api/endpoints";
-import ModalPermission from "src/components/setting/permission/modal.permission";
-import ViewDetailPermission from "src/components/setting/permission/view.permission";
-import { ALL_PERMISSIONS } from "src/constants/permissions";
-import Access from "src/access/access";
-import { useStore } from "src/stores";
+import DataTable from "@/components/data-table";
+import apiClient from "@/api/apiClient";
+import endpoints from "@/api/endpoints";
+import ModalPermission from "@/components/setting/permission/modal.permission";
+import ViewDetailPermission from "@/components/setting/permission/view.permission";
+import { ALL_PERMISSIONS } from "@/constants/permissions";
+import Access from "@/access/access";
+import { useStore } from "@/stores";
 import { observer } from "mobx-react-lite";
-import AdminBreadCrumb from "src/components/common/AdminBreadCrumb";
-import { getBreadcrumbItems } from "src/containers/layout";
+import AdminBreadCrumb from "@/components/common/AdminBreadCrumb";
+import { getBreadcrumbItems } from "@/containers/layout";
 import { toJS } from "mobx";
-import { PermissionResponseType } from "src/types/permission.type";
+import { PermissionResponseType } from "@/types/permission.type";
 
 const PermissionPage = observer(() => {
     const [openModal, setOpenModal] = useState<boolean>(false);

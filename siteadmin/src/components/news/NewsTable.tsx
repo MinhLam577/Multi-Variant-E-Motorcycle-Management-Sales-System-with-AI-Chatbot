@@ -8,7 +8,7 @@ import apiClient from "../../api/apiClient";
 import endpoints from "../../api/endpoints";
 import Access from "../../access/access";
 import { ALL_PERMISSIONS } from "../../constants/permissions";
-import { GlobalFilterNewsType } from "src/pages/news";
+import { GlobalFilterNewsType } from "@/pages/news";
 
 const getColumnsConfig = ({ hanleDeleteNews, handleUpdateNews }) => {
     const { id } = useParams();

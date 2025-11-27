@@ -1,6 +1,6 @@
 import { flow, makeAutoObservable } from "mobx";
 import { paginationData, RootStore } from "./base";
-import WarehouseAPI from "src/api/warehouse.api";
+import WarehouseAPI from "@/api/warehouse.api";
 
 export type warehouseResponseType = {
     id: string;

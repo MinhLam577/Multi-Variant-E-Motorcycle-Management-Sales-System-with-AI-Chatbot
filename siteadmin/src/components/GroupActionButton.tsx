@@ -6,8 +6,8 @@ import {
 } from "@ant-design/icons";
 import { Button } from "antd";
 import { observer } from "mobx-react-lite";
-import Access from "src/access/access";
-import { ALL_PERMISSIONS } from "src/constants/permissions";
+import Access from "@/access/access";
+import { ALL_PERMISSIONS } from "@/constants/permissions";
 
 export interface IGroupActionButtonProps {
     handleStatusProducts?: (item: any) => void;

@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import UserTable from "src/components/users/UserTable";
+import UserTable from "@/components/users/UserTable";
 import { GlobalContext } from "../../contexts/global";
 import UserSearch from "../../components/users/UserSearch";
 import { Button, message } from "antd";
@@ -8,20 +8,20 @@ import { ExportOutlined, PlusOutlined } from "@ant-design/icons";
 import { CSVLink } from "react-csv";
 import UserModalCreate from "../../components/users/UserModalCreate";
 import dayjs from "dayjs";
-import AdminBreadCrumb from "src/components/common/AdminBreadCrumb";
-import { getBreadcrumbItems } from "src/containers/layout";
-import { paginationData } from "src/stores/base";
+import AdminBreadCrumb from "@/components/common/AdminBreadCrumb";
+import { getBreadcrumbItems } from "@/containers/layout";
+import { paginationData } from "@/stores/base";
 
 import {
     globalFiltersDataUserStaff,
     UserStaffResponseType,
-} from "src/types/user-staff.type";
-import { useStore } from "src/stores";
+} from "@/types/user-staff.type";
+import { useStore } from "@/stores";
 import { observer } from "mobx-react-lite";
-import CustomizeTab from "src/components/common/CustomizeTab";
-import { getErrorMessage } from "src/utils";
-import Access from "src/access/access";
-import { ALL_PERMISSIONS } from "src/constants/permissions";
+import CustomizeTab from "@/components/common/CustomizeTab";
+import { getErrorMessage } from "@/utils";
+import Access from "@/access/access";
+import { ALL_PERMISSIONS } from "@/constants/permissions";
 const User = () => {
     const navigate = useNavigate();
     const store = useStore();

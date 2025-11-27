@@ -1,15 +1,15 @@
 import { flow, makeAutoObservable } from "mobx";
 import { SUCCESS_STATUSES } from "../constants";
 import { paginationData, RootStore } from "./base";
-import ProductAPI from "src/api/product.api";
-import { ResponsePromise } from "src/api";
-import { getErrorMessage } from "src/utils";
+import ProductAPI from "@/api/product.api";
+import { ResponsePromise } from "@/api";
+import { getErrorMessage } from "@/utils";
 import {
     CreateProductDto,
     globalFilterType,
     ProductData,
     UpdateProductDto,
-} from "src/types/product.type";
+} from "@/types/product.type";
 
 class ProductObservable {
     rootStore: RootStore;

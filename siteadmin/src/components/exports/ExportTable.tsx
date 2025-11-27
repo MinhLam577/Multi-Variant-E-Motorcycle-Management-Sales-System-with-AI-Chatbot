@@ -2,15 +2,15 @@ import { Button } from "antd";
 import { useNavigate } from "react-router";
 import TableComponent from "../../containers/TableComponent";
 import React from "react";
-import { useStore } from "src/stores";
+import { useStore } from "@/stores";
 import { observer } from "mobx-react-lite";
 import GroupActionButton from "../GroupActionButton";
 import {
     processWithModals,
     ProcessModalName,
 } from "../../containers/processWithModals";
-import { ExportResponseType } from "src/types/export.type";
-import { ALL_MODULES } from "src/constants/permissions";
+import { ExportResponseType } from "@/types/export.type";
+import { ALL_MODULES } from "@/constants/permissions";
 
 interface ExportPageProps {
     data: ExportResponseType[];

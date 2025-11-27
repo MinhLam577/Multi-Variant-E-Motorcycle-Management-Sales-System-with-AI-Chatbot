@@ -11,7 +11,7 @@ import NewsSearch from "../../components/categories_blog/NewsSearch";
 import CustomizeTab from "../../components/common/CustomizeTab";
 import Access from "../../access/access";
 import { ALL_PERMISSIONS } from "../../constants/permissions";
-import { filterEmptyFields } from "src/utils";
+import { filterEmptyFields } from "@/utils";
 
 export interface GlobalFilterNewsType {
     search?: string;

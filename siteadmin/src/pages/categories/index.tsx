@@ -6,20 +6,20 @@ import CategoriesTable from "../../components/categories/CategoriesTable";
 import AdminBreadCrumb from "../../components/common/AdminBreadCrumb";
 import { getBreadcrumbItems } from "../../containers/layout";
 import CustomizeTab from "../../components/common/CustomizeTab";
-import CategoriesSearch from "src/components/categories/categoriesSearch";
-import Access from "src/access/access";
-import { ALL_PERMISSIONS } from "src/constants/permissions";
-import { useStore } from "src/stores";
+import CategoriesSearch from "@/components/categories/categoriesSearch";
+import Access from "@/access/access";
+import { ALL_PERMISSIONS } from "@/constants/permissions";
+import { useStore } from "@/stores";
 import {
     CategoryResponseTypeEnum,
     globalFilterCategoryType,
-} from "src/types/categories.type";
+} from "@/types/categories.type";
 import { observer } from "mobx-react-lite";
 import {
     processWithModals,
     ProcessModalName,
 } from "../../containers/processWithModals";
-import { getErrorMessage } from "src/utils";
+import { getErrorMessage } from "@/utils";
 const Categories = () => {
     const navigate = useNavigate();
     const store = useStore();

@@ -29,7 +29,7 @@ const CustomizeModal: React.FC<CustomizeModalProps> = ({
             onOk={handleSaveModal || undefined}
             okText={okText || "Xác nhận"}
             cancelText={cancelText || "Hủy"}
-            destroyOnClose={true}
+            destroyOnHidden={true}
             title={title}
             forceRender={true}
             {...res}

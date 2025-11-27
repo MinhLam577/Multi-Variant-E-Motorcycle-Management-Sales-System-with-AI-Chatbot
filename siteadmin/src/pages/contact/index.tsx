@@ -2,24 +2,24 @@ import { PlusOutlined } from "@ant-design/icons";
 import { Button, Col, Form, Input, Row, Select } from "antd";
 import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
-import Access from "src/access/access";
-import AdminBreadCrumb from "src/components/common/AdminBreadCrumb";
-import CustomizeModal from "src/components/common/CustomizeModal";
-import CustomizeTab from "src/components/common/CustomizeTab";
-import ContactSearch from "src/components/contact/ContactSearch";
-import ContactTable from "src/components/contact/ContactTable";
-import { RegExps } from "src/constants";
-import { ALL_PERMISSIONS } from "src/constants/permissions";
-import { getBreadcrumbItems } from "src/containers/layout";
-import { useStore } from "src/stores";
+import Access from "@/access/access";
+import AdminBreadCrumb from "@/components/common/AdminBreadCrumb";
+import CustomizeModal from "@/components/common/CustomizeModal";
+import CustomizeTab from "@/components/common/CustomizeTab";
+import ContactSearch from "@/components/contact/ContactSearch";
+import ContactTable from "@/components/contact/ContactTable";
+import { RegExps } from "@/constants";
+import { ALL_PERMISSIONS } from "@/constants/permissions";
+import { getBreadcrumbItems } from "@/containers/layout";
+import { useStore } from "@/stores";
 import {
     ContactResponseType,
     CreateContactDto,
     EnumContact,
     globalFilterContactType,
     UpdateContactDto,
-} from "src/types/contact.type";
-import { paginationData } from "src/stores/base";
+} from "@/types/contact.type";
+import { paginationData } from "@/stores/base";
 
 const ContactPage = () => {
     const store = useStore();

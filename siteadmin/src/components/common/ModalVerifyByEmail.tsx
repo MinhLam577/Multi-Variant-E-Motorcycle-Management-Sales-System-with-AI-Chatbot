@@ -1,7 +1,7 @@
 import { Form, Input, Modal, ModalProps } from "antd";
 import { FormInstance } from "antd/lib";
 import { Dispatch, SetStateAction } from "react";
-import { validateEmail } from "src/utils/validate-format";
+import { validateEmail } from "@/utils/validate-format";
 export interface ModalVerifyByEmailProps extends ModalProps {
     showModal: boolean;
     isLoading: boolean;
@@ -23,7 +23,7 @@ const ModalVerifyByEmail = ({
             title={props?.title}
             open={showModal}
             confirmLoading={isLoading}
-            destroyOnClose={true}
+            destroyOnHidden={true}
             afterClose={() => {
                 formInstance.resetFields();
             }}

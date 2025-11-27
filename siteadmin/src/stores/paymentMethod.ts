@@ -3,8 +3,8 @@ import apiClient from "../api/apiClient";
 import endpoints from "../api/endpoints";
 import { RootStore } from "./base";
 import { paginationData } from "./base";
-import { filterEmptyFields, getErrorMessage } from "src/utils";
-import { DeliveryMethodResponseType } from "src/types/order.type";
+import { filterEmptyFields, getErrorMessage } from "@/utils";
+import { DeliveryMethodResponseType } from "@/types/order.type";
 
 export default class PaymentMethodObservable {
     status: number = null;

@@ -4,8 +4,8 @@ import { useCallback } from "react";
 import {
     getSpendingEnumRangeLabel,
     SpendingEnumRange,
-} from "src/pages/customers";
-import { GenderEnum } from "src/types/user-staff.type";
+} from "@/pages/customers";
+import { GenderEnum } from "@/types/user-staff.type";
 const { RangePicker } = DatePicker;
 
 const CustomerSearch = ({ setFilters }) => {

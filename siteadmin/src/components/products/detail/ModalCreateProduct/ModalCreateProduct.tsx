@@ -1,13 +1,13 @@
 import { Button, Form, UploadFile } from "antd";
 import CustomizeModal from "../../../common/CustomizeModal";
 import "./ModalCreateProduct.css";
-import { useStore } from "src/stores";
+import { useStore } from "@/stores";
 import React from "react";
 import { observer } from "mobx-react-lite";
 import GeneralInformation from "./detail/GeneralInformation";
-import { convertBase64ToFile, filterEmptyFields } from "src/utils";
+import { convertBase64ToFile, filterEmptyFields } from "@/utils";
 import debounce from "lodash.debounce";
-import BaseAPI from "src/api/base";
+import BaseAPI from "@/api/base";
 import {
     CreateProductDto,
     CreateProductSpecificationDto,
@@ -15,10 +15,10 @@ import {
     SkusDetailImportDto,
     UpdateProductDto,
     VariantCombinationDto,
-} from "src/types/product.type";
-import { ResponseImage } from "src/api";
+} from "@/types/product.type";
+import { ResponseImage } from "@/api";
 import { useNavigate } from "react-router";
-import { CategoryResponseType } from "src/types/categories.type";
+import { CategoryResponseType } from "@/types/categories.type";
 import {
     IFormSkuCustomData,
     IModalCreateProductProps,

@@ -3,12 +3,12 @@ import { convertDate, getErrorMessage } from "../utils";
 import { DateTimeFormat, EnumOrderStatusesValue } from "../constants";
 import OrderAPI from "../api/order.api";
 import { paginationData, RootStore } from "./base";
-import { ResponsePromise } from "src/api";
+import { ResponsePromise } from "@/api";
 import {
     globalFiltersDataOrder,
     orderData,
     RevenueProfitStatisticsDto,
-} from "src/types/order.type";
+} from "@/types/order.type";
 
 export default class OrderObservable {
     rootStore: RootStore;
