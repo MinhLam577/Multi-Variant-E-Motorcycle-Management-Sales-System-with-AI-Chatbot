@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router";
-import Loading from "@/containers/Loading";
 import { useStore } from "@/stores";
 import { CheckCircle, XCircle, AlertTriangle, Loader2 } from "lucide-react"; // icon đẹp
 export interface VerifyCodeProps {}
@@ -69,7 +68,7 @@ const VerifyCode = (props: VerifyCodeProps = {}) => {
                         </p>
                         <a
                             href="/login"
-                            className="px-5 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition"
+                            className="px-5 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition no-underline"
                         >
                             Đăng nhập ngay
                         </a>
@@ -84,13 +83,13 @@ const VerifyCode = (props: VerifyCodeProps = {}) => {
                         </h2>
                         <p className="text-gray-600 mb-6">
                             Mã đã hết hạn hoặc không tồn tại. Vui lòng đăng ký
-                            lại tài khoản.
+                            hoặc kích hoạt lại tài khoản.
                         </p>
                         <a
                             href="/login"
-                            className="px-5 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition"
+                            className="px-5 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition  no-underline"
                         >
-                            Đăng ký lại
+                            Đăng ký hoặc kích hoạt lại
                         </a>
                     </>
                 );
@@ -106,7 +105,7 @@ const VerifyCode = (props: VerifyCodeProps = {}) => {
                         </p>
                         <a
                             href="/login"
-                            className="px-5 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition"
+                            className="px-5 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition no-underline"
                         >
                             Về trang đăng nhập
                         </a>

@@ -15,24 +15,15 @@ import {
     UsergroupAddOutlined,
     UserOutlined,
 } from "@ant-design/icons";
-import {
-    ConfigProvider,
-    Drawer,
-    Grid,
-    Layout,
-    Menu,
-    message,
-    Spin,
-} from "antd";
-import { useEffect, useState } from "react";
+import { ConfigProvider, Drawer, Grid, Layout, Menu, Spin } from "antd";
+import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router";
 import Logo from "../../components/Logo";
 import HeaderComponent from "./header";
 import "./index.css";
-import { makeAutoObservable, reaction } from "mobx";
+import { makeAutoObservable } from "mobx";
 import { useStore } from "@/stores";
 import { observer } from "mobx-react-lite";
-import { displayMessage } from "@/utils";
 import { ALL_PERMISSIONS } from "@/constants/permissions";
 
 const { Content, Sider } = Layout;
@@ -147,16 +138,11 @@ const AppLayout = (props) => {
     const navigate = useNavigate();
     const screens = useBreakpoint();
     const { children } = props;
-    // const [collapsed, setCollapsed] = useState(false);
     const store = useStore();
-    const [messageApi, contextHolder] = message.useMessage();
-    const Store = useStore();
-    const { loginObservable } = useStore();
-    const AccountStore = Store.accountObservable;
+    const AccountStore = store.accountObservable;
 
     const fetchData = async () => {
         await AccountStore.getAccount();
-        // await loginObservable.getAccountApi(AccountStore.account.email);
     };
     useEffect(() => {
         fetchData();
@@ -434,26 +420,6 @@ const AppLayout = (props) => {
         }
     };
 
-    useEffect(() => {
-        const messageReaction = reaction(
-            () => ({
-                status: store.status,
-                showSuccessMsg: store.showSuccessMsg,
-                errorMsg: store.errorMsg,
-                successMsg: store.successMsg,
-            }),
-            (current_status) => {
-                if (!current_status) return;
-                const { status: newStatus, showSuccessMsg: newShowSuccess } =
-                    current_status || {};
-                displayMessage(messageApi, newStatus, store, newShowSuccess, 5);
-            }
-        );
-        return () => {
-            messageReaction();
-        };
-    }, []);
-
     return (
         <ConfigProvider
             theme={{
@@ -465,7 +431,6 @@ const AppLayout = (props) => {
                 },
             }}
         >
-            {contextHolder}
             <Layout
                 style={{
                     minHeight: "100vh",
@@ -542,9 +507,7 @@ const AppLayout = (props) => {
                 )}
                 <Layout>
                     <HeaderComponent />
-                    <Content className="mx-6 !bg-[#f3f4f6]">
-                        <div>{children}</div>
-                    </Content>
+                    <Content className="mx-6 !bg-[#f3f4f6]">{children}</Content>
                 </Layout>
             </Layout>
         </ConfigProvider>

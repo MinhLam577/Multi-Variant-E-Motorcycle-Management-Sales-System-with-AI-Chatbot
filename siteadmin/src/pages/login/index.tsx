@@ -79,27 +79,6 @@ const Login = () => {
                 auth.loginAction();
                 break;
             }
-            case LoginStatus.LOGIN_FAILED: {
-                displayMessage({
-                    status: 400,
-                    content: loginObservable.errorMsg,
-                });
-                break;
-            }
-
-            case ForgotPassword.FORGOT_PASSWORD_SUCCESS: {
-                displayMessage({
-                    content: "Email đã được gửi đi",
-                });
-                break;
-            }
-            case ForgotPassword.FORGOT_PASSWORD_FAILED: {
-                displayMessage({
-                    content: loginObservable.errorMsg,
-                    status: 400,
-                });
-                break;
-            }
             default: {
                 break;
             }

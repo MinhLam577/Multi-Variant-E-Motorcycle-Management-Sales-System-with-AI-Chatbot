@@ -37,11 +37,11 @@ export type paginationData = {
 };
 
 export class RootStore implements MessageStore {
-    @observable status: number = null;
-    @observable errorMsg: string = null;
-    @observable successMsg: string = null;
-    @observable showSuccessMsg: boolean = false;
-    @observable loading: boolean = false;
+    status: number = null;
+    errorMsg: string = null;
+    successMsg: string = null;
+    showSuccessMsg: boolean = false;
+    loading: boolean = false;
 
     exportObservable: ExportObservable;
     importObservable: ImportObservable;
@@ -62,7 +62,22 @@ export class RootStore implements MessageStore {
     permissionObservable: PermissionObservable;
     contactObservable: ContactObservable;
     constructor() {
-        makeObservable(this);
+        makeObservable(
+            this,
+            {
+                status: observable,
+                errorMsg: observable,
+                successMsg: observable,
+                showSuccessMsg: observable,
+                loading: observable,
+                clearMessage: action,
+                setStatusMessage: action,
+                setLoading: action,
+            },
+            {
+                autoBind: true,
+            }
+        );
         this.contactObservable = new ContactObservable(this);
         this.permissionObservable = new PermissionObservable(this);
         this.userObservable = new UserObservable(this);
@@ -83,7 +98,6 @@ export class RootStore implements MessageStore {
         this.settingObservable = new SettingObservable(this);
     }
 
-    @action
     clearMessage() {
         this.status = null;
         this.errorMsg = null;
@@ -91,7 +105,6 @@ export class RootStore implements MessageStore {
         this.showSuccessMsg = false;
     }
 
-    @action
     setStatusMessage(
         status: number,
         errorMsg: string,
@@ -104,7 +117,6 @@ export class RootStore implements MessageStore {
         this.showSuccessMsg = showSuccessMsg;
     }
 
-    @action
     setLoading(loading: boolean) {
         this.loading = loading;
     }

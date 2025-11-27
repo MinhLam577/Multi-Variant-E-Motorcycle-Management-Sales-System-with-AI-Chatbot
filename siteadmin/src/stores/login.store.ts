@@ -42,26 +42,28 @@ export class LoginObservable {
         successStatus,
         errorStatus,
         defaultErrorMessage,
+        showSuccessMsg = false,
         onSuccess,
     }: {
         apiCall: () => Promise<AxiosResponse<ApiResponse<T>, any>>;
         successStatus: LoginStatus | ForgotPassword | number;
         errorStatus: LoginStatus | ForgotPassword | number;
         defaultErrorMessage: string;
+        showSuccessMsg?: boolean;
         onSuccess?: (data: T, message: string) => Promise<void> | void;
     }) {
         try {
             const { data, status, message }: ApiResponse<T> = yield apiCall();
-            const msg =
-                typeof message === "string" ? message : message?.join(", ");
+            const msg = typeof message === "string" ? message : message?.[0];
             const isSuccess =
                 (typeof status === "number" &&
                     SUCCESS_STATUSES.includes(status)) ||
                 (typeof status === "boolean" && status);
-
             if (!isSuccess) {
                 this.status = errorStatus;
                 this.errorMsg = msg;
+                this.rootStore.errorMsg = msg;
+                this.rootStore.status = errorStatus as number;
                 return;
             }
 
@@ -71,10 +73,15 @@ export class LoginObservable {
 
             this.status = successStatus;
             this.successMsg = msg;
+            this.rootStore.status = successStatus as number;
+            this.rootStore.successMsg = msg;
+            this.rootStore.showSuccessMsg = showSuccessMsg;
         } catch (error) {
             const errorMessage = getErrorMessage(error, defaultErrorMessage);
             this.status = errorStatus;
             this.errorMsg = errorMessage;
+            this.rootStore.status = errorStatus as number;
+            this.rootStore.errorMsg = errorMessage;
             console.error(defaultErrorMessage, error);
         }
     }
@@ -109,6 +116,7 @@ export class LoginObservable {
             apiCall: () => LoginAPI.forgotPassword(email),
             errorStatus: ForgotPassword.FORGOT_PASSWORD_FAILED,
             successStatus: ForgotPassword.FORGOT_PASSWORD_SUCCESS,
+            showSuccessMsg: true,
             defaultErrorMessage: "Quên mật khẩu thất bại",
         });
     }
@@ -119,6 +127,7 @@ export class LoginObservable {
             defaultErrorMessage:
                 "Xác thực người dùng thất bại. Vui lòng thử lại sau",
             errorStatus: 400,
+            showSuccessMsg: true,
             successStatus: 200,
         });
     }
@@ -127,6 +136,7 @@ export class LoginObservable {
             apiCall: () => LoginAPI.resetPassword(resetData),
             defaultErrorMessage: "Reset mật khẩu thất bại",
             errorStatus: 500,
+            showSuccessMsg: true,
             successStatus: 200,
         });
     }
@@ -137,6 +147,7 @@ export class LoginObservable {
             },
             errorStatus: 400,
             successStatus: 200,
+            showSuccessMsg: true,
             defaultErrorMessage:
                 "Có lỗi xảy ra khi đăng kí. Vui lòng thử lại sau",
         });
@@ -159,6 +170,7 @@ export class LoginObservable {
             },
             errorStatus: 400,
             successStatus: 200,
+            showSuccessMsg: true,
             defaultErrorMessage:
                 "Lỗi xảy ra khi tái kích hoạt tài khoản. Vui lòng thử lại sau",
         });
