@@ -17,11 +17,7 @@ const ModalForgotPasswordCom = forwardRef<ModalHandle, any>((props, ref) => {
                 return;
             }
             await loginObservable.forgotPassword(values?.email);
-            if (loginObservable.errorMsg) {
-                message.error({
-                    content: loginObservable.errorMsg,
-                });
-            }
+            setShowForgotPassword(false);
         } catch (error) {
             console.error("Lỗi submit quên mật khẩu", error);
             const msg = getErrorMessage(error, "Lỗi submit quên mật khẩu");

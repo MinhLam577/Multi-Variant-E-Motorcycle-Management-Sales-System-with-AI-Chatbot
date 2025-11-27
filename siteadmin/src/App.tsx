@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router";
 import "@/reset.css";
 import "@/App.css";
@@ -27,7 +27,7 @@ import VoucherDetail, {
 } from "@/pages/vouchers/VoucherDetail";
 import WareHouses from "@/pages/warehouses";
 import WareHouseDetail from "@/pages/warehouses/WareHouseDetail";
-import { StoreProvider } from "@/stores";
+import { StoreProvider, useStore } from "@/stores";
 import GlobalProvider from "@/contexts/global";
 import CustomerDetail from "@/pages/customers/CustomerDetail";
 import NetworkError from "@/pages/NetworkError";

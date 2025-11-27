@@ -1,4 +1,4 @@
-import { Button, message } from "antd";
+import { message } from "antd";
 import { observer } from "mobx-react-lite";
 import { forwardRef, useImperativeHandle } from "react";
 import { useEmailVerifyModal } from "@/hooks/useEmailVerifyModal";
@@ -19,10 +19,7 @@ const ModalRetryActive = forwardRef<ModalHandle, any>((props, ref) => {
                 return;
             }
             await loginObservable.retryAccount(values?.email);
-            if (loginObservable.errorMsg) {
-                message.error(loginObservable.errorMsg);
-                return;
-            }
+            setShowModal(false);
         } catch (error) {
             console.error("Lỗi submit tái kích hoạt tài khoản", error);
             const msg = getErrorMessage(

@@ -1,6 +1,5 @@
 import { Base64 } from "js-base64";
 import { observer } from "mobx-react-lite";
-import PropTypes from "prop-types";
 import {
     createContext,
     ReactNode,
@@ -26,7 +25,9 @@ type AuthProviderProps = {
 const AuthContext = createContext<AuthContext | null>(null);
 
 const AuthProvider = observer(({ children }: AuthProviderProps) => {
-    const { accountObservable } = useStore();
+    const store = useStore();
+
+    const { accountObservable } = store;
     const navigate = useNavigate();
     useEffect(() => {
         getLocal();

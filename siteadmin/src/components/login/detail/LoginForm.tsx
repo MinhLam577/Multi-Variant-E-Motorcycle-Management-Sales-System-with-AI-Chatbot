@@ -185,7 +185,7 @@ const LoginForm = ({
                                                 setShowRetryActive(true);
                                             }}
                                         >
-                                            Kích hoạt lại tài khoản
+                                            Kích hoạt tài khoản
                                         </Typography.Paragraph>
                                     </div>
                                 </Form>

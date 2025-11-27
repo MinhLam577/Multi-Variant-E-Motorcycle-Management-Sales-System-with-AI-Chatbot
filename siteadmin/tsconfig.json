@@ -6,8 +6,9 @@
         "moduleResolution": "bundler",
         "jsx": "react-jsx",
         "types": ["vite/client"],
-        "experimentalDecorators": true, // THÊM DÒNG NÀY
-        "useDefineForClassFields": false, // THÊM DÒNG NÀY (quan trọng nhất!)
+        "experimentalDecorators": true,
+        "useDefineForClassFields": false,
+        "emitDecoratorMetadata": true,
         // === Giữ lại những cái bạn cần ===
         "strict": true,
         "esModuleInterop": true,

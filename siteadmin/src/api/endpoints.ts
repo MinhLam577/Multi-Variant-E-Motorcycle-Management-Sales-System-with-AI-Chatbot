@@ -36,7 +36,7 @@ const endpoints = {
         logout: "/auth/admin/logout",
         refreshToken: "/auth/admin/refresh",
         verifyResetPassword: "/auth/admin/verify-reset-password",
-        verifyActiveCode: "/auth/admin/verify-code",
+        verifyActiveCode: "/auth/admin/check-code",
         retryAccount: "/auth/admin/retry-active",
         resetPassword: "/auth/admin/reset-password",
         forgotPassword: "/auth/admin/forgot-password",
