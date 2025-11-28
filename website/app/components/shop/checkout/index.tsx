@@ -7,8 +7,9 @@ import { useEffect } from "react";
 import Delivery from "./delivery";
 import VoucherSection from "./voucher";
 import { useRouter } from "next/navigation"; // nếu dùng App Router: 'next/navigation'
-import { notification } from "antd";
+import { message, notification } from "antd";
 import { observer } from "mobx-react-lite";
+import { SUCCESS_STATUSES } from "@/app/constants";
 
 const BillingMain = () => {
     const router = useRouter();
@@ -64,66 +65,54 @@ const BillingMain = () => {
 
         if (storeAddress?.data?.listAddress.length == 0) {
             notification.error({
-                message: "Lỗi chưa có địa chỉ",
+                message: "Vui lòng chọn địa chỉ hoặc tạo mới nếu chưa có",
             });
-        } else {
-            const orderData = {
-                customer_id,
-                receive_address_id:
-                    storeAddress?.data?.addressDefault.id ||
-                    storeAddress?.data?.listAddress?.[0]?.id,
-                delivery_method_id: storeDelivery?.data?.detailDelivery.id,
-                payment_method_id: storePayment?.data?.selectedPayment,
-                cart_item_ids: storeCart?.selectedItems,
-                total_price: total,
-                discount_price: subtotal,
-            };
-            await storeCart.checkoutBycart(orderData);
-            if (
-                storeCart?.dataOrder?.orderId &&
-                storeCart?.dataOrder?.payment_method == "COD" &&
-                storeCart?.successMsg ==
-                    "Order has been successfully created" &&
-                storeCart?.status == 201
-            ) {
-                notification.success({
-                    message: "Thông báo",
-                    description: "Bạn đã đặt hàng thành công.",
-                });
-
-                router.push("/purchase"); // chuyển đến trang mua hàng đã thanh toán
-            } else if (
-                storeCart?.dataOrder.orderId &&
-                storeCart?.dataOrder?.payment_method == "ZALOPAY" &&
-                storeCart?.successMsg ==
-                    "Order has been successfully created" &&
-                storeCart?.status == 201
-            ) {
-                await storeCart.checkoutByZaloPay({
-                    orderId: storeCart.dataOrder.orderId,
-                    description: `Thanh toán đơn`,
-                    ...(storeVoucher?.dataDetail?.voucher?.id && {
-                        voucherIds: [storeVoucher.dataDetail.voucher.id],
-                    }),
-                });
-                router.push(storeCart?.dataOrder?.order_url);
-            } else if (
-                storeCart?.dataOrder.orderId &&
-                storeCart?.dataOrder?.payment_method == "PAYOS" &&
-                storeCart?.successMsg ==
-                    "Order has been successfully created" &&
-                storeCart?.status == 201
-            ) {
-                await storeCart.checkoutByPayos({
-                    orderId: storeCart.dataOrder.orderId,
-                    description: `Thanh toán Đơn`,
-                    ...(storeVoucher?.dataDetail?.voucher?.id && {
-                        voucherIds: [storeVoucher.dataDetail.voucher.id],
-                    }),
-                });
-                await storeVoucher.getListVoucher_of_User();
-                router.push(storeCart?.dataOrder?.checkoutUrl);
-            }
+            return;
+        }
+        const orderData = {
+            customer_id,
+            receive_address_id:
+                storeAddress?.data?.addressDefault.id ||
+                storeAddress?.data?.listAddress?.[0]?.id,
+            delivery_method_id: storeDelivery?.data?.detailDelivery.id,
+            payment_method_id: storePayment?.data?.selectedPayment,
+            cart_item_ids: storeCart?.selectedItems,
+            total_price: total,
+            discount_price: subtotal,
+        };
+        await storeCart.checkoutBycart(orderData);
+        if (
+            !SUCCESS_STATUSES.includes(storeCart.status) ||
+            !storeCart?.dataOrder?.orderId
+        ) {
+            message.error("Có lỗi xảy ra lúc thanh toán. Vui lòng thử lại sau");
+            return;
+        }
+        if (storeCart?.dataOrder?.payment_method == "COD") {
+            notification.success({
+                message: "Thông báo",
+                description: "Bạn đã đặt hàng thành công.",
+            });
+            router.push("/purchase");
+        } else if (storeCart?.dataOrder?.payment_method == "ZALOPAY") {
+            await storeCart.checkoutByZaloPay({
+                orderId: storeCart.dataOrder.orderId,
+                description: `Thanh toán đơn`,
+                ...(storeVoucher?.dataDetail?.voucher?.id && {
+                    voucherIds: [storeVoucher.dataDetail.voucher.id],
+                }),
+            });
+            router.push(storeCart?.dataOrder?.order_url);
+        } else if (storeCart?.dataOrder?.payment_method == "PAYOS") {
+            await storeCart.checkoutByPayos({
+                orderId: storeCart.dataOrder.orderId,
+                description: `Thanh toán Đơn`,
+                ...(storeVoucher?.dataDetail?.voucher?.id && {
+                    voucherIds: [storeVoucher.dataDetail.voucher.id],
+                }),
+            });
+            await storeVoucher.getListVoucher_of_User();
+            router.push(storeCart?.dataOrder?.checkoutUrl);
         }
         // gọi api checkoutByZaloPay
     };

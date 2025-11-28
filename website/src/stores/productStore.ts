@@ -12,20 +12,16 @@ export enum EnumProductSortBy {
     BEST_SELLING = "bestSelling",
 }
 import SkusAPI from "../api/skus";
+import { OptionGroup } from "@/app/components/listing/listing-single/listing-single-v2/Select_OptionValue";
 
 export enum EnumProductType {
     CARS = "Xe hơi",
     MOTOBIKES = "Xe máy điện",
 }
 
-interface OptionGroup {
-    option_value_ids: string[];
-}
-
-interface OptionValuesPayload {
-    optionValues: OptionGroup[];
-}
-
+// interface OptionGroup {
+//     option_value_ids: string[];
+// }
 export enum EnumProductStoreLabel {
     CAR = "Xe hơi",
     MOTORBIKE = "Xe máy điện",
@@ -128,7 +124,7 @@ export type ProductsSortByResponseType = {
 type ProductData = {
     cars: {
         data: ProductType | null;
-        bestSelling: ProductDataResponseType[] | null; // Thêm trường bestSelling nếu cần
+        bestSelling: ProductDataResponseType[] | null;
     };
     motobikes: {
         data: ProductType | null;
@@ -141,7 +137,7 @@ type ProductData = {
         data: any;
     };
     resultOption_OptionValue: ConvertSkusOptionValue_UI[];
-    optionValues: OptionValuesPayload;
+    optionValues: OptionGroup[];
     dataSKU: null;
     product_sort_by: ProductsSortByResponseType[];
 };
@@ -160,11 +156,11 @@ class ProductObservable {
     data: ProductData = {
         cars: {
             data: [],
-            bestSelling: [], // Thêm trường bestSelling nếu cần
+            bestSelling: [],
         },
         motobikes: {
             data: [],
-            bestSelling: [], // Thêm trường bestSelling nếu cần
+            bestSelling: [],
         },
         cars_motobikes: {
             data: [],
@@ -360,7 +356,7 @@ class ProductObservable {
                                 existingOption.option_values.push({
                                     id: optionValue.id,
                                     value: optionValue.value,
-                                    image: sku.image, // Thêm image của SKU vào option_value
+                                    image: sku.image,
                                 });
                             } else {
                                 acc.push({
@@ -370,7 +366,7 @@ class ProductObservable {
                                         {
                                             id: optionValue.id,
                                             value: optionValue.value,
-                                            image: sku.image, // Thêm image của SKU vào option_value
+                                            image: sku.image,
                                         },
                                     ],
                                 });
@@ -378,7 +374,6 @@ class ProductObservable {
                         });
                         return acc;
                     }, []);
-
                 this.data.resultOption_OptionValue = result;
                 yield this.get_detailProducts_user_page_id(id);
                 this.setStatusMessage(200, "", message);
@@ -432,7 +427,7 @@ class ProductObservable {
                 yield SkusAPI.GetSkusByOptionValueIdsNoneLogin(
                     optionValuesPayload
                 );
-
+            console.log("dataSKU_None_Login: ", data);
             if (SUCCESS_STATUSES.includes(status)) {
                 this.data.dataSKU = data[0];
                 this.setStatusMessage(200, "", message);
@@ -449,16 +444,13 @@ class ProductObservable {
         optionValues: { option_value_ids: string[] }[];
     }) {
         try {
-            console.log(optionValuesPayload);
             const { data, status, message } =
                 yield SkusAPI.GetSkusByOptionValueIdsAlreadyLogin(
                     optionValuesPayload
                 );
-            console.log(data?.[0]);
 
             if (SUCCESS_STATUSES.includes(status)) {
                 this.data.dataSKU = data?.[0];
-                console.log(this.data?.dataSKU);
                 this.setStatusMessage(200, "", message);
             } else {
                 this.setStatusMessage(0, message, "");

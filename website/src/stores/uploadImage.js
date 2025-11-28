@@ -40,6 +40,7 @@ class UploadImageObservable {
 
     clearAccount() {
         secureLocalStorage.removeItem(keyStorageAccount);
+        secureLocalStorage.removeItem(keyStorageAccount);
         this.account = null;
     }
 }

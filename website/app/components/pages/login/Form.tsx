@@ -41,7 +41,7 @@ const Form = observer(() => {
             message.error("Mật khẩu phải có ít nhất 6 ký tự.");
             return;
         }
-        await loginObservable.login({ email, password });
+        await loginObservable.login({ email, password, remember });
 
         if (loginObservable.status === LoginStatusProps.LOGIN_SUCCESS) {
             message.success(loginObservable.successMsg);
@@ -49,7 +49,10 @@ const Form = observer(() => {
         } else {
             message.error(loginObservable.errorMsg);
             // cần kích hoạt
-            if (!loginObservable.data?.user?.isActice) {
+            if (
+                loginObservable.data?.user &&
+                !loginObservable.data?.user?.isActice
+            ) {
                 setReactivate(true);
                 setUserEmail(email);
                 return;

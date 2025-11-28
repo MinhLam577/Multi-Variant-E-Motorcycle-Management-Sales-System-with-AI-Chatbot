@@ -222,7 +222,7 @@ const endpoints = {
         getPaymentStatus: () => "/order/payment-status",
     },
     deliveryMethod: {
-        list: (query: string) => `/delivery-method?${query}`,
+        list: () => `/delivery-method`,
     },
     skus: {
         list: (query: string) => `/skus?${query}`,

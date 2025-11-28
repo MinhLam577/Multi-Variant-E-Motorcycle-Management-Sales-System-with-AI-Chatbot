@@ -3,6 +3,10 @@
     height: 200px !important;
 }
 
+.ant-table-cell {
+    vertical-align: top !important;
+}
+
 .ant-tree-switcher {
     padding-top: 5px !important;
 }

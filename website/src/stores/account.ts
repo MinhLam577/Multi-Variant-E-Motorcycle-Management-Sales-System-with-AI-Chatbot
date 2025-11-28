@@ -20,11 +20,17 @@ class AccountObservable {
         return existing;
     }
 
-    *setAccount(data: LoginResponse) {
+    *setAccount(data: LoginResponse, remember?: boolean) {
         try {
             const jsonValue = JSON.stringify(data);
             const dataEncoded = Base64.encode(jsonValue);
-            secureLocalStorage.setItem(keyStorageAccount, dataEncoded);
+            if (remember) {
+                secureLocalStorage.setItem(keyStorageAccount, dataEncoded);
+                sessionStorage.removeItem(keyStorageAccount);
+            } else {
+                sessionStorage.setItem(keyStorageAccount, dataEncoded);
+                secureLocalStorage.removeItem(keyStorageAccount);
+            }
             this.account = data;
             return data;
         } catch (e) {
@@ -36,7 +42,9 @@ class AccountObservable {
     *getAccount(): Generator<any, LoginResponse | null, unknown> {
         try {
             if (this.account) return this.account;
-            const dataEncoded = secureLocalStorage.getItem(keyStorageAccount);
+            const dataEncoded =
+                secureLocalStorage.getItem(keyStorageAccount) ||
+                sessionStorage.getItem(keyStorageAccount);
             if (!dataEncoded) {
                 return null;
             }

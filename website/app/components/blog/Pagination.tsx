@@ -112,19 +112,6 @@ const Pagination = () => {
     }
 
     return (
-        // <ul className="page_navigation">
-        //     <li role="button" className="page-item">
-        //         <span className="page-link">
-        //             <span className="fa fa-arrow-left" />
-        //         </span>
-        //     </li>
-        //     {pages}
-        //     <li role="button" className="page-item">
-        //         <span className="page-link">
-        //             <span className="fa fa-arrow-right" />
-        //         </span>
-        //     </li>
-        // </ul>
         <div className="mt-6 flex flex-wrap justify-center">
             {page === 1 ? (
                 <span className="mx-2 cursor-not-allowed rounded border bg-white/60 px-3 py-2 shadow-sm">

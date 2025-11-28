@@ -18,16 +18,14 @@ import { observer } from "mobx-react-lite";
 import { message } from "antd";
 import OptionSelector from "@/app/components/listing/listing-single/listing-single-v2/Select_OptionValue";
 import QuantityExceedModal from "@/app/components/modal/modal.quantity.Cart_DetailProduct";
+import { toJS } from "mobx";
 const ListingSingleV2 = observer(() => {
     const [sku, setSku] = useState(null);
     const [quantity, setQuantity] = useState(1);
-    const [selectedOptionValueId, setSelectedOptionValueId] = useState(null);
     const [selectedPayload, setSelectedPayload] = useState(null);
 
-    // mobx
     const store = useStore();
     const storeAccount = store.accountObservable;
-    // modal
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const showModal = () => {
@@ -44,7 +42,6 @@ const ListingSingleV2 = observer(() => {
     const handleQuantityChange = (e) => {
         const value = e.target.value;
 
-        // Cho phép người dùng xoá hết (rỗng) => không bị NaN
         const remaining = sku?.quantity_remaining || 100;
 
         if (value === "") {
@@ -108,7 +105,6 @@ const ListingSingleV2 = observer(() => {
         }
     };
     const handleAddCart_BuyNow = async () => {
-        // 1. Lấy số lượng hiện tại trong giỏ (an toàn với null/undefined)
         const currentCartQuantity =
             (storeProduct?.data?.dataSKU as any)?.cart_item?.[0]?.quantity ?? 0;
 
@@ -312,12 +308,12 @@ const ListingSingleV2 = observer(() => {
                                     <span className="bg-red-500 text-white text-xs font-medium px-2 py-1 rounded">
                                         Yêu Thích
                                     </span>
-                                    <h1 className="text-xl font-semibold leading-tight text-gray-900">
+                                    <h2 className="text-xl font-semibold leading-tight text-gray-900">
                                         {
                                             storeProduct?.data?.dataDetail?.data
                                                 ?.title
                                         }
-                                    </h1>
+                                    </h2>
                                 </div>
                                 {/* Đánh giá */}
                                 <div className="flex items-center gap-4 text-sm text-gray-600">
@@ -396,9 +392,9 @@ const ListingSingleV2 = observer(() => {
                                 </div>
                                 <div className="space-y-6">
                                     <OptionSelector
-                                        optionValues={storeProduct?.data?.optionValues?.optionValues?.map(
-                                            (s) => null
-                                        )}
+                                        optionValues={
+                                            storeProduct?.data?.optionValues
+                                        }
                                         onSelectChange={handleOptionSelect}
                                         setAllSelected={setAllSelected}
                                     />
@@ -410,7 +406,10 @@ const ListingSingleV2 = observer(() => {
                                     </span>
                                     <div className="flex items-center border rounded">
                                         <button
-                                            onClick={decreaseQuantity}
+                                            onClick={() => {
+                                                decreaseQuantity();
+                                            }}
+                                            type="button"
                                             className="px-3 py-1 text-gray-500 hover:text-black"
                                         >
                                             −
@@ -422,7 +421,10 @@ const ListingSingleV2 = observer(() => {
                                             className="w-12 text-center border-l border-r outline-none"
                                         />
                                         <button
-                                            onClick={increaseQuantity}
+                                            onClick={() => {
+                                                increaseQuantity();
+                                            }}
+                                            type="button"
                                             className="px-3 py-1 text-gray-500 hover:text-black"
                                         >
                                             +

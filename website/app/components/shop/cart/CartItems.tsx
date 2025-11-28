@@ -7,12 +7,14 @@ import { useEffect } from "react";
 import { Empty } from "antd";
 import { formatCurrency } from "@/utils";
 import QuantityExceedModal from "../../modal/modal.quantity.Cart_DetailProduct";
+import { useStore } from "@/context/store.context";
 const CartItems = ({
     cartListObserver,
     selectedItems,
     setSelectedAllItems,
-    cartObservable,
 }) => {
+    const store = useStore();
+    const cartObservable = store.cartObservable;
     const [cartItems, setCartItems] = useState([]);
     const [tempQuantities, setTempQuantities] = useState({});
     const [quantity_Limit, setQuantityLimit] = useState("");
@@ -44,11 +46,9 @@ const CartItems = ({
     };
 
     const handleQuantityBlur = async (itemId, skus_quantity_remaining) => {
-        // alert(skus_quantity_remaining);
         const inputVal = Number(tempQuantities[itemId]);
         const quantity = isNaN(inputVal) || inputVal < 1 ? 1 : inputVal;
 
-        // const item = cartListObserver.find((i) => i.id === itemId);
         if (quantity > skus_quantity_remaining) {
             setQuantityLimit(skus_quantity_remaining);
             showModal();
@@ -77,18 +77,19 @@ const CartItems = ({
         if (cartListObserver && cartListObserver.length > 0) {
             setCartItems(cartListObserver);
         }
-    }, [cartListObserver]); // Chạy lại mỗi khi cartList thay đổi
+    }, [cartListObserver]);
+
     const handleCheckboxChange = async (itemId) => {
-        const prevSelected = await cartObservable.getSelectedItems(); // 🟢 Lấy giá trị cũ từ observable , giá trị đã chọn trước đó
+        // 🟢 Lấy giá trị cũ từ observable , giá trị đã chọn trước đó
+        const prevSelected = cartObservable.getSelectedItems;
         let newSelected;
         if (prevSelected.includes(itemId)) {
             newSelected = prevSelected.filter((id) => id !== itemId);
         } else {
             newSelected = [...prevSelected, itemId];
         }
-        await cartObservable.setSelectedItems(newSelected);
+        cartObservable.setSelectedItems(newSelected);
 
-        // Cập nhật state local nếu cần
         setSelectedAllItems(newSelected.length === cartListObserver.length);
     };
 
@@ -102,7 +103,7 @@ const CartItems = ({
     const cancel = () => {};
     return (
         <>
-            {cartListObserver?.map((item) => (
+            {cartItems?.map((item) => (
                 <tr key={item.id}>
                     <td className="text-center">
                         <input

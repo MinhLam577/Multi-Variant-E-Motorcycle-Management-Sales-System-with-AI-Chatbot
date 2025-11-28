@@ -39,19 +39,16 @@ export default class PaymentMethodObservable {
 
     private validateQuery(query?: string | object): string {
         // Xử lý chuyển đổi query string thành object
-        let parsedQuery: paginationData = {
+        let parsedQuery = {
             ...(typeof query === "string"
                 ? Object.fromEntries(new URLSearchParams(query.trim()))
                 : query
-                  ? query
-                  : {}),
-            current: Number(this.pagination.current),
-            pageSize: Number(this.pagination.pageSize),
+                ? query
+                : {}),
         };
 
         // Gộp filters và xử lý dữ liệu
-        const filters: paginationData = filterEmptyFields({
-            ...this.pagination,
+        const filters = filterEmptyFields({
             ...parsedQuery,
         });
 
@@ -132,11 +129,10 @@ export default class PaymentMethodObservable {
         }
     }
 
-    *getListDeliveryMethod(query?: object) {
+    *getListDeliveryMethod() {
         try {
-            const queryString = this.validateQuery(query);
             const response = yield apiClient.get(
-                endpoints.deliveryMethod.list(queryString)
+                endpoints.deliveryMethod.list()
             );
             const { data, status, message } = response;
             const success_status = [200, 201, 204];

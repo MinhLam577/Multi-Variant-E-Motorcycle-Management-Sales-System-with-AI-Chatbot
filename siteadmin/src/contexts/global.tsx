@@ -62,7 +62,6 @@ const GlobalProvider = ({ children }) => {
                 successMsg: store.successMsg,
             }),
             (current_status) => {
-                console.log("current_status: ", current_status);
                 if (
                     !current_status.status &&
                     !current_status.errorMsg &&

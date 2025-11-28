@@ -15,8 +15,6 @@ import { Empty } from "antd";
 const Cart = observer(() => {
     const [selectedAllItems, setSelectedAllItems] = useState(false); // Thêm state để lưu các sản phẩm đã chọn
     const { cartObservable } = useStore();
-    // selectedItems
-    //const [selectedItems, setSelectedItems] = useState([]); // Thêm state để lưu các sản phẩm đã chọn
     useEffect(() => {
         cartObservable.getListCart();
     }, []);
@@ -156,9 +154,6 @@ const Cart = observer(() => {
                                                             setSelectedAllItems={
                                                                 setSelectedAllItems
                                                             }
-                                                            cartObservable={
-                                                                cartObservable
-                                                            }
                                                         />
                                                     </tbody>
                                                 </table>
@@ -185,7 +180,6 @@ const Cart = observer(() => {
                                 <div className="col-md-6 col-lg-4 col-xl-3">
                                     <CartTotal
                                         cartList={cartObservable?.data}
-                                        cartObservable={cartObservable}
                                     />
                                 </div>
 

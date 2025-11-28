@@ -16,25 +16,6 @@ export const metadata = {
     description: `minhdeptrai.site - Địa chỉ uy tín chuyên cung cấp các dòng xe hơi chất lượng cao, dịch vụ chăm sóc khách hàng chuyên nghiệp, giá cả cạnh tranh.`,
 };
 
-const partners = [
-    { imgPath: "/images/partners/bike_1.png", delay: 100 },
-    { imgPath: "/images/partners/bike_1.png", delay: 300 },
-    { imgPath: "/images/partners/bike_1.png", delay: 500 },
-    { imgPath: "/images/partners/bike_1.png", delay: 700 },
-    { imgPath: "/images/partners/bike_1.png", delay: 900 },
-    { imgPath: "/images/partners/bike_1.png", delay: 1100 },
-];
-
-const filterOptions = [
-    { value: "*", name: "Tất cả" },
-    { value: "new", name: "Xe điện Vinfast" },
-    { value: "car", name: "Xe YADEKA" },
-    { value: "car", name: "Xe YAKA" },
-    { value: "car", name: "Xe EVGO" },
-    { value: "car", name: "Xe điện thời trang" },
-    { value: "car-specialized", name: "Xe điện học sinh" },
-];
-
 const HomeMotorbike = () => {
     return (
         <div className="wrapper ovh">

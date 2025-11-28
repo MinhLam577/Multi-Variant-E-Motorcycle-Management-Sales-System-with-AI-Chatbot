@@ -3,10 +3,11 @@ import { useAuth } from "../contexts/AuthProvider";
 import { useNavigate } from "react-router";
 import { useEffect } from "react";
 import apiClient from "@/api/apiClient";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 const NetworkError = () => {
     const navigate = useNavigate();
-
+    useDocumentTitle("Lỗi mạng");
     useEffect(() => {
         // Kiểm tra lastUrl khi trang được tải
         const lastUrl = localStorage.getItem("lastUrl");
@@ -47,9 +48,6 @@ const NetworkError = () => {
                 subTitle="Có lỗi xảy ra trong quá trình kết nối đến server. Vui lòng thử lại sau."
                 extra={
                     <div className="flex gap-2 items-center justify-center">
-                        {/* <Button type="primary" onClick={() => handleLogout()}>
-                            Về trang chủ
-                        </Button> */}
                         <Button type="primary" onClick={() => handleTryAgain()}>
                             Thử lại
                         </Button>

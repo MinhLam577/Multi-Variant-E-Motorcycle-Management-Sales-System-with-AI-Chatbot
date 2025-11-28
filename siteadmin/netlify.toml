@@ -2,3 +2,8 @@
   from = "/*"
   to = "/"
   status = 200
+
+[build]
+  command = "npm ci && npm run build"     
+  environment = { NODE_VERSION = "20" } 
+  publish = "build"

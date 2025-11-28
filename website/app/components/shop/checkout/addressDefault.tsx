@@ -5,32 +5,11 @@ import { observer } from "mobx-react-lite";
 import ModalListAddress from "./modalAddress/ModalListAddress";
 import AddressModalCheckoutCreate from "./modalAddress/AddressModalCheckOut_Create";
 const AddressDefault = observer(() => {
-    const [isModalOpen1, setIsModalOpen1] = useState(false);
     const [OpenListAddress, setOpenListAddress] = useState(false);
     const store = useStore();
     const storeAccount = store.accountObservable;
     const storeAddress = store.addressObservable;
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const [openModalCreate, setOpenModalCreate] = useState(false);
-
-    // useEffect(() => {
-    //   const fetchData = async () => {
-    //     await storeAccount.getAccount();
-
-    //     // Delay nhỏ 1 tick để MobX update xong
-    //     setTimeout(async () => {
-    //       const idCustomer = storeAccount.account?.userId;
-    //       if (idCustomer) {
-    //         await storeAddress.getAddressDefault(idCustomer);
-    //         await storeAddress.getListAddress(idCustomer);
-    //         console.log(storeAddress?.data?.addressDefault);
-    //         console.log(storeAddress?.data?.listAddress);
-    //       }
-    //     }, 0);
-    //   };
-
-    //   fetchData();
-    // }, []);
 
     return (
         <>
