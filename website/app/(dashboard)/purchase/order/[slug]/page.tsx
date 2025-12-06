@@ -6,13 +6,11 @@ import DashboardSidebarMobileMenu from "@/app/components/common/DashboardSidebar
 import HeaderSidebar from "@/app/components/common/HeaderSidebar";
 import MobileMenu from "@/app/components/common/MobileMenu";
 import LoginSignupModal from "@/app/components/common/login-signup";
-
 export const metadata = {
     title: "Dashboard Profile || minhdeptrai.site ",
 };
 
-const DetailOrder = ({ params }) => {
-    const slug = params.slug;
+const DetailOrder = () => {
     return (
         <div className="wrapper">
             <div
@@ -38,7 +36,7 @@ const DetailOrder = ({ params }) => {
             {/* End Main Header Nav For Mobile */}
 
             {/* Our Dashbord */}
-            <section className="our-dashbord dashbord bgc-f9">
+            <section className="our-dashbord dashbord">
                 <div className="container-fluid">
                     <div className="row">
                         <div className="col-xxl-10 offset-xxl-2 dashboard_grid_space">
@@ -61,7 +59,7 @@ const DetailOrder = ({ params }) => {
                             {/* End mobilemenu */}
 
                             <div className="row">
-                                <DetailOrderHistory slug={slug} />
+                                <DetailOrderHistory />
                             </div>
                             {/* End .row */}
 

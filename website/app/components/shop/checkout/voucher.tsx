@@ -3,20 +3,16 @@
 import { useState } from "react";
 import ModalVoucher from "./modalVoucher/modalVoucher";
 import { observer } from "mobx-react-lite";
-import { useStore } from "@/context/store.context";
 
 const VoucherSection = observer(({ storeVoucher }: any) => {
-    const store = useStore();
-    // const storeVoucher = store.voucherObservable;
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const showModal = async () => {
-        // await storeVoucher.getListVoucher_of_User();
         setIsModalOpen(true);
     };
     return (
         <>
-            <div className="flex justify-between items-center py-4 border-b mt-4">
+            <div className="flex justify-between items-center py-4 mt-4">
                 <div className="flex items-center space-x-3">
                     <span className="text-lg font-semibold text-gray-800">
                         minhdeptrai.site Voucher

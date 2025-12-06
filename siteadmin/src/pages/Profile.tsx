@@ -15,7 +15,7 @@ import {
     Row,
     Select,
 } from "antd";
-import { reaction, toJS, values } from "mobx";
+import { reaction, toJS } from "mobx";
 import { useEffect, useState } from "react";
 import endpoints from "../api/endpoints";
 import ChangePasswordModal from "../containers/ChangePasswordModal";
@@ -29,8 +29,8 @@ import UploadAvatarGetUrlWithImgCrop, {
 import { useStore } from "../stores";
 import { regexPhone, regexUsername } from "../utils/regex";
 import { runInAction } from "mobx";
-import { LoginStatus, UpdateProfileStatus } from "@/types/userLogin.type";
-import { Navigate, useNavigate } from "react-router";
+import { UpdateProfileStatus } from "@/types/userLogin.type";
+import { useNavigate } from "react-router";
 const Profile = () => {
     const [form] = Form.useForm();
     const { accountObservable, userObservable } = useStore();

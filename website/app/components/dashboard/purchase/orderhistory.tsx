@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { notification } from "antd";
-import { Empty } from "antd";
+import { notification, Skeleton } from "antd";
 import { Divider } from "antd";
 import Link from "next/link";
 import { formatCurrency } from "@/utils";
@@ -26,11 +25,12 @@ const OrderHistory = observer(() => {
     const store = useStore();
     const StoreOrder = store.orderObservable;
     const StoreCart = store.cartObservable;
-    // lấy ra account
     const AccountStore = store.accountObservable;
     const [IdOrder, setIdOrder] = useState("");
     const [IdProduct, setIdProduct] = useState("");
     const [isActive, setActive] = useState("All");
+    const [dataAll, setDataAll] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     const ORDER_STATUS = [
         { name: "Tất cả", status: "All" },
@@ -39,8 +39,6 @@ const OrderHistory = observer(() => {
         // admin xác nhận đơn đã gói hàng cb vận chuyển
         { name: "Đã xác nhận", status: "CONFIRMED" },
         // shiper lấy hàng và đang giao đơn hàng  : vận chuyển
-        // { name: "Xuất kho", status: "EXPORTED" },
-        // {name : "Đã bàn giao cho vận chuyển",status :"HAND_OVERED"},
         { name: "Đang vận chuyển", status: "DELIVERING" },
         { name: "Đang giao hàng", status: "SHIPPING" },
         // đã giao cho khách hàng , kh nhận thành công
@@ -49,37 +47,79 @@ const OrderHistory = observer(() => {
         { name: "Đã hủy", status: "CANCELLED" },
     ];
 
-    useEffect(() => {
-        const fetchData = async () => {
-            await AccountStore.getAccount(); // chờ lấy account trước
-            const account = AccountStore.account;
-            await StoreOrder.getListOrder({ search: account?.user?.email }); // ví dụ dùng account để truyền query
+    const fetchData = async (query?: {
+        search?: string;
+        order_status?: order_status;
+    }) => {
+        try {
+            setIsLoading(true);
+            await StoreOrder.getListOrder(query);
             setDataAll(StoreOrder.data.orders);
-            const urlParams = new URLSearchParams(window.location.search);
-            const status = urlParams.get("status");
-            const orderCode = urlParams.get("orderCode");
+        } catch (e) {
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const fetchProfile = async () => {
+        await AccountStore.getAccount();
+    };
+
+    // 2. useEffect thứ hai: Xử lý kết quả thanh toán từ URL (chỉ chạy 1 lần duy nhất)
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get("status");
+        const orderCode = urlParams.get("orderCode");
+
+        // Nếu không có status → không làm gì
+        if (!status) return;
+
+        // Kiểm tra đã xử lý chưa (dùng sessionStorage để chống refresh liên tục)
+        const processedKey = `payment_processed_${orderCode || status}`;
+        if (sessionStorage.getItem(processedKey) === "true") {
+            return;
+        }
+
+        const processPaymentResult = async () => {
+            let shouldNotify = false;
+
             if (status === "PAID") {
                 notification.success({
                     message: "Thanh toán thành công",
                     description: "Đơn hàng của bạn đã thanh toán thành công.",
                 });
-            } else if (status == "CANCELLED") {
+                shouldNotify = true;
+            } else if (status === "CANCELLED" && orderCode) {
                 await StoreCart.cancel_order_payos(orderCode);
-                const success_status = [200, 201, 204];
-                if (success_status.includes(StoreCart.status)) {
-                    notification.error({
-                        message: "Thanh toán thất bại",
+                const successStatus = [200, 201, 204];
+                if (successStatus.includes(StoreCart.status)) {
+                    notification.success({
+                        message: "Hủy thanh toán thành công",
                         description: "Đơn hàng của bạn đã bị huỷ.",
                     });
                 }
+                shouldNotify = true;
+            }
+
+            // Chỉ đánh dấu đã xử lý nếu thực sự có thông báo
+            if (shouldNotify) {
+                sessionStorage.setItem(processedKey, "true");
+
+                // Xóa params khỏi URL mà không reload trang
+                urlParams.delete("status");
+                urlParams.delete("orderCode");
+                const cleanUrl = `${window.location.pathname}${
+                    urlParams.toString() ? "?" + urlParams.toString() : ""
+                }`;
+                window.history.replaceState({}, "", cleanUrl);
             }
         };
 
-        fetchData();
+        processPaymentResult();
     }, []);
 
-    const [dataAll, setDataAll] = useState([]);
     useEffect(() => {
+        fetchProfile();
         const account = AccountStore.account;
         if (isActive && isActive !== "All") {
             fetchData({
@@ -90,15 +130,6 @@ const OrderHistory = observer(() => {
             fetchData({ search: account?.user?.email });
         }
     }, [isActive]);
-
-    const fetchData = async (query?: {
-        search?: string;
-        order_status?: order_status;
-    }) => {
-        await StoreOrder.getListOrder(query);
-        setDataAll(StoreOrder.data.orders);
-    };
-
     const handleBuyAgain = async (order_detail) => {
         await StoreCart.clearSelectedCart();
         try {
@@ -116,10 +147,9 @@ const OrderHistory = observer(() => {
                     duration: 2,
                 });
 
-                // Đợi 2 giây trước khi điều hướng (tùy chọn)
                 setTimeout(() => {
                     router.push("/cart");
-                }, 200);
+                }, 500);
             }
         } catch (error) {
             // Handle error in case the mutation fails
@@ -133,6 +163,8 @@ const OrderHistory = observer(() => {
             notification.success({
                 message: "Hủy Đơn thành công",
             });
+            const account = AccountStore.account;
+            fetchData({ search: account?.user?.email });
         } else {
             notification.success({
                 message: "Hủy Đơn thất bại",
@@ -145,12 +177,14 @@ const OrderHistory = observer(() => {
         setIdProduct(product_id);
         setIsModalOpen(true);
     };
+
     return (
-        <div className="">
-            <div className="flex justify-between  ">
+        <>
+            <div className="flex justify-between">
                 {ORDER_STATUS?.map((element) => {
                     return (
                         <div
+                            key={element.name}
                             className={`flex flex-1 items-center justify-center border-b-2 cursor-pointer ${
                                 isActive === element.status
                                     ? "text-red-600  border-red-600"
@@ -165,133 +199,147 @@ const OrderHistory = observer(() => {
                     );
                 })}
             </div>
-            <div className="">
-                {dataAll ? (
-                    dataAll?.map((element) => {
-                        return (
-                            <div key={element?.order_id}>
-                                {element?.order_details?.map((detail) => (
-                                    // detail_id
-                                    <div
-                                        className="flex mt-7 p-2"
-                                        key={detail?.id}
-                                    >
-                                        <div className="flex-shrink-0 w-20 h-20">
-                                            <Link
-                                                href={`/purchase/order
-                        /${element.id}`}
-                                            >
-                                                <img
-                                                    src={detail?.skus?.image}
-                                                    alt={detail.product_name}
-                                                    className="w-full h-full rounded-lg object-contain"
-                                                />
-                                            </Link>
-                                        </div>
-                                        <div className="flex flex-grow ml-3">
-                                            <div className="flex flex-col justify-between">
-                                                <Link
-                                                    href={`/purchase/order/${element.id}`}
-                                                >
-                                                    <p className="font-semibold line-clamp-2">
-                                                        {
-                                                            detail?.skus
-                                                                ?.product?.title
-                                                        }
-                                                    </p>
-                                                </Link>
-                                                <span className="text-sm">
-                                                    Phân loại hàng:{" "}
-                                                    {detail?.skus?.name}
-                                                </span>
-                                                <span className="text-sm">
-                                                    Số lượng: {detail?.quantity}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div className="flex shrink-0 ml-3 items-center gap-x-4">
-                                            <span className="line-through text-gray-500">
-                                                ₫
-                                                {parseInt(
-                                                    detail.skus.price_sold
-                                                ).toLocaleString()}
-                                            </span>
-                                            <span className="text-red-500 font-semibold">
-                                                ₫
-                                                {(
-                                                    Number(
-                                                        detail.skus.price_sold
-                                                    ) * detail.quantity
-                                                ).toLocaleString()}
-                                            </span>
-                                            {element.order_status ===
-                                                "DELIVERED" && (
-                                                <button
-                                                    className="p-3 border border-blue-600 text-blue-600   rounded-md"
-                                                    onClick={() =>
-                                                        showModal(
-                                                            detail.order_id,
-                                                            detail.product_id
-                                                        )
-                                                    }
-                                                >
-                                                    Đánh giá
-                                                </button>
-                                            )}
-                                        </div>
-                                    </div>
-                                ))}
-                                <div className="flex justify-end font-semibold text-lg mr-3">
-                                    Tổng tiền:{" "}
-                                    {formatCurrency(element.total_price)}
-                                </div>
-                                <div className="flex gap-x-5">
-                                    <button
-                                        className="text-white bg-red-500  rounded-lg py-3 px-6  "
-                                        onClick={() =>
-                                            handleBuyAgain(
-                                                element.order_details
-                                            )
-                                        }
-                                    >
-                                        Mua lại{" "}
-                                    </button>
-                                    <Link
-                                        href={`/purchase/order/${element.id}`}
-                                    >
-                                        <button className="text-white bg-red-500  rounded-lg py-3 px-6">
-                                            Xem chi tiết đơn hàng
-                                        </button>
-                                    </Link>
-                                    {element.order_status === "PENDING" && (
-                                        <button
-                                            className="text-white bg-red-500   rounded-lg py-3 px-6  "
-                                            onClick={() =>
-                                                handleCancelOrder(element.id)
-                                            }
-                                        >
-                                            Hủy đơn hàng{" "}
-                                        </button>
-                                    )}
-                                </div>
-                                <Divider
-                                    style={{
-                                        borderColor: "#7cb305",
-                                    }}
-                                ></Divider>
-                            </div>
-                        );
-                    })
-                ) : (
-                    <>
-                        <Empty />;
-                    </>
-                )}
-                {dataAll?.length === 0 && (
-                    <Empty style={{ marginTop: "50px" }} />
-                )}
+            <div className="mt-4">
+                <Skeleton
+                    active={true}
+                    loading={isLoading}
+                    paragraph={{
+                        rows: 11,
+                        width: "100%",
+                    }}
+                >
+                    {isLoading
+                        ? null
+                        : dataAll &&
+                          dataAll?.length > 0 &&
+                          dataAll?.map((element) => {
+                              return (
+                                  <div key={element?.id}>
+                                      {element?.order_details?.map((detail) => (
+                                          <div
+                                              className="flex mt-7 p-2"
+                                              key={detail?.id}
+                                          >
+                                              <div className="flex-shrink-0 w-20 h-20">
+                                                  <Link
+                                                      href={`/purchase/order
+                    /${element.id}`}
+                                                  >
+                                                      <img
+                                                          src={
+                                                              detail?.skus
+                                                                  ?.image
+                                                          }
+                                                          alt={
+                                                              detail.product_name
+                                                          }
+                                                          className="w-full h-full rounded-lg object-contain"
+                                                      />
+                                                  </Link>
+                                              </div>
+                                              <div className="flex flex-grow ml-3">
+                                                  <div className="flex flex-col justify-between">
+                                                      <Link
+                                                          href={`/purchase/order/${element.id}`}
+                                                      >
+                                                          <p className="font-semibold line-clamp-2">
+                                                              {
+                                                                  detail?.skus
+                                                                      ?.product
+                                                                      ?.title
+                                                              }
+                                                          </p>
+                                                      </Link>
+                                                      <span className="text-sm">
+                                                          Phân loại hàng:{" "}
+                                                          {detail?.skus?.name}
+                                                      </span>
+                                                      <span className="text-sm">
+                                                          Số lượng:{" "}
+                                                          {detail?.quantity}
+                                                      </span>
+                                                  </div>
+                                              </div>
+                                              <div className="flex shrink-0 ml-3 items-center gap-x-4">
+                                                  <span className="line-through text-gray-500">
+                                                      ₫
+                                                      {parseInt(
+                                                          detail.skus.price_sold
+                                                      ).toLocaleString()}
+                                                  </span>
+                                                  <span className="text-red-500 font-semibold">
+                                                      ₫
+                                                      {(
+                                                          Number(
+                                                              detail.skus
+                                                                  .price_sold
+                                                          ) * detail.quantity
+                                                      ).toLocaleString()}
+                                                  </span>
+                                                  {element.order_status ===
+                                                      "DELIVERED" && (
+                                                      <button
+                                                          className="p-3 border border-blue-600 text-blue-600   rounded-md"
+                                                          onClick={() =>
+                                                              showModal(
+                                                                  detail.order_id,
+                                                                  detail.product_id
+                                                              )
+                                                          }
+                                                      >
+                                                          Đánh giá
+                                                      </button>
+                                                  )}
+                                              </div>
+                                          </div>
+                                      ))}
+                                      <div className="flex justify-end font-semibold text-lg mr-3">
+                                          Tổng tiền:{" "}
+                                          {formatCurrency(element.total_price)}
+                                      </div>
+                                      <div className="flex gap-x-5">
+                                          <button
+                                              className="text-white bg-red-500  rounded-lg py-3 px-6  "
+                                              onClick={() =>
+                                                  handleBuyAgain(
+                                                      element.order_details
+                                                  )
+                                              }
+                                          >
+                                              Mua lại{" "}
+                                          </button>
+                                          <Link
+                                              href={`/purchase/order/${element.id}`}
+                                          >
+                                              <button className="text-white bg-red-500  rounded-lg py-3 px-6">
+                                                  Xem chi tiết đơn hàng
+                                              </button>
+                                          </Link>
+                                          {element.order_status ===
+                                              "PENDING" && (
+                                              <button
+                                                  className="text-white bg-red-500   rounded-lg py-3 px-6  "
+                                                  onClick={() =>
+                                                      handleCancelOrder(
+                                                          element.id
+                                                      )
+                                                  }
+                                              >
+                                                  Hủy đơn hàng{" "}
+                                              </button>
+                                          )}
+                                      </div>
+                                      <Divider
+                                          style={{
+                                              borderColor: "#7cb305",
+                                          }}
+                                      ></Divider>
+                                  </div>
+                              );
+                          })}
+                </Skeleton>
             </div>
-        </div>
+        </>
     );
 });
 export default OrderHistory;

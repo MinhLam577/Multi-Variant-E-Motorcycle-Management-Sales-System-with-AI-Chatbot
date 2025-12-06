@@ -34,22 +34,10 @@ const DashboardHeader = () => {
                     </Link>
                     {/* Responsive Menu Structure*/}
                     <ul
-                        // id="respMenu"
                         className="ace-responsive-menu text-end flex justify-end items-center"
                         data-menu-style="horizontal "
                     >
                         <MainMenu />
-                        {/**/}
-                        {/* <li
-                            className="sidebar_panel  " // 👈 chỉ hiện khi nhỏ hơn lg
-                            data-bs-toggle="offcanvas"
-                            data-bs-target="#offcanvasRight"
-                            aria-controls="offcanvasRight"
-                        >
-                            <a className="sidebar_switch pt0  " role="button">
-                                <span />
-                            </a>
-                        </li> */}
                     </ul>
                 </div>
             </nav>
@@ -58,7 +46,3 @@ const DashboardHeader = () => {
 };
 
 export default DashboardHeader;
-
-// <li className="add_listing">
-//   <Link href="/add-listings">+ Add Listing</Link>
-// </li>;

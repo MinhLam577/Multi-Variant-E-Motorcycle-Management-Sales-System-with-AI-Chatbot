@@ -78,7 +78,7 @@ const HomeMotorbike = () => {
                         <div className="col-lg-12">
                             <div className="text-center ">
                                 <Link
-                                    href="/page-list-v1"
+                                    href="/listing-v1?type=motorbike"
                                     className="more_listing "
                                 >
                                     Xem tất cả{" "}
@@ -144,7 +144,7 @@ const HomeMotorbike = () => {
                         <div className="col-lg-12 ">
                             <div className="text-center mt-20">
                                 <Link
-                                    href="/page-list-v1"
+                                    href="/listing-v1?type=motorbike"
                                     className="more_listing"
                                 >
                                     Xem tất cả{" "}

@@ -197,8 +197,9 @@ const refreshToken = async () => {
     }
 };
 apiClient.interceptors.response.use(handleSuccess, handleError);
-const checkLogout = async () => {
-    await secureLocalStorage.removeItem(keyStorageAccount);
+const checkLogout = () => {
+    secureLocalStorage.removeItem(keyStorageAccount);
+    sessionStorage.removeItem(keyStorageAccount);
     if (window.location.pathname !== "/login") window.location.href = "/login";
 };
 

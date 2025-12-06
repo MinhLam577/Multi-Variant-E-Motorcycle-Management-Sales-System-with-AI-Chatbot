@@ -3,6 +3,10 @@
     height: 200px !important;
 }
 
+.ant-table-cell {
+    vertical-align: top !important;
+}
+
 .ant-tree-switcher {
     padding-top: 5px !important;
 }
@@ -19,6 +23,90 @@
 
 .ant-drawer-body {
     padding: 0 !important;
+}
+
+.ql-toolbar {
+    border: none !important;
+    border-bottom: 1px solid var(--border-gray) !important;
+    height: 2.5rem !important;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: white;
+}
+
+@media (min-width: 576px) and (max-width: 991.98px) {
+    .ql-toolbar {
+        height: 4rem !important;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .ql-toolbar {
+        height: 7.5rem !important;
+    }
+}
+
+.ql-fullscreen:focus > svg,
+.ql-fullscreen:hover > svg {
+    color: var(--primary-blue-color) !important;
+}
+
+.ql-editor {
+    height: auto;
+    overflow: visible;
+}
+
+.ql-container {
+    height: 20rem;
+    border: none !important;
+    overflow-y: scroll;
+}
+
+.editor-container:has(.ql-editor:focus):not(:has(.ql-fullscreenActive)) {
+    border: 1px solid var(--primary-blue-color) !important;
+    box-shadow: 0 0 0 2px rgba(5, 145, 255, 0.1) !important;
+}
+
+.editor-container:has(.ql-editor:focus):not(:has(.ql-fullscreenActive))
+    .ql-toolbar {
+    border: none !important;
+    border-bottom: 1px solid var(--primary-blue-color) !important;
+    box-shadow: 0 0 0 2px rgba(5, 145, 255, 0.1) !important;
+}
+
+.editor-container:has(.ql-fullscreenActive) .ql-container {
+    height: 100% !important;
+    overflow: visible !important;
+}
+.editor-container:has(.ql-fullscreenActive) {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 12000 !important;
+    background-color: #f2f3f5 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0px !important;
+}
+
+.editor-container:has(.ql-fullscreenActive) .ql-editor {
+    height: calc(100vh - 5rem) !important;
+    overflow-y: auto !important;
+    padding-bottom: 16px !important;
+    z-index: 9999 !important;
+}
+.editor-container:has(.ql-fullscreenActive) .ql-toolbar {
+    flex: 0 0 5rem !important;
+    z-index: 10000 !important;
+    border: none !important;
+    border-bottom: 1px solid rgb(0, 0, 0, 0.3) !important;
 }
 
 .ql-editor strong {

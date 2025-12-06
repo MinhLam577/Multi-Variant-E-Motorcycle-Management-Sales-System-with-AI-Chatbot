@@ -1,24 +1,40 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Divider } from "antd";
+import { Divider, Skeleton } from "antd";
 import { Descriptions } from "antd";
 import Link from "next/link";
 import { generateNameId } from "@/utils";
 import { useStore } from "@/context/store.context";
-export default function DetailOrderHistory({ slug }) {
+import { useParams } from "next/navigation";
+export default function DetailOrderHistory() {
+    const params = useParams();
     const [data, setData] = useState(null);
     const store = useStore();
     const OrderStore = store.orderObservable;
+    const [isLoading, setIsLoading] = useState(true);
 
-    // Để đảm bảo setData chỉ được gọi khi OrderStore.data.order_detail đã có dữ liệu, bạn nên:
     useEffect(() => {
-        const getDetailOrder = async () => {
-            await OrderStore.getOrderDetail(slug);
-            setData(OrderStore.data.order_detail);
+        const fetchOrderDetail = async () => {
+            const slug = params.slug as string;
+            if (!slug) {
+                setIsLoading(false);
+                return;
+            }
+
+            try {
+                setIsLoading(true);
+
+                await OrderStore.getOrderDetail(slug);
+                setData(OrderStore.data.order_detail);
+            } catch (error) {
+                console.error("Lỗi lấy chi tiết đơn hàng:", error);
+            } finally {
+                setIsLoading(false);
+            }
         };
 
-        getDetailOrder();
-    }, [slug]);
+        fetchOrderDetail();
+    }, [params.slug]);
 
     const receiverInfo = [
         {
@@ -34,7 +50,6 @@ export default function DetailOrderHistory({ slug }) {
         {
             key: "3",
             label: "Địa chỉ",
-            // children: `${data?.data?.data?.receiver_address}, ${data?.data?.data?.ward_name}, ${data?.data?.data?.district_name}, ${data?.data?.data?.province_name}`,
             children: data?.receive_address?.address,
         },
     ];
@@ -48,12 +63,12 @@ export default function DetailOrderHistory({ slug }) {
         {
             key: "2",
             label: "Phương thức thanh toán",
-            children: data?.payment_method.name,
+            children: data?.payment_method?.name,
         },
         {
             key: "3",
             label: "Phương thức vận chuyển",
-            children: data?.delivery_method.name,
+            children: data?.delivery_method?.name,
         },
         {
             key: "4",
@@ -72,110 +87,121 @@ export default function DetailOrderHistory({ slug }) {
         return `${day}-${month}-${year} ${hours}:${minutes}`; // Ghép thành chuỗi định dạng
     };
     return (
-        <div className="">
+        <>
             <div className="text-xl py-4 px-2 font-semibold">
                 Chi tiết đơn hàng
             </div>
 
-            {/* Trạng thái đơn hàng */}
-            <div className="bg-slate-300 rounded-lg px-2 py-4">
-                <div className="text-lg semibold">
-                    {(() => {
-                        const statusMap = {
-                            PENDING: "Đang chờ xử lí",
-                            CONFIRMED: "Đã xác nhận",
-                            EXPORTED: "Đã xuất kho",
-                            CANCELLED: "Đã Hủy",
-                            DELIVERING: "Đang vận chuyển",
-                            SHIPPING: "Đang giao hàng",
-                            DELIVERED: "Đã giao",
-                            HAND_OVERED: "Đã bàn giao cho vận chuyển",
-                            FAILED_DELIVERY: "Giao hàng thất bại",
-                        };
-                        return (
-                            statusMap[data?.order_status] ||
-                            "Trạng thái không xác định"
-                        );
-                    })()}{" "}
-                    đơn hàng
+            <Skeleton
+                active
+                loading={isLoading}
+                paragraph={{
+                    rows: 12,
+                    width: "100%",
+                }}
+            >
+                {/* Trạng thái đơn hàng */}
+                <div className="bg-slate-300 rounded-lg px-2 py-4">
+                    <div className="text-lg semibold">
+                        {(() => {
+                            const statusMap = {
+                                PENDING: "Đang chờ xử lí",
+                                CONFIRMED: "Đã xác nhận",
+                                EXPORTED: "Đã xuất kho",
+                                CANCELLED: "Đã Hủy",
+                                DELIVERING: "Đang vận chuyển",
+                                SHIPPING: "Đang giao hàng",
+                                DELIVERED: "Đã giao",
+                                HAND_OVERED: "Đã bàn giao cho vận chuyển",
+                                FAILED_DELIVERY: "Giao hàng thất bại",
+                            };
+                            return (
+                                statusMap[data?.order_status] ||
+                                "Trạng thái không xác định"
+                            );
+                        })()}
+                        đơn hàng
+                    </div>
+                    <div className="">vào {formatDate(data?.updatedAt)}</div>
                 </div>
-                <div className="">vào {formatDate(data?.updatedAt)}</div>
-            </div>
-
-            {/* Sản phẩm đã mua */}
-            <div className="mt-7">
-                <div className="text-lg p-2 font-semibold">Sản phẩm đã mua</div>
-                {data?.order_details?.map((item) => {
-                    const productImages = item?.skus.image;
-                    return (
-                        <div className="flex p-2 mt-4" key={item.id}>
-                            <div className="flex-shrink-0 w-20 h-20">
-                                <Link
-                                    href={`/${generateNameId(
-                                        item.skus.product.title,
-                                        item.skus.product.id
-                                    )}`}
-                                >
-                                    <img
-                                        src={productImages} // Hiển thị ảnh đầu tiên
-                                        alt={item.product_name}
-                                        className="w-full h-full rounded-lg object-contain"
-                                    />
-                                </Link>
-                            </div>
-                            <div className="ml-3 flex-grow">
-                                <div className="flex flex-col justify-between gap-y-1">
+                {/* Sản phẩm đã mua */}
+                <div className="mt-7">
+                    <div className="text-lg p-2 font-semibold">
+                        Sản phẩm đã mua
+                    </div>
+                    {data?.order_details?.map((item) => {
+                        const productImages = item?.skus?.image;
+                        return (
+                            <div className="flex p-2 mt-4" key={item?.id}>
+                                <div className="flex-shrink-0 w-20 h-20">
                                     <Link
                                         href={`/${generateNameId(
-                                            item.skus.product.title,
-                                            item.skus.product.id
+                                            item?.skus?.product?.title,
+                                            item?.skus?.product?.id
                                         )}`}
                                     >
-                                        <p className="font-semibold">
-                                            {item.skus.product.title}
-                                        </p>
+                                        <img
+                                            src={productImages} // Hiển thị ảnh đầu tiên
+                                            alt={item?.product_name}
+                                            className="w-full h-full rounded-lg object-contain"
+                                        />
                                     </Link>
-                                    <span className="text-sm">
-                                        Phân loại hàng: {item.skus.name}
+                                </div>
+                                <div className="ml-3 flex-grow">
+                                    <div className="flex flex-col justify-between gap-y-1">
+                                        <Link
+                                            href={`/${generateNameId(
+                                                item?.skus?.product?.title,
+                                                item?.skus?.product?.id
+                                            )}`}
+                                        >
+                                            <p className="font-semibold">
+                                                {item?.skus?.product?.title}
+                                            </p>
+                                        </Link>
+                                        <span className="text-sm">
+                                            Phân loại hàng: {item?.skus?.name}
+                                        </span>
+                                        <span className="text-sm">
+                                            Số lượng: {item?.quantity}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="flex ml-3 items-center gap-4">
+                                    <span className="line-through text-gray-500">
+                                        ₫
+                                        {parseFloat(
+                                            item?.skus?.price_sold
+                                        )?.toLocaleString()}
                                     </span>
-                                    <span className="text-sm">
-                                        Số lượng: {item.quantity}
+                                    <span className="text-red-500 font-semibold">
+                                        ₫
+                                        {(
+                                            item?.skus?.price_sold *
+                                            item?.quantity
+                                        )?.toLocaleString()}
                                     </span>
                                 </div>
                             </div>
-                            <div className="flex ml-3 items-center gap-4">
-                                <span className="line-through text-gray-500">
-                                    ₫
-                                    {parseFloat(
-                                        item.skus.price_sold
-                                    ).toLocaleString()}
-                                </span>
-                                <span className="text-red-500 font-semibold">
-                                    ₫
-                                    {(
-                                        item.skus.price_sold * item.quantity
-                                    ).toLocaleString()}
-                                </span>
-                            </div>
-                        </div>
-                    );
-                })}
-            </div>
-
-            <Divider style={{ borderColor: "#7cb305" }} />
-
-            {/* Thông tin người nhận */}
-            <div className="p-2">
-                <Descriptions
-                    title={<div className="text-lg">Thông tin người nhận</div>}
-                    items={receiverInfo}
-                />
-                <div className="mt-2"></div>
-                <Descriptions
-                    title={<div className="text-lg">Đơn hàng</div>}
-                    items={orderInfo}
-                />
-            </div>
-        </div>
+                        );
+                    })}
+                </div>
+                <Divider style={{ borderColor: "#7cb305" }} />
+                {/* Thông tin người nhận */}
+                <div className="p-2">
+                    <Descriptions
+                        title={
+                            <div className="text-lg">Thông tin người nhận</div>
+                        }
+                        items={receiverInfo}
+                    />
+                    <div className="mt-2"></div>
+                    <Descriptions
+                        title={<div className="text-lg">Đơn hàng</div>}
+                        items={orderInfo}
+                    />
+                </div>
+            </Skeleton>
+        </>
     );
 }

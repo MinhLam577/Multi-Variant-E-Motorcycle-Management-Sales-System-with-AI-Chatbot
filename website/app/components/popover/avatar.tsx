@@ -1,14 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { ConfigProvider, Flex, Popover } from "antd";
-import Logout from "../dashboard/logout/logout";
 import LogoutAccount from "../dashboard/logout/logout";
-
-const text = (
-    <div className="text-base font-semibold text-gray-800">
-        Sản phẩm mới thêm
-    </div>
-);
 
 const content = (
     <div className="flex flex-col gap-y-4">

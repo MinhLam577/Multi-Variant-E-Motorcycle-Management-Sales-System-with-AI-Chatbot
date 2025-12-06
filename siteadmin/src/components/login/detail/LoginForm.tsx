@@ -122,7 +122,7 @@ const LoginForm = ({
                                         <Input.Password placeholder="Nhập mật khẩu" />
                                     </Form.Item>
                                     <Form.Item noStyle>
-                                        <div className="flex justify-between items-center mb-4">
+                                        <div className="flex justify-between items-center !mb-4">
                                             <Form.Item
                                                 name="remember"
                                                 valuePropName="checked"

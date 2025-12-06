@@ -5,36 +5,15 @@ import { observer } from "mobx-react-lite";
 import ModalListAddress from "./modalAddress/ModalListAddress";
 import AddressModalCheckoutCreate from "./modalAddress/AddressModalCheckOut_Create";
 const AddressDefault = observer(() => {
-    const [isModalOpen1, setIsModalOpen1] = useState(false);
     const [OpenListAddress, setOpenListAddress] = useState(false);
     const store = useStore();
     const storeAccount = store.accountObservable;
     const storeAddress = store.addressObservable;
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const [openModalCreate, setOpenModalCreate] = useState(false);
-
-    // useEffect(() => {
-    //   const fetchData = async () => {
-    //     await storeAccount.getAccount();
-
-    //     // Delay nhỏ 1 tick để MobX update xong
-    //     setTimeout(async () => {
-    //       const idCustomer = storeAccount.account?.userId;
-    //       if (idCustomer) {
-    //         await storeAddress.getAddressDefault(idCustomer);
-    //         await storeAddress.getListAddress(idCustomer);
-    //         console.log(storeAddress?.data?.addressDefault);
-    //         console.log(storeAddress?.data?.listAddress);
-    //       }
-    //     }, 0);
-    //   };
-
-    //   fetchData();
-    // }, []);
 
     return (
         <>
-            <div className="w-full mt-4 border-t-[6px] border-dashed border-[#e5e5e5]">
+            <div className="w-full border-t-[6px] border-dashed border-[#e5e5e5]">
                 <div className="flex items-center gap-2 text-[18px] font-semibold text-[#ee4d2d] py-3">
                     <svg
                         height={16}
@@ -50,41 +29,6 @@ const AddressDefault = observer(() => {
                     </svg>
                     Địa chỉ nhận hàng{" "}
                 </div>
-                {/* {!storeAddress?.data?.addressDefault &&
-          storeAddress?.data?.listAddress && (
-            <div className="flex mt-1">
-              <div className="w-[40%]">
-                <div className="text-sm font-medium text-gray-800 mb-1">
-                  <span className="text-base text-black">
-                    {storeAddress?.data?.listAddress?.[0]?.receiver_name}
-                  </span>
-                  {" - "}
-                  <span className="text-sm text-black">
-                    {storeAddress?.data?.listAddress?.[0]?.receiver_phone}
-                  </span>
-                </div>
-              </div>
-              <div className="w-[60%] flex md:flex-col lg:flex-row  justify-between">
-                <div className="">
-                  {storeAddress?.data?.listAddress?.[0]?.street +
-                    "," +
-                    storeAddress?.data?.listAddress?.[0]?.ward +
-                    " " +
-                    storeAddress?.data?.listAddress?.[0]?.district +
-                    " " +
-                    storeAddress?.data?.listAddress?.[0]?.province}
-                </div>
-                <div
-                  className="text-[#05a] cursor-pointer"
-                  onClick={() => {
-                    setOpenListAddress(true);
-                  }}
-                >
-                  Thay đổi
-                </div>
-              </div>
-            </div>
-          )} */}
                 {storeAddress?.data?.addressDefault && (
                     <div className="flex mt-1">
                         <div className="w-[40%]">

@@ -29,7 +29,7 @@ const Sidebar = () => {
     }, []);
     return (
         <div
-            className={`blogCategory-sticky ${
+            className={`blogCategory-sticky !top-5 ${
                 isNearBottom ? "bottom-offset" : ""
             }`}
         >

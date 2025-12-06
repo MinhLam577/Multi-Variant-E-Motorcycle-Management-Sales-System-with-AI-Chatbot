@@ -1,5 +1,5 @@
 import { PlusOutlined } from "@ant-design/icons";
-import { Button, Space } from "antd";
+import { Button } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { GlobalContext } from "../../contexts/global";
@@ -32,8 +32,8 @@ const Vouchers = observer(() => {
     };
     const [globalFilters, setGlobalFilters] = useState<VoucherFIlterProps>({});
     useEffect(() => {
-        const fetchData = () => {
-            voucherStore.getListVoucher();
+        const fetchData = async () => {
+            await voucherStore.getListVoucher();
         };
         fetchData();
     }, []);
@@ -56,8 +56,7 @@ const Vouchers = observer(() => {
         navigate(`/vouchers/${voucherData.id}`, { replace: true });
     };
     useEffect(() => {
-        const { search, status, fixed, start_date, end_date } =
-            globalFilters || {};
+        const { search, status, start_date, end_date } = globalFilters || {};
 
         const filtered = voucherStore.data?.filter((voucher) => {
             if (!voucher) return false;
@@ -72,8 +71,6 @@ const Vouchers = observer(() => {
 
             const matchStatus = status ? voucher?.status === status : true;
 
-            const matchFixed = fixed === voucher?.fixed;
-
             const matchStartDate = start_date
                 ? new Date(voucher?.start_date) >= new Date(start_date)
                 : true;
@@ -82,13 +79,7 @@ const Vouchers = observer(() => {
                 ? new Date(voucher?.end_date) <= new Date(end_date)
                 : true;
 
-            return (
-                matchSearch &&
-                matchStatus &&
-                matchFixed &&
-                matchStartDate &&
-                matchEndDate
-            );
+            return matchSearch && matchStatus && matchStartDate && matchEndDate;
         });
 
         setFilteredVouchers(filtered);

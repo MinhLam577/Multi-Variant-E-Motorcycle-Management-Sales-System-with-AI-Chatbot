@@ -42,18 +42,20 @@ const LoginSignupModal = () => {
                         aria-label="Close"
                     />
                 </div>
-                {/* End Modal close button */}
-
                 <div className="modal-body container p60">
                     <div className="row">
                         <div className="col-lg-12">
                             <ul
                                 className="sign_up_tab nav nav-tabs"
                                 id="myTab"
-                                role="tablist"
+                                suppressHydrationWarning={true}
                             >
                                 {tabs.map(({ title, id }) => (
-                                    <li className="nav-item" key={id}>
+                                    <li
+                                        className="nav-item"
+                                        key={id}
+                                        suppressHydrationWarning={true}
+                                    >
                                         <a
                                             className={`nav-link ${
                                                 id === "home" ? "active" : ""
@@ -61,11 +63,11 @@ const LoginSignupModal = () => {
                                             id={`${id}-tab`}
                                             data-bs-toggle="tab"
                                             href={`#${id}`}
-                                            role="tab"
                                             aria-controls={id}
                                             aria-selected={
                                                 id === "home" ? true : false
                                             }
+                                            suppressHydrationWarning={true}
                                         >
                                             {title}
                                         </a>
@@ -74,8 +76,6 @@ const LoginSignupModal = () => {
                             </ul>
                         </div>
                     </div>
-                    {/* End .row */}
-
                     <div className="tab-content container p0" id="myTabContent">
                         {tabs.map(({ id, content }) => (
                             <div
@@ -83,17 +83,15 @@ const LoginSignupModal = () => {
                                     id === "home" ? "show active" : ""
                                 }`}
                                 id={id}
-                                role="tabpanel"
                                 aria-labelledby={`${id}-tab`}
                                 key={id}
+                                suppressHydrationWarning={true}
                             >
                                 <div className="col-lg-12">{content}</div>
                             </div>
                         ))}
                     </div>
-                    {/* End tab-content */}
                 </div>
-                {/* End modal-body */}
             </div>
         </div>
     );

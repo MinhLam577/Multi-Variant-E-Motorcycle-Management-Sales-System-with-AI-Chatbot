@@ -11,8 +11,10 @@ import ModalForgotPassword from "@/components/login/detail/ModalForgotPassword";
 import ModalRetryActive, {
     ModalHandle,
 } from "@/components/login/detail/ModalRetryActive";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 const Login = () => {
+    useDocumentTitle("Đăng nhập");
     const [messageApi, contextHolder] = message.useMessage();
     const { loginObservable } = useStore();
     const [isLoading, setIsLoading] = useState(false);

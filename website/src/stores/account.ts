@@ -20,23 +20,36 @@ class AccountObservable {
         return existing;
     }
 
-    *setAccount(data: LoginResponse) {
+    *setAccount(data: LoginResponse, remember?: boolean) {
         try {
+            this.loadingAccount = true;
             const jsonValue = JSON.stringify(data);
             const dataEncoded = Base64.encode(jsonValue);
-            secureLocalStorage.setItem(keyStorageAccount, dataEncoded);
+            if (remember) {
+                secureLocalStorage.setItem(keyStorageAccount, dataEncoded);
+                sessionStorage.removeItem(keyStorageAccount);
+            } else {
+                sessionStorage.setItem(keyStorageAccount, dataEncoded);
+                secureLocalStorage.removeItem(keyStorageAccount);
+            }
             this.account = data;
             return data;
         } catch (e) {
             console.error("Error setting account:", e);
             return null;
+        } finally {
+            this.loadingAccount = false;
         }
     }
 
     *getAccount(): Generator<any, LoginResponse | null, unknown> {
         try {
+            this.loadingAccount = true;
             if (this.account) return this.account;
-            const dataEncoded = secureLocalStorage.getItem(keyStorageAccount);
+            const dataEncoded =
+                secureLocalStorage.getItem(keyStorageAccount) ||
+                sessionStorage.getItem(keyStorageAccount) ||
+                null;
             if (!dataEncoded) {
                 return null;
             }
@@ -47,13 +60,17 @@ class AccountObservable {
         } catch (e) {
             console.error("Error getting account:", e);
             return null;
+        } finally {
+            this.loadingAccount = false;
         }
     }
 
     *clearAccount() {
         try {
             secureLocalStorage.removeItem(keyStorageAccount);
+            sessionStorage.removeItem(keyStorageAccount);
             this.account = null;
+            this.loadingAccount = false;
         } catch (e) {
             console.error("Error clearing account:", e);
         }

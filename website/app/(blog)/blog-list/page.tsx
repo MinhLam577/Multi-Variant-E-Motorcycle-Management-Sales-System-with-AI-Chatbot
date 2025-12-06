@@ -105,7 +105,6 @@ const Blog = () => {
             </div>
             {/* End Modal */}
         </div>
-        // End wrapper
     );
 };
 

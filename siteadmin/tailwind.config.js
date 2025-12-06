@@ -1,9 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-    content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
-    corePlugins: {
-        preflight: false, // bạn vẫn muốn tắt reset của Tailwind → giữ lại
-    },
+    content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
     theme: {
         extend: {
             colors: {

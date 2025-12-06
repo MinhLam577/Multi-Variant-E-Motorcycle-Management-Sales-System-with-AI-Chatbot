@@ -161,7 +161,7 @@ const getColumnsConfig = ({ hanleDeleteNews, handleUpdateNews }) => {
                     </div>
                 );
             },
-            width: 40,
+            width: "10%",
         },
     ];
 };
@@ -187,7 +187,7 @@ const NewsTable = ({
 }: NewsTableProps) => {
     const handleDeleteNews = async (id) => {
         try {
-            const response = await apiClient.delete(endpoints.blogs.delete(id));
+            await apiClient.delete(endpoints.blogs.delete(id));
             message.success("Xóa thành công");
             fetchData();
 

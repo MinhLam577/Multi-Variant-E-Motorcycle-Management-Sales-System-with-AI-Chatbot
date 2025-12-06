@@ -12,20 +12,12 @@ export enum EnumProductSortBy {
     BEST_SELLING = "bestSelling",
 }
 import SkusAPI from "../api/skus";
+import { OptionGroup } from "@/app/components/listing/listing-single/listing-single-v2/Select_OptionValue";
 
 export enum EnumProductType {
     CARS = "Xe hơi",
     MOTOBIKES = "Xe máy điện",
 }
-
-interface OptionGroup {
-    option_value_ids: string[];
-}
-
-interface OptionValuesPayload {
-    optionValues: OptionGroup[];
-}
-
 export enum EnumProductStoreLabel {
     CAR = "Xe hơi",
     MOTORBIKE = "Xe máy điện",
@@ -128,7 +120,7 @@ export type ProductsSortByResponseType = {
 type ProductData = {
     cars: {
         data: ProductType | null;
-        bestSelling: ProductDataResponseType[] | null; // Thêm trường bestSelling nếu cần
+        bestSelling: ProductDataResponseType[] | null;
     };
     motobikes: {
         data: ProductType | null;
@@ -141,7 +133,7 @@ type ProductData = {
         data: any;
     };
     resultOption_OptionValue: ConvertSkusOptionValue_UI[];
-    optionValues: OptionValuesPayload;
+    optionValues: OptionGroup[];
     dataSKU: null;
     product_sort_by: ProductsSortByResponseType[];
 };
@@ -160,11 +152,11 @@ class ProductObservable {
     data: ProductData = {
         cars: {
             data: [],
-            bestSelling: [], // Thêm trường bestSelling nếu cần
+            bestSelling: [],
         },
         motobikes: {
             data: [],
-            bestSelling: [], // Thêm trường bestSelling nếu cần
+            bestSelling: [],
         },
         cars_motobikes: {
             data: [],
@@ -272,6 +264,7 @@ class ProductObservable {
 
     *getBestSellingProducts(type: EnumProductStore) {
         try {
+            this.loading = true;
             const response: ResponsePromise =
                 yield ProductAPI.getBestSellingProducts(type);
             const { data, status, message } = response;
@@ -290,6 +283,8 @@ class ProductObservable {
             console.error(e);
             this.setStatusMessage(0, e?.message, "");
             throw e;
+        } finally {
+            this.loading = false;
         }
     }
 
@@ -297,6 +292,7 @@ class ProductObservable {
     *getListProductHome(queryString) {
         const queryString1 = new URLSearchParams(queryString).toString();
         try {
+            this.loading = true;
             const response: ResponsePromise = yield ProductAPI.getListProduct(
                 queryString1
             );
@@ -304,7 +300,6 @@ class ProductObservable {
             const resData = data?.data;
             if (SUCCESS_STATUSES.includes(status)) {
                 this.data.cars_motobikes.data = resData;
-
                 this.setStatusMessage(200, "", message);
             } else {
                 this.setStatusMessage(0, message, "");
@@ -312,13 +307,15 @@ class ProductObservable {
         } catch (e: any) {
             console.error(e);
             this.setStatusMessage(0, e?.message, "");
+        } finally {
+            this.loading = false;
         }
     }
 
-    //
     *getListProductBuyMany(queryString, type) {
         const queryString1 = new URLSearchParams(queryString).toString();
         try {
+            this.loading = true;
             const response: ResponsePromise = yield ProductAPI.getListProduct(
                 queryString1
             );
@@ -337,11 +334,14 @@ class ProductObservable {
         } catch (e: any) {
             console.error(e);
             this.setStatusMessage(0, e?.message, "");
+        } finally {
+            this.loading = false;
         }
     }
 
     *getDetailProductByID(id) {
         try {
+            this.loading = true;
             const response: ResponsePromise = yield ProductAPI.getDetailProduct(
                 id
             );
@@ -360,7 +360,7 @@ class ProductObservable {
                                 existingOption.option_values.push({
                                     id: optionValue.id,
                                     value: optionValue.value,
-                                    image: sku.image, // Thêm image của SKU vào option_value
+                                    image: sku.image,
                                 });
                             } else {
                                 acc.push({
@@ -370,7 +370,7 @@ class ProductObservable {
                                         {
                                             id: optionValue.id,
                                             value: optionValue.value,
-                                            image: sku.image, // Thêm image của SKU vào option_value
+                                            image: sku.image,
                                         },
                                     ],
                                 });
@@ -378,7 +378,6 @@ class ProductObservable {
                         });
                         return acc;
                     }, []);
-
                 this.data.resultOption_OptionValue = result;
                 yield this.get_detailProducts_user_page_id(id);
                 this.setStatusMessage(200, "", message);
@@ -388,28 +387,14 @@ class ProductObservable {
         } catch (e: any) {
             console.error(e);
             this.setStatusMessage(0, e?.message, "");
+        } finally {
+            this.loading = false;
         }
     }
 
-    //     {
-    //   "optionValues": [
-    //     {
-    //       "option_value_ids": [
-    //         "ce74692b-f3d5-4cb5-8131-4ea892d17ddc",
-    //         "8f5b8356-8f7f-45b1-83e2-eb5568fa4eb9"
-    //       ]
-    //     },
-    //     {
-    //       "option_value_ids": [
-    //         "7e963a8a-4d82-4fa2-a5a0-783884c1a345",
-    // "ec30fb2f-ff38-4469-b489-abae0397d0ae"
-    //       ]
-    //     }
-    //   ]
-    // }
-
     *getDetailSKU_ByOptionValue(id) {
         try {
+            this.loading = true;
             const response: ResponsePromise = yield ProductAPI.getDetailSKU(id);
             const { data, status, message } = response;
             const resData = data;
@@ -422,17 +407,19 @@ class ProductObservable {
         } catch (e: any) {
             console.error(e);
             this.setStatusMessage(0, e?.message, "");
+        } finally {
+            this.loading = false;
         }
     }
     *GetSkusByOptionValueIdsNoneLogin(optionValuesPayload: {
         optionValues: { option_value_ids: string[] }[];
     }) {
         try {
+            this.loading = true;
             const { data, status, message } =
                 yield SkusAPI.GetSkusByOptionValueIdsNoneLogin(
                     optionValuesPayload
                 );
-
             if (SUCCESS_STATUSES.includes(status)) {
                 this.data.dataSKU = data[0];
                 this.setStatusMessage(200, "", message);
@@ -442,6 +429,8 @@ class ProductObservable {
         } catch (error) {
             console.error("Lỗi khi gọi GetSkusByOptionValueIds:", error);
             this.setStatusMessage(0, "Lỗi gọi API", "");
+        } finally {
+            this.loading = false;
         }
     }
 
@@ -449,16 +438,13 @@ class ProductObservable {
         optionValues: { option_value_ids: string[] }[];
     }) {
         try {
-            console.log(optionValuesPayload);
             const { data, status, message } =
                 yield SkusAPI.GetSkusByOptionValueIdsAlreadyLogin(
                     optionValuesPayload
                 );
-            console.log(data?.[0]);
 
             if (SUCCESS_STATUSES.includes(status)) {
                 this.data.dataSKU = data?.[0];
-                console.log(this.data?.dataSKU);
                 this.setStatusMessage(200, "", message);
             } else {
                 this.setStatusMessage(0, message, "");

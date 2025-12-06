@@ -11,7 +11,7 @@ import { useStore } from "@/context/store.context";
 import { observer } from "mobx-react-lite";
 import { useRouter } from "next/navigation";
 import { useTheme } from "@/context/theme.context";
-import { LoginResponse } from "@/types/auth-validate.type";
+import { useAuth } from "@/context/auth.context";
 const Header = observer(() => {
     const router = useRouter();
     const pathname = usePathname();
@@ -39,24 +39,15 @@ const Header = observer(() => {
             handleSearch();
         }
     };
-    const [user, setUser] = useState<LoginResponse>();
+    const { user, isLoading } = useAuth();
 
     const store = useStore();
-    const AccountStore = store.accountObservable;
     const cartStore = store.cartObservable;
     useEffect(() => {
-        const fetchData = async () => {
-            await AccountStore?.getAccount();
-            const account = AccountStore?.account;
-            setUser(account);
-
-            if (account) {
-                await cartStore.getListCart(); // chỉ gọi khi đã có user
-            }
-        };
-
-        fetchData();
-    }, []);
+        if (user && cartStore) {
+            cartStore.getListCart?.();
+        }
+    }, [user, cartStore]);
     return (
         <header className="transparent w-full xl:block lg:block md:hidden sm:hidden xs:hidden hidden">
             {/* Ace Responsive Menu */}
@@ -98,57 +89,52 @@ const Header = observer(() => {
                                     className="w-full outline-none border-none bg-transparent text-white text-sm placeholder:text-sm"
                                 />
                             </div>
-                            {!user && (
-                                <PopoverCart
-                                    cart={
-                                        <Badge count={0}>
-                                            <ShoppingCartOutlined className="text-3xl text-white" />
-                                        </Badge>
-                                    }
-                                />
-                            )}
-                            {user && (
-                                <PopoverCart
-                                    dataCart={cartStore?.data}
-                                    cart={
-                                        <Badge
-                                            count={cartStore.data?.length || 0}
-                                        >
-                                            <ShoppingCartOutlined className="text-3xl text-white" />
-                                        </Badge>
-                                    }
-                                />
-                            )}
+                            <PopoverCart
+                                dataCart={user ? cartStore?.data : undefined}
+                                cart={
+                                    <Badge
+                                        count={
+                                            user
+                                                ? cartStore?.data?.length || 0
+                                                : 0
+                                        }
+                                    >
+                                        <ShoppingCartOutlined className="text-2xl text-white" />
+                                    </Badge>
+                                }
+                            />
+
+                            {/* User */}
                             {user ? (
-                                // Nếu đã đăng nhập
                                 <PopoverAvatar
                                     avatar={
-                                        <div className="flex items-center gap-4">
-                                            <img
-                                                src={
-                                                    AccountStore?.account?.user
-                                                        ?.avatarUrl ||
-                                                    "https://res.cloudinary.com/diwacy6yr/image/upload/v1728441530/User/default.png"
-                                                }
-                                                alt="Avatar"
-                                                className="w-8 h-8 rounded-full object-cover filter invert"
-                                            />
-                                        </div>
+                                        <img
+                                            src={
+                                                user.user?.avatarUrl ||
+                                                "https://res.cloudinary.com/diwacy6yr/image/upload/v1728441530/User/default.png"
+                                            }
+                                            alt="Avatar"
+                                            className="min-w-8 w-8 h-8 rounded-[50%] object-cover"
+                                        />
                                     }
                                 />
                             ) : (
-                                <div className="flex gap-2 items-center">
+                                <div className="flex items-center gap-1">
                                     <Link
                                         href="/login"
-                                        className="cursor-pointer text-[15px] w-20 text-white text-center "
+                                        className="relative text-nowrap text-sm px-2 py-2 rounded transition after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:bg-yellow-400 after:w-0 
+                                        after:transition-all after:duration-300 after:ease-in-out
+                                        hover:after:w-full text-white"
                                     >
-                                        Đăng nhập
+                                        Đăng Nhập
                                     </Link>
                                     <Link
                                         href="/signup"
-                                        className="cursor-pointer text-[15px] w-14 text-white text-center "
+                                        className="relative text-nowrap text-sm px-2 py-2 rounded transition after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:bg-yellow-400 after:w-0 
+                                        after:transition-all after:duration-300 after:ease-in-out
+                                        hover:after:w-full text-white"
                                     >
-                                        Đăng ký
+                                        Đăng Ký
                                     </Link>
                                 </div>
                             )}

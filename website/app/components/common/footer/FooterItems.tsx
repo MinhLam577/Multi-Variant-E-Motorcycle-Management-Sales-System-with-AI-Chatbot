@@ -1,9 +1,9 @@
 import { addressList } from "@/data/address";
 
 const FooterItems = () => {
-    const AddressItem = ({ item, index }) => {
+    const AddressItem = ({ item }) => {
         return (
-            <div key={index} className="col-md-12">
+            <div className="col-md-12">
                 <p>{item.address}</p>
                 <p>{item.phone}</p>
             </div>
@@ -21,7 +21,7 @@ const FooterItems = () => {
                     <div className="footer_about_widget">
                         <h5 className="title">{item.title}</h5>
                         {item?.children?.map((address, index) => (
-                            <AddressItem index={index} item={address} />
+                            <AddressItem key={index} item={address} />
                         ))}
                     </div>
                 </div>

@@ -3,12 +3,13 @@ import { useStore } from "@/context/store.context";
 import AddressDefault from "./addressDefault";
 import OrderAmountDetails from "./OrderAmountDetails";
 import PaymentWidget from "./PaymentWidget";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Delivery from "./delivery";
 import VoucherSection from "./voucher";
 import { useRouter } from "next/navigation"; // nếu dùng App Router: 'next/navigation'
-import { notification } from "antd";
+import { ConfigProvider, message, notification, Spin } from "antd";
 import { observer } from "mobx-react-lite";
+import { SUCCESS_STATUSES } from "@/app/constants";
 
 const BillingMain = () => {
     const router = useRouter();
@@ -19,6 +20,7 @@ const BillingMain = () => {
     const storePayment = store.paymentMethodObservable;
     const storeVoucher = store.voucherObservable;
     const storeCart = store.cartObservable;
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -41,32 +43,33 @@ const BillingMain = () => {
     }, []);
 
     const handlePlaceOrder = async () => {
-        let addressDefault = "";
-        const customer_id = storeAccount.account?.user.userId;
-        const subtotal = storeCart?.listDataSelected.reduce(
-            (sum, item) =>
-                sum + Number(item.skus.price_sold || 0) * item.quantity,
-            0
-        );
-        function getDiscountAmount(itemTotal) {
-            const voucher = storeVoucher.dataDetail?.voucher;
-            if (!voucher) return 0;
-            const amount = Number(voucher.discount_amount);
-            return voucher.fixed ? (amount / 100) * itemTotal : amount;
-        }
-
-        const total = storeCart?.listDataSelected.reduce((sum, item) => {
-            const itemTotal = Number(item.skus.price_sold || 0) * item.quantity;
-            const fee = storeDelivery.data.detailDelivery?.fee ?? 0;
-            const discountAmount = getDiscountAmount(itemTotal);
-            return sum + itemTotal + fee - discountAmount;
-        }, 0);
-
-        if (storeAddress?.data?.listAddress.length == 0) {
-            notification.error({
-                message: "Lỗi chưa có địa chỉ",
-            });
-        } else {
+        try {
+            setIsLoading(true);
+            const getDiscountAmount = (itemTotal) => {
+                const voucher = storeVoucher.dataDetail?.voucher;
+                if (!voucher) return 0;
+                const amount = Number(voucher.discount_amount);
+                return voucher.fixed ? (amount / 100) * itemTotal : amount;
+            };
+            const customer_id = storeAccount.account?.user.userId;
+            const subtotal = storeCart?.listDataSelected.reduce(
+                (sum, item) =>
+                    sum + Number(item.skus.price_sold || 0) * item.quantity,
+                0
+            );
+            const total = storeCart?.listDataSelected.reduce((sum, item) => {
+                const itemTotal =
+                    Number(item.skus.price_sold || 0) * item.quantity;
+                const fee = storeDelivery.data.detailDelivery?.fee ?? 0;
+                const discountAmount = getDiscountAmount(itemTotal);
+                return sum + itemTotal + fee - discountAmount;
+            }, 0);
+            if (storeAddress?.data?.listAddress.length == 0) {
+                notification.error({
+                    message: "Vui lòng chọn địa chỉ hoặc tạo mới nếu chưa có",
+                });
+                return;
+            }
             const orderData = {
                 customer_id,
                 receive_address_id:
@@ -80,25 +83,21 @@ const BillingMain = () => {
             };
             await storeCart.checkoutBycart(orderData);
             if (
-                storeCart?.dataOrder?.orderId &&
-                storeCart?.dataOrder?.payment_method == "COD" &&
-                storeCart?.successMsg ==
-                    "Order has been successfully created" &&
-                storeCart?.status == 201
+                !SUCCESS_STATUSES.includes(storeCart.status) ||
+                !storeCart?.dataOrder?.orderId
             ) {
+                message.error(
+                    "Có lỗi xảy ra lúc thanh toán. Vui lòng thử lại sau"
+                );
+                return;
+            }
+            if (storeCart?.dataOrder?.payment_method == "COD") {
                 notification.success({
                     message: "Thông báo",
                     description: "Bạn đã đặt hàng thành công.",
                 });
-
-                router.push("/purchase"); // chuyển đến trang mua hàng đã thanh toán
-            } else if (
-                storeCart?.dataOrder.orderId &&
-                storeCart?.dataOrder?.payment_method == "ZALOPAY" &&
-                storeCart?.successMsg ==
-                    "Order has been successfully created" &&
-                storeCart?.status == 201
-            ) {
+                router.push("/purchase");
+            } else if (storeCart?.dataOrder?.payment_method == "ZALOPAY") {
                 await storeCart.checkoutByZaloPay({
                     orderId: storeCart.dataOrder.orderId,
                     description: `Thanh toán đơn`,
@@ -107,13 +106,7 @@ const BillingMain = () => {
                     }),
                 });
                 router.push(storeCart?.dataOrder?.order_url);
-            } else if (
-                storeCart?.dataOrder.orderId &&
-                storeCart?.dataOrder?.payment_method == "PAYOS" &&
-                storeCart?.successMsg ==
-                    "Order has been successfully created" &&
-                storeCart?.status == 201
-            ) {
+            } else if (storeCart?.dataOrder?.payment_method == "PAYOS") {
                 await storeCart.checkoutByPayos({
                     orderId: storeCart.dataOrder.orderId,
                     description: `Thanh toán Đơn`,
@@ -124,18 +117,22 @@ const BillingMain = () => {
                 await storeVoucher.getListVoucher_of_User();
                 router.push(storeCart?.dataOrder?.checkoutUrl);
             }
+        } catch (e) {
+        } finally {
+            setIsLoading(false);
         }
-        // gọi api checkoutByZaloPay
     };
     return (
         <>
             <div className="col-lg-8">
-                <div className="checkout_form style2">
-                    {/*  <h4 className="title mb30">Billing details</h4> */}
-
-                    <AddressDefault />
-                    <Delivery />
-                    <VoucherSection storeVoucher={storeVoucher} />
+                <div className="sticky top-5 z-10 bg-white rounded-lg border border-solid border-[#eaeaea]">
+                    <div className="checkout_form style2">
+                        <div className="p-4">
+                            <AddressDefault />
+                            <Delivery />
+                            <VoucherSection storeVoucher={storeVoucher} />
+                        </div>
+                    </div>
                 </div>
             </div>
             {/* End billing content */}
@@ -153,15 +150,46 @@ const BillingMain = () => {
                 <div className="ui_kit_button payment_widget_btn">
                     <button
                         type="button"
-                        className={`ml-auto px-4 py-2 rounded font-semibold flex items-center justify-center gap-1 w-full ${
-                            storeCart?.selectedItems?.length > 0
-                                ? "bg-[#ee4d2d] text-white cursor-pointer"
-                                : "bg-[#ee4d2d] text-white cursor-not-allowed"
+                        className={`relative w-full px-4 min-h-11 flex items-center justify-center rounded font-semibold text-white transition-all ${
+                            !isLoading
+                                ? "bg-[#ee4d2d] hover:bg-[#d73c1e] !cursor-pointer"
+                                : "bg-[#ee4d2d] bg-opacity-90 !cursor-not-allowed"
                         }`}
                         onClick={handlePlaceOrder}
-                        disabled={!storeCart?.selectedItems?.length}
+                        disabled={
+                            !!storeCart?.selectedItems?.length === false ||
+                            isLoading
+                        }
                     >
-                        Đặt Hàng
+                        <ConfigProvider
+                            theme={{
+                                components: {
+                                    Spin: {
+                                        colorPrimary: "white",
+                                    },
+                                },
+                            }}
+                        >
+                            <Spin
+                                size="small"
+                                className={`absolute top-1/2 -translate-y-1/2 transition-all duration-300 ease-in-out ${
+                                    isLoading
+                                        ? "left-[43%] -translate-x-1/2 opacity-100"
+                                        : "left-1/2 -translate-x-1/2 opacity-0"
+                                }
+                            `}
+                            />
+                        </ConfigProvider>
+                        <span
+                            className={`absolute transition-all duration-300 ${
+                                isLoading
+                                    ? "translate-x-[30%]"
+                                    : "translate-x-0"
+                            }
+                            `}
+                        >
+                            Đặt hàng
+                        </span>
                     </button>
                 </div>
             </div>
@@ -170,4 +198,3 @@ const BillingMain = () => {
 };
 
 export default observer(BillingMain);
-// <BillingDetails />

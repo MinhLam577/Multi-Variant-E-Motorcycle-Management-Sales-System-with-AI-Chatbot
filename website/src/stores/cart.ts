@@ -1,6 +1,6 @@
 import { makeAutoObservable, toJS } from "mobx";
 
-import { DateTimeFormat } from "../constants";
+import { DateTimeFormat, SUCCESS_STATUSES } from "../constants";
 import OrderAPI, { ExportOrder, ResponsePromise } from "../api/order";
 import { RootStore } from "./base";
 import voucherApi from "../api/voucher";
@@ -48,7 +48,7 @@ export default class CartObservable {
     loading: boolean = false;
     isOpenDetail: boolean = false;
     // chonj ben cart
-    selectedItems = [];
+    selectedItems: string[] = [];
     // data checkout
     listDataSelected: CartItemResponseType[] = [];
     dataOrder = {
@@ -70,7 +70,6 @@ export default class CartObservable {
             const success_status = [200, 201, 204];
             if (success_status.includes(status)) {
                 this.data = data.cartItem;
-                // lấy id cart
                 this.idcart = data.id;
                 this.status = status;
                 this.successMsg = message;
@@ -89,41 +88,36 @@ export default class CartObservable {
         }
     }
 
-    *setSelectedItems(items: string[]) {
+    setSelectedItems(items: string[]) {
         this.selectedItems = items;
-        
+
         // Lưu vào localStorage
-        localStorage.setItem("selectedItems", JSON.stringify(this.selectedItems));
+        localStorage.setItem("selectedItems", JSON.stringify(items));
         // lấy danh sách item đc chọn
 
         this.listDataSelected = this.data.filter((item) =>
             this.selectedItems.includes(item.id)
         );
     }
-    // lấy lại khi F5 ở checkout 
-    *initSelectedItemsFromStorage() {
+    // lấy lại khi F5 ở checkout
+    initSelectedItemsFromStorage() {
         const stored = localStorage.getItem("selectedItems");
         if (stored) {
             this.selectedItems = JSON.parse(stored);
-
-            // Tái tạo listDataSelected từ data hiện có
-            this.listDataSelected = this.data.filter(item =>
+            this.listDataSelected = this.data.filter((item) =>
                 this.selectedItems.includes(item.id)
             );
         }
     }
 
-    *getListDataSelectedByCart() {
+    get getListDataSelectedByCart() {
         return this.data.filter((item) => item);
     }
 
-    *getSelectedItems() {
+    get getSelectedItems() {
         return this.selectedItems;
     }
-    *getItemCarts_Checkout() {
-        return this.data.filter((item) => this.selectedItems.includes(item.id));
-    }
-    *clearSelectedCart() {
+    clearSelectedCart() {
         this.selectedItems = [];
     }
     *checkoutBycart(orderData) {
@@ -134,23 +128,18 @@ export default class CartObservable {
                 orderData
             );
             const { data, status, message } = response;
-            const success_status = [200, 201, 204];
-            if (success_status.includes(status)) {
-                // ✅ Xóa selectedItems trong localStorage
-                localStorage.removeItem("selectedItems");
-                // lấy id cart
-                yield this.getListCart();
-                this.dataOrder.orderId = data.id;
-                this.dataOrder.payment_method = data.payment_method.name;
-
+            if (!SUCCESS_STATUSES.includes(status)) {
                 this.status = status;
-                this.successMsg = message;
-            } else {
-                this.status = status;
-                this.errorMsg = Array.isArray(message)
-                    ? message.join(", ")
-                    : message;
+                this.errorMsg = Array.isArray(message) ? message[0] : message;
             }
+            // ✅ Xóa selectedItems trong localStorage
+            localStorage.removeItem("selectedItems");
+            // lấy id cart
+            yield this.getListCart();
+            this.dataOrder.orderId = data.id;
+            this.dataOrder.payment_method = data.payment_method.name;
+            this.status = status;
+            this.successMsg = message;
         } catch (e: any) {
             console.error(e);
             this.status = 500;
@@ -204,7 +193,7 @@ export default class CartObservable {
                 localStorage.removeItem("selectedItems");
                 // lấy id cart
 
-                   // ✅ Kiểm tra checkoutUrl trước khi dùng
+                // ✅ Kiểm tra checkoutUrl trước khi dùng
                 if (data?.checkoutUrl) {
                     this.dataOrder.checkoutUrl = data.checkoutUrl;
                     console.log("PayOS Checkout URL:", data.checkoutUrl);
@@ -230,7 +219,7 @@ export default class CartObservable {
         }
     }
 
-    // hủy đơn pay os 
+    // hủy đơn pay os
     *cancel_order_payos(orderID) {
         try {
             this.loading = true;
@@ -261,7 +250,6 @@ export default class CartObservable {
     *BuyAgain_InOrder(body) {
         try {
             this.loading = true;
-            // quantity , skus
             const response = yield apiClient.post(
                 endpoints.cart.create(),
                 body
@@ -273,10 +261,7 @@ export default class CartObservable {
                     this.selectedItems.push(data.id);
                 }
                 yield this.getListCart();
-                // cập nhật lại mảng cartItem đã chọn ở selectedItems để hiển thị
-                this.listDataSelected = this.data.filter((item) =>
-                    this.selectedItems.includes(item.id)
-                );
+                this.setSelectedItems(this.selectedItems);
                 this.status = status;
                 this.successMsg = message;
             } else {
@@ -386,10 +371,7 @@ export default class CartObservable {
         }
     }
 
-    // danh sách voucher
-
-    // * : generator function
-    *deleteCartByID(id: string) {
+    *deleteCartItemByID(id: string) {
         try {
             // gọi một hàm bất đồng bộ (API)
             const response: ResponsePromise = yield apiClient.delete(
@@ -398,7 +380,7 @@ export default class CartObservable {
             const { data, status, message } = response;
             const success_status = [200, 201, 204];
             if (success_status.includes(status)) {
-                // ✅ Gọi lại API để refresh data
+                this.selectedItems = this.selectedItems.filter((i) => i !== id);
                 yield this.getListCart();
                 this.status = status;
                 this.successMsg = message;

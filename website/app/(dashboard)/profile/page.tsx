@@ -7,8 +7,6 @@ import MobileMenu from "@/app/components/common/MobileMenu";
 import LoginSignupModal from "@/app/components/common/login-signup";
 import Account from "@/app/components/dashboard/profile/Account";
 import ChangePassword from "@/app/components/dashboard/profile/ChangePassword";
-import Gallery from "@/app/components/dashboard/profile/Gallery";
-import SocialNetwork from "@/app/components/dashboard/profile/SocialNetwork";
 
 export const metadata = {
     title: "Dashboard Profile || minhdeptrai.site ",
@@ -40,7 +38,7 @@ const Profile = () => {
             {/* End Main Header Nav For Mobile */}
 
             {/* Our Dashbord */}
-            <section className="our-dashbord dashbord bgc-f9">
+            <section className="our-dashbord dashbord">
                 <div className="container-fluid">
                     <div className="row">
                         <div className="col-xxl-10 offset-xxl-2 dashboard_grid_space">
@@ -109,7 +107,6 @@ const Profile = () => {
             </div>
             {/* End Modal */}
         </div>
-        // End wrapper
     );
 };
 

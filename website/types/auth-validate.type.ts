@@ -24,6 +24,7 @@ export type ForgotPasswordStatusProps =
 export type LoginData = {
     email: string;
     password: string;
+    remember?: boolean;
 };
 
 export type UserResponse = {

@@ -82,7 +82,10 @@ export class LoginObservable {
             defaultErrorMessage: "Đăng nhập thất bại",
             onSuccess: (data) => {
                 if (data && data.user?.userId) {
-                    this.rootStore.accountObservable.setAccount(data);
+                    this.rootStore.accountObservable.setAccount(
+                        data,
+                        loginData.remember
+                    );
                     this.data = data;
                     return;
                 }
@@ -119,27 +122,27 @@ export class LoginObservable {
         });
     }
 
-    // call api login
-    *getProfile_ByGoogle(token) {
-        this.status = LoginStatusProps.LOGIN_SUCCESS;
-        try {
-            const { data } = yield axios.get(
-                process.env.NEXT_PUBLIC_BACK_END_API_BASE_URL +
-                    endpoints.customers.loginGoogle,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-            yield this.rootStore.accountObservable.setAccount(data.data);
-            this.status = LoginStatusProps.LOGIN_SUCCESS;
-            this.successMsg = "Đăng nhập thành công";
-        } catch (error) {
-            this.status = LoginStatusProps.LOGIN_FAILED;
-            this.errorMsg = error?.message;
-        }
-    }
+    // // call api login
+    // *getProfile_ByGoogle(token) {
+    //     this.status = LoginStatusProps.LOGIN_SUCCESS;
+    //     try {
+    //         const { data } = yield axios.get(
+    //             process.env.NEXT_PUBLIC_BACK_END_API_BASE_URL +
+    //                 endpoints.customers.loginGoogle,
+    //             {
+    //                 headers: {
+    //                     Authorization: `Bearer ${token}`,
+    //                 },
+    //             }
+    //         );
+    //         yield this.rootStore.accountObservable.setAccount(data.data, );
+    //         this.status = LoginStatusProps.LOGIN_SUCCESS;
+    //         this.successMsg = "Đăng nhập thành công";
+    //     } catch (error) {
+    //         this.status = LoginStatusProps.LOGIN_FAILED;
+    //         this.errorMsg = error?.message;
+    //     }
+    // }
 
     *logout() {
         yield this.rootStore.accountObservable.clearAccount();

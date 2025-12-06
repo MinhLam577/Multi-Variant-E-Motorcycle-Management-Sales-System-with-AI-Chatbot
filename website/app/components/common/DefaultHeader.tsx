@@ -7,30 +7,23 @@ import { EnumProductStore } from "@/src/stores/productStore";
 import PopoverCart from "../popover/cart";
 import { Badge } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useStore } from "@/context/store.context";
 import PopoverAvatar from "../popover/avatar";
-import { LoginResponse } from "@/types/auth-validate.type";
+import { useAuth } from "@/context/auth.context";
+import { observer } from "mobx-react-lite";
 
 const DefaultHeader = () => {
-    const [user, setUser] = useState<LoginResponse>();
+    const { user, isLoading } = useAuth();
 
     const store = useStore();
-    const AccountStore = store.accountObservable;
     const cartStore = store.cartObservable;
     useEffect(() => {
-        const fetchData = async () => {
-            await AccountStore?.getAccount(); // lấy thông tin người dùng
-            const account = AccountStore?.account;
-            setUser(account);
+        if (user && cartStore) {
+            cartStore.getListCart?.();
+        }
+    }, [user, cartStore]);
 
-            if (account) {
-                await cartStore.getListCart(); // chỉ gọi khi đã có user
-            }
-        };
-
-        fetchData();
-    }, []);
     return (
         <header className="header-nav menu_style_home_one home3_style main-menu hidden lg:block">
             {/* Ace Responsive Menu */}
@@ -64,65 +57,60 @@ const DefaultHeader = () => {
                     {/* Responsive Menu Structure*/}
                     <div className="flex items-center gap-2">
                         <ul
-                            // id="respMenu"
                             className="ace-responsive-menu text-end"
                             data-menu-style="horizontal"
                         >
                             <MainMenu />
                         </ul>
 
-                        <div className="flex items-center justify-center gap-4">
-                            {!user && (
-                                <PopoverCart
-                                    cart={
-                                        <Badge count={0}>
-                                            <ShoppingCartOutlined className="text-2xl text-black" />
-                                        </Badge>
-                                    }
-                                />
-                            )}
-                            {user && (
-                                <PopoverCart
-                                    dataCart={cartStore?.data}
-                                    cart={
-                                        <Badge
-                                            count={cartStore.data?.length || 0}
-                                        >
-                                            <ShoppingCartOutlined className="text-2xl text-black" />
-                                        </Badge>
-                                    }
-                                />
-                            )}
+                        <div className="flex items-center justify-center gap-2">
+                            {/* Cart */}
+                            <PopoverCart
+                                dataCart={user ? cartStore?.data : undefined}
+                                cart={
+                                    <Badge
+                                        count={
+                                            user
+                                                ? cartStore?.data?.length || 0
+                                                : 0
+                                        }
+                                    >
+                                        <ShoppingCartOutlined className="text-2xl text-black" />
+                                    </Badge>
+                                }
+                            />
+
+                            {/* User */}
                             {user ? (
-                                // Nếu đã đăng nhập
                                 <PopoverAvatar
                                     avatar={
-                                        <div className="flex items-center gap-4">
-                                            <img
-                                                src={
-                                                    AccountStore?.account?.user
-                                                        ?.avatarUrl ||
-                                                    "https://res.cloudinary.com/diwacy6yr/image/upload/v1728441530/User/default.png"
-                                                }
-                                                alt="Avatar"
-                                                className="min-w-8 w-8 h-8 rounded-full object-cover filter invert"
-                                            />
-                                        </div>
+                                        <img
+                                            src={
+                                                user.user?.avatarUrl ||
+                                                "https://res.cloudinary.com/diwacy6yr/image/upload/v1728441530/User/default.png"
+                                            }
+                                            alt="Avatar"
+                                            className="min-w-8 w-8 h-8 rounded-full object-cover"
+                                        />
                                     }
                                 />
                             ) : (
-                                <div className="flex gap-2 items-center">
+                                <div className="flex items-center">
                                     <Link
                                         href="/login"
-                                        className="cursor-pointer text-[15px] w-20 !text-black text-center "
+                                        className="text-nowrap text-sm px-2 py-2 rounded transition relative after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:bg-yellow-400 after:w-0 
+                                        after:transition-all after:duration-300 after:ease-in-out
+                                        hover:after:w-full text-black"
                                     >
-                                        Đăng nhập
+                                        Đăng Nhập
                                     </Link>
                                     <Link
                                         href="/signup"
-                                        className="cursor-pointer text-[15px] w-14 !text-black text-center "
+                                        className="text-nowrap text-sm px-2 py-2 rounded transition  relative after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:bg-yellow-400 after:w-0 
+                                        after:transition-all after:duration-300 after:ease-in-out
+                                        hover:after:w-full text-black"
                                     >
-                                        Đăng ký
+                                        Đăng Ký
                                     </Link>
                                 </div>
                             )}
@@ -134,4 +122,4 @@ const DefaultHeader = () => {
     );
 };
 
-export default DefaultHeader;
+export default observer(DefaultHeader);

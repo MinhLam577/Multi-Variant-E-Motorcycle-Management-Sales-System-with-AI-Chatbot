@@ -103,16 +103,12 @@ const ListingSingleV1 = () => {
                             {/* End Car Gallery */}
                             <div className="opening_hour_widgets p30 mt30">
                                 <div className="wrapper">
-                                    <div
-                                        className="nav nav-tabs col-lg-12"
-                                        role="tablist"
-                                    >
+                                    <div className="nav nav-tabs col-lg-12">
                                         <button
                                             className="nav-link active"
                                             id="nav-overview-tab"
                                             data-bs-toggle="tab"
                                             data-bs-target="#nav-overview"
-                                            role="tab"
                                             aria-controls="nav-overview"
                                             aria-selected="false"
                                         >
@@ -123,7 +119,6 @@ const ListingSingleV1 = () => {
                                             id="nav-description-tab"
                                             data-bs-toggle="tab"
                                             data-bs-target="#nav-description"
-                                            role="tab"
                                             aria-controls="nav-description"
                                             aria-selected="true"
                                         >
@@ -134,7 +129,6 @@ const ListingSingleV1 = () => {
                                             id="nav-features-tab"
                                             data-bs-toggle="tab"
                                             data-bs-target="#nav-features"
-                                            role="tab"
                                             aria-controls="nav-features"
                                             aria-selected="false"
                                         >
@@ -145,7 +139,6 @@ const ListingSingleV1 = () => {
                                             id="nav-location-tab"
                                             data-bs-toggle="tab"
                                             data-bs-target="#nav-location"
-                                            role="tab"
                                             aria-controls="nav-location"
                                             aria-selected="false"
                                         >
@@ -156,7 +149,6 @@ const ListingSingleV1 = () => {
                                             id="nav-review-tab"
                                             data-bs-toggle="tab"
                                             data-bs-target="#nav-review"
-                                            role="tab"
                                             aria-controls="nav-review"
                                             aria-selected="false"
                                         >
@@ -171,7 +163,6 @@ const ListingSingleV1 = () => {
                                         <div
                                             className="tab-pane fade"
                                             id="nav-description"
-                                            role="tabpanel"
                                             aria-labelledby="nav-description-tab"
                                         >
                                             <div className="listing_single_description bdr_none pl0 pr0">
@@ -190,7 +181,6 @@ const ListingSingleV1 = () => {
                                         <div
                                             className="tab-pane fade show active"
                                             id="nav-overview"
-                                            role="tabpanel"
                                             aria-labelledby="nav-overview-tab"
                                         >
                                             <div className="opening_hour_widgets p30 bdr_none pl0 pr0">
@@ -208,7 +198,6 @@ const ListingSingleV1 = () => {
                                         <div
                                             className="tab-pane fade"
                                             id="nav-features"
-                                            role="tabpanel"
                                             aria-labelledby="nav-features-tab"
                                         >
                                             <div className="user_profile_service bdr_none pl0 pr0">
@@ -232,7 +221,6 @@ const ListingSingleV1 = () => {
                                         <div
                                             className="tab-pane fade"
                                             id="nav-location"
-                                            role="tabpanel"
                                             aria-labelledby="nav-location-tab"
                                         >
                                             <div className="user_profile_location bdr_none pl0 pr0">
@@ -328,7 +316,7 @@ const ListingSingleV1 = () => {
                         <div className="col-sm-6">
                             <div className="text-center text-md-end mb30-520">
                                 <Link
-                                    href="/page-list-v1"
+                                    href="/listing-v1?type=motorbike"
                                     className="more_listing"
                                 >
                                     Xem thêm

@@ -6,7 +6,6 @@ import Partner from "@/app/components/common/Partner";
 import WhyChoose from "@/app/components/common/WhyChoose";
 import Blog from "@/app/components/home/Blog";
 import Header from "@/app/components/home/Header";
-import MotorBikeTypeList from "@/app/components/home/MotorBikerTypeList";
 import MotorFeaturedFilterListing from "@/app/components/home/MotorFeaturedFilterListing";
 import MotorHero from "@/app/components/home/MotorHero";
 import SaleBanner from "@/app/components/home/SaleBanner";
@@ -15,25 +14,6 @@ export const metadata = {
     title: "minhdeptrai.site | Mua Bán Xe Hơi Uy Tín & Chất Lượng",
     description: `minhdeptrai.site - Địa chỉ uy tín chuyên cung cấp các dòng xe hơi chất lượng cao, dịch vụ chăm sóc khách hàng chuyên nghiệp, giá cả cạnh tranh.`,
 };
-
-const partners = [
-    { imgPath: "/images/partners/bike_1.png", delay: 100 },
-    { imgPath: "/images/partners/bike_1.png", delay: 300 },
-    { imgPath: "/images/partners/bike_1.png", delay: 500 },
-    { imgPath: "/images/partners/bike_1.png", delay: 700 },
-    { imgPath: "/images/partners/bike_1.png", delay: 900 },
-    { imgPath: "/images/partners/bike_1.png", delay: 1100 },
-];
-
-const filterOptions = [
-    { value: "*", name: "Tất cả" },
-    { value: "new", name: "Xe điện Vinfast" },
-    { value: "car", name: "Xe YADEKA" },
-    { value: "car", name: "Xe YAKA" },
-    { value: "car", name: "Xe EVGO" },
-    { value: "car", name: "Xe điện thời trang" },
-    { value: "car-specialized", name: "Xe điện học sinh" },
-];
 
 const HomeMotorbike = () => {
     return (
@@ -61,7 +41,6 @@ const HomeMotorbike = () => {
                             </div>
                         </div>
                     </div>
-                    {/* End .row */}
 
                     <div className="row">
                         <div
@@ -72,16 +51,15 @@ const HomeMotorbike = () => {
                             <MotorFeaturedFilterListing />
                         </div>
                     </div>
-                    {/* End .row */}
 
                     <div className="row  mt20">
                         <div className="col-lg-12">
                             <div className="text-center ">
                                 <Link
-                                    href="/page-list-v1"
-                                    className="more_listing "
+                                    href="/listing-v1?type=motorbike"
+                                    className="more_listing"
                                 >
-                                    Xem tất cả{" "}
+                                    Xem tất cả
                                     <span className="icon">
                                         <span className="fas fa-plus" />
                                     </span>
@@ -89,9 +67,7 @@ const HomeMotorbike = () => {
                             </div>
                         </div>
                     </div>
-                    {/* End .row */}
                 </div>
-                {/* End .container */}
             </section>
             {/* End Featured Product  */}
 
@@ -116,50 +92,6 @@ const HomeMotorbike = () => {
                 </div>
             </section>
             {/* End Our Partners */}
-
-            {/* Category Product  */}
-            <section className="featured-product">
-                <div className="container">
-                    <div className="row justify-content-center">
-                        <div className="col-lg-8">
-                            <div className="main-title text-center">
-                                <h2>Cách loại xe máy điện</h2>
-                            </div>
-                        </div>
-                    </div>
-                    {/* End .row */}
-
-                    <div className="row">
-                        <div
-                            className="col-lg-12"
-                            data-aos-delay="100"
-                            data-aos="fade-up"
-                        >
-                            <MotorBikeTypeList />
-                        </div>
-                    </div>
-                    {/* End .row */}
-
-                    <div className="row mt20 ">
-                        <div className="col-lg-12 ">
-                            <div className="text-center mt-20">
-                                <Link
-                                    href="/page-list-v1"
-                                    className="more_listing"
-                                >
-                                    Xem tất cả{" "}
-                                    <span className="icon">
-                                        <span className="fas fa-plus" />
-                                    </span>
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
-                    {/* End .row */}
-                </div>
-                {/* End .container */}
-            </section>
-            {/* End Category Product  */}
 
             {/* Sale Banner  */}
             <section className="our-blog pb90 pt-0">

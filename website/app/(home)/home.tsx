@@ -16,25 +16,17 @@ export const metadata = {
     description: `minhdeptrai.site - Địa chỉ uy tín chuyên cung cấp các dòng xe hơi chất lượng cao, dịch vụ chăm sóc khách hàng chuyên nghiệp, giá cả cạnh tranh.`,
 };
 
-const Home_1 = () => {
+const Home = () => {
     return (
         <div className="wrapper ovh">
-            {/* Main Header Nav */}
-            {/* <TopHeader /> */}
             <HeaderWithActions />
-            {/* End Main Header Nav For Mobile */}
-            {/* Main Header Nav For Mobile */}
 
             <Header />
             <MobileMenu />
 
             <SearchMobile />
-            {/* End Main Header Nav */}
-            {/* Hero */}
             <Hero />
-            {/* End Hero */}
 
-            {/* Featured Product  */}
             <section className="featured-product">
                 <div className="container">
                     <div className="row justify-content-center">
@@ -44,18 +36,17 @@ const Home_1 = () => {
                             </div>
                         </div>
                     </div>
-                    {/* End .row */}
 
                     <div className="row">
                         <div
                             className="col-lg-12"
                             data-aos-delay="100"
                             data-aos="fade-up"
+                            suppressHydrationWarning={true}
                         >
                             <FeaturedFilterListing />
                         </div>
                     </div>
-                    {/* End .row */}
 
                     <div className="row mt20">
                         <div className="col-lg-12">
@@ -72,13 +63,9 @@ const Home_1 = () => {
                             </div>
                         </div>
                     </div>
-                    {/* End .row */}
                 </div>
-                {/* End .container */}
             </section>
-            {/* End Featured Product  */}
 
-            {/* Our Partners */}
             <section className="our-partner pt0 pb90">
                 <div className="container">
                     <div className="row">
@@ -88,19 +75,15 @@ const Home_1 = () => {
                             </div>
                         </div>
                     </div>
-                    {/* End .row */}
 
                     <div className="partner_divider">
                         <div className="row">
                             <Partner />
                         </div>
-                        {/* End .row */}
                     </div>
                 </div>
             </section>
-            {/* End Our Partners */}
 
-            {/* Sale Banner  */}
             <section className="our-blog pb90 pt-0">
                 <div className="container">
                     <div className="row">
@@ -110,17 +93,13 @@ const Home_1 = () => {
                             </div>
                         </div>
                     </div>
-                    {/* End .row */}
 
                     <div className="row">
                         <SaleBanner />
                     </div>
-                    {/* End .row */}
                 </div>
             </section>
-            {/* End Sale Banner  */}
 
-            {/* Why Chose us  */}
             <section className="why-chose pt0">
                 <div className="container">
                     <div className="row justify-content-center">
@@ -135,9 +114,7 @@ const Home_1 = () => {
                     </div>
                 </div>
             </section>
-            {/* Why Chose us  */}
 
-            {/* Our Blog */}
             <section className="our-blog pb90 pt-0">
                 <div className="container">
                     <div className="row">
@@ -147,21 +124,15 @@ const Home_1 = () => {
                             </div>
                         </div>
                     </div>
-                    {/* End .row */}
 
                     <div className="row">
                         <Blog />
                     </div>
-                    {/* End .row */}
                 </div>
             </section>
-            {/* End Our Blog */}
 
-            {/* Our Footer */}
             <Footer />
-            {/* End Our Footer */}
 
-            {/* Modal */}
             <div
                 className="sign_up_modal modal fade"
                 id="logInModal"
@@ -172,10 +143,8 @@ const Home_1 = () => {
             >
                 <LoginSignupModal />
             </div>
-            {/* End Modal */}
         </div>
-        // End wrapper
     );
 };
 
-export default Home_1;
+export default Home;

@@ -2,8 +2,8 @@
 import { AUTH_URLS } from "@/src/config/api.config";
 import React from "react";
 const SocialLogin = () => {
-    const handleLoginGoogle = (url) => {
-        window.location.href = url; // Gửi đến NestJS
+    const handleLogin = (url) => {
+        window.location.href = url;
     };
     const socialBtns = [
         {
@@ -26,7 +26,8 @@ const SocialLogin = () => {
                 <React.Fragment key={index}>
                     <button
                         className={btn.className}
-                        onClick={() => handleLoginGoogle(btn.link)}
+                        type="button"
+                        onClick={() => handleLogin(btn.link)}
                     >
                         <span className={btn.iconClass} />
                         {btn.text}

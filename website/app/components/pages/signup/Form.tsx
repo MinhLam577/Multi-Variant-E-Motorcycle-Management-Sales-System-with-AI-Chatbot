@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import authAPI from "../../../../src/api/authAPI";
 
 import { useRouter } from "next/navigation";
-import { message, Spin } from "antd";
+import { ConfigProvider, message, Spin } from "antd";
 import { ApiResponse } from "@/types/api-response.type";
 import { getErrorMessage } from "@/utils/handle-error.utils";
 import { useState } from "react";
@@ -41,7 +41,6 @@ const Form = () => {
                 email: data.email,
                 username: data.firstName + " " + data.lastName,
             };
-
             const response: ApiResponse<any> = await authAPI.register(
                 dataRegister
             );
@@ -154,8 +153,39 @@ const Form = () => {
                     </div>
                 </div>
 
-                <button type="submit" className="btn btn-log btn-thm mt5">
-                    {isLoading ? <Spin size="small" /> : "Sign Up"}
+                <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="relative btn btn-log btn-thm mt5 inline-flex items-center justify-center gap-3 overflow-hidden  disabled:bg-[#e6aa1b] disabled:border-[#e6aa1b]"
+                >
+                    <ConfigProvider
+                        theme={{
+                            components: {
+                                Spin: {
+                                    colorPrimary: "black",
+                                },
+                            },
+                        }}
+                    >
+                        <Spin
+                            size="small"
+                            className={`absolute top-1/2 -translate-y-1/2 transition-all duration-300 ease-in-out ${
+                                isLoading
+                                    ? "left-1/3 -translate-x-1/2 opacity-100"
+                                    : "left-1/2 -translate-x-1/2 opacity-0"
+                            }
+                          `}
+                        />
+                    </ConfigProvider>
+
+                    <span
+                        className={`absolute transition-all duration-300 ${
+                            isLoading ? "translate-x-[30%]" : "translate-x-0"
+                        }
+                          `}
+                    >
+                        Sign Up
+                    </span>
                 </button>
             </form>
         </>
