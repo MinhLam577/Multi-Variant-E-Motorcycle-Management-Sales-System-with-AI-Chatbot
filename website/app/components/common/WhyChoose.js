@@ -34,6 +34,7 @@ const WhyChoose = () => {
                     data-aos="fade-up"
                     data-aos-delay={reason.delay}
                     key={index}
+                    suppressHydrationWarning
                 >
                     <div className="why_chose_us home7_style">
                         <div className={`icon ${reason.style}`}>

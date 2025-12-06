@@ -41,7 +41,7 @@ const CartTotal = ({ cartList }) => {
             <div className="ui_kit_button payment_widget_btn">
                 <button
                     type="button"
-                    disabled={!cartObservable.selectedItems?.length}
+                    disabled={cartObservable.selectedItems?.length === 0}
                     className={`btn btn-thm btn-block ${
                         !cartObservable.selectedItems?.length
                             ? "cursor-not-allowed"

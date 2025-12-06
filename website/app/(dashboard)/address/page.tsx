@@ -40,7 +40,7 @@ const Dashboard = () => {
             {/* End Main Header Nav For Mobile */}
 
             {/* Our Dashbord */}
-            <section className="our-dashbord dashbord bgc-f9">
+            <section className="our-dashbord dashbord">
                 <div className="container-fluid">
                     <div className="row">
                         <div className="col-xxl-10 offset-xxl-2 dashboard_grid_space">

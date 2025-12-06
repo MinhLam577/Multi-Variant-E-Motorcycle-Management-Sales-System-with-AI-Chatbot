@@ -9,6 +9,7 @@ import { globalFilterBlogData } from "@/src/stores/blog";
 import { paginationData } from "@/src/stores/order.store";
 import { filterEmptyFields } from "@/utils";
 import { formatDate } from "@/src/lib/utils";
+import { Skeleton } from "antd";
 const BlogList = observer(() => {
     const store = useStore();
     const blogStore = store.blogsObservable;
@@ -41,7 +42,6 @@ const BlogList = observer(() => {
                 ...blogStore.pagination,
             }),
             (filter) => {
-                // Cập nhật URL với các tham số mới
                 updateUrl(
                     filterEmptyFields({
                         ...filter,
@@ -62,7 +62,11 @@ const BlogList = observer(() => {
         };
     }, []);
     return (
-        <>
+        <Skeleton
+            active
+            paragraph={{ rows: 12, width: "100%" }}
+            loading={blogStore.loading}
+        >
             {blogStore?.data?.map((post) => (
                 <div
                     key={post.id}
@@ -116,7 +120,7 @@ const BlogList = observer(() => {
                     </div>
                 </div>
             ))}
-        </>
+        </Skeleton>
     );
 });
 

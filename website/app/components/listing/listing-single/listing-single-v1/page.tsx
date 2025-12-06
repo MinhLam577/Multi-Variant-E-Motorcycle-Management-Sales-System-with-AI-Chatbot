@@ -161,16 +161,12 @@ const ListingSingle = observer(() => {
                             {/* End Car Gallery */}
                             <div className="opening_hour_widgets p30 mt30">
                                 <div className="wrapper">
-                                    <div
-                                        className="nav nav-tabs col-lg-12"
-                                        role="tablist"
-                                    >
+                                    <div className="nav nav-tabs col-lg-12">
                                         <button
                                             className="nav-link active"
                                             id="nav-description-tab"
                                             data-bs-toggle="tab"
                                             data-bs-target="#nav-description"
-                                            role="tab"
                                             aria-controls="nav-description"
                                             aria-selected="true"
                                         >
@@ -181,7 +177,6 @@ const ListingSingle = observer(() => {
                                             id="nav-location-tab"
                                             data-bs-toggle="tab"
                                             data-bs-target="#nav-location"
-                                            role="tab"
                                             aria-controls="nav-location"
                                             aria-selected="false"
                                         >
@@ -192,7 +187,6 @@ const ListingSingle = observer(() => {
                                             id="nav-review-tab"
                                             data-bs-toggle="tab"
                                             data-bs-target="#nav-review"
-                                            role="tab"
                                             aria-controls="nav-review"
                                             aria-selected="false"
                                         >
@@ -207,7 +201,6 @@ const ListingSingle = observer(() => {
                                         <div
                                             className="tab-pane fade show active"
                                             id="nav-description"
-                                            role="tabpanel"
                                             aria-labelledby="nav-description-tab"
                                         >
                                             <div className="listing_single_description bdr_none pl0 pr0">
@@ -229,7 +222,6 @@ const ListingSingle = observer(() => {
                                         <div
                                             className="tab-pane fade"
                                             id="nav-features"
-                                            role="tabpanel"
                                             aria-labelledby="nav-features-tab"
                                         >
                                             <div className="user_profile_service bdr_none pl0 pr0">
@@ -253,7 +245,6 @@ const ListingSingle = observer(() => {
                                         <div
                                             className="tab-pane fade"
                                             id="nav-location"
-                                            role="tabpanel"
                                             aria-labelledby="nav-location-tab"
                                         >
                                             <div className="user_profile_location bdr_none pl0 pr0">
@@ -347,9 +338,9 @@ const ListingSingle = observer(() => {
                                 </div>
                                 <div className="space-y-6 my-3">
                                     <OptionSelector
-                                        optionValues={storeProduct?.data?.optionValues?.optionValues?.map(
-                                            (s) => null
-                                        )}
+                                        optionValues={
+                                            storeProduct?.data?.optionValues
+                                        }
                                         onSelectChange={handleOptionSelect}
                                         setAllSelected={setAllSelected}
                                     />

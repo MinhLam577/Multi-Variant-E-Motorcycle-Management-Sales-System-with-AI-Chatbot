@@ -8,6 +8,7 @@ import { Empty } from "antd";
 import { formatCurrency } from "@/utils";
 import QuantityExceedModal from "../../modal/modal.quantity.Cart_DetailProduct";
 import { useStore } from "@/context/store.context";
+import { createPortal } from "react-dom";
 const CartItems = ({
     cartListObserver,
     selectedItems,
@@ -30,7 +31,7 @@ const CartItems = ({
     };
 
     const handleDeleteItem = async (itemId) => {
-        await cartObservable.deleteCartByID(itemId);
+        await cartObservable.deleteCartItemByID(itemId);
         if (cartObservable.status == 200) {
             message.success(cartObservable.successMsg);
         } else {
@@ -80,7 +81,6 @@ const CartItems = ({
     }, [cartListObserver]);
 
     const handleCheckboxChange = async (itemId) => {
-        // 🟢 Lấy giá trị cũ từ observable , giá trị đã chọn trước đó
         const prevSelected = cartObservable.getSelectedItems;
         let newSelected;
         if (prevSelected.includes(itemId)) {
@@ -189,12 +189,16 @@ const CartItems = ({
                 </tr>
             ))}
 
-            <QuantityExceedModal
-                handleOk={handleOk}
-                isModalOpen={isModalOpen}
-                type="cart"
-                quantity_Limit={quantity_Limit}
-            />
+            {isModalOpen &&
+                createPortal(
+                    <QuantityExceedModal
+                        handleOk={handleOk}
+                        isModalOpen={isModalOpen}
+                        type="cart"
+                        quantity_Limit={quantity_Limit}
+                    />,
+                    document.body
+                )}
         </>
     );
 };

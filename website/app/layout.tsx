@@ -10,6 +10,7 @@ import ThemeProvider from "@/context/theme.context";
 import { StoreProvider } from "@/context/store.context";
 import "./globals.css";
 import Chatbox from "./(pages)/chatbot/page";
+import AuthProvider from "@/context/auth.context";
 if (typeof window !== "undefined") {
     import("bootstrap");
 }
@@ -27,15 +28,17 @@ export default function RootLayout({ children }) {
     }, []);
 
     return (
-        <html lang="en">
+        <html lang="en" suppressHydrationWarning={true}>
             <ThemeProvider>
-                <Body>
-                    <StoreProvider>
-                        <Suspense>{children}</Suspense>
-                        <ScrollToTop />
-                        <Chatbox />
-                    </StoreProvider>
-                </Body>
+                <StoreProvider>
+                    <AuthProvider>
+                        <Body>
+                            <Suspense>{children}</Suspense>
+                            <ScrollToTop />
+                            <Chatbox />
+                        </Body>
+                    </AuthProvider>
+                </StoreProvider>
             </ThemeProvider>
         </html>
     );

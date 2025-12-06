@@ -65,12 +65,8 @@ const FeaturedFilterListing = observer(() => {
                                                             ?.price_sold
                                                     )}
                                                 </h5>
-                                                <h6 className="title">
-                                                    <Link
-                                                        href={`/listing-single-v1/${listing.id}`}
-                                                    >
-                                                        {listing.title}
-                                                    </Link>
+                                                <h6 className="title line-clamp-2">
+                                                    {listing.title}
                                                 </h6>
                                             </div>
                                         </div>

@@ -18,10 +18,6 @@ export enum EnumProductType {
     CARS = "Xe hơi",
     MOTOBIKES = "Xe máy điện",
 }
-
-// interface OptionGroup {
-//     option_value_ids: string[];
-// }
 export enum EnumProductStoreLabel {
     CAR = "Xe hơi",
     MOTORBIKE = "Xe máy điện",
@@ -268,6 +264,7 @@ class ProductObservable {
 
     *getBestSellingProducts(type: EnumProductStore) {
         try {
+            this.loading = true;
             const response: ResponsePromise =
                 yield ProductAPI.getBestSellingProducts(type);
             const { data, status, message } = response;
@@ -286,6 +283,8 @@ class ProductObservable {
             console.error(e);
             this.setStatusMessage(0, e?.message, "");
             throw e;
+        } finally {
+            this.loading = false;
         }
     }
 
@@ -293,6 +292,7 @@ class ProductObservable {
     *getListProductHome(queryString) {
         const queryString1 = new URLSearchParams(queryString).toString();
         try {
+            this.loading = true;
             const response: ResponsePromise = yield ProductAPI.getListProduct(
                 queryString1
             );
@@ -300,7 +300,6 @@ class ProductObservable {
             const resData = data?.data;
             if (SUCCESS_STATUSES.includes(status)) {
                 this.data.cars_motobikes.data = resData;
-
                 this.setStatusMessage(200, "", message);
             } else {
                 this.setStatusMessage(0, message, "");
@@ -308,13 +307,15 @@ class ProductObservable {
         } catch (e: any) {
             console.error(e);
             this.setStatusMessage(0, e?.message, "");
+        } finally {
+            this.loading = false;
         }
     }
 
-    //
     *getListProductBuyMany(queryString, type) {
         const queryString1 = new URLSearchParams(queryString).toString();
         try {
+            this.loading = true;
             const response: ResponsePromise = yield ProductAPI.getListProduct(
                 queryString1
             );
@@ -333,11 +334,14 @@ class ProductObservable {
         } catch (e: any) {
             console.error(e);
             this.setStatusMessage(0, e?.message, "");
+        } finally {
+            this.loading = false;
         }
     }
 
     *getDetailProductByID(id) {
         try {
+            this.loading = true;
             const response: ResponsePromise = yield ProductAPI.getDetailProduct(
                 id
             );
@@ -383,28 +387,14 @@ class ProductObservable {
         } catch (e: any) {
             console.error(e);
             this.setStatusMessage(0, e?.message, "");
+        } finally {
+            this.loading = false;
         }
     }
 
-    //     {
-    //   "optionValues": [
-    //     {
-    //       "option_value_ids": [
-    //         "ce74692b-f3d5-4cb5-8131-4ea892d17ddc",
-    //         "8f5b8356-8f7f-45b1-83e2-eb5568fa4eb9"
-    //       ]
-    //     },
-    //     {
-    //       "option_value_ids": [
-    //         "7e963a8a-4d82-4fa2-a5a0-783884c1a345",
-    // "ec30fb2f-ff38-4469-b489-abae0397d0ae"
-    //       ]
-    //     }
-    //   ]
-    // }
-
     *getDetailSKU_ByOptionValue(id) {
         try {
+            this.loading = true;
             const response: ResponsePromise = yield ProductAPI.getDetailSKU(id);
             const { data, status, message } = response;
             const resData = data;
@@ -417,17 +407,19 @@ class ProductObservable {
         } catch (e: any) {
             console.error(e);
             this.setStatusMessage(0, e?.message, "");
+        } finally {
+            this.loading = false;
         }
     }
     *GetSkusByOptionValueIdsNoneLogin(optionValuesPayload: {
         optionValues: { option_value_ids: string[] }[];
     }) {
         try {
+            this.loading = true;
             const { data, status, message } =
                 yield SkusAPI.GetSkusByOptionValueIdsNoneLogin(
                     optionValuesPayload
                 );
-            console.log("dataSKU_None_Login: ", data);
             if (SUCCESS_STATUSES.includes(status)) {
                 this.data.dataSKU = data[0];
                 this.setStatusMessage(200, "", message);
@@ -437,6 +429,8 @@ class ProductObservable {
         } catch (error) {
             console.error("Lỗi khi gọi GetSkusByOptionValueIds:", error);
             this.setStatusMessage(0, "Lỗi gọi API", "");
+        } finally {
+            this.loading = false;
         }
     }
 

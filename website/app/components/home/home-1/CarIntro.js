@@ -22,7 +22,6 @@ const CarIntro = () => {
                             <div className="video_popup_icon">
                                 <button
                                     className="video_popup_btn popup-img popup-youtube"
-                                    role="button"
                                     onClick={() => setOpen(true)}
                                 >
                                     <span className="flaticon-play" />

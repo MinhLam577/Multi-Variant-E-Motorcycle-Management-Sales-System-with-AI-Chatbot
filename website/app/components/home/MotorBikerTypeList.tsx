@@ -1,20 +1,10 @@
 "use client";
-import listingsData from "@/data/listingMotor";
 import { useStore } from "@/context/store.context";
-import { toCurrency } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { observer } from "mobx-react-lite";
-// const filterOptions = [
-//   { value: "*", name: "Tất cả" },
-//   { value: "new", name: "Xe điện Vinfast" },
-//   { value: "car", name: "Xe YADEKA" },
-//   { value: "car", name: "Xe YAKA" },
-//   { value: "car", name: "Xe EVGO" },
-//   { value: "car", name: "Xe điện thời trang" },
-//   { value: "car-specialized", name: "Xe điện học sinh" },
-// ];
+
 const EnumProductType = {
     CARS: "car",
     MOTOBIKES: "motorbike",

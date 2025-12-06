@@ -6,16 +6,12 @@ const ListingTabContent = () => {
             <div className="row">
                 <div className="col-lg-12">
                     {/* <!-- Nav tabs --> */}
-                    <div
-                        className="nav nav-tabs justify-content-start"
-                        role="tablist"
-                    >
+                    <div className="nav nav-tabs justify-content-start">
                         <button
                             className="nav-link active"
                             id="nav-home-tab"
                             data-bs-toggle="tab"
                             data-bs-target="#nav-home"
-                            role="tab"
                             aria-controls="nav-home"
                             aria-selected="true"
                         >
@@ -26,7 +22,6 @@ const ListingTabContent = () => {
                             id="nav-shopping-tab"
                             data-bs-toggle="tab"
                             data-bs-target="#nav-shopping"
-                            role="tab"
                             aria-controls="nav-shopping"
                             aria-selected="false"
                         >
@@ -37,7 +32,6 @@ const ListingTabContent = () => {
                             id="nav-hotels-tab"
                             data-bs-toggle="tab"
                             data-bs-target="#nav-hotels"
-                            role="tab"
                             aria-controls="nav-hotels"
                             aria-selected="false"
                         >
@@ -52,7 +46,6 @@ const ListingTabContent = () => {
                         <div
                             className="tab-pane fade show active"
                             id="nav-home"
-                            role="tabpanel"
                             aria-labelledby="nav-home-tab"
                         >
                             <ListingContent />
@@ -62,7 +55,6 @@ const ListingTabContent = () => {
                         <div
                             className="tab-pane fade"
                             id="nav-shopping"
-                            role="tabpanel"
                             aria-labelledby="nav-shopping-tab"
                         >
                             <ListingContent />
@@ -72,7 +64,6 @@ const ListingTabContent = () => {
                         <div
                             className="tab-pane fade"
                             id="nav-hotels"
-                            role="tabpanel"
                             aria-labelledby="nav-hotels-tab"
                         >
                             <ListingContent />

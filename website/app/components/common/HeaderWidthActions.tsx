@@ -5,7 +5,7 @@ import { makeAutoObservable, reaction } from "mobx";
 import { observer } from "mobx-react-lite";
 import Image from "next/image";
 import Link from "next/link";
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 
 class HeaderWithActionsStore {
     type: EnumProductStore = EnumProductStore.CAR;
@@ -28,7 +28,6 @@ export const headerWithActionsStore = new HeaderWithActionsStore();
 
 export const HeaderWithActions = observer(() => {
     const { onChangeTheme, theme } = useTheme();
-
     const handleLeftClick = () => {
         onChangeTheme("primary-car");
         headerWithActionsStore.setType(EnumProductStore.CAR);
@@ -75,10 +74,9 @@ export const HeaderWithActions = observer(() => {
                         theme === "primary-car" ? `var(--${theme})` : null,
                 }}
                 className="left-content"
-                onClick={handleLeftClick}
                 type="button"
             >
-                <Link href="/">
+                <Link href="/" onClick={handleLeftClick}>
                     <Image
                         alt="oto"
                         src="/images/icon/car.png"
@@ -104,13 +102,12 @@ export const HeaderWithActions = observer(() => {
             {/* <!-- Right Content --> */}
             <button
                 className="right-content"
-                onClick={handleRightClick}
                 style={{
                     backgroundColor:
                         theme === "primary-bike" ? `var(--${theme})` : null,
                 }}
             >
-                <Link href="/home-motorbike">
+                <Link href="/home-motorbike" onClick={handleRightClick}>
                     <Image
                         alt="motor"
                         src={"/images/icon/scooter.png"}

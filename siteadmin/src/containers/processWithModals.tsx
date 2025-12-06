@@ -19,20 +19,6 @@ export const ProcessModalName = {
     ConfirmUpdateStores: "UpdateStore",
 };
 
-// const confirmModal = (
-//     title = "Xác nhận",
-//     content = "Bạn chắc chắn muốn thực hiện hành động này?"
-// ) => {
-//     return (okCallback?: () => void, cancelCallback?: () => void) => {
-//         Modal.confirm({
-//             title,
-//             content,
-//             onOk: okCallback,
-//             onCancel: cancelCallback,
-//         });
-//     };
-// };
-
 export const confirmModal = (
     title: string,
     content: string,
@@ -66,83 +52,6 @@ interface ProcessWithModalsOptions {
     onCancel?: () => void;
 }
 
-// export const processWithModals = ({
-//     modalName,
-//     title,
-//     content,
-//     onOk,
-//     onCancel,
-// }: ProcessWithModalsOptions) => {
-//     switch (modalName) {
-//         case ProcessModalName.ConfirmLogout:
-//             return confirmModal("Xác nhận", "Bạn chắc chắn muốn đăng xuất?");
-//         case ProcessModalName.ConfirmSaveEditing:
-//             return confirmModal(
-//                 "Xác nhận",
-//                 "Bạn chắc chắn muốn lưu thông tin đang chỉnh sửa?"
-//             );
-//         case ProcessModalName.ConfirmCancelEditing:
-//             return confirmModal(
-//                 "Xác nhận",
-//                 "Bạn chắc chắn muốn hủy thông tin đang chỉnh sửa?"
-//             );
-//         case ProcessModalName.ConfirmChangePassword:
-//             return confirmModal(
-//                 "Xác nhận",
-//                 "Bạn chăc chắn muốn thay đổi mật khẩu?"
-//             );
-//         case ProcessModalName.ConfirmCreateUser:
-//             return confirmModal(
-//                 "Xác nhận",
-//                 "Bạn chắc chắn muốn tạo người dùng với các thông tin này?"
-//             );
-//         case ProcessModalName.ConfirmUpdateUser:
-//             return confirmModal(
-//                 "Xác nhận",
-//                 "Bạn chắc chắn muốn thay đổi thông tin của người dùng này?"
-//             );
-//         case ProcessModalName.ConfirmCreateNews:
-//             return confirmModal(
-//                 "Xác nhận",
-//                 "Bạn chắc chắn muốn tạo tin tức với các thông tin này?"
-//             );
-//         case ProcessModalName.ConfirmUpdateNews:
-//             return confirmModal(
-//                 "Xác nhận",
-//                 "Bạn chắc chắn muốn cập nhật tin tức này?"
-//             );
-//         case ProcessModalName.ConfirmCreateEvent:
-//             return confirmModal(
-//                 "Xác nhận",
-//                 "Bạn chắc chắn muốn tạo khóa học với các thông tin này?"
-//             );
-//         case ProcessModalName.ConfirmUpdateEvent:
-//             return confirmModal(
-//                 "Xác nhận",
-//                 "Bạn chắc chắn muốn cập nhật khóa học này?"
-//             );
-//         case ProcessModalName.ConfirmAddUsersToEvent:
-//             return confirmModal(
-//                 "Xác nhận",
-//                 "Bạn chắc chắn muốn thêm những người dùng này vào khóa học?"
-//             );
-//         case ProcessModalName.ConfirmAddModerators:
-//             return confirmModal(
-//                 "Xác nhận",
-//                 "Bạn chắc chắn muốn thêm những người dùng này vào vai trò Cộng tác viên?"
-//             );
-//         case ProcessModalName.ConfirmSendNotification:
-//             return confirmModal(
-//                 "Xác nhận",
-//                 "Bạn chắc chắn muốn gửi thông báo này cho những người dùng đã chọn?"
-//             );
-//         case ProcessModalName.ConfirmCustomContent:
-//             return (title, content) => confirmModal(title, content);
-//         default:
-//             return informModal();
-//     }
-// };
-
 export const processWithModals = ({
     modalName,
     title,
@@ -151,6 +60,7 @@ export const processWithModals = ({
     onCancel,
 }: ProcessWithModalsOptions): void => {
     switch (modalName) {
+        // ==== HỆ THỐNG ====
         case ProcessModalName.ConfirmLogout:
             return confirmModal(
                 "Xác nhận",
@@ -170,7 +80,7 @@ export const processWithModals = ({
         case ProcessModalName.ConfirmCancelEditing:
             return confirmModal(
                 "Xác nhận",
-                "Bạn chắc chắn muốn hủy thông tin đang chỉnh sửa?",
+                "Bạn chắc chắn muốn hủy thay đổi?",
                 onOk,
                 onCancel
             );
@@ -183,6 +93,100 @@ export const processWithModals = ({
                 onCancel
             );
 
+        // ==== USER ====
+        case ProcessModalName.ConfirmCreateUser:
+            return confirmModal(
+                "Tạo người dùng",
+                "Bạn chắc chắn muốn tạo người dùng mới?",
+                onOk,
+                onCancel
+            );
+
+        case ProcessModalName.ConfirmUpdateUser:
+            return confirmModal(
+                "Cập nhật người dùng",
+                "Bạn chắc chắn muốn cập nhật thông tin người dùng?",
+                onOk,
+                onCancel
+            );
+
+        // ==== NEWS ====
+        case ProcessModalName.ConfirmCreateNews:
+            return confirmModal(
+                "Tạo bài viết",
+                "Bạn chắc chắn muốn tạo bài viết mới?",
+                onOk,
+                onCancel
+            );
+
+        case ProcessModalName.ConfirmUpdateNews:
+            return confirmModal(
+                "Cập nhật bài viết",
+                "Bạn chắc chắn muốn cập nhật bài viết?",
+                onOk,
+                onCancel
+            );
+
+        // ==== EVENT ====
+        case ProcessModalName.ConfirmCreateEvent:
+            return confirmModal(
+                "Tạo sự kiện",
+                "Bạn chắc chắn muốn tạo sự kiện mới?",
+                onOk,
+                onCancel
+            );
+
+        case ProcessModalName.ConfirmUpdateEvent:
+            return confirmModal(
+                "Cập nhật sự kiện",
+                "Bạn chắc chắn muốn cập nhật sự kiện?",
+                onOk,
+                onCancel
+            );
+
+        case ProcessModalName.ConfirmAddUsersToEvent:
+            return confirmModal(
+                "Thêm người dùng",
+                "Bạn chắc chắn muốn thêm người dùng vào sự kiện?",
+                onOk,
+                onCancel
+            );
+
+        case ProcessModalName.ConfirmAddModerators:
+            return confirmModal(
+                "Thêm quản trị viên",
+                "Bạn chắc chắn muốn thêm quản trị viên cho sự kiện?",
+                onOk,
+                onCancel
+            );
+
+        // ==== NOTIFICATION ====
+        case ProcessModalName.ConfirmSendNotification:
+            return confirmModal(
+                "Gửi thông báo",
+                "Bạn chắc chắn muốn gửi thông báo này?",
+                onOk,
+                onCancel
+            );
+
+        // ==== STORES ====
+        case ProcessModalName.ConfirmCreateStores:
+            return confirmModal(
+                "Tạo cửa hàng",
+                "Bạn chắc chắn muốn tạo cửa hàng mới?",
+                onOk,
+                onCancel
+            );
+
+        case ProcessModalName.ConfirmUpdateStores:
+            return confirmModal(
+                "Cập nhật cửa hàng",
+                "Bạn chắc chắn muốn cập nhật thông tin cửa hàng?",
+                onOk,
+                onCancel
+            );
+
+        // ==== CUSTOM ====
         case ProcessModalName.ConfirmCustomContent:
             return confirmModal(
                 title ?? "Xác nhận",
@@ -191,8 +195,11 @@ export const processWithModals = ({
                 onCancel
             );
 
+        // ==== FALLBACK ====
         default:
-            informModal();
-            break;
+            return informModal(
+                "Thông báo",
+                "Không tìm thấy loại modal phù hợp"
+            )(onCancel);
     }
 };

@@ -2,22 +2,13 @@
 import { useStore } from "@/context/store.context";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { observer } from "mobx-react-lite";
 import { EnumProductStore, globalFilterType } from "@/src/stores/productStore";
-import { filterEmptyFields } from "@/utils";
 import { paginationData } from "@/src/stores/order.store";
 import { Skeleton } from "antd";
 
 const MotorFeaturedFilterListing = observer(() => {
-    const [queryObject, setQueryObject] = useState<globalFilterType>({
-        brandID: undefined,
-        categoryID: undefined,
-        search: undefined,
-        price_min: undefined,
-        price_max: undefined,
-        type: EnumProductStore.MOTORBIKE,
-    });
     const { productObservable } = useStore();
     const fetchData = async (
         query:
@@ -34,36 +25,19 @@ const MotorFeaturedFilterListing = observer(() => {
         }
     };
 
-    // Cập nhật URL khi người dùng thay đổi lựa chọn
-    const updateUrl = (newParams: globalFilterType) => {
-        // Lấy các tham số hiện tại từ URL
-        const newQueryParams = new URLSearchParams(
-            Object.entries(newParams).reduce((acc, [key, value]) => {
-                acc[key] = String(value);
-                return acc;
-            }, {} as Record<string, string>)
-        );
-        window.history.replaceState(null, "", `?${newQueryParams.toString()}`);
-    };
-
-    const handleClearAllFilters = () => {
-        setQueryObject({
-            brandID: undefined,
-            categoryID: undefined,
-            search: undefined,
-            price_min: undefined,
-            price_max: undefined,
-            type: queryObject.type,
-        });
-    };
-
     useEffect(() => {
-        if (Object.keys(queryObject).length > 0) {
-            const searchObject = filterEmptyFields(queryObject);
-            updateUrl(searchObject);
-            fetchData(searchObject, queryObject.type);
-        }
-    }, [queryObject]);
+        fetchData(
+            {
+                brandID: undefined,
+                categoryID: undefined,
+                search: undefined,
+                price_min: undefined,
+                price_max: undefined,
+                type: EnumProductStore.MOTORBIKE,
+            },
+            EnumProductStore.MOTORBIKE
+        );
+    }, []);
 
     return (
         <Skeleton

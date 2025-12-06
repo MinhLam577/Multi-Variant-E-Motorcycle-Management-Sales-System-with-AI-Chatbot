@@ -96,7 +96,7 @@ const NewsDetail = ({ mode }) => {
     };
 
     useEffect(() => {
-        fetchBlogDetail();
+        if (idblog) fetchBlogDetail();
     }, [idblog]);
 
     useEffect(() => {}, [initForm]);
@@ -169,20 +169,6 @@ const NewsDetail = ({ mode }) => {
         }
     };
 
-    const prepareForm = (loadedData) => {
-        if (mode === NewsDetailMode.View) {
-            form.setFieldsValue({
-                ...loadedData,
-            });
-        } else if (mode === NewsDetailMode.Add) {
-            form.resetFields();
-        } else if (mode === NewsDetailMode.Edit) {
-            form.setFieldsValue({
-                ...loadedData,
-            });
-        }
-    };
-
     const isReadOnly = () => {
         if (mode === NewsDetailMode.Add) {
             return false;
@@ -228,8 +214,9 @@ const NewsDetail = ({ mode }) => {
             let responseUploadThumbnail: string[] | File = [];
 
             if (thumbnail instanceof File)
-                responseUploadThumbnail =
-                    await handleUploadFileUtils(thumbnail);
+                responseUploadThumbnail = await handleUploadFileUtils(
+                    thumbnail
+                );
             else {
                 responseUploadThumbnail = thumbnail?.fileList?.map(
                     (f: UploadFile) => f?.url
@@ -237,7 +224,7 @@ const NewsDetail = ({ mode }) => {
             }
             const dto = {
                 ...data,
-                thumbnail: responseUploadThumbnail[0] || "",
+                thumbnail: responseUploadThumbnail?.[0] || "",
                 blogCategoryId: idblogcategory,
             };
 
@@ -435,31 +422,35 @@ const NewsDetail = ({ mode }) => {
                             placeholder="vd: blog-slug"
                         />
                     </Form.Item>
-                    <Form.Item
-                        label="Nội dung"
-                        name="content"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Hãy nhập nội dung tin tức!",
-                            },
-                        ]}
-                    >
-                        <div className="w-full h-[25rem] overflow-hidden border border-solid border-[var(--border-gray)] rounded-md editor-container">
-                            <CustomizeEditor
-                                defaultForm={form}
-                                onChange={handleOnChangeEditor}
-                                value={
-                                    form.getFieldValue("content")
-                                        ? form.getFieldValue("content")
-                                        : ""
-                                }
-                                className="w-full h-full"
-                                folder="Blog"
-                                fieldFormName="content"
-                            />
+                    <div className="flex flex-col gap-2 mb-4">
+                        <span className="text-sm text-gray-700">Nội dung</span>
+                        <div className="w-full h-[25rem] overflow-y-auto border border-solid border-[var(--border-gray)] rounded-md editor-container">
+                            <Form.Item
+                                name="content"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: "Hãy nhập nội dung tin tức!",
+                                    },
+                                ]}
+                            >
+                                <CustomizeEditor
+                                    defaultForm={form}
+                                    onChange={handleOnChangeEditor}
+                                    value={
+                                        form.getFieldValue("content")
+                                            ? form.getFieldValue("content")
+                                            : ""
+                                    }
+                                    className="w-full h-full"
+                                    folder="Blog"
+                                    fieldFormName="content"
+                                    theme="snow"
+                                />
+                            </Form.Item>
                         </div>
-                    </Form.Item>
+                    </div>
+
                     <>
                         <Button onClick={handleCancel}>
                             {getButtonCancelText()}

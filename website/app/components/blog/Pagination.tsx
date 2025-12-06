@@ -101,7 +101,6 @@ const Pagination = () => {
     for (let i = 1; i <= totalPages; i++) {
         pages.push(
             <li
-                role="button"
                 key={i}
                 className={`page-item ${i === currentPage ? "active" : ""}`}
                 onClick={() => handleClick(i)}

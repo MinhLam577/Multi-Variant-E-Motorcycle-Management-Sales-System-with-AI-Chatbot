@@ -4,8 +4,6 @@ import { useStore } from "@/context/store.context";
 import { useEffect } from "react";
 
 const PaymentWidget = observer(() => {
-    // const [selectedPayment, setSelectedPayment] = useState("");
-
     const store = useStore();
     const storePayment = store.paymentMethodObservable;
     // Set mặc định là COD nếu có
@@ -44,12 +42,8 @@ const PaymentWidget = observer(() => {
 
                 <div className="bt_details">
                     <p data-placeholder="Enter your payment reference">
-                        Quý khách có thể thanh toán bằng **chuyển khoản ngân
-                        hàng** hoặc **tiền mặt khi nhận hàng**.
-                        <br></br>
-                        Nếu chọn thanh toán tiền mặt, quý khách vui lòng thanh
-                        toán trực tiếp cho nhân viên giao hàng khi nhận sản
-                        phẩm.
+                        Quý khách có thể thanh toán bằng *chuyển khoản ngân
+                        hàng* hoặc *tiền mặt khi nhận hàng*.
                     </p>
                 </div>
                 {storePayment?.data.payments?.map((element, index) => (
@@ -74,8 +68,6 @@ const PaymentWidget = observer(() => {
                         </label>
                     </div>
                 ))}
-
-                {/* End form-check */}
 
                 {/* End form-check */}
             </div>
