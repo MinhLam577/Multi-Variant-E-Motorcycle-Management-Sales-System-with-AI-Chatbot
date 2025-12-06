@@ -33,3 +33,15 @@ jobs:
               env:
                   NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
                   NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+            - name: Delete old preview deploys
+              run: |
+                  echo "🔍 Fetching old preview deploys..."
+                  PREV_DEPLOYS=$(netlify api listSiteDeploys -d '{"site_id":"'$NETLIFY_SITE_ID'"}' | jq -r '.[] | select(.context=="deploy-preview") | .id')
+                  for ID in $PREV_DEPLOYS; do
+                    echo "🗑️  Deleting preview deploy $ID"
+                    netlify api deleteDeploy -d '{"deploy_id":"'$ID'"}' || true
+                  done
+            - name: Notify Success
+              run: |
+                  echo "✅ Production deployed successfully: ${{ steps.netlify_deploy.outputs.url }}"
