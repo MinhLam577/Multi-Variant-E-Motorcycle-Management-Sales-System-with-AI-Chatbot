@@ -50,21 +50,13 @@ const CarItems: React.FC<ICarItemsProps> = ({ data, queryObject }) => {
                     >
                         {/* Kiểm tra kiểu sản phẩm và thay đổi đường dẫn */}
                         <Link
-                            href={
-                                listing.products.type === "car"
-                                    ? `/listing-single-v1/${listing.products.id}`
-                                    : `/listing-single-v2/${listing.products.id}`
-                            }
+                            href={`/listing-single-v2/${listing.products.id}`}
                         >
                             <div className="car-listing">
                                 <div className="thumb">
                                     {listing.products?.id && (
                                         <Link
-                                            href={
-                                                listing.products.type === "car"
-                                                    ? `/listing-single-v1/${listing.products.id}`
-                                                    : `/listing-single-v2/${listing.products.id}`
-                                            }
+                                            href={`/listing-single-v2/${listing.products.id}`}
                                         >
                                             <Image
                                                 width={284}
@@ -119,12 +111,7 @@ const CarItems: React.FC<ICarItemsProps> = ({ data, queryObject }) => {
                                             <h6 className="title text-base font-medium text-gray-800 hover:text-blue-600 transition line-clamp-2 flex-grow h-12">
                                                 {listing.products?.id && (
                                                     <Link
-                                                        href={
-                                                            listing.products
-                                                                .type === "car"
-                                                                ? `/listing-single-v1/${listing.products.id}`
-                                                                : `/listing-single-v2/${listing.products.id}`
-                                                        }
+                                                        href={`/listing-single-v2/${listing.products.id}`}
                                                     >
                                                         {listing.products.title}
                                                     </Link>

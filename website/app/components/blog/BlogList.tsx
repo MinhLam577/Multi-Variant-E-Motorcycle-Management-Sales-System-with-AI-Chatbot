@@ -93,7 +93,7 @@ const BlogList = observer(() => {
                                 </span>
                                 <span className="flex items-center gap-1">
                                     <span className="flaticon-chat" />
-                                    {20} Comments
+                                    {0} Comments
                                 </span>
                                 <span className="flex items-center gap-1">
                                     <span className="flaticon-calendar-1" />

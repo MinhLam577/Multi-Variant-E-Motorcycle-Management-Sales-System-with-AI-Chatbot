@@ -1,5 +1,4 @@
 import Footer from "@/app/components/common/Footer";
-import { HeaderWithActions } from "@/app/components/common/HeaderWidthActions";
 import LoginSignupModal from "@/app/components/common/login-signup";
 import MobileMenu from "@/app/components/common/MobileMenu";
 import Partner from "@/app/components/common/Partner";
@@ -11,15 +10,14 @@ import MotorHero from "@/app/components/home/MotorHero";
 import SaleBanner from "@/app/components/home/SaleBanner";
 import Link from "next/link";
 export const metadata = {
-    title: "minhdeptrai.site | Mua Bán Xe Hơi Uy Tín & Chất Lượng",
-    description: `minhdeptrai.site - Địa chỉ uy tín chuyên cung cấp các dòng xe hơi chất lượng cao, dịch vụ chăm sóc khách hàng chuyên nghiệp, giá cả cạnh tranh.`,
+    title: "minhdeptrai.site | Mua Bán Xe Máy Điện Uy Tín & Chất Lượng",
+    description: `minhdeptrai.site - Địa chỉ uy tín chuyên cung cấp các dòng xe máy điện chất lượng cao, dịch vụ chăm sóc khách hàng chuyên nghiệp, giá cả cạnh tranh.`,
 };
 
 const HomeMotorbike = () => {
     return (
         <div className="wrapper ovh">
             {/* Main Header Nav */}
-            <HeaderWithActions />
             <Header />
             {/* End Main Header Nav */}
 

@@ -16,7 +16,7 @@ import { toCurrency } from "@/utils";
 import Link from "next/link";
 
 export const metadata = {
-    title: "minhdeptrai.site || Chuyên mua bán và trao đổi xe ô tô uy tín",
+    title: "minhdeptrai.site || Chuyên mua bán và trao đổi xe máy điện uy tín",
 };
 
 const ListingSingleV1 = () => {

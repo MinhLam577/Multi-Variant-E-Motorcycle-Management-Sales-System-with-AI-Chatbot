@@ -8,7 +8,7 @@ module.exports = [
         date: "25 tháng 4, 2023",
         title: "TERACO minhdeptrai.site ƯU ĐÃI 100% LỆ PHÍ TRƯỚC BẠ CÙNG NHIỀU QUÀ TẶNG HẤP DẪN KHI MUA XE TERACO TRONG THÁNG 09/2024",
         description:
-            "Nhằm hưởng ứng chương trình kích cầu của Nhà nước đối với các xe ô tô lắp ráp trong nước và hỗ trợ khách hàng dễ dàng hơn trong việc sở hữu xe, Teraco minhdeptrai.site tung ưu đãi đặc biệt cho các dòng xe TERACO trong tháng 09/2024.",
+            "Nhằm hưởng ứng chương trình kích cầu của Nhà nước đối với các xe máy điện lắp ráp trong nước và hỗ trợ khách hàng dễ dàng hơn trong việc sở hữu xe, Teraco minhdeptrai.site tung ưu đãi đặc biệt cho các dòng xe TERACO trong tháng 09/2024.",
     },
     {
         id: 2,

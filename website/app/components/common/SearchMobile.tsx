@@ -12,7 +12,7 @@ import { useState } from "react";
 import "@/public/css/search-mobile.css";
 const SearchMobile = observer(() => {
     const router = useRouter();
-    const [selectValue, setSelectValue] = useState(EnumProductStore.CAR);
+    const [selectValue, setSelectValue] = useState(EnumProductStore.MOTORBIKE);
     const handleSearch = (value: string) => {
         if (value.trim() === "") {
             return;

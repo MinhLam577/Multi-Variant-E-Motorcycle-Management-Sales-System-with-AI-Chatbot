@@ -191,17 +191,13 @@ export default class CartObservable {
             if (success_status.includes(status)) {
                 // ✅ Xóa selectedItems trong localStorage
                 localStorage.removeItem("selectedItems");
-                // lấy id cart
 
                 // ✅ Kiểm tra checkoutUrl trước khi dùng
                 if (data?.checkoutUrl) {
                     this.dataOrder.checkoutUrl = data.checkoutUrl;
-                    console.log("PayOS Checkout URL:", data.checkoutUrl);
                 } else {
                     console.warn("Không nhận được checkoutUrl từ PayOS.");
                 }
-                // this.dataOrder.checkoutUrl = data.checkoutUrl;
-                console.log(data.checkoutUrl);
                 this.status = status;
                 this.successMsg = message;
             } else {

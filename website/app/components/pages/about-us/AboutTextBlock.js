@@ -33,9 +33,9 @@ const AboutTextBlock = () => {
                     </h2>
                     <p className="mb30">
                         Công ty minhdeptrai.site Đà Nẵng là một trong những đại
-                        lý ô tô và xe máy điện hàng đầu tại Đà Nẵng. Chúng tôi
-                        chuyên bán các loại xe ô tô và xe máy điện từ các thương
-                        hiệu nổi tiếng trên thế giới.
+                        lý xe máy điện hàng đầu tại Đà Nẵng. Chúng tôi chuyên
+                        bán các loại xe máy điện từ các thương hiệu nổi tiếng
+                        trên thế giới.
                     </p>
                     <p className="mb50">
                         Với cam kết về chất lượng và dịch vụ, minhdeptrai.site

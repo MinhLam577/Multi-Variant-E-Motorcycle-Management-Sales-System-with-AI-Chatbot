@@ -2,12 +2,10 @@ import { BrandResponseType } from "@/types/brand.type";
 import { CategoryResponseType } from "./categories.type";
 import { DetailImportResponseType } from "./import.type";
 export enum EnumProductType {
-    CAR = "Xe hơi",
     MOTORBIKE = "Xe máy điện",
 }
 
 export enum EnumProductStore {
-    CAR = "car",
     MOTORBIKE = "motorbike",
 }
 

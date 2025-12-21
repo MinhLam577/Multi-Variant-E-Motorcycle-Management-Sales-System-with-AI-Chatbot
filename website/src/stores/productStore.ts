@@ -15,15 +15,12 @@ import SkusAPI from "../api/skus";
 import { OptionGroup } from "@/app/components/listing/listing-single/listing-single-v2/Select_OptionValue";
 
 export enum EnumProductType {
-    CARS = "Xe hơi",
     MOTOBIKES = "Xe máy điện",
 }
 export enum EnumProductStoreLabel {
-    CAR = "Xe hơi",
     MOTORBIKE = "Xe máy điện",
 }
 export enum EnumProductStore {
-    CAR = "car",
     MOTORBIKE = "motorbike",
 }
 
@@ -118,10 +115,6 @@ export type ProductsSortByResponseType = {
 };
 
 type ProductData = {
-    cars: {
-        data: ProductType | null;
-        bestSelling: ProductDataResponseType[] | null;
-    };
     motobikes: {
         data: ProductType | null;
         bestSelling: ProductDataResponseType[] | null;
@@ -150,10 +143,6 @@ class ProductObservable {
         pageSize: 10,
     };
     data: ProductData = {
-        cars: {
-            data: [],
-            bestSelling: [],
-        },
         motobikes: {
             data: [],
             bestSelling: [],
@@ -234,7 +223,7 @@ class ProductObservable {
             | (paginationData & globalFilterType)
             | paginationData
             | globalFilterType,
-        type: EnumProductStore = EnumProductStore.CAR
+        type: EnumProductStore = EnumProductStore.MOTORBIKE
     ) {
         try {
             this.loading = true;
@@ -245,11 +234,7 @@ class ProductObservable {
             const { data, status, message } = response;
             const resData = data?.data;
             if (SUCCESS_STATUSES.includes(status)) {
-                if (type === EnumProductStore.CAR) {
-                    this.data.cars.data = resData;
-                } else if (type === EnumProductStore.MOTORBIKE) {
-                    this.data.motobikes.data = resData;
-                }
+                this.data.motobikes.data = resData;
                 this.setStatusMessage(200, "", message);
             } else {
                 this.setStatusMessage(0, message, "");
@@ -269,11 +254,7 @@ class ProductObservable {
                 yield ProductAPI.getBestSellingProducts(type);
             const { data, status, message } = response;
             if (SUCCESS_STATUSES.includes(status)) {
-                if (type === EnumProductStore.CAR) {
-                    this.data.cars.bestSelling = data;
-                } else if (type === EnumProductStore.MOTORBIKE) {
-                    this.data.motobikes.bestSelling = data;
-                }
+                this.data.motobikes.bestSelling = data;
                 this.setStatusMessage(200, "", message);
             } else {
                 this.setStatusMessage(0, message, "");
@@ -322,11 +303,7 @@ class ProductObservable {
             const { data, status, message } = response;
             const resData = data?.data;
             if (SUCCESS_STATUSES.includes(status)) {
-                if (type === EnumProductType.CARS) {
-                    this.data.cars.data = resData;
-                } else if (type === EnumProductType.MOTOBIKES) {
-                    this.data.motobikes.data = resData;
-                }
+                this.data.motobikes.data = resData;
                 this.setStatusMessage(200, "", message);
             } else {
                 this.setStatusMessage(0, message, "");

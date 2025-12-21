@@ -11,7 +11,6 @@ import { EnumProductStore } from "@/src/stores/productStore";
 import { filterEmptyFields } from "@/utils";
 import { useStore } from "@/context/store.context";
 const EnumProductType1 = {
-    CARS: "Xe hơi",
     MOTOBIKES: "Xe máy điện",
 };
 
@@ -22,10 +21,10 @@ const ReleatedCar = observer(() => {
         search: undefined,
         price_min: undefined,
         price_max: undefined,
-        type: EnumProductStore.CAR,
+        type: EnumProductStore.MOTORBIKE,
     });
     const { productObservable } = useStore();
-    const fetchData = async (query, type = EnumProductStore.CAR) => {
+    const fetchData = async (query, type = EnumProductStore.MOTORBIKE) => {
         try {
             await productObservable.getListProduct(query, type);
         } catch (e) {

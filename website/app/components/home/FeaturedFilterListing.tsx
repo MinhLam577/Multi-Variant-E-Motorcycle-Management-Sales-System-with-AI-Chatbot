@@ -16,7 +16,7 @@ const FeaturedFilterListing = observer(() => {
         if (isFetchedRef.current) return;
         const fetchDataMotobike = async () => {
             await productObservable.getBestSellingProducts(
-                EnumProductStore.CAR
+                EnumProductStore.MOTORBIKE
             );
         };
         fetchDataMotobike();

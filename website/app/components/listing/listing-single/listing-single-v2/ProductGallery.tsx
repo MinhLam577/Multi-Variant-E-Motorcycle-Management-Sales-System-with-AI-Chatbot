@@ -44,7 +44,6 @@ const ProductGallery = observer(() => {
         setVideoId(id);
         setOpen(true);
     };
-    //console.log(storeProduct?.data?.resultOption_OptionValue?.[0].option_values);
 
     const optionValues =
         storeProduct?.data?.resultOption_OptionValue?.[0]?.option_values || [];
