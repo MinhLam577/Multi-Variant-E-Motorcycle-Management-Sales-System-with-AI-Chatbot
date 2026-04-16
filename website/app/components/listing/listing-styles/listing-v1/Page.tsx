@@ -19,7 +19,6 @@ import {
 } from "@/src/stores/productStore";
 import { filterEmptyFields } from "@/utils";
 import { observer } from "mobx-react-lite";
-import { headerWithActionsStore } from "@/app/components/common/HeaderWidthActions";
 
 const ListingV1 = observer(() => {
     const store = useStore();
@@ -66,7 +65,6 @@ const ListingV1 = observer(() => {
                 ...prev,
                 type: type,
             }));
-            headerWithActionsStore.setType(type);
         }
     }, [type]);
 
@@ -76,7 +74,7 @@ const ListingV1 = observer(() => {
             | (paginationData & globalFilterType)
             | paginationData
             | globalFilterType,
-        type: EnumProductStore = EnumProductStore.CAR
+        type: EnumProductStore = EnumProductStore.MOTORBIKE
     ) => {
         try {
             await storeProduct.getListProduct(query, type);
@@ -221,11 +219,7 @@ const ListingV1 = observer(() => {
                 <div className="container">
                     <div className="row">
                         <ListGridFilter
-                            data={
-                                type === EnumProductStore.CAR
-                                    ? storeProduct?.data?.cars.data
-                                    : storeProduct?.data?.motobikes.data || []
-                            }
+                            data={storeProduct?.data?.motobikes.data}
                             setQueryObject={setQueryObject}
                             queryObject={queryObject}
                         />
@@ -234,11 +228,7 @@ const ListingV1 = observer(() => {
 
                     <div className="row">
                         <CarItems
-                            data={
-                                type === EnumProductStore.CAR
-                                    ? storeProduct?.data?.cars.data
-                                    : storeProduct?.data?.motobikes.data || []
-                            }
+                            data={storeProduct?.data?.motobikes.data}
                             queryObject={queryObject}
                         />
                     </div>

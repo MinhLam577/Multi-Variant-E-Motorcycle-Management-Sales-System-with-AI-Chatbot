@@ -22,9 +22,12 @@ const Body = styled.body`
 
 export default function RootLayout({ children }) {
     useEffect(() => {
-        Aos.init({
-            duration: 1200,
-        });
+        // Only initialize AOS on client side to avoid hydration mismatch
+        if (typeof window !== "undefined") {
+            Aos.init({
+                duration: 1200,
+            });
+        }
     }, []);
 
     return (

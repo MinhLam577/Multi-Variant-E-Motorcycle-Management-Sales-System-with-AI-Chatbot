@@ -9,7 +9,7 @@ import HeaderTop from "../../components/common/HeaderTop";
 import MobileMenu from "../../components/common/MobileMenu";
 
 export const metadata = {
-    title: "Công ty minhdeptrai.site Đà Nẵng là một trong những đại lý ô tô và xe máy điện hàng đầu tại Đà Nẵng",
+    title: "Công ty minhdeptrai.site Đà Nẵng là một trong những đại lý xe máy điện hàng đầu tại Đà Nẵng",
 };
 
 const timelineData = [
@@ -80,8 +80,8 @@ const AboutUs = () => {
                                     </h2>
                                     <p className="subtitle mt-4">
                                         Công ty minhdeptrai.site Đà Nẵng là một
-                                        trong những đại lý ô tô và xe máy điện
-                                        hàng đầu tại Đà Nẵng.
+                                        trong những đại lý xe máy điện hàng đầu
+                                        tại Đà Nẵng.
                                     </p>
                                 </div>
                                 <div className="flex items-start justify-end md:ml-auto">

@@ -2,7 +2,7 @@
 
 ## 🚀 Giới Thiệu
 
-MotorCar-Management là một nền tảng quản lý và kinh doanh xe ô tô, xe máy điện đa biến thể, tích hợp các công nghệ hiện đại nhằm hỗ trợ doanh nghiệp tối ưu hóa hoạt động vận hành, bán hàng và chăm sóc khách hàng. Các tính năng chính bao gồm:
+MotorCar-Management là một nền tảng quản lý và kinh doanh xe máy điện đa biến thể, tích hợp các công nghệ hiện đại nhằm hỗ trợ doanh nghiệp tối ưu hóa hoạt động vận hành, bán hàng và chăm sóc khách hàng. Các tính năng chính bao gồm:
 
 -   Quản lý sản phẩm chi tiết: Hỗ trợ quản lý sản phẩm theo biến thể (màu sắc, tải trọng, công suất...).
 

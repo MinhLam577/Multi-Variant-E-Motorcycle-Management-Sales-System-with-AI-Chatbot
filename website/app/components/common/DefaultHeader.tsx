@@ -2,8 +2,6 @@
 import Link from "next/link";
 import MainMenu from "./MainMenu";
 import Image from "next/image";
-import { headerWithActionsStore } from "./HeaderWidthActions";
-import { EnumProductStore } from "@/src/stores/productStore";
 import PopoverCart from "../popover/cart";
 import { Badge } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
@@ -37,15 +35,7 @@ const DefaultHeader = () => {
                             <span className="icon-bar" />
                         </button>
                     </div>
-                    <Link
-                        href="/"
-                        onClick={() => {
-                            headerWithActionsStore.setType(
-                                EnumProductStore.CAR
-                            );
-                        }}
-                        className="navbar_brand float-start dn-md"
-                    >
+                    <Link href="/" className="navbar_brand float-start dn-md">
                         <Image
                             width={140}
                             height={45}

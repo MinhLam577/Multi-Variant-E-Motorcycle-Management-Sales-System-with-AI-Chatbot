@@ -1,9 +1,6 @@
 name: Deploy Admin App To Netlify
 
 on:
-    push:
-        branches:
-            - main
     pull_request:
         branches:
             - main

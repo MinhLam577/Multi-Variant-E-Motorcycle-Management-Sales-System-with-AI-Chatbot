@@ -48,7 +48,6 @@ export default function ModalChatBox() {
                     throw new Error(`HTTP error! status: ${response.status}`);
 
                 const data = await response.json();
-                console.log(data);
                 const botMessage: Message = {
                     type: "bot",
                     text: data.text || data.message || "",

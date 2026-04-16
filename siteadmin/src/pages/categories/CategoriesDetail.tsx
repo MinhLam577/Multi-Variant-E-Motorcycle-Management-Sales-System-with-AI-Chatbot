@@ -343,7 +343,7 @@ const CategoriesDetail = ({ mode }) => {
                         <Select
                             defaultValue={
                                 form.getFieldValue("type") ||
-                                EnumProductStore.CAR
+                                EnumProductStore.MOTORBIKE
                             }
                             options={Object.keys(EnumProductType).map(
                                 (key) => ({

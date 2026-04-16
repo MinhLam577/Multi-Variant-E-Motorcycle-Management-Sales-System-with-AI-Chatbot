@@ -20,7 +20,7 @@ import { observer } from "mobx-react-lite";
 import dayjs from "dayjs";
 import apiClient from "@/src/api/apiClient";
 import endpoints from "@/src/api/endpoints";
-import type { UploadRequestOption } from "rc-upload/lib/interface";
+import { UploadRequestOption } from "rc-upload/lib/interface";
 import { UploadChangeParam, UploadFile } from "antd/es/upload";
 const Account = observer(() => {
     const [initForm, setInitForm] = useState(null);
@@ -205,7 +205,10 @@ const Account = observer(() => {
                     label="Ảnh Thumbnail"
                     name="thumbnail"
                 >
-                    <div style={{ display: "flex", justifyContent: "center" }}>
+                    <div
+                        style={{ display: "flex", justifyContent: "center" }}
+                        className="mb-[1rem]"
+                    >
                         {initForm && (
                             <Upload
                                 name="thumbnail"

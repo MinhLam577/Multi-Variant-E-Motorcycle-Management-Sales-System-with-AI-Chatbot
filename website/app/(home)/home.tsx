@@ -1,38 +1,41 @@
 import Footer from "@/app/components/common/Footer";
-import { HeaderWithActions } from "@/app/components/common/HeaderWidthActions";
 import LoginSignupModal from "@/app/components/common/login-signup";
 import MobileMenu from "@/app/components/common/MobileMenu";
 import Partner from "@/app/components/common/Partner";
 import WhyChoose from "@/app/components/common/WhyChoose";
 import Blog from "@/app/components/home/Blog";
-import FeaturedFilterListing from "@/app/components/home/FeaturedFilterListing";
 import Header from "@/app/components/home/Header";
-import Hero from "@/app/components/home/Hero";
+import MotorFeaturedFilterListing from "@/app/components/home/MotorFeaturedFilterListing";
+import MotorHero from "@/app/components/home/MotorHero";
 import SaleBanner from "@/app/components/home/SaleBanner";
 import Link from "next/link";
-import SearchMobile from "@/app/components/common/SearchMobile";
 export const metadata = {
     title: "minhdeptrai.site | Mua Bán Xe Máy Điện Uy Tín & Chất Lượng",
-    description: `minhdeptrai.site - Địa chỉ uy tín chuyên cung cấp các dòng xe hơi chất lượng cao, dịch vụ chăm sóc khách hàng chuyên nghiệp, giá cả cạnh tranh.`,
+    description: `minhdeptrai.site - Địa chỉ uy tín chuyên cung cấp các dòng xe máy điện chất lượng cao, dịch vụ chăm sóc khách hàng chuyên nghiệp, giá cả cạnh tranh.`,
 };
 
-const Home = () => {
+const HomeMotorbike = () => {
     return (
         <div className="wrapper ovh">
-            <HeaderWithActions />
-
+            {/* Main Header Nav */}
             <Header />
+            {/* End Main Header Nav */}
+
+            {/* Main Header Nav For Mobile */}
             <MobileMenu />
+            {/* End Main Header Nav For Mobile */}
 
-            <SearchMobile />
-            <Hero />
+            {/* Hero */}
+            <MotorHero />
+            {/* End Hero */}
 
+            {/* Featured Product  */}
             <section className="featured-product">
                 <div className="container">
                     <div className="row justify-content-center">
                         <div className="col-lg-8">
                             <div className="main-title text-center">
-                                <h2>Sản phẩm bán chạy </h2>
+                                <h2>Xe bán chạy</h2>
                             </div>
                         </div>
                     </div>
@@ -42,17 +45,17 @@ const Home = () => {
                             className="col-lg-12"
                             data-aos-delay="100"
                             data-aos="fade-up"
-                            suppressHydrationWarning={true}
+                            suppressHydrationWarning
                         >
-                            <FeaturedFilterListing />
+                            <MotorFeaturedFilterListing />
                         </div>
                     </div>
 
-                    <div className="row mt20">
+                    <div className="row  mt20">
                         <div className="col-lg-12">
-                            <div className="text-center">
+                            <div className="text-center ">
                                 <Link
-                                    href="/listing-v1/?type=car"
+                                    href="/listing-v1?type=motorbike"
                                     className="more_listing"
                                 >
                                     Xem tất cả
@@ -65,8 +68,10 @@ const Home = () => {
                     </div>
                 </div>
             </section>
+            {/* End Featured Product  */}
 
-            <section className="our-partner pt0 pb90">
+            {/* Our Partners */}
+            <section className="our-partner pt0 pb100">
                 <div className="container">
                     <div className="row">
                         <div className="col-lg-6 offset-lg-3">
@@ -75,15 +80,19 @@ const Home = () => {
                             </div>
                         </div>
                     </div>
+                    {/* End .row */}
 
                     <div className="partner_divider">
                         <div className="row">
                             <Partner />
                         </div>
+                        {/* End .row */}
                     </div>
                 </div>
             </section>
+            {/* End Our Partners */}
 
+            {/* Sale Banner  */}
             <section className="our-blog pb90 pt-0">
                 <div className="container">
                     <div className="row">
@@ -93,14 +102,18 @@ const Home = () => {
                             </div>
                         </div>
                     </div>
+                    {/* End .row */}
 
                     <div className="row">
                         <SaleBanner />
                     </div>
+                    {/* End .row */}
                 </div>
             </section>
+            {/* End Sale Banner  */}
 
-            <section className="why-chose pt0">
+            {/* Why Chose us  */}
+            <section className="why-chose pt0 pb90">
                 <div className="container">
                     <div className="row justify-content-center">
                         <div className="col-lg-8">
@@ -114,7 +127,9 @@ const Home = () => {
                     </div>
                 </div>
             </section>
+            {/* Why Chose us  */}
 
+            {/* Our Blog */}
             <section className="our-blog pb90 pt-0">
                 <div className="container">
                     <div className="row">
@@ -124,15 +139,21 @@ const Home = () => {
                             </div>
                         </div>
                     </div>
+                    {/* End .row */}
 
                     <div className="row">
                         <Blog />
                     </div>
+                    {/* End .row */}
                 </div>
             </section>
+            {/* End Our Blog */}
 
+            {/* Our Footer */}
             <Footer />
+            {/* End Our Footer */}
 
+            {/* Modal */}
             <div
                 className="sign_up_modal modal fade"
                 id="logInModal"
@@ -143,8 +164,9 @@ const Home = () => {
             >
                 <LoginSignupModal />
             </div>
+            {/* End Modal */}
         </div>
     );
 };
 
-export default Home;
+export default HomeMotorbike;

@@ -52,7 +52,7 @@ const ListingMapV1 = () => {
                             search: undefined,
                             price_min: undefined,
                             price_max: undefined,
-                            type: EnumProductStore.CAR,
+                            type: EnumProductStore.MOTORBIKE,
                         }}
                     />
                 </div>
