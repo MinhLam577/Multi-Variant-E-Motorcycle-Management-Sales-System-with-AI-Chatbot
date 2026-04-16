@@ -62,98 +62,6 @@ const Header = observer(() => {
     ];
     return (
         <>
-            {/* <header className="transparent w-full xl:block lg:block md:hidden sm:hidden xs:hidden hidden">
-                <nav
-                    style={{ backgroundColor: `var(--${value.theme})` }}
-                    className="w-full"
-                >
-                    <div className="w-full">
-                        <div className="menu-toggle">
-                            <button type="button" id="menu-btn">
-                                <span className="icon-bar" />
-                                <span className="icon-bar" />
-                                <span className="icon-bar" />
-                            </button>
-                        </div>
-                        <div className="flex items-center w-full px-4 pt-2 pb-1">
-                            <ul
-                                id="respMenu"
-                                className="w-auto flex"
-                                data-menu-style="horizontal"
-                            >
-                                <MainMenu />
-                            </ul>
-                            <div className="flex gap-4 text-xl text-white justify-end ml-auto max-w-full w-1/3 xl:w-1/4">
-                                <div className="flex items-center border-b text-white flex-grow max-w-sm w-full">
-                                    <span className="text-lg text-white mr-2">
-                                        <i className="fas fa-search"></i>
-                                    </span>
-                                    <input
-                                        type="text"
-                                        placeholder="Tìm kiếm"
-                                        value={keyword}
-                                        onChange={(e) =>
-                                            setKeyword(e.target.value)
-                                        }
-                                        // onKeyDown={handleKeyDown}
-                                        className="w-full outline-none border-none bg-transparent text-white text-sm placeholder:text-sm"
-                                    />
-                                </div>
-                                <PopoverCart
-                                    dataCart={
-                                        user ? cartStore?.data : undefined
-                                    }
-                                    cart={
-                                        <Badge
-                                            count={
-                                                user
-                                                    ? cartStore?.data?.length ||
-                                                      0
-                                                    : 0
-                                            }
-                                        >
-                                            <ShoppingCartOutlined className="text-2xl text-white" />
-                                        </Badge>
-                                    }
-                                />
-                                {user ? (
-                                    <PopoverAvatar
-                                        avatar={
-                                            <img
-                                                src={
-                                                    user.user?.avatarUrl ||
-                                                    "https://res.cloudinary.com/diwacy6yr/image/upload/v1728441530/User/default.png"
-                                                }
-                                                alt="Avatar"
-                                                className="min-w-8 w-8 h-8 rounded-[50%] object-cover"
-                                            />
-                                        }
-                                    />
-                                ) : (
-                                    <div className="flex items-center gap-1">
-                                        <Link
-                                            href="/login"
-                                            className="relative text-nowrap text-sm px-2 py-2 rounded transition after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:bg-yellow-400 after:w-0
-                                          after:transition-all after:duration-300 after:ease-in-out
-                                          hover:after:w-full text-white"
-                                        >
-                                            Đăng Nhập
-                                        </Link>
-                                        <Link
-                                            href="/signup"
-                                            className="relative text-nowrap text-sm px-2 py-2 rounded transition after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:bg-yellow-400 after:w-0
-                                          after:transition-all after:duration-300 after:ease-in-out
-                                          hover:after:w-full text-white"
-                                        >
-                                            Đăng Ký
-                                        </Link>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </nav>
-            </header> */}
             <header
                 className="w-full px-[1rem] pt-[1rem] pb-[0.75rem] bg-[url(/images/background/header-background-image.jpg)] bg-no-repeat bg-center h-full"
                 style={{
@@ -164,9 +72,9 @@ const Header = observer(() => {
                     <div className="flex-shrink-0 flex items-center justify-center w-[11.688rem]">
                         <Link href="/" onClick={() => {}}>
                             <img
-                                src="/images/logo.webp"
+                                src="/images/logo-test.svg"
                                 alt="Logo"
-                                className="object-cover w-auto h-[63px] cursor-pointer"
+                                className="object-cover w-full h-auto cursor-pointer"
                             />
                         </Link>
                     </div>
@@ -271,7 +179,7 @@ const Header = observer(() => {
                 </div>
                 <div
                     id="respMenu"
-                    className="w-full flex md:container mt-[1rem]"
+                    className="w-full flex md:container"
                     data-menu-style="horizontal"
                 >
                     <MainMenu />

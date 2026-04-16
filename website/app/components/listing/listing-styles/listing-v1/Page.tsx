@@ -219,11 +219,7 @@ const ListingV1 = observer(() => {
                 <div className="container">
                     <div className="row">
                         <ListGridFilter
-                            data={
-                                type === EnumProductStore.MOTORBIKE
-                                    ? storeProduct?.data?.cars.data
-                                    : storeProduct?.data?.motobikes.data || []
-                            }
+                            data={storeProduct?.data?.motobikes.data}
                             setQueryObject={setQueryObject}
                             queryObject={queryObject}
                         />
@@ -232,11 +228,7 @@ const ListingV1 = observer(() => {
 
                     <div className="row">
                         <CarItems
-                            data={
-                                type === EnumProductStore.MOTORBIKE
-                                    ? storeProduct?.data?.cars.data
-                                    : storeProduct?.data?.motobikes.data || []
-                            }
+                            data={storeProduct?.data?.motobikes.data}
                             queryObject={queryObject}
                         />
                     </div>

@@ -43,7 +43,7 @@ const MenuParentItem = observer(
 
         return (
             <div
-                className="relative inline-block"
+                className="relative inline-block flex-shrink-0 w-full"
                 onMouseLeave={handleMouseLeave}
                 onMouseEnter={handleMouseEnter}
                 ref={timeoutRef}
@@ -52,7 +52,7 @@ const MenuParentItem = observer(
                     ref={btnRef}
                     // click parent button để toggle cấp 1 mở/đóng toàn bộ menu con cấp 1
                     onClick={toggleLevel0}
-                    className="bg-white rounded-sm flex items-center min-w-[11.688rem] cursor-pointer p-[0.375rem_1.063rem] justify-between outline-none h-9 font-semibold border border-neutral-200 text-sm text-black"
+                    className="bg-white flex items-center w-full max-w-full min-w-[10rem] cursor-pointer p-[0.375rem_1.063rem] justify-between outline-none h-9 font-semibold border border-neutral-200 text-sm text-black hover:bg-gray-50 transition-colors"
                 >
                     <div className="flex gap-[0.5rem] items-center">
                         <HamburgerMenu size="20" />
@@ -69,7 +69,7 @@ const MenuParentItem = observer(
                 {/* Submenu cấp 1 (children of parent) */}
                 {isLevel0(openAtLevel, parent.id) && (
                     <div
-                        className="absolute left-0 top-full bg-white border rounded shadow-md z-10"
+                        className="absolute left-0 top-full bg-white border shadow-md z-10"
                         style={{ minWidth: menuWidth }}
                     >
                         {parent.children.map((child) => (

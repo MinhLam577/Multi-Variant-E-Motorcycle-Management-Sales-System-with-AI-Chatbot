@@ -17,12 +17,15 @@ const MenuLink = ({ item, className }: MenuLinkProps) => {
             key={item.id}
             href={item.href}
             className={cn(
-                `relative px-3 py-2 font-medium
-                      after:content-[''] after:absolute after:left-0 after:bottom-0
-                      after:h-[2px] after:bg-yellow-400 after:w-0
-                      after:transition-all after:duration-300 after:ease-in-out
-                      hover:after:w-full text-white
-              `,
+                `relative px-3 py-2 font-medium text-white
+           after:content-[''] after:absolute
+           after:left-1/2 after:-translate-x-1/2
+           after:bottom-0 after:h-[2px]
+           after:w-[80%] after:bg-yellow-400
+           after:scale-x-0 after:origin-center
+           after:transition-transform after:duration-300 after:ease-in-out
+           hover:after:scale-x-100
+          `,
                 className
             )}
         >

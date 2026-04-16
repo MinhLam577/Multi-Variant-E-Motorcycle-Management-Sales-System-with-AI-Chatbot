@@ -65,7 +65,7 @@ export default function RecursiveMenuItem({
                 <Link
                     href={`/${baseType}&categoryID=${item.id}`}
                     onClick={onLinkClick}
-                    className="block px-4 py-2 hover:bg-gray-100 cursor-pointer rounded flex-1"
+                    className="block px-4 py-2 hover:bg-gray-100 cursor-pointer flex-1"
                 >
                     {item.name}
                 </Link>
@@ -75,7 +75,7 @@ export default function RecursiveMenuItem({
                     <button
                         onClick={onToggle}
                         aria-expanded={isOpen}
-                        className="px-3 py-2 hover:bg-gray-100 rounded focus:outline-none"
+                        className="px-3 py-2 hover:bg-gray-100 focus:outline-none"
                     >
                         <ArrowRight2
                             size="16"
@@ -90,7 +90,7 @@ export default function RecursiveMenuItem({
             {/* nếu mở -> render submenu con */}
             {hasChildren && isOpen && (
                 <div
-                    className="absolute left-full top-0 bg-white border rounded shadow-md z-20"
+                    className="absolute left-full top-0 bg-white border shadow-md z-20"
                     style={{ minWidth: width }}
                 >
                     {item.children.map((child) => (

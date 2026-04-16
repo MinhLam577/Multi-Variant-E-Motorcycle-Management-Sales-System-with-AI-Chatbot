@@ -9,9 +9,9 @@ const StaticMenu = ({ pathname }: { pathname: string }) => {
     ];
 
     return (
-        <div className="pl-[0.5rem]">
+        <div>
             {staticItems.map((item) => (
-                <MenuLink item={item} />
+                <MenuLink item={item} key={item.id} />
             ))}
         </div>
     );

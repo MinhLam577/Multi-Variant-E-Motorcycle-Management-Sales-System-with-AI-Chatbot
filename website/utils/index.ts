@@ -52,3 +52,7 @@ export const filterEmptyFields = <T extends Record<string, any>>(obj: T): T => {
 export const cn = (...inputs: ClassValue[]) => {
     return twMerge(clsx(inputs));
 };
+
+export const convertPxToRem = (value: number): string => {
+    return `${value / 16}rem`;
+};

@@ -19,8 +19,8 @@ const MainMenu = observer(() => {
     const containerRef = useRef<HTMLDivElement>(null);
 
     // State kiểm soát visibility arrows
-    const [showLeftArrow, setShowLeftArrow] = useState(true);
-    const [showRightArrow, setShowRightArrow] = useState(true);
+    const [showLeftArrow, setShowLeftArrow] = useState(false);
+    const [showRightArrow, setShowRightArrow] = useState(false);
 
     useEffect(() => {
         categoryObservable.getListOrder();
@@ -31,16 +31,42 @@ const MainMenu = observer(() => {
         if (!scrollRef.current || !containerRef.current) return;
 
         const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
-        // setShowLeftArrow(scrollLeft > 10);
-        // setShowRightArrow(scrollLeft < scrollWidth - clientWidth - 10);
+
+        // Kiểm tra xem có overflow không
+        const hasOverflow = scrollWidth > clientWidth;
+
+        if (hasOverflow) {
+            // Có overflow - hiển thị mũi tên dựa trên vị trí scroll
+            const atStart = scrollLeft <= 10;
+            const atEnd = scrollLeft >= scrollWidth - clientWidth - 10;
+
+            setShowLeftArrow(!atStart); // Hiển thị mũi tên trái khi không ở đầu
+            setShowRightArrow(!atEnd); // Hiển thị mũi tên phải khi không ở cuối
+        } else {
+            // Không có overflow - chỉ hiển thị mũi tên phải
+            setShowLeftArrow(false);
+            setShowRightArrow(false);
+        }
     };
 
     const scrollLeft = () => {
-        scrollRef.current?.scrollBy({ left: -200, behavior: "smooth" });
+        if (scrollRef.current && showLeftArrow) {
+            const containerWidth = containerRef.current?.clientWidth || 300;
+            scrollRef.current.scrollBy({
+                left: -containerWidth,
+                behavior: "smooth",
+            });
+        }
     };
 
     const scrollRight = () => {
-        scrollRef.current?.scrollBy({ left: +200, behavior: "smooth" });
+        if (scrollRef.current && showRightArrow) {
+            const containerWidth = containerRef.current?.clientWidth || 300;
+            scrollRef.current.scrollBy({
+                left: +containerWidth,
+                behavior: "smooth",
+            });
+        }
     };
 
     // Tự động check scroll khi resize hoặc data thay đổi
@@ -71,23 +97,33 @@ const MainMenu = observer(() => {
         href: `/${redirectedProductType}&categoryID=${item.id}`,
     }));
 
-    const hasScrollableContent = menuItems.length > 0 || true; // StaticMenu luôn có
+    const hasManyParentCategories = categories.length > 3;
+
     return (
-        <div className="flex items-center overflow-hidden">
+        <div
+            className={`hidden items-center w-full md:grid md:grid-cols-[11.6875rem_1fr] md:justify-between`}
+        >
             {/* Fixed part: Danh mục cha */}
-            {categories.length === 0 ? (
-                <EmptyMenu />
-            ) : (
-                categories.map((parent) => (
-                    <MenuParentItem key={parent.id} parent={parent} />
-                ))
-            )}
+            <div
+                className={`flex items-center flex-shrink-0 gap-2 ${
+                    hasManyParentCategories
+                        ? "max-w-xs overflow-x-auto scrollbar-hide"
+                        : ""
+                }`}
+            >
+                {categories.length === 0 ? (
+                    <EmptyMenu />
+                ) : (
+                    categories.map((parent) => (
+                        <MenuParentItem key={parent.id} parent={parent} />
+                    ))
+                )}
+            </div>
 
             {/* Scrollable container với absolute arrows */}
-
             <div
                 ref={containerRef}
-                className="flex-1 relative h-16 min-w-0 overflow-hidden"
+                className="flex-1 relative h-16 min-w-0 overflow-hidden pl-[0.5rem]"
             >
                 {/* Left Arrow - Absolute */}
                 {showLeftArrow && (
@@ -118,34 +154,19 @@ const MainMenu = observer(() => {
                         div::-webkit-scrollbar {
                             display: none;
                         }
+                        .scrollbar-hide::-webkit-scrollbar {
+                            display: none;
+                        }
+                        .scrollbar-hide {
+                            scrollbar-width: none;
+                            -ms-overflow-style: none;
+                        }
                     `}</style>
 
                     <div className="flex items-center h-full flex-shrink-0 py-2 pr-12">
                         {/* Static menu */}
                         <StaticMenu pathname={pathname} />
 
-                        {/* Dynamic menu - CHỈ 1 LẦN MAP */}
-                        {menuItems.map((item) => (
-                            <MenuLink
-                                key={item.id}
-                                item={item}
-                                className="flex-shrink-0 whitespace-nowrap"
-                            />
-                        ))}
-                        {menuItems.map((item) => (
-                            <MenuLink
-                                key={item.id}
-                                item={item}
-                                className="flex-shrink-0 whitespace-nowrap"
-                            />
-                        ))}
-                        {menuItems.map((item) => (
-                            <MenuLink
-                                key={item.id}
-                                item={item}
-                                className="flex-shrink-0 whitespace-nowrap"
-                            />
-                        ))}
                         {menuItems.map((item) => (
                             <MenuLink
                                 key={item.id}
