@@ -54,7 +54,7 @@ npm install -g yarn
 ### 2️⃣ **Clone dự án**
 
 ```sh
-git clone [https://github.com/MinhLam577/MotoCar-Manager-Website.git](https://github.com/MinhLam577/Multi-Variant-E-Motorcycle-Management-Sales-System-with-AI-Chatbot.git)
+git clone https://github.com/MinhLam577/Multi-Variant-E-Motorcycle-Management-Sales-System-with-AI-Chatbot.git
 ```
 
 ### 3️⃣ **Cài đặt dependencies**
@@ -125,7 +125,7 @@ npm install -g yarn
 ### 2️⃣ **Clone dự án**
 
 ```sh
-git clone [https://github.com/MinhLam577/MotoCar-Manager-Website.git](https://github.com/MinhLam577/Multi-Variant-E-Motorcycle-Management-Sales-System-with-AI-Chatbot.git)
+git clone https://github.com/MinhLam577/Multi-Variant-E-Motorcycle-Management-Sales-System-with-AI-Chatbot.git
 ```
 
 ### 3️⃣ **Cài đặt dependencies**
