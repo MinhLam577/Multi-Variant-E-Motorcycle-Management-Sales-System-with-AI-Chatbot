@@ -23,20 +23,20 @@ const endpoints = {
         contactPrice: "auth/contact",
     },
 
-  customers: {
-    details: (id) => `/customers/${id}`,
-    update: (id) => `/customers/${id}`,
-    setRole: (id) => `/customers/${id}`,
-    changePassword: (id) => `/customers/${id}`,
-    uploadAvatar: "/customers/upload",
-    list: (page, limit) => `customers/?page=${page}&limit=${limit}`,
-    // tạo thông qua import file
-    callBulkCreateCustomer: "/users/callBulkCreateCustomer",
-    create: "/customers",
-    delete: (id) => `/customers/${id}`,
-    loginGoogle: "/customers/profile",
-    changePassword_inProfile: "/customers/changePassword",
-  },
+    customers: {
+        details: (id) => `/customers/${id}`,
+        update: (id) => `/customers/${id}`,
+        setRole: (id) => `/customers/${id}`,
+        changePassword: (id) => `/customers/${id}`,
+        uploadAvatar: "/customers/upload",
+        list: (page, limit) => `customers/?page=${page}&limit=${limit}`,
+        // tạo thông qua import file
+        callBulkCreateCustomer: "/users/callBulkCreateCustomer",
+        create: "/customers",
+        delete: (id) => `/customers/${id}`,
+        loginGoogle: "/customers/profile",
+        changePassword_inProfile: "/customers/changePassword",
+    },
     cars: {
         list: (page, size) => `/products?current=${page}&pageSize=${size}`,
         details: (id) => `/cars/${id}`,
@@ -190,8 +190,7 @@ const endpoints = {
     order: {
         // list: (customerId: string, query: string = "current=1&pageSize=20") =>
         // `/order/${customerId}/customer?${query}`,
-           list: ( query: string = "current=1&pageSize=20") =>
-        `/order/?${query}`,
+        list: (query: string = "current=1&pageSize=20") => `/order/?${query}`,
         getStatus: () => "/order/order-status",
         getOrderDetail: (id: string) => `/order/${id}`,
         updateOrderStatus: (id: string) => `/order/${id}/status`,
@@ -209,14 +208,14 @@ const endpoints = {
     // // Payos
     pay_os: {
         createPayosOrder: () => "/payos/create-order",
-        cancel_order_payos :(orderCode)=>`/payos/cancel-order/${orderCode}`
+        cancel_order_payos: (orderCode) => `/payos/cancel-order/${orderCode}`,
     },
     paymentMethod: {
         list: () => `/payment-method`,
         getPaymentName: () => `/payment-method/payment-method-name`,
         getPaymentStatus: () => "/order/payment-status",
     },
-  
+
     sku: {
         getDetailImportsById: (id: string) => `/skus/${id}/detail-import`,
         getDetailImportsByIds: () => `/skus/detail-imports-by-ids`,
@@ -233,11 +232,11 @@ const endpoints = {
 
     // district
     district: {
-        districtByName: (provinceId) => `/district?provinceId=${provinceId}`,
+        districtByName: (provinceId) => `/district/${provinceId}`,
     },
     // ward
     ward: {
-        wardByName: (districtId) => `/ward?districtId=${districtId}`,
+        wardByName: (districtId) => `/ward/${districtId}`,
     },
     // cart
     cart: {

@@ -45,7 +45,7 @@ const LoginForm = ({
                         }}
                     >
                         <Image
-                            src="/logo2048.png"
+                            src="/logo-test.svg"
                             alt="logo"
                             width={180}
                             height={80}

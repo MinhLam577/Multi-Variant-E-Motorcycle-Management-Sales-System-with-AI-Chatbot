@@ -16,26 +16,30 @@ import endpoints from "../../api/endpoints";
 import { useParams } from "react-router";
 import { ApiResponse } from "@/types/api-response.type";
 
+export type AddressResponseType = {
+    name: string;
+    code: number;
+};
+
 const AddressModalCreate = (props) => {
     const { openModalCreate, setOpenModalCreate } = props;
     const [isSubmit, setIsSubmit] = useState(true);
-    const [provinces, setProvinces] = useState([]);
-    const [districts, setDistricts] = useState([]);
-    const [wards, setWards] = useState([]);
+    const [provinces, setProvinces] = useState<AddressResponseType[]>([]);
+    const [districts, setDistricts] = useState<AddressResponseType[]>([]);
+    const [wards, setWards] = useState<AddressResponseType[]>([]);
     const id = useParams();
-    // https://ant.design/components/form#components-form-demo-control-hooks
     const [form] = Form.useForm();
 
     const onFinish = async (values) => {
-        const province = provinces.find((p) => p.id === values.province);
-        const district = districts.find((d) => d.id === values.district);
-        const ward = wards.find((w) => w.id === values.ward);
+        const province = provinces.find((p) => p.code === values.province);
+        const district = districts.find((d) => d.code === values.district);
+        const ward = wards.find((w) => w.code === values.ward);
         const formData = {
             ...values,
             customerId: values.customerId,
-            province: province ? province.name : null,
-            district: district ? district.name : null,
-            ward: ward ? ward.name : null,
+            province: province ? province?.name || province : null,
+            district: district ? district?.name || district : null,
+            ward: ward ? ward?.name || ward : null,
         };
         setIsSubmit(true);
         const res: ApiResponse<any> = await apiClient.post(
@@ -56,11 +60,10 @@ const AddressModalCreate = (props) => {
         setIsSubmit(false);
     };
 
-    //
     useEffect(() => {
         const fetchProvince = async () => {
             const data = await apiClient.get(endpoints.province.list);
-            setProvinces(data.data.data);
+            setProvinces(data.data);
         };
         fetchProvince();
     }, []);
@@ -71,14 +74,14 @@ const AddressModalCreate = (props) => {
         const data = await apiClient.get(
             endpoints.district.districtByName(idProvince)
         );
-        setDistricts(data.data.data);
+        setDistricts(data.data);
     };
 
     // gọi api tìm award
     const fetchAward = async (idDistrict) => {
         form.setFieldsValue({ ward: undefined });
         const data = await apiClient.get(endpoints.ward.wardByName(idDistrict));
-        setWards(data.data.data);
+        setWards(data.data);
     };
 
     const handleProvinceChange = (value) => {
@@ -100,7 +103,6 @@ const AddressModalCreate = (props) => {
                 onCancel={() => setOpenModalCreate(false)}
                 okText={"Tạo mới"}
                 cancelText={"Hủy"}
-                // confirmLoading={isSubmit}
             >
                 <Divider />
 
@@ -178,7 +180,7 @@ const AddressModalCreate = (props) => {
                         <Select
                             onChange={handleProvinceChange}
                             options={provinces.map((p) => ({
-                                value: p.id,
+                                value: p.code,
                                 label: p.name,
                             }))}
                         />
@@ -199,7 +201,7 @@ const AddressModalCreate = (props) => {
                         <Select
                             onChange={handleDistrictChange}
                             options={districts.map((d) => ({
-                                value: d.id,
+                                value: d.code,
                                 label: d.name,
                             }))}
                         />
@@ -219,7 +221,7 @@ const AddressModalCreate = (props) => {
                     >
                         <Select
                             options={wards.map((w) => ({
-                                value: w.id,
+                                value: w.code,
                                 label: w.name,
                             }))}
                         />

@@ -4,14 +4,16 @@ import {
     ProductType,
 } from "@/src/stores/productStore";
 import { toCurrency } from "@/utils";
+import { saveToLocalStorage } from "@/utils/localStorage";
 import { observer } from "mobx-react-lite";
 import Image from "next/image";
 import Link from "next/link";
 export interface ICarItemsProps {
     data: ProductType;
     queryObject: globalFilterType;
+    categoryName?: string;
 }
-const CarItems: React.FC<ICarItemsProps> = ({ data, queryObject }) => {
+const CarItems: React.FC<ICarItemsProps> = ({ data, queryObject, categoryName }) => {
     // Hàm tính giá thấp nhất của skus cho một sản phẩm
     const getMinPrice = (skus) => {
         if (!skus || !Array.isArray(skus)) return Infinity; // Trả về Infinity để xếp cuối nếu không có skus
@@ -39,6 +41,14 @@ const CarItems: React.FC<ICarItemsProps> = ({ data, queryObject }) => {
         }
         return data;
     };
+
+    const handleClickOnLink = () => {
+      const productData = {
+        categoryName: categoryName,
+        categoryID: queryObject.categoryID
+      };
+      saveToLocalStorage('selectedProduct', productData);
+  };
     return (
         <>
             {getDataToRender()
@@ -51,6 +61,7 @@ const CarItems: React.FC<ICarItemsProps> = ({ data, queryObject }) => {
                         {/* Kiểm tra kiểu sản phẩm và thay đổi đường dẫn */}
                         <Link
                             href={`/listing-single-v2/${listing.products.id}`}
+                            onClick={()=>{handleClickOnLink()}}
                         >
                             <div className="car-listing">
                                 <div className="thumb">
@@ -111,7 +122,10 @@ const CarItems: React.FC<ICarItemsProps> = ({ data, queryObject }) => {
                                             <h6 className="title text-base font-medium text-gray-800 hover:text-blue-600 transition line-clamp-2 flex-grow h-12">
                                                 {listing.products?.id && (
                                                     <Link
-                                                        href={`/listing-single-v2/${listing.products.id}`}
+                                                        href={{
+                                                          pathname: `/listing-single-v2/${listing.products.id}`,
+                                                        }}
+                                                        onClick={()=>{handleClickOnLink()}}
                                                     >
                                                         {listing.products.title}
                                                     </Link>

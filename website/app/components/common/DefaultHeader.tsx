@@ -23,10 +23,10 @@ const DefaultHeader = () => {
     }, [user, cartStore]);
 
     return (
-        <header className="header-nav menu_style_home_one home3_style main-menu hidden lg:block">
+        <header className="header-nav menu_style_home_one home3_style main-menu hidden lg:block py-1">
             {/* Ace Responsive Menu */}
             <nav>
-                <div className="container posr flex items-center justify-between">
+                <div className="container posr flex items-center justify-between pt-1">
                     {/* Menu Toggle btn*/}
                     <div className="menu-toggle">
                         <button type="button" id="menu-btn">
@@ -40,7 +40,7 @@ const DefaultHeader = () => {
                             width={140}
                             height={45}
                             className="logo1 img-fluid"
-                            src="/images/header-logo2.svg"
+                            src="/images/logo-login.svg"
                             alt="header-logo.svg"
                         />
                     </Link>
@@ -50,7 +50,10 @@ const DefaultHeader = () => {
                             className="ace-responsive-menu text-end"
                             data-menu-style="horizontal"
                         >
-                            <MainMenu />
+                            <MainMenu
+                                classNameMenuColor="!text-[#000]"
+                                classNameStaticMenuColor="!text-[#000]"
+                            />
                         </ul>
 
                         <div className="flex items-center justify-center gap-2">

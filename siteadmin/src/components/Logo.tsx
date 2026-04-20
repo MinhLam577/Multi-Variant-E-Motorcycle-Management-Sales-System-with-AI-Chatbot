@@ -10,19 +10,21 @@ const Logo = ({ handleClick, collapsed }) => {
                     <img
                         alt="logo"
                         className="max-w-10 max-h-10 object-cover"
-                        src={anhtest}
+                        src="/logo-test.svg"
                     />
                 ) : (
                     <>
                         <img
                             alt="logo"
                             className="h-auto w-12 object-cover rounded"
-                            src={anhtest}
+                            src="/logo-test.svg"
                         />
                     </>
                 )}
                 <span
-                    className={`text-xl text-white font-semibold ${collapsed ? "hidden" : ""}`}
+                    className={`text-xl text-white font-semibold ${
+                        collapsed ? "hidden" : ""
+                    }`}
                 >
                     minhdeptrai.site
                 </span>

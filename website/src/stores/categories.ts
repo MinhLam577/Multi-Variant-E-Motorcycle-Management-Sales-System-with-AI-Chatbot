@@ -1,9 +1,10 @@
 import { makeAutoObservable, toJS } from "mobx";
 import { ExportOrder, ResponsePromise } from "../api/order";
 import { RootStore } from "./base";
-import { getAllCategory } from "../api/categories";
+import { getAllCategory, getDetailCategory } from "../api/categories";
 import { filterEmptyFields } from "../lib/utils";
 import { EnumProductStore } from "./productStore";
+import { getErrorMessage } from "@/utils/handle-error.utils";
 
 export type OrderStatus = {
     key?: string;
@@ -50,6 +51,7 @@ export default class CategoryObservable {
     successMsg: string | null = null;
     showSuccessMsg: boolean = false;
     rootStore: RootStore;
+    detailData: CategoryResponseType;
     data: orderData = {
         orders: [],
         categories: [],
@@ -124,6 +126,35 @@ export default class CategoryObservable {
             console.error(e);
             this.status = 500;
             this.errorMsg = e?.message || "Lỗi không xác định";
+        } finally {
+            this.loading = false;
+        }
+    }
+
+    *getCategoryDetail(id: string) {
+        try {
+            this.loading = true;
+            const response = yield getDetailCategory(id)
+            const { data, status, message } = response;
+            const success_status = [200, 201, 204];
+            if (success_status.includes(status)) {
+                this.detailData = data;
+                this.status = status;
+                this.successMsg = message;
+                this.isOpenDetail = true;
+            } else {
+                this.status = status;
+                this.errorMsg = Array.isArray(message)
+                    ? message[0]
+                    : message;
+            }
+        } catch (e: any) {
+            console.error(e);
+            this.status = 500;
+            this.errorMsg = getErrorMessage(
+                e,
+                "Lỗi khi lấy chi tiết danh mục"
+            );
         } finally {
             this.loading = false;
         }

@@ -78,7 +78,7 @@ const MainFilter = observer(
 
         return (
             <>
-                <div className="col-12 col-sm-4 col-lg-4">
+                {/* <div className="col-12 col-sm-4 col-lg-4">
                     <div className="w-full advance_search_style">
                         <input
                             className="h-9 bg-[#fff] text-sm text-[#555] border border-[#ccc] border-solid outline-none px-3 rounded-md w-full"
@@ -90,7 +90,7 @@ const MainFilter = observer(
                             placeholder="Nhập từ khóa"
                         />
                     </div>
-                </div>
+                </div> */}
                 {/* Price min and Price max */}
 
                 <div className="col-12 col-sm-4 col-lg-2">
@@ -125,7 +125,7 @@ const MainFilter = observer(
                 </div>
 
                 {/* Thương hiệu */}
-                <div className="col-12 col-sm-4 col-lg-2">
+                {/* <div className="col-12 col-sm-4 col-lg-2">
                     <div className="advance_search_style">
                         <select
                             className="form-select show-tick !h-9"
@@ -143,7 +143,7 @@ const MainFilter = observer(
                             ))}
                         </select>
                     </div>
-                </div>
+                </div> */}
             </>
         );
     }

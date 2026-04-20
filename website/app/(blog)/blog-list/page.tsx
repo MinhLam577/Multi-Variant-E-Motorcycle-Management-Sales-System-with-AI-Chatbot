@@ -7,6 +7,8 @@ import LoginSignupModal from "@/app/components/common/login-signup";
 import Pagination from "@/app/components/blog/Pagination";
 import Sidebar from "@/app/components/blog/Sidebar";
 import BlogList from "@/app/components/blog/BlogList";
+import Header from "@/app/components/home/Header";
+import BreadCrumb from "@/app/components/common/atoms/BreadCrumb";
 export const metadata = {
     title: "Blog List || minhdeptrai.site",
 };
@@ -14,55 +16,23 @@ export const metadata = {
 const Blog = () => {
     return (
         <div className="wrapper">
-            <div
-                className="offcanvas offcanvas-end"
-                tabIndex={-1}
-                id="offcanvasRight"
-                aria-labelledby="offcanvasRightLabel"
-            >
-                <HeaderSidebar />
-            </div>
-            {/* Sidebar Panel End */}
-
-            {/* header top */}
-            <HeaderTop />
-            {/* End header top */}
-
-            {/* Main Header Nav */}
-            <DefaultHeader />
-            {/* End Main Header Nav */}
+            <Header/>
 
             {/* Main Header Nav For Mobile */}
             <MobileMenu />
             {/* End Main Header Nav For Mobile */}
 
-            {/* Inner Page Breadcrumb */}
-            <section className="inner_page_breadcrumb !z-[100] lg:!z-[0]">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-xl-12">
-                            <div className="breadcrumb_content">
-                                <h2 className="breadcrumb_title">Blog</h2>
-                                <ol className="breadcrumb fn-sm">
-                                    <li className="breadcrumb-item">
-                                        <a href="/">Home</a>
-                                    </li>
-                                    <li
-                                        className="breadcrumb-item active"
-                                        aria-current="page"
-                                    >
-                                        <a href="#">Blog List</a>
-                                    </li>
-                                </ol>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            {/* Inner Page Breadcrumb */}
+
+            <BreadCrumb
+              items={[
+                { label: "Trang chủ", href: "/" },
+                { label: "Tin tức" },
+              ]}
+              bgWrapper="bg-[#fff]"
+            />
 
             {/* <!-- Main Blog Post Content --> */}
-            <section className="blog_post_container inner_page_section_spacing">
+            <section className="blog_post_container inner_page_section_spacing !pt-0">
                 <div className="container">
                     <div className="row">
                         <div className="col-lg-8 col-xl-9">

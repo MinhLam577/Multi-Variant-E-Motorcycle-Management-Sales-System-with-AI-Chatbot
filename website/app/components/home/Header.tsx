@@ -2,42 +2,39 @@
 import { useEffect, useRef, useState } from "react";
 import MainMenu from "../common/MainMenu";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { Badge, Divider } from "antd";
 import PopoverCart from "../popover/cart";
 import PopoverAvatar from "../popover/avatar";
 import { useStore } from "@/context/store.context";
 import { observer } from "mobx-react-lite";
-import { useRouter } from "next/navigation";
-import { useTheme } from "@/context/theme.context";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/auth.context";
 import SearchBox from "../common/SearchBox";
 import { Notification, ShoppingCart } from "iconsax-reactjs";
+import { EnumProductStore } from "@/src/stores/productStore";
 const Header = observer(() => {
     const router = useRouter();
-    const pathname = usePathname();
-    const value = useTheme();
     const [keyword, setKeyword] = useState("");
+    const searchParams = useSearchParams();
+    useEffect(() => {
+      const searchFromUrl = searchParams.get('search');
+      if (searchFromUrl) {
+          setKeyword(decodeURIComponent(searchFromUrl));
+      }
+  }, [searchParams]);
+    const performSearch = (searchValue: string) => {
+      if (!searchValue.trim()) return;
+      
+      const encodedValue = encodeURIComponent(searchValue.trim());
+      router.push(`/listing-v1?search=${encodedValue}&type=motorbike`);
+    };
     const handleSearch = () => {
-        const isMotorbikePage = pathname === "/home-motorbike";
-        if (isMotorbikePage) {
-            if (keyword.trim()) {
-                const encodedValue = encodeURIComponent(`${keyword}`);
-                router.push(
-                    `/listing-v1?search=${encodedValue}&type=motorbike`
-                );
-            }
-        } else {
-            if (keyword.trim()) {
-                const encodedValue = encodeURIComponent(`${keyword}`);
-                router.push(`/listing-v1?search=${encodedValue}&type=car`);
-            }
-        }
+      performSearch(keyword);
     };
     const { user, isLoading } = useAuth();
-
     const store = useStore();
     const cartStore = store.cartObservable;
+    const productStore = store.productObservable;
     useEffect(() => {
         if (user && cartStore) {
             cartStore.getListCart?.();
@@ -45,21 +42,27 @@ const Header = observer(() => {
     }, [user, cartStore]);
 
     const searchBoxRef = useRef<HTMLInputElement>(null);
+    const [keywords, setKeywords] = useState<string[]>([])
 
     // Auto focus khi vào trang
     useEffect(() => {
         searchBoxRef.current?.focus();
+        productStore.getBestSellingProducts(EnumProductStore.MOTORBIKE)
     }, []);
+
+    useEffect(() => {
+      const bestSelling = productStore.data.motobikes.bestSelling || [];
+      setKeywords(bestSelling.map(p => p.title || ''));
+    }, [productStore.data.motobikes.bestSelling]);
     // Select hết text khi focus
     const handleFocus = () => {
         searchBoxRef.current?.select();
     };
-    const keywords = [
-        "PEGA ESP",
-        "50cc Osakar Rova P",
-        "Espero Enigma2025",
-        "Xmen Osakar Pro",
-    ];
+    const handleKeyWordClick = (value: string) => {
+      setKeyword(value);
+      performSearch(value);
+  };
+
     return (
         <>
             <header
@@ -93,7 +96,10 @@ const Header = observer(() => {
                                     {keywords.map((kw, i) => (
                                         <span
                                             key={i}
-                                            className="flex-shrink-0 whitespace-nowrap"
+                                            className="flex-shrink-0 whitespace-nowrap cursor-pointer hover:text-yellow-300 transition-colors"
+                                            onClick={()=> {
+                                              handleKeyWordClick(kw)
+                                            }}
                                         >
                                             {kw}
                                         </span>
@@ -182,7 +188,7 @@ const Header = observer(() => {
                     className="w-full flex md:container"
                     data-menu-style="horizontal"
                 >
-                    <MainMenu />
+                    <MainMenu classNameMenuColor="!text-[#fff]"/>
                 </div>
             </header>
         </>

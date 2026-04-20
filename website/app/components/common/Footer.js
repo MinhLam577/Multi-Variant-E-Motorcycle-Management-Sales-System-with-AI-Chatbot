@@ -8,14 +8,14 @@ const Footer = () => {
         <section className="footer_one pt50 pb25">
             <div className="container">
                 <div className="row">
-                    <div className="col-md-4 col-xl-7">
+                    <div className="col-md-4 col-xl-7 !px-0">
                         <div className="footer_about_widget text-start">
                             <div className="logo mb40 mb0-sm">
                                 <Image
                                     width={140}
                                     height={45}
                                     className="logo2 img-fluid"
-                                    src="/images/header-logo.svg"
+                                    src="/images/logo-test.svg"
                                     alt="header-logo.png"
                                 />
                             </div>

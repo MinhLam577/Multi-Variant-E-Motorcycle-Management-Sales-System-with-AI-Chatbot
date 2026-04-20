@@ -10,8 +10,13 @@ import MenuParentItem from "./CategoryMenu/ParentMenuItem";
 import StaticMenu from "./StaticMenu";
 import EmptyMenu from "./EmptyMenu";
 import MenuLink from "../atoms/MenuLink";
-
-const MainMenu = observer(() => {
+import { cn } from "@/src/lib/utils";
+interface MainMenuProps {
+  classNameMenuColor?: string;
+  classNameStaticMenuColor?: string;
+}
+const MainMenu = observer((props: MainMenuProps) => {
+    const classNameMenuColor = props?.classNameMenuColor
     const store = useStore();
     const pathname = usePathname();
     const { categoryObservable } = store;
@@ -165,13 +170,13 @@ const MainMenu = observer(() => {
 
                     <div className="flex items-center h-full flex-shrink-0 py-2 pr-12">
                         {/* Static menu */}
-                        <StaticMenu pathname={pathname} />
+                        <StaticMenu className={props?.classNameStaticMenuColor}/>
 
                         {menuItems.map((item) => (
                             <MenuLink
                                 key={item.id}
                                 item={item}
-                                className="flex-shrink-0 whitespace-nowrap"
+                                className={cn(`flex-shrink-0 whitespace-nowrap`, classNameMenuColor)}
                             />
                         ))}
 

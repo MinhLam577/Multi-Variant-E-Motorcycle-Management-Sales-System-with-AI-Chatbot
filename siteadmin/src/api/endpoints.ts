@@ -239,11 +239,11 @@ const endpoints = {
 
     // district
     district: {
-        districtByName: (provinceId) => `/district?provinceId=${provinceId}`,
+        districtByName: (provinceId) => `/district/${provinceId}`,
     },
     // ward
     ward: {
-        wardByName: (districtId) => `/ward?districtId=${districtId}`,
+        wardByName: (districtId) => `/ward/${districtId}`,
     },
     // cart
     cart: {
