@@ -2,22 +2,31 @@ import { Form, Input, Modal } from "antd";
 import PropTypes from "prop-types";
 import { useEffect } from "react";
 import { ProcessModalName, processWithModals } from "./processWithModals";
+import { useStore } from "@/stores";
+import { toJS } from "mobx";
 
-const ChangePasswordModal = ({ open = false, cancelCallback }) => {
+const ChangePasswordModal = ({ open = false, cancelCallback, setOpen }) => {
     const [form] = Form.useForm();
+    const { accountObservable, loginObservable } = useStore();
+    const user = toJS(accountObservable?.account);
+    const handleChangePassword = async (values) => {
+        try {
+            const dto = {
+                oldPassword: values.currentPassword,
+                newPassword: values.newPassword,
+                id: user.userId,
+            };
 
-    const handleChangePassword = (values) => {
-        const dto = {
-            ...values,
-            reNewPassword: undefined,
-        };
+            await loginObservable.basicResetPassword(dto);
+            form.resetFields();
+            setOpen?.(false);
+        } catch (e) {}
     };
 
     useEffect(() => {
         if (open) {
             form.resetFields();
         }
-        // eslint-disable-next-line
     }, [open]);
 
     return (

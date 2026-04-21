@@ -10,3 +10,9 @@ export interface ResetPassword {
 export interface VerifyResetPassword {
     token: string;
 }
+
+export interface BasicResetPassword {
+    id: string;
+    newPassword: string;
+    oldPassword: string;
+}

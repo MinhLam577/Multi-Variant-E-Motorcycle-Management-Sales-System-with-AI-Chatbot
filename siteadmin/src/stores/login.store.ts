@@ -9,7 +9,11 @@ import {
     LoginStatus,
     RegisterDto,
 } from "@/types/userLogin.type";
-import { ResetPassword, VerifyResetPassword } from "@/types/auth-validate.type";
+import {
+    BasicResetPassword,
+    ResetPassword,
+    VerifyResetPassword,
+} from "@/types/auth-validate.type";
 import { SUCCESS_STATUSES } from "@/constants";
 import { AxiosResponse } from "axios";
 import { VerifyCodeDto } from "../types/userLogin.type";
@@ -134,6 +138,15 @@ export class LoginObservable {
     *resetPassword(resetData: ResetPassword) {
         yield this.handleApiCall({
             apiCall: () => LoginAPI.resetPassword(resetData),
+            defaultErrorMessage: "Reset mật khẩu thất bại",
+            errorStatus: 500,
+            showSuccessMsg: true,
+            successStatus: 200,
+        });
+    }
+    *basicResetPassword(resetData: BasicResetPassword) {
+        yield this.handleApiCall({
+            apiCall: () => LoginAPI.basicResetPassword(resetData),
             defaultErrorMessage: "Reset mật khẩu thất bại",
             errorStatus: 500,
             showSuccessMsg: true,
