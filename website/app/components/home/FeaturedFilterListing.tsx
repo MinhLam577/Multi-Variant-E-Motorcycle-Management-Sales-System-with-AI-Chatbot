@@ -35,7 +35,7 @@ const FeaturedFilterListing = observer(() => {
                 {/* Nav tabs */}
                 {/* Tab panes */}
                 <div className="row">
-                    {productObservable?.data?.cars?.bestSelling.map(
+                    {productObservable?.data?.motobikes?.bestSelling.map(
                         (listing) => (
                             <div className="col-sm-6 col-xl-3" key={listing.id}>
                                 <Link

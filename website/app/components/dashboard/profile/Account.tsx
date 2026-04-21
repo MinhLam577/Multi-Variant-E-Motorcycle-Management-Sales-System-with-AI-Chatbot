@@ -20,7 +20,7 @@ import { observer } from "mobx-react-lite";
 import dayjs from "dayjs";
 import apiClient from "@/src/api/apiClient";
 import endpoints from "@/src/api/endpoints";
-import { UploadRequestOption } from "rc-upload/lib/interface";
+import type { UploadProps } from "antd";
 import { UploadChangeParam, UploadFile } from "antd/es/upload";
 const Account = observer(() => {
     const [initForm, setInitForm] = useState(null);
@@ -142,11 +142,11 @@ const Account = observer(() => {
         }
         return isJpgOrPng && isLt2M;
     };
-    const handleUploadFileThumbnail = async ({
+    const handleUploadFileThumbnail: UploadProps["customRequest"] = async ({
         file,
         onSuccess,
         onError,
-    }: UploadRequestOption) => {
+    }) => {
         // upload ảnh
         const res = await UploadPictureApi.createImageCustomer(file);
         if (res && res.data) {
