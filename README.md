@@ -1,8 +1,8 @@
-# MotorCar-Management
+# Multi-Variant-E-Motorcycle-Management-Sales-System-with-AI-Chatbot
 
 ## 🚀 Giới Thiệu
 
-MotorCar-Management là một nền tảng quản lý và kinh doanh xe máy điện đa biến thể, tích hợp các công nghệ hiện đại nhằm hỗ trợ doanh nghiệp tối ưu hóa hoạt động vận hành, bán hàng và chăm sóc khách hàng. Các tính năng chính bao gồm:
+Là một nền tảng quản lý và kinh doanh xe máy điện đa biến thể, tích hợp các công nghệ hiện đại nhằm hỗ trợ doanh nghiệp tối ưu hóa hoạt động vận hành, bán hàng và chăm sóc khách hàng. Các tính năng chính bao gồm:
 
 -   Quản lý sản phẩm chi tiết: Hỗ trợ quản lý sản phẩm theo biến thể (màu sắc, tải trọng, công suất...).
 
@@ -54,7 +54,7 @@ npm install -g yarn
 ### 2️⃣ **Clone dự án**
 
 ```sh
-git clone https://github.com/MinhLam577/MotoCar-Manager-Website.git
+git clone https://github.com/MinhLam577/Multi-Variant-E-Motorcycle-Management-Sales-System-with-AI-Chatbot.git
 ```
 
 ### 3️⃣ **Cài đặt dependencies**
@@ -125,7 +125,7 @@ npm install -g yarn
 ### 2️⃣ **Clone dự án**
 
 ```sh
-git clone https://github.com/MinhLam577/MotoCar-Manager-Website.git
+git clone https://github.com/MinhLam577/Multi-Variant-E-Motorcycle-Management-Sales-System-with-AI-Chatbot.git
 ```
 
 ### 3️⃣ **Cài đặt dependencies**
