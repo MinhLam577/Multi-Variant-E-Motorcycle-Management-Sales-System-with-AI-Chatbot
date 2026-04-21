@@ -12,6 +12,8 @@ import { useParams } from "next/navigation";
 import { useStore } from "@/context/store.context";
 import { useEffect } from "react";
 import { observer } from "mobx-react-lite";
+import Header from "@/app/components/home/Header";
+import BreadCrumb from "@/app/components/common/atoms/BreadCrumb";
 
 const BlogDynamicSingle = observer(() => {
     const { id } = useParams();
@@ -27,29 +29,19 @@ const BlogDynamicSingle = observer(() => {
     }, [id]);
     return (
         <div className="wrapper">
-            <div
-                className="offcanvas offcanvas-end"
-                tabIndex={-1}
-                id="offcanvasRight"
-                aria-labelledby="offcanvasRightLabel"
-            >
-                <HeaderSidebar />
-            </div>
-            {/* Sidebar Panel End */}
+            <Header/>
 
-            {/* header top */}
-            <HeaderTop />
-            {/* End header top */}
-
-            {/* Main Header Nav */}
-            <DefaultHeader />
-            {/* End Main Header Nav */}
-
-            {/* Main Header Nav For Mobile */}
             <MobileMenu />
-            {/* End Main Header Nav For Mobile */}
 
             {/* Blog Single Post */}
+            <BreadCrumb
+              items={[
+                { label: "Trang chủ", href: "/" },
+                { label: "Tin tức", href: "/blog-list" },
+                {label: id as string}
+              ]}
+              bgWrapper="bg-[#fff]"
+            />
             <section className="py-16 bg-white">
                 <div className="max-w-3xl mx-auto px-4">
                     <article className="space-y-6">

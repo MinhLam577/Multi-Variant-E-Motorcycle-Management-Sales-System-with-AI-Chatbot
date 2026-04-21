@@ -14,12 +14,7 @@ const BlogList = observer(() => {
     const store = useStore();
     const blogStore = store.blogsObservable;
     const blogCategoryStore = store.blogCategoryObservable;
-    const scrollToTop = () => {
-        window.scrollTo({
-            top: 350,
-            behavior: "smooth",
-        });
-    };
+
     const updateUrl = (newParams: globalFilterBlogData & paginationData) => {
         // Lấy các tham số hiện tại từ URL
         const newQueryParams = new URLSearchParams(
@@ -51,7 +46,6 @@ const BlogList = observer(() => {
                     ...filter,
                 };
                 blogStore.getListBlog(query);
-                scrollToTop();
             },
             {
                 fireImmediately: true,

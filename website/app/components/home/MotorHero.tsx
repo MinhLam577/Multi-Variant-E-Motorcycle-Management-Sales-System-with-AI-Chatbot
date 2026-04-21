@@ -9,11 +9,11 @@ SwiperCore.use([Navigation]);
 const MotorHero = () => {
     const slides = [
         {
-            image: "/images/home-motor/homepage-motor-3.jpg",
+            image: "/images/home-motor/osakar-hero.png",
             height: "100%",
         },
         {
-            image: "/images/home-motor/homepage-motor-2.jpg",
+            image: "/images/home-motor/vinfast-hero2.webp",
             height: "100%",
         },
     ];
@@ -30,7 +30,7 @@ const MotorHero = () => {
     };
 
     return (
-        <section className="lg:!pt-[1rem] lg:!pb-0 md:!pt-16 xs:!pt-16 !pb-16">
+        <section className="lg:!pt-[2rem] lg:!pb-0 md:!pt-16 xs:!pt-16 !pb-16">
             <div className="container !px-0">
                 <div className="md:aspect-[1200/302] md:flex gap-3">
                     <div
@@ -65,14 +65,14 @@ const MotorHero = () => {
                     <div className="hidden w-full grid-rows-2 gap-3 md:grid md:w-[389px]">
                         <div className="overflow-hidden rounded-xl w-full h-full">
                             <img
-                                src="/images/home/2.png"
+                                src="/images/home/xemaydien hero.webp"
                                 alt="Banner 2 image"
                                 className="w-full h-full object-cover"
                             />
                         </div>
                         <div className="overflow-hidden rounded-xl w-full h-full">
                             <img
-                                src="/images/home/2.png"
+                                src="/images/home/vinfast hero.webp"
                                 alt="Banner 3 image"
                                 className="w-full h-full object-cover"
                             />

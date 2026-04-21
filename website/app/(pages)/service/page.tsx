@@ -84,7 +84,7 @@ const Service = () => {
             <section className="service-forms bgc-f9">
                 <div className="container">
                     <div className="row">
-                        <div className="col-md-7 col-xl-8">
+                        <div className="col-md-6 col-xl-7">
                             <div className="service_form mb30-sm">
                                 <h5 className="title">Đặt lịch ngay</h5>
                                 <ScheduleService />
@@ -92,7 +92,7 @@ const Service = () => {
                         </div>
                         {/* End .col */}
 
-                        <div className="col-md-5 col-xl-4">
+                        <div className="col-md-6 col-xl-5">
                             <div className="opening_hour_widgets">
                                 <div className="wrapper">
                                     <h4 className="title">Giờ mở cửa</h4>

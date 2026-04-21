@@ -1,12 +1,8 @@
 "use client";
-import DefaultHeader from "@/app/components/common/DefaultHeader";
 import Footer from "@/app/components/common/Footer";
-import HeaderSidebar from "@/app/components/common/HeaderSidebar";
-import HeaderTop from "@/app/components/common/HeaderTop";
 import LoginSignupModal from "@/app/components/common/login-signup";
 import Map from "@/app/components/common/Map";
 import MobileMenu from "@/app/components/common/MobileMenu";
-import BreadCrumb from "@/app/components/listing/listing-single/BreadCrumb";
 import DescriptionsMotor from "@/app/components/listing/listing-single/DescriptionsMotor";
 import ProductGallery from "@/app/components/listing/listing-single/listing-single-v2/ProductGallery";
 import ReleatedMotor from "@/app/components/listing/listing-single/ReleatedMotor";
@@ -18,6 +14,9 @@ import { observer } from "mobx-react-lite";
 import { message, Skeleton } from "antd";
 import OptionSelector from "@/app/components/listing/listing-single/listing-single-v2/Select_OptionValue";
 import QuantityExceedModal from "@/app/components/modal/modal.quantity.Cart_DetailProduct";
+import Header from "@/app/components/home/Header";
+import BreadCrumb from "@/app/components/common/atoms/BreadCrumb";
+import { getFromLocalStorage } from "@/utils/localStorage";
 const ListingSingleV2 = observer(() => {
     const [sku, setSku] = useState(null);
     const [quantity, setQuantity] = useState(1);
@@ -157,6 +156,7 @@ const ListingSingleV2 = observer(() => {
         }
     };
     const params = useParams();
+    const [prevProductData, setPrevProductData] = useState<any>(null);
     const id = params?.id;
     const storeProduct = store.productObservable;
     useEffect(() => {
@@ -172,9 +172,13 @@ const ListingSingleV2 = observer(() => {
                 }
             }
         };
-
         fetchData();
+        const savedProduct = getFromLocalStorage('selectedProduct');
+        if (savedProduct) {
+          setPrevProductData(savedProduct);
+        }
     }, [id]);
+
     const handleOptionSelect = async (payload) => {
         // Validate dữ liệu
         if (!Array.isArray(payload) || payload.length === 0) {
@@ -207,24 +211,9 @@ const ListingSingleV2 = observer(() => {
     };
     return (
         <div className="wrapper">
-            <div
-                className="offcanvas offcanvas-end"
-                tabIndex={-1}
-                id="offcanvasRight"
-                aria-labelledby="offcanvasRightLabel"
-            >
-                <HeaderSidebar />
-            </div>
-            {/* Sidebar Panel End */}
-            {/* header top */}
-            <HeaderTop />
-            {/* End header top */}
-            {/* Main Header Nav */}
-            <DefaultHeader />
-            {/* End Main Header Nav */}
-            {/* Main Header Nav For Mobile */}
+            <Header/>
+
             <MobileMenu />
-            {/* End Main Header Nav For Mobile */}
             <Skeleton
                 active
                 loading={isLoading}
@@ -239,7 +228,21 @@ const ListingSingleV2 = observer(() => {
                         <div className="row mb30">
                             <div className="col-xl-12">
                                 <div className="breadcrumb_content style2">
-                                    <BreadCrumb />
+                                     <BreadCrumb
+                                      items={[
+                                        {
+                                          label: "Trang chủ", href:"/"
+                                        },
+                                        {
+                                          label: prevProductData?.categoryName ? prevProductData?.categoryName : "Danh sách sản phẩm", href: `/listing-v1?type=motorbike&categoryID=${prevProductData?.categoryID}`
+                                        },
+                                        {
+                                          label: 
+                                            storeProduct?.data?.dataDetail
+                                                ?.data?.title
+                                        }
+                                      ]}
+                                     />
                                 </div>
                             </div>
                         </div>

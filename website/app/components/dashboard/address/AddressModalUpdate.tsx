@@ -15,6 +15,7 @@ import PropTypes from "prop-types";
 import { useParams } from "react-router";
 import apiClient from "@/src/api/apiClient";
 import endpoints from "@/src/api/endpoints";
+import { AddressResponseType } from "@/src/stores/address";
 
 const AddressModalUpdate = (props) => {
     const {
@@ -24,10 +25,9 @@ const AddressModalUpdate = (props) => {
         dataAddressUpdate,
     } = props;
     const [isSubmit, setIsSubmit] = useState(true);
-    const [provinces, setProvinces] = useState([]);
-    const [districts, setDistricts] = useState([]);
-    const [wards, setWards] = useState([]);
-    // https://ant.design/components/form#components-form-demo-control-hooks
+    const [provinces, setProvinces] = useState<AddressResponseType[]>([]);
+    const [districts, setDistricts] = useState<AddressResponseType[]>([]);
+    const [wards, setWards] = useState<AddressResponseType[]>([]);
 
     const [form] = Form.useForm();
     useEffect(() => {
@@ -38,21 +38,20 @@ const AddressModalUpdate = (props) => {
 
     const onFinish = async (values) => {
         let province = values.province;
-        if (provinces) {
-            province = provinces.find(
-                (p) => p.id === values.province || p.name === values.province
-            );
-            province = province.name;
+        if (provinces?.length) {
+            province =
+                provinces.find((p) => p.code === values.province)?.name ||
+                province;
         }
         let district = values.district;
-        if (districts.length > 0) {
-            district = districts.find((d) => d.id === values.district);
-            district = district.name;
+        if (districts?.length) {
+            district =
+                districts.find((d) => d.code === values.district)?.name ||
+                district;
         }
         let ward = values.ward;
-        if (wards.length > 0) {
-            const data = wards.find((w) => w.id === values.ward);
-            ward = data.name;
+        if (wards?.length) {
+            ward = wards.find((w) => w.code === values.ward)?.name || ward;
         }
 
         const formData = {
@@ -85,30 +84,27 @@ const AddressModalUpdate = (props) => {
         setIsSubmit(false);
     };
 
-    //
     useEffect(() => {
         const fetchProvince = async () => {
             const data = await apiClient.get(endpoints.province.list);
-            setProvinces(data.data.data);
+            setProvinces(data.data);
         };
         fetchProvince();
     }, []);
 
-    // gọi api tìm district
     const fetchDistrict = async (idProvince) => {
         form.setFieldsValue({ district: undefined, ward: undefined });
 
         const data = await apiClient.get(
             endpoints.district.districtByName(idProvince)
         );
-        setDistricts(data.data.data);
+        setDistricts(data.data);
     };
 
-    // gọi api tìm award
     const fetchAward = async (idDistrict) => {
         form.setFieldsValue({ ward: undefined });
         const data = await apiClient.get(endpoints.ward.wardByName(idDistrict));
-        setWards(data.data.data);
+        setWards(data.data);
     };
 
     const handleProvinceChange = (value) => {
@@ -127,10 +123,12 @@ const AddressModalUpdate = (props) => {
                 onOk={() => {
                     form.submit();
                 }}
-                onCancel={() => setOpenModalUpdate(false)}
+                onCancel={() => {
+                    setOpenModalUpdate(false);
+                    form.setFieldsValue(dataAddressUpdate);
+                }}
                 okText={"Cập nhật"}
                 cancelText={"Hủy"}
-                // confirmLoading={isSubmit}
             >
                 <Divider />
 
@@ -189,7 +187,11 @@ const AddressModalUpdate = (props) => {
                                     message: "Vui lòng nhập địa chỉ!",
                                 },
                             ]}
-                            style={{ marginBottom: 8 }} // Giảm khoảng cách
+                            style={{
+                                marginBottom: 8,
+                                flex: "1 1 50%",
+                                minWidth: 0,
+                            }}
                         >
                             <Input />
                         </Form.Item>
@@ -203,12 +205,22 @@ const AddressModalUpdate = (props) => {
                                     message: "Vui lòng chọn tỉnh/thành phố!",
                                 },
                             ]}
-                            style={{ marginBottom: 8 }} // Giảm khoảng cách
+                            style={{
+                                marginBottom: 8,
+                                flex: "1 1 50%",
+                                minWidth: 0,
+                            }}
                         >
                             <Select
                                 onChange={handleProvinceChange}
+                                showSearch={{
+                                    filterOption: (input, option) =>
+                                        option?.label
+                                            ?.toLowerCase()
+                                            .includes(input.toLowerCase()),
+                                }}
                                 options={provinces.map((p) => ({
-                                    value: p.id,
+                                    value: p.code,
                                     label: p.name,
                                 }))}
                             />
@@ -226,12 +238,23 @@ const AddressModalUpdate = (props) => {
                                     message: "Vui lòng chọn quận/huyện!",
                                 },
                             ]}
-                            style={{ marginBottom: 8 }} // Giảm khoảng cách
+                            style={{
+                                marginBottom: 8,
+                                flex: "1 1 50%",
+                                minWidth: 0,
+                            }}
                         >
                             <Select
+                                style={{ width: "100%" }}
                                 onChange={handleDistrictChange}
+                                showSearch={{
+                                    filterOption: (input, option) =>
+                                        option?.label
+                                            ?.toLowerCase()
+                                            .includes(input.toLowerCase()),
+                                }}
                                 options={districts.map((d) => ({
-                                    value: d.id,
+                                    value: d.code,
                                     label: d.name,
                                 }))}
                             />
@@ -247,11 +270,22 @@ const AddressModalUpdate = (props) => {
                                     message: "Vui lòng chọn phường/xã!",
                                 },
                             ]}
-                            style={{ marginBottom: 8 }} // Giảm khoảng cách
+                            style={{
+                                marginBottom: 8,
+                                flex: "1 1 50%",
+                                minWidth: 0,
+                            }}
                         >
                             <Select
+                                style={{ width: "100%" }}
+                                showSearch={{
+                                    filterOption: (input, option) =>
+                                        option?.label
+                                            ?.toLowerCase()
+                                            .includes(input.toLowerCase()),
+                                }}
                                 options={wards.map((w) => ({
-                                    value: w.id,
+                                    value: w.code,
                                     label: w.name,
                                 }))}
                             />

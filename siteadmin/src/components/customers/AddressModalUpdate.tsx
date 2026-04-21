@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
-    Button,
     Divider,
     Form,
     Input,
@@ -10,11 +9,10 @@ import {
     Select,
 } from "antd";
 
-import PropTypes from "prop-types";
 import apiClient from "../../api/apiClient";
 import endpoints from "../../api/endpoints";
 import { useParams } from "react-router";
-import { ApiResponse } from "@/types/api-response.type";
+import { AddressResponseType } from "./AddressModalCreate";
 
 const AddressModalUpdate = (props) => {
     const {
@@ -24,11 +22,10 @@ const AddressModalUpdate = (props) => {
         dataAddressUpdate,
     } = props;
     const [isSubmit, setIsSubmit] = useState(true);
-    const [provinces, setProvinces] = useState([]);
-    const [districts, setDistricts] = useState([]);
-    const [wards, setWards] = useState([]);
+    const [provinces, setProvinces] = useState<AddressResponseType[]>([]);
+    const [districts, setDistricts] = useState<AddressResponseType[]>([]);
+    const [wards, setWards] = useState<AddressResponseType[]>([]);
     const id = useParams();
-    // https://ant.design/components/form#components-form-demo-control-hooks
 
     const [form] = Form.useForm();
     useEffect(() => {
@@ -39,21 +36,20 @@ const AddressModalUpdate = (props) => {
 
     const onFinish = async (values) => {
         let province = values.province;
-        if (provinces) {
-            province = provinces.find(
-                (p) => p.id === values.province || p.name === values.province
-            );
-            province = province.name;
+        if (provinces?.length) {
+            province =
+                provinces.find((p) => p.code === values.province)?.name ||
+                province;
         }
         let district = values.district;
-        if (districts.length > 0) {
-            district = districts.find((d) => d.id === values.district);
-            district = district.name;
+        if (districts?.length) {
+            district =
+                districts.find((d) => d.code === values.district)?.name ||
+                district;
         }
         let ward = values.ward;
-        if (wards.length > 0) {
-            const data = wards.find((w) => w.id === values.ward);
-            ward = data.name;
+        if (wards?.length) {
+            ward = wards.find((w) => w.code === values.ward)?.name || ward;
         }
 
         const formData = {
@@ -65,19 +61,22 @@ const AddressModalUpdate = (props) => {
         };
 
         setIsSubmit(true);
-        const res: ApiResponse<any> = await apiClient.put(
+        const res = await apiClient.put(
             endpoints.receive_address.update(dataAddressUpdate.id),
             formData
         );
+
         if (res && res.data) {
-            message.success(res.message);
+            message.success("Cập nhật địa chỉ thành công");
             form.resetFields();
             setOpenModalUpdate(false);
             props.fetchUser();
         } else {
             notification.error({
-                message: "",
-                description: res.message,
+                message: "Cập nhật địa chỉ thất bại",
+                description:
+                    res.data?.message ||
+                    "Đã có lỗi xảy ra khi cập nhật địa chỉ. Vui lòng thử lại sau.",
             });
         }
         setIsSubmit(false);
@@ -128,7 +127,6 @@ const AddressModalUpdate = (props) => {
                 onCancel={() => setOpenModalUpdate(false)}
                 okText={"Cập nhật"}
                 cancelText={"Hủy"}
-                // confirmLoading={isSubmit}
             >
                 <Divider />
 
@@ -138,7 +136,7 @@ const AddressModalUpdate = (props) => {
                     style={{ maxWidth: 600 }}
                     onFinish={onFinish}
                     autoComplete="off"
-                    initialValues={{ customerId: id.id }} // Gán customerId ẩn vào form
+                    initialValues={{ customerId: id.id }}
                 >
                     <Form.Item
                         labelCol={{ span: 24 }}
@@ -207,7 +205,7 @@ const AddressModalUpdate = (props) => {
                         <Select
                             onChange={handleProvinceChange}
                             options={provinces.map((p) => ({
-                                value: p.id,
+                                value: p.code,
                                 label: p.name,
                             }))}
                         />
@@ -228,7 +226,7 @@ const AddressModalUpdate = (props) => {
                         <Select
                             onChange={handleDistrictChange}
                             options={districts.map((d) => ({
-                                value: d.id,
+                                value: d.code,
                                 label: d.name,
                             }))}
                         />
@@ -248,7 +246,7 @@ const AddressModalUpdate = (props) => {
                     >
                         <Select
                             options={wards.map((w) => ({
-                                value: w.id,
+                                value: w.code,
                                 label: w.name,
                             }))}
                         />

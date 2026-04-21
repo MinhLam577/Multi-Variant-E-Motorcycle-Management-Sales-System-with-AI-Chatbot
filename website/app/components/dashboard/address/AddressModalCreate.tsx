@@ -17,27 +17,28 @@ import { useParams } from "react-router-dom";
 
 import apiClient from "@/src/api/apiClient";
 import endpoints from "@/src/api/endpoints";
+import { AddressResponseType } from "@/src/stores/address";
 
 const AddressModalCreate = (props) => {
     const { openModalCreate, setOpenModalCreate } = props;
     const [isSubmit, setIsSubmit] = useState(true);
-    const [provinces, setProvinces] = useState([]);
-    const [districts, setDistricts] = useState([]);
+    const [provinces, setProvinces] = useState<AddressResponseType[]>([]);
+    const [districts, setDistricts] = useState<AddressResponseType[]>([]);
     const [wards, setWards] = useState([]);
     const id = useParams();
-    // https://ant.design/components/form#components-form-demo-control-hooks
+    const [isLoading, setIsLoading] = useState(false);
     const [form] = Form.useForm();
 
     const onFinish = async (values) => {
-        const province = provinces.find((p) => p.id === values.province);
-        const district = districts.find((d) => d.id === values.district);
-        const ward = wards.find((w) => w.id === values.ward);
+        const province = provinces.find((p) => p.code === values.province);
+        const district = districts.find((d) => d.code === values.district);
+        const ward = wards.find((w) => w.code === values.ward);
         const formData = {
             ...values,
             customerId: values.customerId,
-            province: province ? province.name : null,
-            district: district ? district.name : null,
-            ward: ward ? ward.name : null,
+            province: province ? province?.name || province : null,
+            district: district ? district?.name || district : null,
+            ward: ward ? ward?.name || ward : null,
         };
 
         setIsSubmit(true);
@@ -61,12 +62,18 @@ const AddressModalCreate = (props) => {
         setIsSubmit(false);
     };
 
-    //
-    useEffect(() => {
-        const fetchProvince = async () => {
+    const fetchProvince = async () => {
+        try {
+            setIsLoading(true);
             const data = await apiClient.get(endpoints.province.list);
-            setProvinces(data.data.data);
-        };
+            setProvinces(data?.data);
+        } catch (e) {
+            console.log("lỗi khi fetch province: ", e);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+    useEffect(() => {
         fetchProvince();
     }, []);
 
@@ -76,14 +83,14 @@ const AddressModalCreate = (props) => {
         const data = await apiClient.get(
             endpoints.district.districtByName(idProvince)
         );
-        setDistricts(data.data.data);
+        setDistricts(data.data);
     };
 
     // gọi api tìm award
     const fetchAward = async (idDistrict) => {
         form.setFieldsValue({ ward: undefined });
         const data = await apiClient.get(endpoints.ward.wardByName(idDistrict));
-        setWards(data.data.data);
+        setWards(data.data);
     };
 
     const handleProvinceChange = (value) => {
@@ -102,7 +109,10 @@ const AddressModalCreate = (props) => {
                 onOk={() => {
                     form.submit();
                 }}
-                onCancel={() => setOpenModalCreate(false)}
+                onCancel={() => {
+                    setOpenModalCreate(false);
+                    form.resetFields();
+                }}
                 okText="Tạo mới"
                 cancelText="Hủy"
             >
@@ -186,8 +196,14 @@ const AddressModalCreate = (props) => {
                         >
                             <Select
                                 onChange={handleProvinceChange}
-                                options={provinces.map((p) => ({
-                                    value: p.id,
+                                showSearch={{
+                                    filterOption: (input, option) =>
+                                        option?.label
+                                            ?.toLowerCase()
+                                            .includes(input.toLowerCase()),
+                                }}
+                                options={provinces?.map((p) => ({
+                                    value: p.code,
                                     label: p.name,
                                 }))}
                             />
@@ -206,12 +222,22 @@ const AddressModalCreate = (props) => {
                                     message: "Vui lòng chọn quận/huyện!",
                                 },
                             ]}
-                            style={{ flex: 1, marginBottom: 8 }}
+                            style={{
+                                marginBottom: 8,
+                                flex: "1 1 50%",
+                                minWidth: 0,
+                            }}
                         >
                             <Select
                                 onChange={handleDistrictChange}
-                                options={districts.map((d) => ({
-                                    value: d.id,
+                                showSearch={{
+                                    filterOption: (input, option) =>
+                                        option?.label
+                                            ?.toLowerCase()
+                                            .includes(input.toLowerCase()),
+                                }}
+                                options={districts?.map((d) => ({
+                                    value: d.code,
                                     label: d.name,
                                 }))}
                             />
@@ -227,11 +253,21 @@ const AddressModalCreate = (props) => {
                                     message: "Vui lòng chọn phường/xã!",
                                 },
                             ]}
-                            style={{ flex: 1, marginBottom: 8 }}
+                            style={{
+                                marginBottom: 8,
+                                flex: "1 1 50%",
+                                minWidth: 0,
+                            }}
                         >
                             <Select
-                                options={wards.map((w) => ({
-                                    value: w.id,
+                                showSearch={{
+                                    filterOption: (input, option) =>
+                                        option?.label
+                                            ?.toLowerCase()
+                                            .includes(input.toLowerCase()),
+                                }}
+                                options={wards?.map((w) => ({
+                                    value: w.code,
                                     label: w.name,
                                 }))}
                             />
