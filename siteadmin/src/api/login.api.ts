@@ -7,7 +7,11 @@ import {
     VerifyCodeDto,
 } from "@/types/userLogin.type";
 import { AxiosResponse } from "axios";
-import { ResetPassword, VerifyResetPassword } from "@/types/auth-validate.type";
+import {
+    BasicResetPassword,
+    ResetPassword,
+    VerifyResetPassword,
+} from "@/types/auth-validate.type";
 const loginEndpoints = endpoints.authAdmin;
 
 const LoginAPI = {
@@ -79,6 +83,17 @@ const LoginAPI = {
         try {
             const response = await apiClient.post(
                 loginEndpoints.resetPassword,
+                data
+            );
+            return Promise.resolve(response);
+        } catch (e) {
+            return Promise.reject(e);
+        }
+    },
+    basicResetPassword: async (data: BasicResetPassword) => {
+        try {
+            const response = await apiClient.patch(
+                loginEndpoints.basicResetPassword,
                 data
             );
             return Promise.resolve(response);

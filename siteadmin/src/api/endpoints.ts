@@ -39,6 +39,7 @@ const endpoints = {
         verifyActiveCode: "/auth/admin/check-code",
         retryAccount: "/auth/admin/retry-active",
         resetPassword: "/auth/admin/reset-password",
+        basicResetPassword: "/auth/admin/reset-password-basic",
         forgotPassword: "/auth/admin/forgot-password",
         changePassword: "/auth/admin/change-password",
         getAccount: "/auth/admin/getAccount",

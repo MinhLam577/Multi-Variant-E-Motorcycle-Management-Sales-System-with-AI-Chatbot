@@ -237,6 +237,7 @@ const Profile = () => {
             </Card>
             <ChangePasswordModal
                 open={openChangePasswordModal}
+                setOpen={setOpenChangePasswordModal}
                 cancelCallback={() => setOpenChangePasswordModal(false)}
             />
         </>

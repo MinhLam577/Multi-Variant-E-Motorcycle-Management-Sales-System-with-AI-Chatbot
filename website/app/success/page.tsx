@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useStore } from "@/context/store.context";
 import apiClient from "@/src/api/apiClient";
 import endpoints from "@/src/api/endpoints";
+import { toJS } from "mobx";
 export default function SuccessPage() {
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -32,18 +33,23 @@ export default function SuccessPage() {
                 );
 
                 // 2. gọi /me
-                const user =
-                    (await apiClient.get(endpoints.auth.me))?.data || null;
+                const response = await apiClient.get(endpoints.auth.me, {
+                    headers: {
+                        Authorization: "Bearer " + token,
+                    },
+                });
+                const data = response?.data || null;
 
                 // 3. update lại user
                 await rootStore.accountObservable.setAccount(
                     {
                         access_token: token,
                         refresh_token: refresh_token,
-                        user,
+                        user: data,
                     },
                     true
                 );
+                console.log("account: ", rootStore.accountObservable.account);
 
                 router.push("/");
             } catch (error) {
