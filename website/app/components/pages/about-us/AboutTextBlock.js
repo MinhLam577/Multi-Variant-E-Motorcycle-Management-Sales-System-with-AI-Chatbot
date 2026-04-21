@@ -27,7 +27,7 @@ const AboutTextBlock = () => {
             </div>
             {/* End .col */}
             <div className="col-lg-5 offset-lg-1">
-                <div className="about_content">
+                <div className="about_content mt-[150px]">
                     <h2 className="title">
                         Chào mừng bạn đến với minhdeptrai.site Đà Nẵng
                     </h2>

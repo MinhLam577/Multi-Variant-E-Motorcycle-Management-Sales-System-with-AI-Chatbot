@@ -13,6 +13,7 @@ const endpoints = {
         login: "/auth/login",
         register: "/auth/register",
         logout: "/auth/logout",
+        me: "/auth/me",
         refreshToken: "/auth/refresh",
         forgotPassword: "/auth/forgot-password",
         check_code: "/auth/check-code",

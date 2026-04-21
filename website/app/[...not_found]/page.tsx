@@ -1,9 +1,8 @@
 import Footer from "@/app/components/common/Footer";
 import LoginSignupModal from "@/app/components/common/login-signup";
 import Link from "next/link";
-import DefaultHeader from "../components/common/DefaultHeader";
-import HeaderSidebar from "../components/common/HeaderSidebar";
 import MobileMenu from "../components/common/MobileMenu";
+import Header from "../components/home/Header";
 
 export const metadata = {
     title: "404 || minhdeptrai.site",
@@ -12,51 +11,59 @@ export const metadata = {
 const NotFound = () => {
     return (
         <div className="wrapper">
-            <div
-                className="offcanvas offcanvas-end"
-                tabIndex={-1}
-                id="offcanvasRight"
-                aria-labelledby="offcanvasRightLabel"
-            >
-                <HeaderSidebar />
-            </div>
-            {/* Sidebar Panel End */}
+            <Header />
 
-            {/* Main Header Nav */}
-            <DefaultHeader />
-            {/* End Main Header Nav */}
-
-            {/* Main Header Nav For Mobile */}
+            {/* Mobile Menu */}
             <MobileMenu />
-            {/* End Main Header Nav For Mobile */}
 
             {/* Error Page */}
-            <section className="our-error bgc-f9">
+            <section className="our-error bgc-f9 py-5">
                 <div className="container">
-                    <div className="row">
-                        <div className="col-xl-6 offset-xl-3 text-center">
-                            <div className="error_page footer_apps_widget mt-4 d-block d-md-none">
-                                <h3 className="subtitle">
-                                    Trang không thể tìm thấy!
+                    <div className="row justify-content-center">
+                        <div className="col-xl-6 text-center">
+                            {/* 404 Code */}
+                            <div className="error_page mb-4">
+                                <h1 className="display-1 fw-bold">
+                                    4<span className="text-thm">0</span>4
+                                </h1>
+                                <h3 className="subtitle mt-3">
+                                    Trang không tồn tại
                                 </h3>
-                                <div className="erro_code">
-                                    <h2>
-                                        4<span className="text-thm">0</span>4
-                                    </h2>
-                                </div>
+                                <p className="text-muted mt-2">
+                                    Có thể đường dẫn bạn truy cập đã bị thay
+                                    đổi, bị xóa hoặc chưa từng tồn tại.
+                                </p>
                             </div>
-                            <Link className="btn_error btn-thm" href="/">
-                                Trở về trang chủ
-                            </Link>
+
+                            {/* Suggestions */}
+                            <div className="mb-4">
+                                <p className="mb-2">Bạn có thể thử:</p>
+                                <ul className="list-unstyled text-muted pl-[13rem] text-left">
+                                    <li>- Kiểm tra lại đường dẫn URL</li>
+                                    <li>- Quay về trang chủ</li>
+                                    <li>- Sử dụng menu để tìm nội dung</li>
+                                </ul>
+                            </div>
+
+                            {/* Actions */}
+                            <div className="d-flex justify-content-center gap-3 flex-wrap">
+                                <Link href="/" className="btn_error btn-thm">
+                                    Về trang chủ
+                                </Link>
+
+                                <Link
+                                    href="/contact"
+                                    className="btn btn-outline-secondary flex items-center"
+                                >
+                                    Liên hệ hỗ trợ
+                                </Link>
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
-            {/* End Error Page */}
 
-            {/* Our Footer */}
             <Footer />
-            {/* End Our Footer */}
 
             {/* Modal */}
             <div
@@ -69,9 +76,7 @@ const NotFound = () => {
             >
                 <LoginSignupModal />
             </div>
-            {/* End Modal */}
         </div>
-        // End wrapper
     );
 };
 

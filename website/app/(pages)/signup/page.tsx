@@ -7,6 +7,7 @@ import LoginSignupModal from "@/app/components/common/login-signup";
 import Form from "@/app/components/pages/signup/Form";
 import SocialLogin from "@/app/components/pages/signup/SocialLogin";
 import Link from "next/link";
+import Header from "@/app/components/home/Header";
 
 export const metadata = {
     title: "Log In - minhdeptrai.site",
@@ -15,23 +16,7 @@ export const metadata = {
 const SignUp = () => {
     return (
         <div className="wrapper">
-            <div
-                className="offcanvas offcanvas-end"
-                tabIndex={-1}
-                id="offcanvasRight"
-                aria-labelledby="offcanvasRightLabel"
-            >
-                <HeaderSidebar />
-            </div>
-            {/* Sidebar Panel End */}
-
-            {/* header top */}
-            <HeaderTop />
-            {/* End header top */}
-
-            {/* Main Header Nav */}
-            <DefaultHeader />
-            {/* End Main Header Nav */}
+            <Header />
 
             {/* Main Header Nav For Mobile */}
             <MobileMenu />

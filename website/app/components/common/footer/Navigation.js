@@ -3,8 +3,9 @@ import Link from "next/link";
 const Navigation = () => {
     const links = [
         { label: "Về chúng tôi", path: "/about-us" },
-        { label: "Tin tức", path: "/blog" },
         { label: "Dịch vụ", path: "/service" },
+        { label: "Tin tức", path: "/blog" },
+        { label: "Liên hệ", path: "/contact" },
     ];
 
     return (

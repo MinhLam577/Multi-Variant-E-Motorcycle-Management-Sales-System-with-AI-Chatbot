@@ -24,7 +24,7 @@ const BillingMain = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            await storeAccount.getAccount();
+            await storeAccount.init();
             await storeDelivery.getDeliveryDefault();
             await storeDelivery.getListDelivery();
             await storePayment.getListPaymentMethod();

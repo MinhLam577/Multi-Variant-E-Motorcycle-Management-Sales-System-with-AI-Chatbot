@@ -38,7 +38,7 @@ const Account = observer(() => {
     const storeAccount = store.accountObservable;
     const fetchBlogDetail = async () => {
         try {
-            await storeAccount.getAccount();
+            await storeAccount.init();
             const dataAccount = storeAccount.account;
             if (dataAccount) {
                 const arrThumbnail = [

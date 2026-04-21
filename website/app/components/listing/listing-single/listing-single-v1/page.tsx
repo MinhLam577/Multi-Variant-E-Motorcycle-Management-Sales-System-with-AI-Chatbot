@@ -41,7 +41,7 @@ const ListingSingle = observer(() => {
             if (id && typeof id === "string") {
                 try {
                     await storeProduct.getDetailProductByID(id);
-                    await storeAccount.getAccount();
+                    await storeAccount.init();
                 } catch (error) {
                     console.error("Fetch failed:", error);
                 }

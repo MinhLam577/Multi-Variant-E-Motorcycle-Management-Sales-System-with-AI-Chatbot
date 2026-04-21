@@ -8,6 +8,8 @@ import ListWithImage from "@/app/components/pages/service/ListWithImage";
 import ServiceBlock from "@/app/components/pages/service/ServiceBlock";
 import ScheduleService from "@/app/components/pages/service/ScheduleService";
 import ServiceHours from "@/app/components/pages/service/ServiceHours";
+import Header from "@/app/components/home/Header";
+import BreadCrumb from "@/app/components/common/atoms/BreadCrumb";
 
 export const metadata = {
     title: "Service || minhdeptrai.site ",
@@ -16,53 +18,19 @@ export const metadata = {
 const Service = () => {
     return (
         <div className="wrapper">
-            <div
-                className="offcanvas offcanvas-end"
-                tabIndex={-1}
-                id="offcanvasRight"
-                aria-labelledby="offcanvasRightLabel"
-            >
-                <HeaderSidebar />
-            </div>
-            {/* Sidebar Panel End */}
-
-            {/* header top */}
-            <HeaderTop />
-            {/* End header top */}
-
-            {/* Main Header Nav */}
-            <DefaultHeader />
-            {/* End Main Header Nav */}
+            <Header />
 
             {/* Main Header Nav For Mobile */}
             <MobileMenu />
             {/* End Main Header Nav For Mobile */}
 
-            {/* <!-- Inner Page Breadcrumb --> */}
-            <section className="inner_page_breadcrumb style2 bgc-f9 bt1">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-xl-12">
-                            <div className="breadcrumb_content style2">
-                                <h2 className="breadcrumb_title">Dịch vụ</h2>
-                                <p className="subtitle">Dịch vụ</p>
-                                <ol className="breadcrumb">
-                                    <li className="breadcrumb-item">
-                                        <a href="#">Trang chủ</a>
-                                    </li>
-                                    <li
-                                        className="breadcrumb-item active"
-                                        aria-current="page"
-                                    >
-                                        Dịch vụ
-                                    </li>
-                                </ol>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            {/* <!-- Inner Page Breadcrumb --> */}
+            <BreadCrumb
+                items={[
+                    { label: "Trang chủ", href: "/" },
+                    { label: "Dịch vụ" },
+                ]}
+                bgWrapper="bg-[#f9f9f9]"
+            />
 
             {/* Service Section Area */}
             <section className="our-service bgc-f9 pb90 pt0">

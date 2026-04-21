@@ -6,12 +6,12 @@ const SocialLogin = () => {
         window.location.href = url;
     };
     const socialBtns = [
-        {
-            className: "btn btn_fb",
-            iconClass: "fab fa-facebook-f",
-            text: "Log In via Facebook",
-            link: AUTH_URLS.facebook,
-        },
+        // {
+        //     className: "btn btn_fb",
+        //     iconClass: "fab fa-facebook-f",
+        //     text: "Log In via Facebook",
+        //     link: AUTH_URLS.facebook,
+        // },
         {
             className: "btn btn_google",
             iconClass: "fab fa-google",
