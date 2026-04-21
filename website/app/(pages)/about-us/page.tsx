@@ -54,63 +54,63 @@ const AboutUs = () => {
             {/* End Main Header Nav For Mobile */}
 
             <BreadCrumb
-              items={[
-                { label: "Trang chủ", href: "/" },
-                { label: "Giới thiệu" },
-              ]}
+                items={[
+                    { label: "Trang chủ", href: "/" },
+                    { label: "Giới thiệu" },
+                ]}
             />
             <div className="!bg-[#f9f9f9]">
-              <section className="about-section max-lg:!pb-0 !pt-0">
-                  <div className="container">
-                      <div className="row">
-                          <AboutTextBlock />
-                      </div>
-                  </div>
-              </section>
-              <section className="pb100 max-lg:!pt-0">
-                  <div className="container">
-                      <div className="partner_divider py-10 mt-3">
-                          <div className="row">
-                              <div className="main-title text-center mb-10">
-                                  <h2 className="text-3xl font-bold ">
-                                      Lịch sử phát triển
-                                  </h2>
-                              </div>
-                              <div className="relative border-l-2 border-red-500 pl-12 space-y-12">
-                                  {timelineData.map((item, index) => (
-                                      <div
-                                          key={index}
-                                          className="relative flex gap-6 group transition-transform duration-300 cursor-pointer hover:scale-[1.015]"
-                                          data-aos="fade-up"
-                                          data-aos-delay={100}
-                                      >
-                                          {/* Dot */}
-                                          <div className="absolute -left-6 top-2 w-4 h-4 bg-red-500 rounded-full border-4 border-white z-10 transition-all duration-300 group-hover:bg-red-700 group-hover:scale-125 group-hover:shadow-md"></div>
-                                          {/* Date */}
-                                          <div className="w-28 text-red-600 font-semibold text-sm group-hover:text-red-700 transition-colors duration-200">
-                                              {item.date}
-                                          </div>
-                                          {/* Content box */}
-                                          <div className="bg-white p-4 rounded-lg shadow-md w-full transition-all duration-300 group-hover:shadow-2xl group-hover:border-l-4 group-hover:border-red-400">
-                                              {/* <img
+                <section className="about-section max-lg:!pb-0 !pt-0">
+                    <div className="container">
+                        <div className="row">
+                            <AboutTextBlock />
+                        </div>
+                    </div>
+                </section>
+                <section className="pb100 max-lg:!pt-0">
+                    <div className="container">
+                        <div className="partner_divider py-10 mt-[3.5rem] bg-[#f9f9f9]">
+                            <div className="row">
+                                <div className="main-title text-center mb-10">
+                                    <h2 className="text-3xl font-bold ">
+                                        Lịch sử phát triển
+                                    </h2>
+                                </div>
+                                <div className="relative border-l-2 border-red-500 pl-12 space-y-12">
+                                    {timelineData.map((item, index) => (
+                                        <div
+                                            key={index}
+                                            className="relative flex gap-6 group transition-transform duration-300 cursor-pointer hover:scale-[1.015]"
+                                            data-aos="fade-up"
+                                            data-aos-delay={100}
+                                        >
+                                            {/* Dot */}
+                                            <div className="absolute -left-6 top-2 w-4 h-4 bg-red-500 rounded-full border-4 border-white z-10 transition-all duration-300 group-hover:bg-red-700 group-hover:scale-125 group-hover:shadow-md"></div>
+                                            {/* Date */}
+                                            <div className="w-28 text-red-600 font-semibold text-sm group-hover:text-red-700 transition-colors duration-200">
+                                                {item.date}
+                                            </div>
+                                            {/* Content box */}
+                                            <div className="bg-white p-4 rounded-lg shadow-md w-full transition-all duration-300 group-hover:shadow-2xl group-hover:border-l-4 group-hover:border-red-400">
+                                                {/* <img
                                                   src={item.image}
                                                   alt={item.title}
                                                   className="w-full max-w-sm mb-4 rounded-lg transition-transform duration-300 group-hover:scale-[1.03]"
                                               /> */}
-                                              <h3 className="text-red-600 font-bold uppercase mb-2 transition-colors duration-200 group-hover:text-red-700">
-                                                  {item.title}
-                                              </h3>
-                                              <p className="text-gray-700 text-sm leading-relaxed group-hover:text-gray-800 transition-colors duration-200">
-                                                  {item.content}
-                                              </p>
-                                          </div>
-                                      </div>
-                                  ))}
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              </section>
+                                                <h3 className="text-red-600 font-bold uppercase mb-2 transition-colors duration-200 group-hover:text-red-700">
+                                                    {item.title}
+                                                </h3>
+                                                <p className="text-gray-700 text-sm leading-relaxed group-hover:text-gray-800 transition-colors duration-200">
+                                                    {item.content}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </div>
             <Footer />
             {/* End Our Footer */}

@@ -62,7 +62,7 @@ const OrderHistory = observer(() => {
     };
 
     const fetchProfile = async () => {
-        await AccountStore.getAccount();
+        await AccountStore.init();
     };
 
     // 2. useEffect thứ hai: Xử lý kết quả thanh toán từ URL (chỉ chạy 1 lần duy nhất)

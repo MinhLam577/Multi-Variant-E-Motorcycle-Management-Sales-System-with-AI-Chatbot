@@ -12,11 +12,11 @@ import EmptyMenu from "./EmptyMenu";
 import MenuLink from "../atoms/MenuLink";
 import { cn } from "@/src/lib/utils";
 interface MainMenuProps {
-  classNameMenuColor?: string;
-  classNameStaticMenuColor?: string;
+    classNameMenuColor?: string;
+    classNameStaticMenuColor?: string;
 }
 const MainMenu = observer((props: MainMenuProps) => {
-    const classNameMenuColor = props?.classNameMenuColor
+    const classNameMenuColor = props?.classNameMenuColor;
     const store = useStore();
     const pathname = usePathname();
     const { categoryObservable } = store;
@@ -98,7 +98,7 @@ const MainMenu = observer((props: MainMenuProps) => {
     // CHỈ MAP 1 LẦN - Tối ưu performance
     const menuItems = level1Items.map((item) => ({
         id: item.id,
-        name: item.name,
+        name: item.name.toUpperCase(),
         href: `/${redirectedProductType}&categoryID=${item.id}`,
     }));
 
@@ -170,13 +170,18 @@ const MainMenu = observer((props: MainMenuProps) => {
 
                     <div className="flex items-center h-full flex-shrink-0 py-2 pr-12">
                         {/* Static menu */}
-                        <StaticMenu className={props?.classNameStaticMenuColor}/>
+                        <StaticMenu
+                            className={props?.classNameStaticMenuColor}
+                        />
 
                         {menuItems.map((item) => (
                             <MenuLink
                                 key={item.id}
                                 item={item}
-                                className={cn(`flex-shrink-0 whitespace-nowrap`, classNameMenuColor)}
+                                className={cn(
+                                    `flex-shrink-0 whitespace-nowrap`,
+                                    classNameMenuColor
+                                )}
                             />
                         ))}
 

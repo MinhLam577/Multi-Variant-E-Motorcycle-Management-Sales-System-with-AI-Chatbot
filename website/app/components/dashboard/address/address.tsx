@@ -22,7 +22,7 @@ const Address = observer(() => {
         fetchData();
     }, []);
     const fetchData = async () => {
-        await storeAccount.getAccount();
+        await storeAccount.init();
         const idCustomer = storeAccount?.account?.user.userId;
         if (idCustomer) {
             const data = await AddressApi.getListAddressByCustomer(idCustomer);

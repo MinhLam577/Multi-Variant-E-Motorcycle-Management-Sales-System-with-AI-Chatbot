@@ -72,7 +72,7 @@ const MobileMenu = () => {
     const cartStore = store.cartObservable;
     useEffect(() => {
         const fetchData = async () => {
-            await AccountStore?.getAccount(); // lấy thông tin người dùng
+            await AccountStore?.init();
             const account = AccountStore?.account;
             setUser(account);
 
