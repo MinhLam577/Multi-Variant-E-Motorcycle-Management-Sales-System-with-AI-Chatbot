@@ -89,7 +89,7 @@ const ReleatedCar = observer(() => {
                     },
                 }}
             >
-                {productObservable?.data?.cars?.data
+                {productObservable?.data?.motobikes?.data
                     .slice(0, 6)
                     .map((listing) => (
                         <SwiperSlide key={listing?.products?.id}>
