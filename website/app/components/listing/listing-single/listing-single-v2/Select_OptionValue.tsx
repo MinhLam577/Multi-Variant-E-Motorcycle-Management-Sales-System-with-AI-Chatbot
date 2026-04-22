@@ -27,10 +27,24 @@ const OptionSelector: React.FC<Props> = ({
         []
     );
 
-    // Khi optionValues thay đổi (từ props) → reset mảng selectedIndexes
     useEffect(() => {
         if (optionValues?.length) {
-            setSelectedIndexes(optionValues.map(() => null)); // Mỗi nhóm khởi tạo là null
+            // luôn chọn giá trị đầu tiên của từng phân loại
+            const defaultSelected = optionValues.map(() => 0);
+            setSelectedIndexes(defaultSelected);
+
+            // kiểm tra đã chọn đủ chưa
+            const allSelected = defaultSelected.every((idx) => idx !== null);
+            setAllSelected(allSelected);
+
+            // gọi luôn callback để lấy SKU mặc định
+            if (allSelected && onSelectChange) {
+                const formattedPayload = optionValues.map((group, idx) => {
+                    const ids = group.values[defaultSelected[idx]][1];
+                    return { option_value_ids: ids };
+                });
+                onSelectChange(formattedPayload);
+            }
         }
     }, [optionValues]);
 
@@ -38,9 +52,8 @@ const OptionSelector: React.FC<Props> = ({
     const handleSelect = (groupIdx: number, valueIdx: number) => {
         const updated = [...selectedIndexes];
 
-        // Nếu đã chọn rồi và bấm lại → bỏ chọn
         if (updated[groupIdx] === valueIdx) {
-            updated[groupIdx] = null;
+            return;
         } else {
             updated[groupIdx] = valueIdx;
         }

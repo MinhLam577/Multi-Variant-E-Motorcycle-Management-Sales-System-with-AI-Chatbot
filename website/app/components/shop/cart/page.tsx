@@ -11,6 +11,7 @@ import { useStore } from "@/context/store.context";
 import { useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { Empty } from "antd";
+import Header from "../../home/Header";
 
 const Cart = observer(() => {
     const [selectedAllItems, setSelectedAllItems] = useState(false); // Thêm state để lưu các sản phẩm đã chọn
@@ -37,23 +38,7 @@ const Cart = observer(() => {
 
     return (
         <div className="wrapper">
-            <div
-                className="offcanvas offcanvas-end"
-                tabIndex={-1}
-                id="offcanvasRight"
-                aria-labelledby="offcanvasRightLabel"
-            >
-                <HeaderSidebar />
-            </div>
-            {/* Sidebar Panel End */}
-
-            {/* header top */}
-            <HeaderTop />
-            {/* End header top */}
-
-            {/* Main Header Nav */}
-            <DefaultHeader />
-            {/* End Main Header Nav */}
+            <Header/>
 
             {/* Main Header Nav For Mobile */}
             <MobileMenu />

@@ -173,9 +173,9 @@ const ListingSingleV2 = observer(() => {
             }
         };
         fetchData();
-        const savedProduct = getFromLocalStorage('selectedProduct');
+        const savedProduct = getFromLocalStorage("selectedProduct");
         if (savedProduct) {
-          setPrevProductData(savedProduct);
+            setPrevProductData(savedProduct);
         }
     }, [id]);
 
@@ -190,19 +190,15 @@ const ListingSingleV2 = observer(() => {
         try {
             const idCustomer = storeAccount.account?.user.userId;
             if (idCustomer) {
-                // ✅ Gửi đúng định dạng backend yêu cầu: { optionValues: [...] }
                 await storeProduct.GetSkusByOptionValueIdsAlreadyLogin({
                     optionValues: payload,
                 });
 
-                // ✅ Cập nhật kết quả nếu có
                 setSku(storeProduct?.data?.dataSKU);
             } else {
-                // ✅ Gửi đúng định dạng backend yêu cầu: { optionValues: [...] }
                 await storeProduct.GetSkusByOptionValueIdsNoneLogin({
                     optionValues: payload,
                 });
-                // ✅ Cập nhật kết quả nếu có
                 setSku(storeProduct?.data?.dataSKU);
             }
         } catch (err) {
@@ -211,7 +207,7 @@ const ListingSingleV2 = observer(() => {
     };
     return (
         <div className="wrapper">
-            <Header/>
+            <Header />
 
             <MobileMenu />
             <Skeleton
@@ -228,21 +224,24 @@ const ListingSingleV2 = observer(() => {
                         <div className="row mb30">
                             <div className="col-xl-12">
                                 <div className="breadcrumb_content style2">
-                                     <BreadCrumb
-                                      items={[
-                                        {
-                                          label: "Trang chủ", href:"/"
-                                        },
-                                        {
-                                          label: prevProductData?.categoryName ? prevProductData?.categoryName : "Danh sách sản phẩm", href: `/listing-v1?type=motorbike&categoryID=${prevProductData?.categoryID}`
-                                        },
-                                        {
-                                          label: 
-                                            storeProduct?.data?.dataDetail
-                                                ?.data?.title
-                                        }
-                                      ]}
-                                     />
+                                    <BreadCrumb
+                                        items={[
+                                            {
+                                                label: "Trang chủ",
+                                                href: "/",
+                                            },
+                                            {
+                                                label: prevProductData?.categoryName
+                                                    ? prevProductData?.categoryName
+                                                    : "Danh sách sản phẩm",
+                                                href: `/listing-v1?type=motorbike&categoryID=${prevProductData?.categoryID}`,
+                                            },
+                                            {
+                                                label: storeProduct?.data
+                                                    ?.dataDetail?.data?.title,
+                                            },
+                                        ]}
+                                    />
                                 </div>
                             </div>
                         </div>
