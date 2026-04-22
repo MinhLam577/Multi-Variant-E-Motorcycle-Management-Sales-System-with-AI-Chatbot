@@ -46,28 +46,30 @@ const PaymentWidget = observer(() => {
                         hàng* hoặc *tiền mặt khi nhận hàng*.
                     </p>
                 </div>
-                {storePayment?.data.payments?.map((element, index) => (
-                    <div className="form-check mb-4" key={index}>
-                        <input
-                            className="form-check-input"
-                            type="radio"
-                            name="paymentMethod"
-                            id={`payment-${index}`}
-                            value={element.id}
-                            checked={
-                                storePayment?.data?.selectedPayment ===
-                                element.id
-                            }
-                            onChange={() => handleChange(element.id)}
-                        />
-                        <label
-                            className="form-check-label"
-                            htmlFor={`payment-${index}`}
-                        >
-                            {element.name}
-                        </label>
-                    </div>
-                ))}
+                {storePayment?.data.payments
+                    ?.filter((p) => p?.name !== "ZALOPAY")
+                    ?.map((element, index) => (
+                        <div className="form-check mb-4" key={index}>
+                            <input
+                                className="form-check-input"
+                                type="radio"
+                                name="paymentMethod"
+                                id={`payment-${index}`}
+                                value={element.id}
+                                checked={
+                                    storePayment?.data?.selectedPayment ===
+                                    element.id
+                                }
+                                onChange={() => handleChange(element.id)}
+                            />
+                            <label
+                                className="form-check-label"
+                                htmlFor={`payment-${index}`}
+                            >
+                                {element.name}
+                            </label>
+                        </div>
+                    ))}
 
                 {/* End form-check */}
             </div>

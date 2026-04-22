@@ -109,11 +109,7 @@ const ModalListAddress = ({
                                         </span>
                                     </div>
                                     <div className="w-[20%]  ">
-                                        <div className="flex flex-grow justify-end gap-x-5 items-center">
-                                            {/* <UpdateAddress
-                          receiver_address_id={+element.receiver_address_id}
-                        /> */}
-                                        </div>
+                                        <div className="flex flex-grow justify-end gap-x-5 items-center"></div>
                                     </div>
                                 </div>
                                 <Divider />

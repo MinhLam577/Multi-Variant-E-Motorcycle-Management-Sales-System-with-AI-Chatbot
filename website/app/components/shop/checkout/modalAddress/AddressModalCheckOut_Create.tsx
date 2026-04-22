@@ -15,6 +15,7 @@ import { useParams } from "react-router-dom";
 import apiClient from "@/src/api/apiClient";
 import endpoints from "@/src/api/endpoints";
 import { useStore } from "@/context/store.context";
+import { AddressResponseType } from "@/src/stores/address";
 
 const AddressModalCheckoutCreate = (props) => {
     const store = useStore();
@@ -22,23 +23,23 @@ const AddressModalCheckoutCreate = (props) => {
     const storeAddress = store.addressObservable;
     const { openModalCreate, setOpenModalCreate } = props;
     const [isSubmit, setIsSubmit] = useState(true);
-    const [provinces, setProvinces] = useState([]);
-    const [districts, setDistricts] = useState([]);
-    const [wards, setWards] = useState([]);
+    const [provinces, setProvinces] = useState<AddressResponseType[]>([]);
+    const [districts, setDistricts] = useState<AddressResponseType[]>([]);
+    const [wards, setWards] = useState<AddressResponseType[]>([]);
     const id = useParams();
     // https://ant.design/components/form#components-form-demo-control-hooks
     const [form] = Form.useForm();
 
     const onFinish = async (values) => {
-        const province = provinces.find((p) => p.id === values.province);
-        const district = districts.find((d) => d.id === values.district);
-        const ward = wards.find((w) => w.id === values.ward);
+        const province = provinces.find((p) => p.code === values.province);
+        const district = districts.find((d) => d.code === values.district);
+        const ward = wards.find((w) => w.code === values.ward);
         const formData = {
             ...values,
             customerId: values.customerId,
-            province: province ? province.name : null,
-            district: district ? district.name : null,
-            ward: ward ? ward.name : null,
+            province: province ? province?.name || province : null,
+            district: district ? district?.name || district : null,
+            ward: ward ? ward?.name || ward : null,
         };
 
         setIsSubmit(true);
@@ -59,11 +60,10 @@ const AddressModalCheckoutCreate = (props) => {
         setIsSubmit(false);
     };
 
-    //
     useEffect(() => {
         const fetchProvince = async () => {
             const data = await apiClient.get(endpoints.province.list);
-            setProvinces(data.data.data);
+            setProvinces(data.data);
         };
         fetchProvince();
     }, []);
@@ -74,14 +74,14 @@ const AddressModalCheckoutCreate = (props) => {
         const data = await apiClient.get(
             endpoints.district.districtByName(idProvince)
         );
-        setDistricts(data.data.data);
+        setDistricts(data.data);
     };
 
     // gọi api tìm award
     const fetchAward = async (idDistrict) => {
         form.setFieldsValue({ ward: undefined });
         const data = await apiClient.get(endpoints.ward.wardByName(idDistrict));
-        setWards(data.data.data);
+        setWards(data.data);
     };
 
     const handleProvinceChange = (value) => {
@@ -100,7 +100,10 @@ const AddressModalCheckoutCreate = (props) => {
                 onOk={() => {
                     form.submit();
                 }}
-                onCancel={() => setOpenModalCreate(false)}
+                onCancel={() => {
+                    setOpenModalCreate(false);
+                    form.resetFields();
+                }}
                 okText="Tạo mới"
                 cancelText="Hủy"
             >
@@ -185,7 +188,7 @@ const AddressModalCheckoutCreate = (props) => {
                             <Select
                                 onChange={handleProvinceChange}
                                 options={provinces.map((p) => ({
-                                    value: p.id,
+                                    value: p.code,
                                     label: p.name,
                                 }))}
                             />
@@ -209,7 +212,7 @@ const AddressModalCheckoutCreate = (props) => {
                             <Select
                                 onChange={handleDistrictChange}
                                 options={districts.map((d) => ({
-                                    value: d.id,
+                                    value: d.code,
                                     label: d.name,
                                 }))}
                             />
@@ -229,7 +232,7 @@ const AddressModalCheckoutCreate = (props) => {
                         >
                             <Select
                                 options={wards.map((w) => ({
-                                    value: w.id,
+                                    value: w.code,
                                     label: w.name,
                                 }))}
                             />

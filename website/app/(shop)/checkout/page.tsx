@@ -6,6 +6,7 @@ import MobileMenu from "../../components/common/MobileMenu";
 import LoginSignupModal from "@/app/components/common/login-signup";
 import BillingMain from "@/app/components/shop/checkout";
 import AddressDefault from "@/app/components/shop/checkout/addressDefault";
+import Header from "@/app/components/home/Header";
 
 export const metadata = {
     title: "Thanh Toán || minhdeptrai.site ",
@@ -14,23 +15,7 @@ export const metadata = {
 const Checkout = () => {
     return (
         <div className="wrapper">
-            <div
-                className="offcanvas offcanvas-end"
-                tabIndex={-1}
-                id="offcanvasRight"
-                aria-labelledby="offcanvasRightLabel"
-            >
-                <HeaderSidebar />
-            </div>
-            {/* Sidebar Panel End */}
-
-            {/* header top */}
-            <HeaderTop />
-            {/* End header top */}
-
-            {/* Main Header Nav */}
-            <DefaultHeader />
-            {/* End Main Header Nav */}
+            <Header />
 
             {/* Main Header Nav For Mobile */}
             <MobileMenu />
