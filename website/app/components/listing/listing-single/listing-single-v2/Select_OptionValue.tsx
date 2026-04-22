@@ -52,9 +52,7 @@ const OptionSelector: React.FC<Props> = ({
     const handleSelect = (groupIdx: number, valueIdx: number) => {
         const updated = [...selectedIndexes];
 
-        // Nếu đã chọn rồi và bấm lại → bỏ chọn
         if (updated[groupIdx] === valueIdx) {
-            // updated[groupIdx] = null;
             return;
         } else {
             updated[groupIdx] = valueIdx;
